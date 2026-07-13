@@ -314,7 +314,7 @@ const Feedback = () => {
               }}
             >
               <div>
-                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: "#423324", marginBottom: 4 }}>
                   Subject
                 </div>
                 <div style={{ fontFamily: FF, fontSize: 15, fontWeight: 600, color: INK, lineHeight: 1.3 }}>
@@ -323,7 +323,7 @@ const Feedback = () => {
               </div>
               <div style={{ height: 1, background: "rgba(0,0,0,0.08)" }} />
               <div>
-                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: "#423324", marginBottom: 4 }}>
                   Your message
                 </div>
                 <p
@@ -336,7 +336,7 @@ const Feedback = () => {
                 </p>
               </div>
               <div>
-                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: "#423324", marginBottom: 6 }}>
                   Admin reply
                 </div>
                 <p style={{ margin: 0, fontFamily: FF, fontSize: 14, lineHeight: 1.5, color: INK, whiteSpace: "pre-wrap" }}>
