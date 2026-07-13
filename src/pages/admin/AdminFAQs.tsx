@@ -90,38 +90,6 @@ type FAQRow = {
 };
 
 // ----- Simple rich text editor (contentEditable + execCommand) -----
-const RichTextEditor = ({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (html: string) => void;
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (ref.current && ref.current.innerHTML !== value) {
-      ref.current.innerHTML = value || "";
-    }
-  }, [value]);
-
-  const exec = (cmd: string, arg?: string) => {
-    ref.current?.focus();
-    document.execCommand(cmd, false, arg);
-    if (ref.current) onChange(ref.current.innerHTML);
-  };
-
-  const addLink = () => {
-    const url = window.prompt("Enter URL (https://…)");
-    if (!url) return;
-    exec("createLink", url);
-  };
-
-  const addEmail = () => {
-    const email = window.prompt("Enter email address");
-    if (!email) return;
-    exec("createLink", `mailto:${email}`);
-  };
 
 const RichTextEditor = ({
   value,
