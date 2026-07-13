@@ -123,9 +123,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
 const ConditionalBottomNav = () => {
   const location = useLocation();
   const path = location.pathname;
-  const businessPublicPaths = ["/business/start", "/for-business", "/plans", "/business/dashboard"];
-  const isBusinessPublic = businessPublicPaths.includes(path);
-  if ((path.startsWith("/business") && !isBusinessPublic) || path.startsWith("/admin") || path === "/welcome") return null;
+  if (path.startsWith("/admin") || path === "/welcome") return null;
   return <BottomNav />;
 };
 
