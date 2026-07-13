@@ -362,6 +362,22 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                           {timeAgo(n.created_at)}
                         </span>
                       </div>
+                      {n.kind === "feedback_reply" && n.ref_id && feedbackSubjects[n.ref_id] && (
+                        <p
+                          style={{
+                            margin: "3px 0 0",
+                            fontFamily: SANS,
+                            fontSize: 11.5,
+                            fontWeight: 500,
+                            color: MUTED,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          Subject: {feedbackSubjects[n.ref_id]}
+                        </p>
+                      )}
                       {n.body && (
                         <p
                           style={{
