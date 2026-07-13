@@ -6,6 +6,7 @@ import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, FollowActor } from "@/hooks/useFollowRequestActors";
+import { titleCaseSubject } from "@/lib/titleCaseSubject";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -468,15 +469,15 @@ function NotifCard({
             style={{
               margin: "4px 0 0",
               fontFamily: SANS,
-              fontWeight: 500,
               fontSize: 12,
-              color: MUTED,
+              color: INK,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
           >
-            Subject: {feedbackSubject}
+            <span style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px" }}>Subject:</span>{" "}
+            <span style={{ fontWeight: 500 }}>{titleCaseSubject(feedbackSubject)}</span>
           </p>
         )}
         {n.body && (
