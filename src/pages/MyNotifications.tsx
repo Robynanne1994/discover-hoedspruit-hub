@@ -371,15 +371,18 @@ function NotifCard({
   onClick,
   onRespond,
   actor,
+  feedbackSubject,
 }: {
   n: Notif;
   isUnread: boolean;
   onClick: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
   actor?: FollowActor;
+  feedbackSubject?: string;
 }) {
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
+  const isFeedbackReply = n.kind === "feedback_reply";
   const showAvatar = n.kind === "follow_request" && actor;
   const initials = (actor?.display_name || "·")
     .trim()
