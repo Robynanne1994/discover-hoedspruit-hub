@@ -188,11 +188,7 @@ const AdminModeration = () => {
           : status === "approved" ? `${itemTitle} is now live.`
           : status === "rejected" ? `${itemTitle} was not approved.`
           : `Please update ${itemTitle} and resubmit.`;
-        const link =
-          tab === "specials" ? "/business/specials" :
-          tab === "events" ? "/business/events" :
-          tab === "listing" ? "/business/listing" :
-          "/business/dashboard";
+        const link = "/";
         await supabase.from("business_notifications").insert({
           user_id: ownerId,
           kind: tab,

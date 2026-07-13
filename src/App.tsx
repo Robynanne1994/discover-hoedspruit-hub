@@ -69,20 +69,6 @@ import NotificationCategories from "./pages/NotificationCategories.tsx";
 import Specials from "./pages/Specials.tsx";
 import SearchPage from "./pages/Search.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
-import BusinessGate from "./components/business/BusinessGate.tsx";
-import BusinessSignIn from "./pages/business/BusinessSignIn.tsx";
-import BusinessSignUp from "./pages/business/BusinessSignUp.tsx";
-import BusinessStart from "./pages/business/BusinessStart.tsx";
-import BusinessSubscribe from "./pages/business/BusinessSubscribe.tsx";
-import BusinessClaim from "./pages/business/BusinessClaim.tsx";
-import BusinessDashboard from "./pages/business/BusinessDashboard.tsx";
-import BusinessListing from "./pages/business/BusinessListing.tsx";
-import BusinessSpecials from "./pages/business/BusinessSpecials.tsx";
-import BusinessSpecialForm from "./pages/business/BusinessSpecialForm.tsx";
-import BusinessEvents from "./pages/business/BusinessEvents.tsx";
-import BusinessEventForm from "./pages/business/BusinessEventForm.tsx";
-import BusinessFeature from "./pages/business/BusinessFeature.tsx";
-import BusinessBilling from "./pages/business/BusinessBilling.tsx";
 import AdminModeration from "./pages/admin/AdminModeration.tsx";
 import AdminUsers from "./pages/admin/AdminUsers.tsx";
 import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
@@ -122,9 +108,6 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user, isGuest]);
 
-  // The Business Portal has its own auth flow and must be reachable without
-  // signing in to the consumer app first.
-  if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) return <>{children}</>;
   // Welcome route is always reachable so people can sign up/in later.
   if (location.pathname === "/welcome") return <>{children}</>;
@@ -140,9 +123,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
 const ConditionalBottomNav = () => {
   const location = useLocation();
   const path = location.pathname;
-  const businessPublicPaths = ["/business/start", "/for-business", "/plans", "/business/dashboard"];
-  const isBusinessPublic = businessPublicPaths.includes(path);
-  if ((path.startsWith("/business") && !isBusinessPublic) || path.startsWith("/admin") || path === "/welcome") return null;
+  if (path.startsWith("/admin") || path === "/welcome") return null;
   return <BottomNav />;
 };
 
@@ -227,25 +208,6 @@ const App = () => (
                 <Route path="user-reports" element={<AdminUserReports />} />
                 <Route path="moderated-users" element={<AdminModeratedUsers />} />
                 <Route path="faqs" element={<AdminFAQs />} />
-              </Route>
-              <Route path="/business/sign-in" element={<BusinessSignIn />} />
-              <Route path="/business/start" element={<BusinessStart />} />
-              <Route path="/for-business" element={<BusinessStart />} />
-              <Route path="/plans" element={<BusinessStart />} />
-              <Route path="/business/sign-up" element={<BusinessSignUp />} />
-              <Route path="/business/claim" element={<BusinessClaim />} />
-              <Route element={<BusinessGate />}>
-                <Route path="/business/subscribe" element={<BusinessSubscribe />} />
-                <Route path="/business/dashboard" element={<BusinessDashboard />} />
-                <Route path="/business/listing" element={<BusinessListing />} />
-                <Route path="/business/specials" element={<BusinessSpecials />} />
-                <Route path="/business/specials/new" element={<BusinessSpecialForm mode="new" />} />
-                <Route path="/business/specials/:id" element={<BusinessSpecialForm mode="edit" />} />
-                <Route path="/business/events" element={<BusinessEvents />} />
-                <Route path="/business/events/new" element={<BusinessEventForm mode="new" />} />
-                <Route path="/business/events/:id" element={<BusinessEventForm mode="edit" />} />
-                <Route path="/business/feature/:type/:id" element={<BusinessFeature />} />
-                <Route path="/business/billing" element={<BusinessBilling />} />
               </Route>
               <Route path="*" element={<NotFound />} />
               </Routes>

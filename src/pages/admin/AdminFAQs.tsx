@@ -69,15 +69,6 @@ const APP_LINK_OPTIONS: { group: string; items: { label: string; path: string }[
       { label: "Content Guidelines", path: "/content-guidelines" },
     ],
   },
-  {
-    group: "For Business",
-    items: [
-      { label: "For Business (Plans)", path: "/for-business" },
-      { label: "Business Sign In", path: "/business/sign-in" },
-      { label: "Business Sign Up", path: "/business/sign-up" },
-      { label: "Claim a Listing", path: "/business/claim" },
-    ],
-  },
 ];
 
 type FAQRow = {

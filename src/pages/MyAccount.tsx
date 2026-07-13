@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useGuestAuth } from "@/hooks/useGuestAuth";
-import { useBusinessOwner } from "@/hooks/useBusinessOwner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -69,7 +69,6 @@ type ActiveSection = null | "profile" | "favourites" | "collections" | "been-her
 const MyAccount = () => {
   const { user, signOut, loading, isAdmin } = useAuth();
   const { isGuest, exitGuest } = useGuestAuth();
-  const { isOwner: isBusinessOwner, listing: ownedListing } = useBusinessOwner();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newCollectionName, setNewCollectionName] = useState("");
