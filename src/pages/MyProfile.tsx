@@ -19,14 +19,21 @@ const MUTED = "#8A8275";
 const SUBTLE = "rgba(26,26,26,0.55)";
 const LINE = "rgba(26,26,26,0.10)";
 const RUST = "#9B5A3C";
+const WHITE = "#FFFFFF";
+const PILL_BORDER = "#E8E4DF";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>
   (s || "").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
-const getInitial = (s?: string | null) =>
-  (s || "?").trim().charAt(0).toUpperCase() || "?";
+const getInitial = (s?: string | null) => {
+  if (!s?.trim()) return "?";
+  const parts = s.trim().split(/\s+/);
+  const first = parts[0][0] ?? "";
+  const second = parts[1]?.[0] ?? "";
+  return `${first}${second}`.toUpperCase() || "?";
+};
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 
@@ -425,7 +432,8 @@ const MyProfile = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+                background: profile?.avatar_url ? "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)" : WHITE,
+                border: profile?.avatar_url ? "none" : `1px solid ${PILL_BORDER}`,
               }}
             >
               {profile?.avatar_url ? (
@@ -435,7 +443,7 @@ const MyProfile = () => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 26, color: "#fff" }}>
+                <span style={{ fontFamily: SANS, fontWeight: 500, fontSize: 22, color: INK }}>
                   {getInitial(profile?.display_name || profile?.username)}
                 </span>
               )}
