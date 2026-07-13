@@ -125,13 +125,37 @@ const Feedback = () => {
       <PageHeader title="Feedback" />
 
 
-      {/* Heading */}
-      <h1 style={{
-        fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 26, fontWeight: 700, color: INK,
-        lineHeight: 1.2, margin: 0, padding: "16px 24px 12px",
-      }}>
-        {"\n"}
-      </h1>
+      {/* Tabs (only if user has any admin replies) */}
+      {hasReplies && (
+        <div style={{ padding: "12px 20px 4px", display: "flex", gap: 8 }}>
+          {([
+            { key: "submit", label: "Submit Feedback" },
+            { key: "replies", label: "Feedback Replies" },
+          ] as const).map((t) => {
+            const active = activeTab === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setSearchParams(t.key === "submit" ? {} : { tab: "replies" })}
+                style={{
+                  flex: 1,
+                  height: 40,
+                  borderRadius: 999,
+                  border: "none",
+                  background: active ? "#423324" : "#F5EFDD",
+                  color: active ? "#fff" : INK,
+                  fontFamily: FF,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Form */}
       <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 18 }}>
