@@ -466,40 +466,30 @@ const AdminSubmissions = () => {
             </>
           )}
           {viewing?.kind === "feedback" && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="capitalize">
-                  {viewing.data.subject || `${viewing.data.feedback_type} feedback`}
-                </DialogTitle>
-                <DialogDescription>
-                  {viewing.data._profile?.display_name ?? "User"}
-                  {viewing.data._profile?.email ? ` · ${viewing.data._profile.email}` : ""}
-                  {" · "}
-                  {fmt(viewing.data.created_at)}
-                </DialogDescription>
-              </DialogHeader>
-              <Badge variant="secondary" className="w-fit capitalize">
-                {viewing.data.feedback_type}
-              </Badge>
-              <p className="text-sm whitespace-pre-wrap text-foreground">{viewing.data.message}</p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    markRead.mutate({ id: viewing.data.id, is_read: !viewing.data.is_read })
+            <FeedbackReplyPanel
+              feedback={viewing.data}
+              onMarkRead={(is_read) => markRead.mutate({ id: viewing.data.id, is_read })}
+              onSend={(reply) =>
+                sendReply.mutate(
+                  { feedback: viewing.data, reply },
+                  {
+                    onSuccess: () => {
+                      setViewing({
+                        kind: "feedback",
+                        data: {
+                          ...viewing.data,
+                          admin_reply: reply.trim(),
+                          replied_at: new Date().toISOString(),
+                          is_read: true,
+                        },
+                      });
+                    },
                   }
-                >
-                  Mark as {viewing.data.is_read ? "unread" : "read"}
-                </Button>
-                {viewing.data._profile?.email && (
-                  <Button asChild>
-                    <a href={`mailto:${viewing.data._profile.email}?subject=Re: your feedback`}>
-                      Reply
-                    </a>
-                  </Button>
-                )}
-              </div>
-            </>
+                )
+              }
+              sending={sendReply.isPending}
+              fmt={fmt}
+            />
           )}
         </DialogContent>
       </Dialog>
