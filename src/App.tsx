@@ -108,9 +108,6 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
     }
   }, [user, isGuest]);
 
-  // The Business Portal has its own auth flow and must be reachable without
-  // signing in to the consumer app first.
-  if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) return <>{children}</>;
   // Welcome route is always reachable so people can sign up/in later.
   if (location.pathname === "/welcome") return <>{children}</>;
