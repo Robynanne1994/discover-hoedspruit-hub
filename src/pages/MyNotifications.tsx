@@ -463,6 +463,20 @@ function NotifCard({
         >
           {n.title}
         </p>
+        {isFeedbackReply && feedbackSubject && (
+          <p
+            style={{
+              margin: "4px 0 0",
+              fontFamily: SANS,
+              fontWeight: 500,
+              fontSize: 12,
+              color: MUTED,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Subject: {feedbackSubject}
         {n.body && (
           <p
             style={{
