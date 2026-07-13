@@ -138,7 +138,7 @@ const FollowRequests = () => {
                       height: 36,
                       width: 36,
                       borderRadius: 999,
-                      background: INK,
+                      background: "#423324",
                       color: "#fff",
                       border: "none",
                       cursor: "pointer",
