@@ -123,6 +123,86 @@ const RichTextEditor = ({
     exec("createLink", `mailto:${email}`);
   };
 
+const RichTextEditor = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (html: string) => void;
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const savedRange = useRef<Range | null>(null);
+  const [appLinkOpen, setAppLinkOpen] = useState(false);
+  const [selectedPath, setSelectedPath] = useState<string>("");
+  const [linkLabel, setLinkLabel] = useState<string>("");
+
+  useEffect(() => {
+    if (ref.current && ref.current.innerHTML !== value) {
+      ref.current.innerHTML = value || "";
+    }
+  }, [value]);
+
+  const exec = (cmd: string, arg?: string) => {
+    ref.current?.focus();
+    document.execCommand(cmd, false, arg);
+    if (ref.current) onChange(ref.current.innerHTML);
+  };
+
+  const addLink = () => {
+    const url = window.prompt("Enter URL (https://…)");
+    if (!url) return;
+    exec("createLink", url);
+  };
+
+  const addEmail = () => {
+    const email = window.prompt("Enter email address");
+    if (!email) return;
+    exec("createLink", `mailto:${email}`);
+  };
+
+  const openAppLink = () => {
+    // Save current selection so we can restore it after the dialog closes.
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && ref.current?.contains(sel.anchorNode)) {
+      savedRange.current = sel.getRangeAt(0).cloneRange();
+      setLinkLabel(sel.toString());
+    } else {
+      savedRange.current = null;
+      setLinkLabel("");
+    }
+    setSelectedPath("");
+    setAppLinkOpen(true);
+  };
+
+  const insertAppLink = () => {
+    if (!selectedPath) return;
+    const editor = ref.current;
+    if (!editor) return;
+    editor.focus();
+
+    const sel = window.getSelection();
+    if (savedRange.current && sel) {
+      sel.removeAllRanges();
+      sel.addRange(savedRange.current);
+    }
+
+    const hasSelectedText = sel && sel.toString().length > 0;
+    if (hasSelectedText) {
+      document.execCommand("createLink", false, selectedPath);
+    } else {
+      const label =
+        linkLabel.trim() ||
+        APP_LINK_OPTIONS.flatMap((g) => g.items).find((i) => i.path === selectedPath)?.label ||
+        selectedPath;
+      const safeLabel = label.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const html = `<a href="${selectedPath}">${safeLabel}</a>`;
+      document.execCommand("insertHTML", false, html);
+    }
+
+    onChange(editor.innerHTML);
+    setAppLinkOpen(false);
+  };
+
   return (
     <div className="border rounded-md bg-background">
       <div className="flex items-center gap-1 border-b px-2 py-1.5 flex-wrap">
@@ -135,8 +215,18 @@ const RichTextEditor = ({
         <Button type="button" size="sm" variant="ghost" onClick={() => exec("insertUnorderedList")} title="Bullet list">
           <ListIcon className="h-4 w-4" />
         </Button>
-        <Button type="button" size="sm" variant="ghost" onClick={addLink} title="Insert link">
+        <Button type="button" size="sm" variant="ghost" onClick={addLink} title="Insert external URL">
           <Link2 className="h-4 w-4" />
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant="ghost"
+          onClick={openAppLink}
+          title="Link to an app page"
+        >
+          <LinkIcon className="h-4 w-4" />
+          <span className="ml-1 text-xs">App page</span>
         </Button>
         <Button type="button" size="sm" variant="ghost" onClick={addEmail} title="Insert email link">
           <Mail className="h-4 w-4" />
@@ -153,8 +243,66 @@ const RichTextEditor = ({
         className="min-h-[140px] px-3 py-2 text-sm text-foreground focus:outline-none [&_a]:underline [&_a]:text-primary [&_ul]:list-disc [&_ul]:ml-5 [&_ol]:list-decimal [&_ol]:ml-5"
       />
       <p className="px-3 py-1.5 text-[11px] text-muted-foreground border-t">
-        Tip: select text, then click <b>B</b>, link, or email icons to format.
+        Tip: select text, then click <b>B</b>, external URL, <b>App page</b>, or email icons to format.
       </p>
+
+      <Dialog open={appLinkOpen} onOpenChange={setAppLinkOpen}>
+        <DialogContent className="max-w-md max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Link to an app page</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label className="text-xs">Link text</Label>
+              <Input
+                value={linkLabel}
+                onChange={(e) => setLinkLabel(e.target.value)}
+                placeholder="e.g. See the Help Centre"
+              />
+              <p className="text-[11px] text-muted-foreground mt-1">
+                If you had text selected in the editor, it will be used automatically.
+              </p>
+            </div>
+            <div>
+              <Label className="text-xs">Destination page</Label>
+              <div className="mt-2 space-y-3">
+                {APP_LINK_OPTIONS.map((group) => (
+                  <div key={group.group}>
+                    <div className="text-[11px] uppercase tracking-wide text-muted-foreground mb-1">
+                      {group.group}
+                    </div>
+                    <div className="grid grid-cols-1 gap-1">
+                      {group.items.map((opt) => (
+                        <button
+                          key={opt.path}
+                          type="button"
+                          onClick={() => setSelectedPath(opt.path)}
+                          className={`text-left text-sm px-3 py-2 rounded border ${
+                            selectedPath === opt.path
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:bg-muted/50"
+                          }`}
+                        >
+                          <div className="font-medium">{opt.label}</div>
+                          <div className="text-[11px] text-muted-foreground">{opt.path}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setAppLinkOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={insertAppLink} disabled={!selectedPath}>
+              Insert link
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
