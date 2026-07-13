@@ -162,6 +162,27 @@ export default function MyNotifications() {
   );
   const actorMap = useFollowRequestActors(followRequestRefIds);
 
+  const feedbackRefIds = useMemo(
+    () => notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string),
+    [notifs]
+  );
+  const [feedbackSubjects, setFeedbackSubjects] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (feedbackRefIds.length === 0) return;
+    const missing = feedbackRefIds.filter((id) => !(id in feedbackSubjects));
+    if (missing.length === 0) return;
+    (async () => {
+      const { data } = await supabase.from("feedback").select("id,subject").in("id", missing);
+      if (data) {
+        setFeedbackSubjects((prev) => {
+          const next = { ...prev };
+          (data as any[]).forEach((r) => { next[r.id] = r.subject || ""; });
+          return next;
+        });
+      }
+    })();
+  }, [feedbackRefIds, feedbackSubjects]);
+
   const markAllRead = useCallback(async () => {
     if (!user) return;
     const unread = notifs.filter((n) => !n.is_read).map((n) => n.id);
