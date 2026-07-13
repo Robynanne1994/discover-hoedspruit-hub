@@ -267,6 +267,12 @@ body {
   }
 }
 
+/* Legal page cards: remove the default paragraph bottom margin on the last
+   paragraph so the card's internal bottom spacing matches the top padding. */
+.legal-p:last-child {
+  margin-bottom: 0 !important;
+}
+
 /* Hide scrollbar for horizontal scroll containers */
 .scrollbar-hide {
   -ms-overflow-style: none;

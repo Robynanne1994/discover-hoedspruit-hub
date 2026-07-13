@@ -101,6 +101,7 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
 
 export const P = ({ children, last }: { children: ReactNode; last?: boolean }) => (
   <p
+    className="legal-p"
     style={{
       fontFamily: SANS,
       fontSize: 14,
