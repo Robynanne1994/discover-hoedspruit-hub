@@ -1,0 +1,1 @@
+UPDATE public.business_notifications SET link = '/feedback?tab=replies', title = 'Admin has replied to your feedback' WHERE kind = 'feedback_reply';
