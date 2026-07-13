@@ -26,6 +26,9 @@ type Feedback = {
   message: string;
   is_read: boolean;
   created_at: string;
+  admin_reply?: string | null;
+  replied_at?: string | null;
+  replied_by?: string | null;
 };
 
 type ResourceSuggestion = Contact & {
