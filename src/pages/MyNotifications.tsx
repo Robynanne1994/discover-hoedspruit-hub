@@ -17,6 +17,7 @@ const MUTED = "#6B6A5E";
 const BODY = "#3A332B";
 const HAIRLINE = "rgba(0,0,0,0.06)";
 const DOT = "#2A2A24";
+const BROWN = "#423324";
 
 type Notif = {
   id: string;
