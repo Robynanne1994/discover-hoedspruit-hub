@@ -282,6 +282,59 @@ const Feedback = () => {
           {"\n"}
         </p>
       </div>
+      )}
+
+      {activeTab === "replies" && (
+        <div style={{ padding: "16px 20px 0", display: "flex", flexDirection: "column", gap: 12 }}>
+          {replies.map((r) => (
+            <div
+              key={r.id}
+              style={{
+                background: CARD,
+                borderRadius: 16,
+                padding: 18,
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>
+                  Subject
+                </div>
+                <div style={{ fontFamily: FF, fontSize: 15, fontWeight: 600, color: INK, lineHeight: 1.3 }}>
+                  {r.subject || "—"}
+                </div>
+              </div>
+              <div style={{ height: 1, background: "rgba(0,0,0,0.08)" }} />
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>
+                  Admin reply
+                </div>
+                <p style={{ margin: 0, fontFamily: FF, fontSize: 14, lineHeight: 1.5, color: INK, whiteSpace: "pre-wrap" }}>
+                  {r.admin_reply}
+                </p>
+              </div>
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>
+                  Your message
+                </div>
+                <p
+                  style={{
+                    margin: 0, fontFamily: FF, fontSize: 13, lineHeight: 1.5, color: MUTED,
+                    display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {r.message}
+                </p>
+              </div>
+              <div style={{ fontFamily: FF, fontSize: 11, fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase", color: MUTED }}>
+                {new Date(r.replied_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
