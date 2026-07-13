@@ -252,6 +252,7 @@ const AccountInfo = () => {
     }
     queryClient.invalidateQueries({ queryKey: ["profile"] });
     queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+    queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
     toast.success("Privacy updated.");
   };
 
@@ -324,6 +325,7 @@ const AccountInfo = () => {
       if (dbErr) throw dbErr;
       setAvatarUrl(url);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
       toast.success("Profile photo updated");
     } catch (err: any) {
       toast.error(err.message || "Could not upload photo");
@@ -342,6 +344,7 @@ const AccountInfo = () => {
       if (error) throw error;
       setAvatarUrl("");
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
       toast.success("Profile photo removed");
     } catch (err: any) {
       toast.error(err.message || "Could not remove photo");
@@ -447,6 +450,7 @@ const AccountInfo = () => {
         style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
       });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
     } catch (err: any) {
       toast.error(err.message || "Could not save changes");
     } finally {
