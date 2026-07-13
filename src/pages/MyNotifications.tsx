@@ -521,13 +521,14 @@ function NotifCard({
         )}
         <span
           style={{
+            display: "inline-block",
             fontFamily: SANS,
             fontWeight: 400,
             fontSize: 11,
             letterSpacing: "1.2px",
             textTransform: "uppercase",
             color: MUTED,
-            marginTop: n.kind === "follow_request" && n.ref_id && onRespond ? 8 : 0,
+            marginTop: 8,
           }}
         >
           {relativeShort(n.created_at)}
