@@ -325,6 +325,7 @@ const AccountInfo = () => {
       if (dbErr) throw dbErr;
       setAvatarUrl(url);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
       toast.success("Profile photo updated");
     } catch (err: any) {
       toast.error(err.message || "Could not upload photo");
