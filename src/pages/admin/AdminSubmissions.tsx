@@ -181,6 +181,51 @@ const AdminSubmissions = () => {
     },
   });
 
+  const sendReply = useMutation({
+    mutationFn: async ({
+      feedback,
+      reply,
+    }: {
+      feedback: Feedback & { _profile?: FeedbackProfile };
+      reply: string;
+    }) => {
+      const trimmed = reply.trim();
+      if (!trimmed) throw new Error("Reply cannot be empty");
+      const { data: authData } = await supabase.auth.getUser();
+      const adminId = authData.user?.id ?? null;
+
+      const { error: upErr } = await supabase
+        .from("feedback")
+        .update({
+          admin_reply: trimmed,
+          replied_at: new Date().toISOString(),
+          replied_by: adminId,
+          is_read: true,
+        })
+        .eq("id", feedback.id);
+      if (upErr) throw upErr;
+
+      const subjectLabel = feedback.subject || `${feedback.feedback_type} feedback`;
+      const { error: notifErr } = await supabase.from("business_notifications").insert({
+        user_id: feedback.user_id,
+        kind: "feedback_reply",
+        status: "unread",
+        title: "We replied to your feedback",
+        body: trimmed,
+        link: "/my-notifications",
+        ref_table: "feedback",
+        ref_id: feedback.id,
+      });
+      if (notifErr) throw notifErr;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-feedback"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-feedback-unread"] });
+      toast.success("Reply sent");
+    },
+    onError: (e: Error) => toast.error(e.message || "Failed to send reply"),
+  });
+
   const fmt = (d: string) => format(new Date(d), "d MMM yyyy, HH:mm");
 
   return (
