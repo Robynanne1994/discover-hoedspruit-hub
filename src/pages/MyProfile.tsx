@@ -427,7 +427,7 @@ const MyProfile = () => {
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>
         <section style={{ background: CARD, borderRadius: 18, padding: "16px 16px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
             <div
               style={{
                 width: 64,
@@ -455,7 +455,7 @@ const MyProfile = () => {
               )}
             </div>
 
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
               {isLoading ? (
                 <Skeleton className="h-7 w-40" />
               ) : (
@@ -477,10 +477,10 @@ const MyProfile = () => {
                     <div
                       style={{
                         fontFamily: SANS,
-                        fontWeight: 400,
-                        fontSize: 13,
-                        color: SUBTLE,
-                        marginTop: 2,
+                        fontWeight: 300,
+                        fontSize: 12,
+                        color: "rgba(26,26,26,0.45)",
+                        marginTop: 3,
                       }}
                     >
                       @{profile.username.toLowerCase()}
