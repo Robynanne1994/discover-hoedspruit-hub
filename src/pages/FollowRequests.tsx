@@ -86,15 +86,12 @@ const FollowRequests = () => {
                       borderRadius: "50%",
                       flexShrink: 0,
                       overflow: "hidden",
-                      background: "linear-gradient(135deg, #8a6f4d, #c4a374)",
-                      border: "none",
+                      background: !u.avatar_url && initialsOf(u.display_name, u.username) ? WHITE : "#DCD4BD",
+                      border: !u.avatar_url && initialsOf(u.display_name, u.username) ? `1px solid ${PILL_BORDER}` : "none",
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      color: "#fff",
-                      fontFamily: SANS,
-                      fontSize: 16,
                     }}
                   >
                     {u.avatar_url ? (
@@ -103,8 +100,21 @@ const FollowRequests = () => {
                         alt=""
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
+                    ) : initialsOf(u.display_name, u.username) ? (
+                      <span
+                        style={{
+                          fontFamily: SANS,
+                          fontWeight: 500,
+                          fontSize: 16,
+                          color: INK,
+                          letterSpacing: "normal",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {initialsOf(u.display_name, u.username)}
+                      </span>
                     ) : (
-                      initialsOf(u.display_name)
+                      <UserCircle size={28} color="rgba(18,18,20,0.25)" />
                     )}
                   </button>
                   <button
