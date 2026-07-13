@@ -477,6 +477,8 @@ function NotifCard({
             }}
           >
             Subject: {feedbackSubject}
+          </p>
+        )}
         {n.body && (
           <p
             style={{
