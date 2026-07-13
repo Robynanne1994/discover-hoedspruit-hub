@@ -368,14 +368,14 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                             margin: "3px 0 0",
                             fontFamily: SANS,
                             fontSize: 11.5,
-                            fontWeight: 500,
-                            color: MUTED,
+                            color: INK,
                             whiteSpace: "nowrap",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                           }}
                         >
-                          Subject: {feedbackSubjects[n.ref_id]}
+                          <span style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px" }}>Subject:</span>{" "}
+                          <span style={{ fontWeight: 500 }}>{titleCaseSubject(feedbackSubjects[n.ref_id])}</span>
                         </p>
                       )}
                       {n.body && (
