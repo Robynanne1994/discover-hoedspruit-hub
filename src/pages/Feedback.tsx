@@ -36,6 +36,22 @@ const Feedback = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") === "replies" ? "replies" : "submit";
+  const [replies, setReplies] = useState<Array<{ id: string; subject: string | null; message: string; admin_reply: string; replied_at: string }>>([]);
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("feedback")
+        .select("id,subject,message,admin_reply,replied_at")
+        .eq("user_id", user.id)
+        .not("admin_reply", "is", null)
+        .order("replied_at", { ascending: false });
+      setReplies((data ?? []) as any);
+    })();
+  }, [user]);
+  const hasReplies = replies.length > 0;
 
   useEffect(() => {
     const id = "feedback-placeholder-style";
