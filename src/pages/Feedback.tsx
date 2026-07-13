@@ -66,7 +66,7 @@ const Feedback = () => {
         message: message.trim(),
       } as any);
       if (dbError) throw dbError;
-      toast.success("Thanks, we've got it.");
+      toast.success("Thank you. We have received your feedback. Someone from our team will be in touch with you ASAP.");
       setSubject("");
       setMessage("");
       setType("");
