@@ -432,7 +432,8 @@ const MyProfile = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+                background: profile?.avatar_url ? "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)" : WHITE,
+                border: profile?.avatar_url ? "none" : `1px solid ${PILL_BORDER}`,
               }}
             >
               {profile?.avatar_url ? (
@@ -442,7 +443,7 @@ const MyProfile = () => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 26, color: "#fff" }}>
+                <span style={{ fontFamily: SANS, fontWeight: 500, fontSize: 22, color: INK }}>
                   {getInitial(profile?.display_name || profile?.username)}
                 </span>
               )}
