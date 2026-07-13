@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 export type FollowStatus = "pending" | "accepted" | null;
+
 
 export const useFollowCounts = (userId: string | undefined) => {
   return useQuery({
@@ -22,6 +24,35 @@ export const useFollowCounts = (userId: string | undefined) => {
 // Returns the follow status from current user → target: 'accepted' | 'pending' | null
 export const useIsFollowing = (targetUserId: string | undefined) => {
   const { user } = useAuth();
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    if (!user || !targetUserId || user.id === targetUserId) return;
+    const channel = supabase
+      .channel(`follows-${user.id}-${targetUserId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "follows",
+          filter: `follower_id=eq.${user.id}`,
+        },
+        (payload: any) => {
+          const row = payload.new || payload.old;
+          if (row?.following_id === targetUserId) {
+            qc.invalidateQueries({ queryKey: ["is-following", user.id, targetUserId] });
+            qc.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
+            qc.invalidateQueries({ queryKey: ["follow-counts"] });
+          }
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, targetUserId, qc]);
+
   return useQuery<FollowStatus>({
     queryKey: ["is-following", user?.id, targetUserId],
     queryFn: async () => {
@@ -36,6 +67,7 @@ export const useIsFollowing = (targetUserId: string | undefined) => {
     enabled: !!user && !!targetUserId && user.id !== targetUserId,
   });
 };
+
 
 export const useFollowMutation = (targetUserId: string) => {
   const { user } = useAuth();
