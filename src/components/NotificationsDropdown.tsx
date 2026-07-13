@@ -4,6 +4,7 @@ import { Bell, X, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors } from "@/hooks/useFollowRequestActors";
+import { titleCaseSubject } from "@/lib/titleCaseSubject";
 
 const INK = "#2A2A24";
 const CREAM = "#EEE8DA";
