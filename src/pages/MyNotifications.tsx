@@ -405,7 +405,7 @@ function NotifCard({
         cursor: n.link ? "pointer" : "default",
       }}
     >
-      {showAvatar ? (
+      {isFeedbackReply ? null : showAvatar ? (
         <div
           style={{
             width: 44,
