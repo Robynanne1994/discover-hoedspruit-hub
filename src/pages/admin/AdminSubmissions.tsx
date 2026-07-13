@@ -497,4 +497,96 @@ const AdminSubmissions = () => {
   );
 };
 
+type FeedbackReplyPanelProps = {
+  feedback: Feedback & { _profile?: FeedbackProfile };
+  onMarkRead: (is_read: boolean) => void;
+  onSend: (reply: string) => void;
+  sending: boolean;
+  fmt: (d: string) => string;
+};
+
+const FeedbackReplyPanel = ({
+  feedback,
+  onMarkRead,
+  onSend,
+  sending,
+  fmt,
+}: FeedbackReplyPanelProps) => {
+  const [reply, setReply] = useState("");
+  const [editing, setEditing] = useState(false);
+  useEffect(() => {
+    setReply("");
+    setEditing(false);
+  }, [feedback.id]);
+
+  const hasReply = !!feedback.admin_reply;
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="capitalize">
+          {feedback.subject || `${feedback.feedback_type} feedback`}
+        </DialogTitle>
+        <DialogDescription>
+          {feedback._profile?.display_name ?? "User"}
+          {feedback._profile?.email ? ` · ${feedback._profile.email}` : ""}
+          {" · "}
+          {fmt(feedback.created_at)}
+        </DialogDescription>
+      </DialogHeader>
+      <Badge variant="secondary" className="w-fit capitalize">
+        {feedback.feedback_type}
+      </Badge>
+      <p className="text-sm whitespace-pre-wrap text-foreground">{feedback.message}</p>
+
+      {hasReply && !editing && (
+        <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Your reply{feedback.replied_at ? ` · ${fmt(feedback.replied_at)}` : ""}
+          </p>
+          <p className="text-sm whitespace-pre-wrap text-foreground">{feedback.admin_reply}</p>
+          <div className="pt-1">
+            <Button variant="ghost" size="sm" onClick={() => { setReply(feedback.admin_reply ?? ""); setEditing(true); }}>
+              Send another reply
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {(!hasReply || editing) && (
+        <div className="space-y-2">
+          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Reply to user
+          </label>
+          <Textarea
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            placeholder="Write your reply. The user will receive this as an in-app notification."
+            rows={5}
+          />
+          <p className="text-xs text-muted-foreground">
+            This reply is delivered as an in-app notification to the user.
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={() => onMarkRead(!feedback.is_read)}>
+          Mark as {feedback.is_read ? "unread" : "read"}
+        </Button>
+        {(!hasReply || editing) && (
+          <Button
+            onClick={() => onSend(reply)}
+            disabled={sending || !reply.trim()}
+            className="gap-2"
+          >
+            <Send className="h-4 w-4" />
+            {sending ? "Sending…" : "Send reply"}
+          </Button>
+        )}
+      </div>
+    </>
+  );
+};
+
 export default AdminSubmissions;
