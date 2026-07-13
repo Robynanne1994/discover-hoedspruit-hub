@@ -330,6 +330,7 @@ const Feedback = () => {
                   style={{
                     margin: 0, fontFamily: FF, fontSize: 13, lineHeight: 1.5, color: MUTED,
                     display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "pre-wrap",
+                    marginBottom: 8,
                   }}
                 >
                   {r.message}
@@ -344,7 +345,7 @@ const Feedback = () => {
                 </p>
               </div>
 
-              <div style={{ fontFamily: FF, fontSize: 11, fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase", color: MUTED }}>
+              <div style={{ fontFamily: FF, fontSize: 11, fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase", color: "#423324" }}>
                 {new Date(r.replied_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
               </div>
             </div>
