@@ -129,19 +129,31 @@ const FollowRequests = () => {
                       cursor: "pointer",
                     }}
                   >
+                    <div className="truncate">
+                      <div
+                        style={{
+                          fontFamily: SANS,
+                          fontSize: 18,
+                          fontWeight: 700,
+                          color: "#2b2420",
+                          lineHeight: 1.15,
+                          letterSpacing: "-0.2px",
+                        }}
+                      >
+                        {u.display_name || "User"}
+                      </div>
+                    </div>
                     <div
                       style={{
                         fontFamily: SANS,
-                        fontSize: 15,
-                        color: INK,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
+                        fontSize: 12,
+                        color: "rgba(18,18,20,0.4)",
+                        lineHeight: 1.3,
+                        marginTop: 6,
                       }}
                     >
-                      {u.display_name || "User"}
+                      {handle}
                     </div>
-                    <div style={{ fontFamily: SANS, fontSize: 13, color: MUTED }}>{handle}</div>
                   </button>
                   <button
                     disabled={respond.isPending}
