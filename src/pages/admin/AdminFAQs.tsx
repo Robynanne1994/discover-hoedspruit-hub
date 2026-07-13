@@ -25,7 +25,60 @@ import {
   ChevronDown,
   Eye,
   EyeOff,
+  LinkIcon,
 } from "lucide-react";
+
+// Curated list of in-app destinations admins can link to from FAQ answers.
+const APP_LINK_OPTIONS: { group: string; items: { label: string; path: string }[] }[] = [
+  {
+    group: "Main",
+    items: [
+      { label: "Home", path: "/" },
+      { label: "Explore Categories", path: "/categories" },
+      { label: "Search", path: "/search" },
+      { label: "Events", path: "/events" },
+      { label: "Specials", path: "/specials" },
+      { label: "Local Channels", path: "/local-channels" },
+    ],
+  },
+  {
+    group: "My Account",
+    items: [
+      { label: "My Account", path: "/my-account" },
+      { label: "My Profile", path: "/my-profile" },
+      { label: "Account Info", path: "/account-settings/info" },
+      { label: "Privacy Settings", path: "/account-settings/privacy" },
+      { label: "Blocked Users", path: "/account-settings/blocked" },
+      { label: "Reported Users", path: "/account-settings/reported" },
+      { label: "Notifications", path: "/my-notifications" },
+      { label: "Notification Preferences", path: "/notification-preferences" },
+      { label: "Follow Requests", path: "/follow-requests" },
+    ],
+  },
+  {
+    group: "Help & Info",
+    items: [
+      { label: "Help Centre", path: "/help-centre" },
+      { label: "FAQs", path: "/faqs" },
+      { label: "Contact Us", path: "/contact" },
+      { label: "Feedback", path: "/feedback" },
+      { label: "Terms & Policies", path: "/terms" },
+      { label: "Terms of Use", path: "/terms-of-use" },
+      { label: "Privacy Policy", path: "/privacy-policy" },
+      { label: "Cookie Policy", path: "/cookie-policy" },
+      { label: "Content Guidelines", path: "/content-guidelines" },
+    ],
+  },
+  {
+    group: "For Business",
+    items: [
+      { label: "For Business (Plans)", path: "/for-business" },
+      { label: "Business Sign In", path: "/business/sign-in" },
+      { label: "Business Sign Up", path: "/business/sign-up" },
+      { label: "Claim a Listing", path: "/business/claim" },
+    ],
+  },
+];
 
 type FAQRow = {
   id: string;
