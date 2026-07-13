@@ -16,7 +16,7 @@ const TermsOfUse = () => (
 
     <Section heading="Who We Are">
       <P>
-        Hello Hoedspruit is a local guide to the town of Hoedspruit and the surrounding area, run by Robyn Dawes. We are based in Hoedspruit, South Africa and we made this app for the community we live in.
+        Hello Hoedspruit is a local guide to the town of Hoedspruit and the surrounding area. We are based in Hoedspruit, South Africa and we made this app for the community we live in.
       </P>
     </Section>
 
