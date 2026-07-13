@@ -69,7 +69,6 @@ type ActiveSection = null | "profile" | "favourites" | "collections" | "been-her
 const MyAccount = () => {
   const { user, signOut, loading, isAdmin } = useAuth();
   const { isGuest, exitGuest } = useGuestAuth();
-  const { isOwner: isBusinessOwner, listing: ownedListing } = useBusinessOwner();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newCollectionName, setNewCollectionName] = useState("");
