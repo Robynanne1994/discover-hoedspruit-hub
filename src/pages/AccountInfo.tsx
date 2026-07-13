@@ -344,6 +344,7 @@ const AccountInfo = () => {
       if (error) throw error;
       setAvatarUrl("");
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
       toast.success("Profile photo removed");
     } catch (err: any) {
       toast.error(err.message || "Could not remove photo");
