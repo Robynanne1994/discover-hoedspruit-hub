@@ -158,7 +158,8 @@ const Feedback = () => {
       )}
 
       {/* Form */}
-      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+      {activeTab === "submit" && (
+      <div style={{ padding: "16px 24px 0", display: "flex", flexDirection: "column", gap: 18 }}>{/* was: padding "0 24px" */}
         {/* Topic */}
         <div>
           <label style={labelStyle}>Topic</label>
