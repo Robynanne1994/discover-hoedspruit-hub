@@ -6,6 +6,7 @@ import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, FollowActor } from "@/hooks/useFollowRequestActors";
+import { titleCaseSubject } from "@/lib/titleCaseSubject";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
