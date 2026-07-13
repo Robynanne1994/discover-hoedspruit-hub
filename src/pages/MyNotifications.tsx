@@ -384,7 +384,7 @@ function NotifCard({
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
   const isFeedbackReply = n.kind === "feedback_reply";
-  const showAvatar = n.kind === "follow_request" && actor;
+  const showAvatar = false;
   const initials = (actor?.display_name || "·")
     .trim()
     .split(/\s+/)
