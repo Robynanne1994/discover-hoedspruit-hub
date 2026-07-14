@@ -480,7 +480,7 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
       }}
       style={{
         background: "transparent",
-        border: `1.5px solid ${PRIMARY}`,
+        border: `1.5px solid #5b4632`,
         borderRadius: 999,
         width: 30,
         height: 30,
@@ -493,8 +493,8 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
     >
       <Heart
         size={13}
-        color={PRIMARY}
-        fill={isFav ? PRIMARY : "none"}
+        color="#5b4632"
+        fill={isFav ? "#5b4632" : "none"}
         strokeWidth={1.8}
       />
     </button>

@@ -647,7 +647,7 @@ const MyAccount = () => {
               borderRadius: 999,
               fontFamily: SANS,
               fontSize: 16,
-              fontWeight: 700,
+              fontWeight: 500,
               letterSpacing: "0.1px",
               cursor: "pointer",
             }}
@@ -669,7 +669,7 @@ const MyAccount = () => {
               borderRadius: 999,
               fontFamily: SANS,
               fontSize: 16,
-              fontWeight: 700,
+              fontWeight: 500,
               letterSpacing: "0.1px",
               cursor: "pointer",
             }}

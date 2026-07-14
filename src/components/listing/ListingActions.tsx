@@ -86,7 +86,7 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
         onClick={handleToggleFavourite}
         className={`${btnBase} ${
           isFavourited
-            ? "bg-[#5b4632]/10 text-[#5b4632] border-[#5b4632]/20"
+            ? "bg-[#423324]/10 text-[#423324] border-[#423324]/20"
             : btnInactive
         }`}
       >

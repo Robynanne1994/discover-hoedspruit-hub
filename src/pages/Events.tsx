@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X, ArrowLeft, Calendar } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin, X, ArrowLeft, Calendar } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,16 +11,14 @@ import {
   isToday,
   isBefore,
   startOfToday,
-  startOfWeek,
   endOfWeek,
   endOfMonth,
   isWithinInterval,
-  isSameDay,
   addDays,
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
-import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, getEventOccurrences } from "@/lib/eventSchedule";
+import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 
@@ -63,12 +61,9 @@ function getWeekendRange(today: Date): { start: Date; end: Date } {
   return { start, end };
 }
 
-const WEEKDAY_LABELS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-
 function getFilterCount(
   filter: FilterType,
-  events: any[],
-  selectedDate: Date | null
+  events: any[]
 ): number {
   if (!events) return 1;
   const today = startOfToday();
@@ -160,138 +155,6 @@ function formatPrice(p: string | number | null | undefined): string | null {
   if (/^\d/.test(s)) return `R${s}`;
   return s;
 }
-
-// Week strip --------------------------------------------------------
-const WeekStrip = ({
-  anchor,
-  selectedDate,
-  onSelect,
-  onShift,
-  onClear,
-}: {
-  anchor: Date;
-  selectedDate: Date | null;
-  onSelect: (d: Date) => void;
-  onShift: (days: number) => void;
-  onClear: () => void;
-}) => {
-  const weekStart = startOfWeek(anchor, { weekStartsOn: 1 });
-  const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
-  return (
-    <div
-      style={{
-        background: C.white,
-        borderRadius: 16,
-        padding: "16px 18px 18px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-        <h2
-          style={{
-            fontFamily: HEAD,
-            fontWeight: 700,
-            fontSize: 18,
-            color: C.ink,
-            margin: 0,
-            letterSpacing: "0.01em",
-          }}
-        >
-          {format(anchor, "MMMM yyyy")}
-        </h2>
-        <div style={{ display: "flex", gap: 8 }}>
-          <button
-            aria-label="Previous week"
-            onClick={() => onShift(-7)}
-            style={navBtn}
-          >
-            <ChevronLeft size={16} color={C.ink} strokeWidth={1.8} />
-          </button>
-          <button
-            aria-label="Next week"
-            onClick={() => onShift(7)}
-            style={navBtn}
-          >
-            <ChevronRight size={16} color={C.ink} strokeWidth={1.8} />
-          </button>
-        </div>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
-        {days.map((d, i) => {
-          const selected = selectedDate && isSameDay(d, selectedDate);
-          return (
-            <button
-              key={i}
-              onClick={() => onSelect(d)}
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-                padding: "8px 4px",
-                borderRadius: 999,
-                border: "none",
-                background: selected ? C.dark : "transparent",
-                cursor: "pointer",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: SANS,
-                  fontSize: 11,
-                  letterSpacing: "0.08em",
-                  color: selected ? "#E6E0CC" : C.muted,
-                }}
-              >
-                {WEEKDAY_LABELS[i]}
-              </span>
-              <span
-                style={{
-                  fontFamily: SANS,
-                  fontWeight: 700,
-                  fontSize: 18,
-                  color: selected ? "#fff" : C.ink,
-                }}
-              >
-                {d.getDate()}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
-        <button
-          onClick={onClear}
-          style={{
-            background: "transparent",
-            border: "none",
-            padding: "4px 0",
-            cursor: "pointer",
-            fontFamily: SANS,
-            fontSize: 12,
-            fontWeight: 700,
-            color: C.muted,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-          }}
-        >
-          Clear
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const navBtn: React.CSSProperties = {
-  width: 44,
-  height: 44,
-  borderRadius: "50%",
-  background: C.white,
-  border: `1px solid ${C.tag}`,
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-};
 
 // Event card --------------------------------------------------------
 const EventCard = ({ event }: { event: any }) => {
@@ -477,8 +340,6 @@ const Events = () => {
   const validFilters: FilterType[] = ["all", "today", "this-week", "this-weekend", "this-month", "this-year", "past"];
   const urlFilter = searchParams.get("f") as FilterType | null;
   const activeFilter: FilterType = urlFilter && validFilters.includes(urlFilter) ? urlFilter : "all";
-  const urlDate = searchParams.get("d");
-  const selectedDate: Date | null = urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) ? new Date(urlDate + "T00:00:00") : null;
   const search = searchParams.get("q") ?? "";
   const tagFilter = searchParams.get("t");
   const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc"] as const;
@@ -493,7 +354,7 @@ const Events = () => {
     if (!bar || !pill) return;
     const target = pill.offsetLeft - (bar.clientWidth - pill.clientWidth) / 2;
     bar.scrollTo({ left: Math.max(0, target), behavior: "auto" });
-  }, [activeFilter, selectedDate]);
+  }, [activeFilter]);
   const updateParams = (patch: Record<string, string | null>) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -505,11 +366,11 @@ const Events = () => {
     }, { replace: true });
   };
   const setActiveFilter = (f: FilterType) => updateParams({ f: f === "all" ? null : f });
-  const setSelectedDate = (d: Date | null) => updateParams({ d: d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : null });
+  
   const setSearch = (q: string) => updateParams({ q: q || null });
   const setTagFilter = (t: string | null) => updateParams({ t: t || null });
   const setSortBy = (s: SortType) => updateParams({ s: s === "date-asc" ? null : s });
-  const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
+  
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
   const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | null>("tag");
@@ -586,31 +447,23 @@ const Events = () => {
           (e.tag && e.tag.toLowerCase().includes(q));
         if (!hit) return;
       }
-      if (selectedDate) {
-        const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-        const dayEnd = new Date(dayStart);
-        dayEnd.setDate(dayEnd.getDate() + 1);
-        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
-        if (!(occs.length > 0 || (e._parsed && isSameDay(e._parsed, selectedDate)))) return;
+      if (!e._parsed) {
+        if (activeFilter !== "all") return;
       } else {
-        if (!e._parsed) {
-          if (activeFilter !== "all") return;
-        } else {
-          const d = e._parsed;
-          if (activeFilter === "all" && isBefore(d, today)) return;
-          else if (activeFilter === "today" && !isToday(d)) return;
-          else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return;
-          else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
-          else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
-          else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
-          else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
-        }
+        const d = e._parsed;
+        if (activeFilter === "all" && isBefore(d, today)) return;
+        else if (activeFilter === "today" && !isToday(d)) return;
+        else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return;
+        else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
+        else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
+        else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
+        else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
       }
       const t = (e.tag || "").trim();
       if (t) map.set(t, (map.get(t) || 0) + 1);
     });
     return map;
-  }, [sortedEvents, search, activeFilter, selectedDate]);
+  }, [sortedEvents, search, activeFilter]);
 
 
 
@@ -635,36 +488,23 @@ const Events = () => {
 
     const today = startOfToday();
 
-    // Specific date selected → show only events on that date.
-    // For multi-performance / recurring events, match if ANY occurrence falls on that day.
-    if (selectedDate) {
-      const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-      const dayEnd = new Date(dayStart);
-      dayEnd.setDate(dayEnd.getDate() + 1);
-      list = list.filter((e) => {
-        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
-        if (occs.length > 0) return true;
-        return e._parsed && isSameDay(e._parsed, selectedDate);
-      });
-    } else {
-      const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-      const monthEnd = endOfMonth(today);
-      const weekend = getWeekendRange(today);
-      const yearEnd = new Date(today.getFullYear(), 11, 31);
+    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+    const monthEnd = endOfMonth(today);
+    const weekend = getWeekendRange(today);
+    const yearEnd = new Date(today.getFullYear(), 11, 31);
 
-      list = list.filter((e) => {
-        if (!e._parsed) return activeFilter === "all";
-        const d = e._parsed;
-        if (activeFilter === "all") return !isBefore(d, today);
-        if (activeFilter === "today") return isToday(d);
-        if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
-        if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
-        if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
-        if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
-        if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
-        return true;
-      });
-    }
+    list = list.filter((e) => {
+      if (!e._parsed) return activeFilter === "all";
+      const d = e._parsed;
+      if (activeFilter === "all") return !isBefore(d, today);
+      if (activeFilter === "today") return isToday(d);
+      if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
+      if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
+      if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
+      if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+      if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
+      return true;
+    });
 
 
     // Price filter
@@ -693,11 +533,10 @@ const Events = () => {
     }
     // date-asc is already the default order from sortedEvents
     return sorted;
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy, priceFilter]);
+  }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
 
   const sectionTitle = useMemo(() => {
-    if (selectedDate) return format(selectedDate, "d MMM yyyy");
     const today = startOfToday();
     switch (activeFilter) {
       case "today":
@@ -725,15 +564,10 @@ const Events = () => {
       default:
         return "Upcoming Events";
     }
-  }, [activeFilter, selectedDate]);
-
-  const handleSelectDate = (d: Date) => {
-    setSelectedDate(selectedDate && isSameDay(selectedDate, d) ? null : d);
-    setWeekAnchor(d);
-  };
+  }, [activeFilter]);
 
   const handleFilterPill = (v: FilterType) => {
-    updateParams({ f: v === "all" ? null : v, d: null });
+    updateParams({ f: v === "all" ? null : v });
   };
 
   return (
@@ -858,8 +692,8 @@ const Events = () => {
           }}
         >
           {FILTERS.map((f) => {
-            const active = !selectedDate && activeFilter === f.value;
-            const count = getFilterCount(f.value, sortedEvents, selectedDate);
+            const active = activeFilter === f.value;
+            const count = getFilterCount(f.value, sortedEvents);
             return (
               <button
                 key={f.value}
@@ -942,9 +776,9 @@ const Events = () => {
             <p style={{ fontFamily: SANS, fontSize: 14, color: C.body, margin: 0 }}>
               No events match your filters.
             </p>
-            {(tagFilter || selectedDate || activeFilter !== "all" || search) && (
+            {(tagFilter || activeFilter !== "all" || search) && (
               <button
-                onClick={() => updateParams({ t: null, d: null, f: null, q: null })}
+                onClick={() => updateParams({ t: null, f: null, q: null })}
                 style={{
                   marginTop: 12,
                   background: "transparent",
@@ -979,7 +813,7 @@ const Events = () => {
           setSortBy("date-asc");
           setPriceFilter("any");
           setActiveFilter("all");
-          setSelectedDate(null);
+          
           setSearch("");
           setOpenSection(null);
         }}
