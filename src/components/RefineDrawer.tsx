@@ -194,7 +194,7 @@ export const RefineDrawer = ({
             style={{
               flex: 1,
               maxWidth: 240,
-              height: 52,
+              height: 48,
               borderRadius: 9999,
               background: DARK_BROWN,
               color: "#ffffff",

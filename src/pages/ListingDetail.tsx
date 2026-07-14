@@ -945,8 +945,8 @@ const ListingDetail = () => {
                   flexShrink: 0,
                   padding: "8px 14px",
                   borderRadius: 999,
-                  border: `1px solid ${active ? C.primary : C.border}`,
-                  background: active ? C.primary : "transparent",
+                  border: `1px solid ${active ? "#423324" : C.border}`,
+                  background: active ? "#423324" : "transparent",
                   color: active ? "#fff" : C.heading,
                   fontFamily: FONT,
                   fontSize: 12,
@@ -1133,7 +1133,7 @@ const ListingDetail = () => {
             style={{
               marginTop: 14,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "8px 16px", borderRadius: 9999, height: 40,
+              padding: "8px 16px", borderRadius: 9999, height: 48,
               background: "#423324", border: "1px solid #423324",
               color: "#FFFFFF", textDecoration: "none",
               fontFamily: FONT, fontWeight: 500, fontSize: 14, lineHeight: "20px",
@@ -1542,7 +1542,7 @@ const SuggestEditSheet = ({
         </div>
         <button onClick={submit} disabled={submitting} style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          marginTop: 20, width: "100%", height: 40, borderRadius: 9999,
+          marginTop: 20, width: "100%", height: 48, borderRadius: 9999,
           background: "#423324", color: "#FFFFFF", border: "none",
           fontSize: 14, fontWeight: 500, lineHeight: "20px",
           padding: "8px 16px",

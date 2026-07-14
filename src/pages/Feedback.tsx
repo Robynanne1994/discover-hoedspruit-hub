@@ -19,7 +19,7 @@ const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const MUTED = "#7A6E5C";
 const LABEL = "#9A8E7A";
-const SUBMIT_BG = "#3D2E22";
+const SUBMIT_BG = "#423324";
 
 const tap = {
   onPointerDown: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; },

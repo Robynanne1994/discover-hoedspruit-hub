@@ -641,7 +641,7 @@ const MyAccount = () => {
             style={{
               width: "100%",
               height: 56,
-              background: "#3D2E22",
+              background: "#423324",
               color: "#FFFFFF",
               border: "none",
               borderRadius: 999,
@@ -663,7 +663,7 @@ const MyAccount = () => {
             style={{
               width: "100%",
               height: 56,
-              background: "#3D2E22",
+              background: "#423324",
               color: "#FFFFFF",
               border: "none",
               borderRadius: 999,

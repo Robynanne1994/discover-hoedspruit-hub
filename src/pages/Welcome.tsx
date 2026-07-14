@@ -202,7 +202,7 @@ const Welcome = () => {
             onClick={() => setMode("signup")}
             className="w-full"
             style={{
-              height: 52,
+              height: 48,
               borderRadius: 9999,
               background: "#423324",
               color: "#FFFFFF",
@@ -222,7 +222,7 @@ const Welcome = () => {
             variant="outline"
             className="w-full mt-3"
             style={{
-              height: 52,
+              height: 48,
               borderRadius: 9999,
               background: "transparent",
               border: "1.5px solid #715a3d",
