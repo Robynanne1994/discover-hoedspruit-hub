@@ -273,7 +273,7 @@ const Feedback = () => {
                 background: isEmpty ? "#C9C0AC" : SUBMIT_BG,
                 color: isEmpty ? "#7A6E5C" : "#fff",
                 border: "none",
-                borderRadius: 999, height: 58,
+                borderRadius: 999, height: 48,
                 fontFamily: FF, fontSize: 16, fontWeight: 600,
                 display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
                 cursor: isDisabled ? "not-allowed" : "pointer",
