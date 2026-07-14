@@ -61,12 +61,9 @@ function getWeekendRange(today: Date): { start: Date; end: Date } {
   return { start, end };
 }
 
-const WEEKDAY_LABELS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-
 function getFilterCount(
   filter: FilterType,
-  events: any[],
-  selectedDate: Date | null
+  events: any[]
 ): number {
   if (!events) return 1;
   const today = startOfToday();
