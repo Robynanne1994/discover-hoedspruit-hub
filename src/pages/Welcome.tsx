@@ -412,7 +412,7 @@ const Welcome = () => {
           <Button
 
             type="submit"
-            className="w-full h-12 font-semibold rounded-full mt-6"
+            className="w-full h-12 font-medium rounded-full mt-6"
             style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
             disabled={loading}
           >
