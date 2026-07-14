@@ -640,7 +640,7 @@ const MyAccount = () => {
             }}
             style={{
               width: "100%",
-              height: 56,
+              height: 48,
               background: "#423324",
               color: "#FFFFFF",
               border: "none",
@@ -662,7 +662,7 @@ const MyAccount = () => {
             }}
             style={{
               width: "100%",
-              height: 56,
+              height: 48,
               background: "#423324",
               color: "#FFFFFF",
               border: "none",
