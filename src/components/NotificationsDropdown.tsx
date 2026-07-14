@@ -405,7 +405,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                               padding: "0 14px",
                               borderRadius: 999,
                               background: "#423324",
-                              color: CREAM,
+                              color: "#FFFFFF",
                               border: "none",
                               cursor: "pointer",
                               fontFamily: SANS,

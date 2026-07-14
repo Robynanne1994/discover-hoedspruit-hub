@@ -1134,7 +1134,7 @@ const ListingDetail = () => {
               marginTop: 14,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               padding: "8px 16px", borderRadius: 9999, height: 48,
-              background: "#423324", border: "1px solid #423324",
+              background: "#423324", border: "none",
               color: "#FFFFFF", textDecoration: "none",
               fontFamily: FONT, fontWeight: 500, fontSize: 14, lineHeight: "20px",
               letterSpacing: "0.01em",
