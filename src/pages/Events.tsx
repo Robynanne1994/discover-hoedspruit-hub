@@ -488,36 +488,23 @@ const Events = () => {
 
     const today = startOfToday();
 
-    // Specific date selected → show only events on that date.
-    // For multi-performance / recurring events, match if ANY occurrence falls on that day.
-    if (selectedDate) {
-      const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-      const dayEnd = new Date(dayStart);
-      dayEnd.setDate(dayEnd.getDate() + 1);
-      list = list.filter((e) => {
-        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
-        if (occs.length > 0) return true;
-        return e._parsed && isSameDay(e._parsed, selectedDate);
-      });
-    } else {
-      const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-      const monthEnd = endOfMonth(today);
-      const weekend = getWeekendRange(today);
-      const yearEnd = new Date(today.getFullYear(), 11, 31);
+    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+    const monthEnd = endOfMonth(today);
+    const weekend = getWeekendRange(today);
+    const yearEnd = new Date(today.getFullYear(), 11, 31);
 
-      list = list.filter((e) => {
-        if (!e._parsed) return activeFilter === "all";
-        const d = e._parsed;
-        if (activeFilter === "all") return !isBefore(d, today);
-        if (activeFilter === "today") return isToday(d);
-        if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
-        if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
-        if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
-        if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
-        if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
-        return true;
-      });
-    }
+    list = list.filter((e) => {
+      if (!e._parsed) return activeFilter === "all";
+      const d = e._parsed;
+      if (activeFilter === "all") return !isBefore(d, today);
+      if (activeFilter === "today") return isToday(d);
+      if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
+      if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
+      if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
+      if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+      if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
+      return true;
+    });
 
 
     // Price filter
@@ -546,11 +533,10 @@ const Events = () => {
     }
     // date-asc is already the default order from sortedEvents
     return sorted;
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy, priceFilter]);
+  }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
 
   const sectionTitle = useMemo(() => {
-    if (selectedDate) return format(selectedDate, "d MMM yyyy");
     const today = startOfToday();
     switch (activeFilter) {
       case "today":
@@ -578,15 +564,10 @@ const Events = () => {
       default:
         return "Upcoming Events";
     }
-  }, [activeFilter, selectedDate]);
-
-  const handleSelectDate = (d: Date) => {
-    setSelectedDate(selectedDate && isSameDay(selectedDate, d) ? null : d);
-    setWeekAnchor(d);
-  };
+  }, [activeFilter]);
 
   const handleFilterPill = (v: FilterType) => {
-    updateParams({ f: v === "all" ? null : v, d: null });
+    updateParams({ f: v === "all" ? null : v });
   };
 
   return (
