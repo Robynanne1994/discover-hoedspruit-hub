@@ -340,8 +340,6 @@ const Events = () => {
   const validFilters: FilterType[] = ["all", "today", "this-week", "this-weekend", "this-month", "this-year", "past"];
   const urlFilter = searchParams.get("f") as FilterType | null;
   const activeFilter: FilterType = urlFilter && validFilters.includes(urlFilter) ? urlFilter : "all";
-  const urlDate = searchParams.get("d");
-  const selectedDate: Date | null = urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) ? new Date(urlDate + "T00:00:00") : null;
   const search = searchParams.get("q") ?? "";
   const tagFilter = searchParams.get("t");
   const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc"] as const;
@@ -356,7 +354,7 @@ const Events = () => {
     if (!bar || !pill) return;
     const target = pill.offsetLeft - (bar.clientWidth - pill.clientWidth) / 2;
     bar.scrollTo({ left: Math.max(0, target), behavior: "auto" });
-  }, [activeFilter, selectedDate]);
+  }, [activeFilter]);
   const updateParams = (patch: Record<string, string | null>) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -368,11 +366,11 @@ const Events = () => {
     }, { replace: true });
   };
   const setActiveFilter = (f: FilterType) => updateParams({ f: f === "all" ? null : f });
-  const setSelectedDate = (d: Date | null) => updateParams({ d: d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : null });
+  
   const setSearch = (q: string) => updateParams({ q: q || null });
   const setTagFilter = (t: string | null) => updateParams({ t: t || null });
   const setSortBy = (s: SortType) => updateParams({ s: s === "date-asc" ? null : s });
-  const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
+  
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
   const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | null>("tag");
