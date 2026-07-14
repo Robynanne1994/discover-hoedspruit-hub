@@ -114,8 +114,8 @@ export const RefineDrawer = ({
               onClick={onClose}
               aria-label="Close Filter & Sort"
               style={{
-                width: 38,
-                height: 38,
+                width: 44,
+                height: 44,
                 borderRadius: "50%",
                 background: DARK_BROWN,
                 border: "none",
