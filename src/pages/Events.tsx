@@ -11,16 +11,14 @@ import {
   isToday,
   isBefore,
   startOfToday,
-  startOfWeek,
   endOfWeek,
   endOfMonth,
   isWithinInterval,
-  isSameDay,
   addDays,
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
-import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, getEventOccurrences } from "@/lib/eventSchedule";
+import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 
