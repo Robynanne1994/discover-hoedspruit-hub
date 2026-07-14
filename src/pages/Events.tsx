@@ -447,31 +447,23 @@ const Events = () => {
           (e.tag && e.tag.toLowerCase().includes(q));
         if (!hit) return;
       }
-      if (selectedDate) {
-        const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
-        const dayEnd = new Date(dayStart);
-        dayEnd.setDate(dayEnd.getDate() + 1);
-        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
-        if (!(occs.length > 0 || (e._parsed && isSameDay(e._parsed, selectedDate)))) return;
+      if (!e._parsed) {
+        if (activeFilter !== "all") return;
       } else {
-        if (!e._parsed) {
-          if (activeFilter !== "all") return;
-        } else {
-          const d = e._parsed;
-          if (activeFilter === "all" && isBefore(d, today)) return;
-          else if (activeFilter === "today" && !isToday(d)) return;
-          else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return;
-          else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
-          else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
-          else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
-          else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
-        }
+        const d = e._parsed;
+        if (activeFilter === "all" && isBefore(d, today)) return;
+        else if (activeFilter === "today" && !isToday(d)) return;
+        else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return;
+        else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
+        else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
+        else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
+        else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
       }
       const t = (e.tag || "").trim();
       if (t) map.set(t, (map.get(t) || 0) + 1);
     });
     return map;
-  }, [sortedEvents, search, activeFilter, selectedDate]);
+  }, [sortedEvents, search, activeFilter]);
 
 
 
