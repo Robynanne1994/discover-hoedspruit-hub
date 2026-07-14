@@ -692,8 +692,8 @@ const Events = () => {
           }}
         >
           {FILTERS.map((f) => {
-            const active = !selectedDate && activeFilter === f.value;
-            const count = getFilterCount(f.value, sortedEvents, selectedDate);
+            const active = activeFilter === f.value;
+            const count = getFilterCount(f.value, sortedEvents);
             return (
               <button
                 key={f.value}
@@ -776,9 +776,9 @@ const Events = () => {
             <p style={{ fontFamily: SANS, fontSize: 14, color: C.body, margin: 0 }}>
               No events match your filters.
             </p>
-            {(tagFilter || selectedDate || activeFilter !== "all" || search) && (
+            {(tagFilter || activeFilter !== "all" || search) && (
               <button
-                onClick={() => updateParams({ t: null, d: null, f: null, q: null })}
+                onClick={() => updateParams({ t: null, f: null, q: null })}
                 style={{
                   marginTop: 12,
                   background: "transparent",
@@ -813,7 +813,7 @@ const Events = () => {
           setSortBy("date-asc");
           setPriceFilter("any");
           setActiveFilter("all");
-          setSelectedDate(null);
+          
           setSearch("");
           setOpenSection(null);
         }}
