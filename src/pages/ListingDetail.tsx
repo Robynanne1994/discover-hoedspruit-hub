@@ -1218,7 +1218,7 @@ const ListingDetail = () => {
             gap: 8,
           }}>
             <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-              <Heart size={20} strokeWidth={2} color={isFavourited ? "#A62C2C" : C.primary} fill={isFavourited ? "#A62C2C" : "none"} />
+              <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
             </button>
             <button onClick={handleShare} aria-label="Share" style={floatBtn}>
               <Share2 size={20} strokeWidth={1.6} color={C.heading} />
@@ -1238,7 +1238,7 @@ const ListingDetail = () => {
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-                <Heart size={20} strokeWidth={2} color={isFavourited ? "#A62C2C" : C.primary} fill={isFavourited ? "#A62C2C" : "none"} />
+                <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
               </button>
               <button onClick={handleShare} aria-label="Share" style={floatBtn}>
                 <Share2 size={20} strokeWidth={1.6} color={C.heading} />
