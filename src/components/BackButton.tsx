@@ -21,7 +21,7 @@ interface BackButtonProps {
   iconColor?: string;
 }
 
-const ArrowIcon = ({ size = 18, color = COLORS.ink }: { size?: number; color?: string }) => (
+const ArrowIcon = ({ size = 18, color = "#1A1A1A" }: { size?: number; color?: string }) => (
   <svg
     width={size}
     height={size}
@@ -79,9 +79,9 @@ const BackButton = ({
   const isOnImage = variant === "on-image";
   const isOpenMenu = variant === "open-menu";
 
-  const diameter = isOnImage ? 40 : 44;
+  const diameter = isOpenMenu ? 44 : 40;
   const iconSize = isOnImage ? 16 : 18;
-  const fill = isOpenMenu ? COLORS.ink : COLORS.cream;
+  const fill = isOpenMenu ? COLORS.ink : "#FFFFFF";
 
   const pressDown = (e: React.PointerEvent<HTMLButtonElement>) => {
     e.currentTarget.style.transform = "scale(0.96)";
@@ -119,6 +119,7 @@ const BackButton = ({
         transition: "transform 150ms ease-out",
         transform: "scale(1)",
         flexShrink: 0,
+        boxShadow: isOpenMenu ? undefined : "0 1px 2px rgba(0,0,0,0.05)",
       }}
     >
       {isOpenMenu ? (

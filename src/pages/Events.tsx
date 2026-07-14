@@ -282,8 +282,8 @@ const WeekStrip = ({
 };
 
 const navBtn: React.CSSProperties = {
-  width: 32,
-  height: 32,
+  width: 44,
+  height: 44,
   borderRadius: "50%",
   background: C.white,
   border: `1px solid ${C.tag}`,
@@ -811,13 +811,13 @@ const Events = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: tagFilter ? C.ink : "#FFFFFF",
+                background: tagFilter ? "#423324" : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: tagFilter ? C.page : "#1A1A1A",
+                color: tagFilter ? "#FFFFFF" : "#1A1A1A",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />

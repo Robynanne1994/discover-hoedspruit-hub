@@ -500,7 +500,7 @@ const MyProfile = () => {
                 borderRadius: 999,
                 background: "#F2EFE5",
                 color: INK,
-                border: `1px solid ${INK}`,
+                border: "1px solid #E8E4DF",
                 fontFamily: SANS,
                 fontWeight: 600,
                 fontSize: 13,

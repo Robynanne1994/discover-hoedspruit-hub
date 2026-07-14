@@ -153,7 +153,7 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
   </button>
 );
 
-// Card-internal save heart (rust on save).
+// Card-internal save heart (matches the events card heart).
 // Reads from the shared favourites cache so a category page with 50 listings
 // only does ONE favourites query instead of 50.
 const CardHeart = ({ listingId }: { listingId: string }) => {
@@ -177,22 +177,24 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
         position: "absolute",
         top: 12,
         right: 12,
-        width: 36,
-        height: 36,
+        width: 32,
+        height: 32,
         borderRadius: 9999,
-        background: "rgba(238, 232, 218, 0.85)",
-        border: `1.5px solid ${saved ? C.rust : C.ink}`,
+        background: "rgba(255, 255, 255, 0.95)",
+        border: "none",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         cursor: "pointer",
+        boxShadow: "0 1px 4px rgba(0, 5, 5, 0.14)",
+        backdropFilter: "blur(4px)",
       }}
     >
       <Heart
         size={16}
         strokeWidth={2}
-        color={saved ? C.rust : C.ink}
-        fill={saved ? C.rust : "none"}
+        color={saved ? "#5b4632" : "rgba(18, 18, 20, 0.55)"}
+        fill={saved ? "#5b4632" : "none"}
       />
     </button>
   );
@@ -906,7 +908,7 @@ const CategoryPage = () => {
                 onClick={() => handleSubFilter(null)}
                 style={{
                   marginTop: 16,
-                  background: "rgba(43, 36, 32, 1)",
+                  background: "#423324",
                   border: "none",
                   color: "#ffffff",
                   fontFamily: sans,
@@ -915,7 +917,7 @@ const CategoryPage = () => {
                   textTransform: "uppercase",
                   cursor: "pointer",
                   padding: "6px 12px",
-                  borderRadius: 8,
+                  borderRadius: 999,
                   display: "flex",
                   alignItems: "center",
                   gap: 6,

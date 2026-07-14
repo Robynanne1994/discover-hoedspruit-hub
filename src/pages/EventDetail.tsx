@@ -398,7 +398,7 @@ const EventDetail = () => {
     const disabled = a.disabled;
     const baseStyle: React.CSSProperties = {
       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-      padding: "14px 18px", borderRadius: 999,
+      padding: "10px 18px", borderRadius: 999,
       background: disabled ? "#f5f0e8" : C.surface,
       border: `1px solid ${C.border}`,
       color: disabled ? C.muted : C.heading,
@@ -1079,7 +1079,7 @@ const EventDetail = () => {
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            padding: "14px 18px",
+            padding: "10px 18px",
             borderRadius: 999,
             background: "#f5f0e8",
             border: `1px solid ${C.border}`,
