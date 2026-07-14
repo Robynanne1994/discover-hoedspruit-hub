@@ -908,7 +908,7 @@ const CategoryPage = () => {
                 onClick={() => handleSubFilter(null)}
                 style={{
                   marginTop: 16,
-                  background: "rgba(43, 36, 32, 1)",
+                  background: "#423324",
                   border: "none",
                   color: "#ffffff",
                   fontFamily: sans,
@@ -917,7 +917,7 @@ const CategoryPage = () => {
                   textTransform: "uppercase",
                   cursor: "pointer",
                   padding: "6px 12px",
-                  borderRadius: 8,
+                  borderRadius: 999,
                   display: "flex",
                   alignItems: "center",
                   gap: 6,
