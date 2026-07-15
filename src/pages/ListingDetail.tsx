@@ -121,12 +121,12 @@ const ListingDetail = () => {
   const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [heroImgError, setHeroImgError] = useState(false);
 
-  const { data: listing, isLoading } = useQuery({
+  const { data: listing, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["listing-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("listings").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("listings").select("*").eq("id", id!).maybeSingle();
       if (error) throw error;
-      return sanitizeDashes(data);
+      return data ? sanitizeDashes(data) : null;
     },
     enabled: !!id,
   });
