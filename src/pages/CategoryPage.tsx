@@ -313,7 +313,7 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
-  const { data: listings, isLoading } = useQuery({
+  const { data: listings, isLoading, isError: listingsError, refetch: refetchListings, isFetching: listingsFetching } = useQuery({
     queryKey: ["listings-by-category", id, activeSubId],
     queryFn: async () => {
       const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
