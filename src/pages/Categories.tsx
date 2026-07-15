@@ -212,7 +212,12 @@ const Categories = () => {
         }
         right={
           <button
-            onClick={() => setSearchOpen((v) => !v)}
+            onClick={() => {
+              setSearchOpen((v) => {
+                if (v) setSearch("");
+                return !v;
+              });
+            }}
             aria-label={searchOpen ? "Close search" : "Open search"}
             style={{
               width: 40,
