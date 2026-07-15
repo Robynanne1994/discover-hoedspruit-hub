@@ -272,6 +272,21 @@ const EmptyRow = ({ text }: { text: string }) => (
   </div>
 );
 
+const ErrorRow = ({ onRetry, isFetching }: { onRetry: () => void; isFetching?: boolean }) => (
+  <div style={{ padding: "28px 20px", textAlign: "center" }}>
+    <p style={{ fontFamily: FONT, fontSize: 14, color: "rgba(18,18,20,0.7)", margin: "0 0 14px", lineHeight: 1.5 }}>
+      Something went wrong. Please check your connection and try again.
+    </p>
+    <button
+      onClick={onRetry}
+      disabled={isFetching}
+      style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 40, padding: "0 22px", fontFamily: FONT, fontSize: 13, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
+    >
+      {isFetching ? "Trying…" : "Try again"}
+    </button>
+  </div>
+);
+
 /* -------------------- Row -------------------- */
 
 interface RowProps {
