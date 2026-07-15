@@ -733,7 +733,7 @@ const ListingsResults = ({ query }: { query: string }) => {
 
 const EventsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-events", term],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
@@ -744,11 +744,13 @@ const EventsResults = ({ query }: { query: string }) => {
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!data || data.length === 0) return <EmptyRow text={term ? "No events found" : "No upcoming events"} />;
   return (
     <>
