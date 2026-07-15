@@ -26,6 +26,7 @@ import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/de
 import { getCustomIcon } from "@/lib/customIcons";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
