@@ -86,8 +86,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   // Wellness & Beauty
   treatments: "pipe-separated free text",
 
-  // Misc
-  practitioners: "pipe-separated names",
 
   // Additional contacts
   additional_phones: "pipe-separated phone numbers",
