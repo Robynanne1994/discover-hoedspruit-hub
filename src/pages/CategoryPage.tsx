@@ -289,10 +289,10 @@ const CategoryPage = () => {
     enabled: !!user,
   });
 
-  const { data: category } = useQuery({
+  const { data: category, isLoading: categoryLoading, isError: categoryError, refetch: refetchCategory, isFetching: categoryFetching } = useQuery({
     queryKey: ["category", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("categories").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("categories").select("*").eq("id", id!).maybeSingle();
       if (error) throw error;
       return data;
     },
