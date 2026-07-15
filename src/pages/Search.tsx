@@ -533,7 +533,7 @@ const UsersResults = ({
   const iBlocked = blocks?.iBlocked;
   const blockedMe = blocks?.blockedMe;
 
-  const { data: rows, isLoading } = useQuery({
+  const { data: rows, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: [
       "search-users",
       sub,
@@ -577,16 +577,18 @@ const UsersResults = ({
           followingIds = (outRes.data || []).map((r: any) => r.following_id);
           followerIds = (inRes.data || []).map((r: any) => r.follower_id);
         }
-        const { data: discover } = await supabase.rpc("search_public_profiles", {
+        const { data: discover, error: discoverErr } = await supabase.rpc("search_public_profiles", {
           _term: term || "",
           _limit: 50,
         });
+        if (discoverErr) throw discoverErr;
         // Merge in followers (people who follow me) that I don't follow back,
         // so they surface as suggested with a Follow-back option.
         const notFollowedBackIds = followerIds.filter((id) => !followingIds.includes(id));
         let followerProfiles: any[] = [];
         if (notFollowedBackIds.length) {
-          const { data } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
+          const { data, error } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
+          if (error) throw error;
           followerProfiles = data || [];
         }
         const excluded = new Set<string>(followingIds);
@@ -609,10 +611,12 @@ const UsersResults = ({
       if (!currentUserId) return [];
       const col = sub === "followers" ? "follower_id" : "following_id";
       const matchCol = sub === "followers" ? "following_id" : "follower_id";
-      const { data: links } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
+      const { data: links, error: linksErr } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
+      if (linksErr) throw linksErr;
       const ids = (links || []).map((d: any) => d[col]);
       if (!ids.length) return [];
-      const { data } = await supabase.rpc("get_public_profiles", { _ids: ids });
+      const { data, error } = await supabase.rpc("get_public_profiles", { _ids: ids });
+      if (error) throw error;
       const filtered = term
         ? (data || []).filter((p: any) =>
             (p.display_name || "").toLowerCase().includes(term.toLowerCase()) ||
@@ -628,6 +632,7 @@ const UsersResults = ({
   const headerLabel = sub === "suggested" ? "Discover" : sub === "followers" ? "Followers" : "Following";
 
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!rows || rows.length === 0) {
     const emptyText = term
       ? "No people found"
