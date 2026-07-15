@@ -802,7 +802,7 @@ const EventsResults = ({ query }: { query: string }) => {
 
 const SpecialsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-specials", term],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
@@ -814,11 +814,13 @@ const SpecialsResults = ({ query }: { query: string }) => {
         .order("created_at", { ascending: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!data || data.length === 0) return <EmptyRow text={term ? "No specials found" : "No active specials"} />;
   return (
     <>
