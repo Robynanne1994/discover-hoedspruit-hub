@@ -155,7 +155,7 @@ export const LISTING_FIELD_SPECS = {
   callout_fee: { type: "bool" },
   specialities: { type: "str" },
   emergency_24hr: { type: "bool" },
-  practitioners: { type: "str_array" },
+  
 
   // ---------- Home & Garden ----------
   services_offered: { type: "str_array" },
