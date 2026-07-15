@@ -1187,6 +1187,22 @@ const CategoryPage = () => {
             <Skeleton key={i} className="w-full" style={{ height: 340, borderRadius: 20, background: "rgba(0,0,0,0.06)" }} />
           ))}
         </div>
+      ) : listingsError ? (
+        <div style={{ textAlign: "center", padding: "60px 24px 80px" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+            Something went wrong
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+            We couldn't load these listings. Please check your connection and try again.
+          </p>
+          <button
+            onClick={() => refetchListings()}
+            disabled={listingsFetching}
+            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: listingsFetching ? "default" : "pointer", opacity: listingsFetching ? 0.6 : 1 }}
+          >
+            {listingsFetching ? "Trying…" : "Try again"}
+          </button>
+        </div>
       ) : filteredListings.length > 0 ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 20, paddingRight: 20 }}>
           {filteredListings.map((l) => {
