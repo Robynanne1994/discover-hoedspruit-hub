@@ -756,7 +756,12 @@ const CategoryPage = () => {
         right={
           <>
             <button
-              onClick={() => setSearchOpen((v) => !v)}
+              onClick={() => {
+                setSearchOpen((v) => {
+                  if (v) setSearch("");
+                  return !v;
+                });
+              }}
               aria-label={searchOpen ? "Close search" : "Search"}
               style={{
                 width: 40,
