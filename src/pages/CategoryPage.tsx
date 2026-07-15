@@ -721,6 +721,53 @@ const CategoryPage = () => {
     </button>
   );
 
+  if (categoryError) {
+    return (
+      <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
+        <PageHeader title="Explore" />
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+            Something went wrong
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+            We couldn't load this category. Please check your connection and try again.
+          </p>
+          <button
+            onClick={() => refetchCategory()}
+            disabled={categoryFetching}
+            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: categoryFetching ? "default" : "pointer", opacity: categoryFetching ? 0.6 : 1 }}
+          >
+            {categoryFetching ? "Trying…" : "Try again"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!categoryLoading && !category) {
+    return (
+      <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
+        <PageHeader title="Explore" />
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+            Category not found
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+            This category doesn't exist or the link is out of date.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 260, margin: "0 auto" }}>
+            <button onClick={() => navigate("/categories")} style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 24px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              Back to Explore
+            </button>
+            <button onClick={() => navigate("/")} style={{ background: "transparent", color: INK, border: "1px solid #E8E4DF", borderRadius: 999, height: 48, padding: "0 24px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              Back to home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
