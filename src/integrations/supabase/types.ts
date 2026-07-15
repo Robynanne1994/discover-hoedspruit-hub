@@ -1080,7 +1080,6 @@ export type Database = {
           phone: string | null
           phone_label: string | null
           plant_types: string[] | null
-          practitioners: string[] | null
           price_level: number | null
           price_range: string | null
           product_categories: string[] | null
@@ -1219,7 +1218,6 @@ export type Database = {
           phone?: string | null
           phone_label?: string | null
           plant_types?: string[] | null
-          practitioners?: string[] | null
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
@@ -1358,7 +1356,6 @@ export type Database = {
           phone?: string | null
           phone_label?: string | null
           plant_types?: string[] | null
-          practitioners?: string[] | null
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null

@@ -155,7 +155,7 @@ export const LISTING_FIELD_SPECS = {
   callout_fee: { type: "bool" },
   specialities: { type: "str" },
   emergency_24hr: { type: "bool" },
-  practitioners: { type: "str_array" },
+  
 
   // ---------- Home & Garden ----------
   services_offered: { type: "str_array" },
@@ -234,7 +234,7 @@ export const NGO_ONLY_FIELDS = [
 export const TRADES_ONLY_FIELDS = [
   "business_started_year", "years_in_business",
   "after_hours_available", "callout_fee", "emergency_24hr",
-  "specialities", "practitioners",
+  "specialities",
 ] as const;
 
 export const HOME_GARDEN_ONLY_FIELDS = [
