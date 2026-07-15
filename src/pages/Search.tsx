@@ -666,7 +666,7 @@ const UsersResults = ({
 
 const ListingsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-listings", term],
     queryFn: async () => {
       let q = supabase
@@ -676,11 +676,13 @@ const ListingsResults = ({ query }: { query: string }) => {
         .order("created_at", { ascending: false })
         .limit(term ? 50 : 15);
       if (term) q = q.ilike("title", `%${term}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!data || data.length === 0) return <EmptyRow text={term ? "No listings found" : "No listings"} />;
   return (
     <>
