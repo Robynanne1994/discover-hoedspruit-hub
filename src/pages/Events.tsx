@@ -764,6 +764,19 @@ const Events = () => {
               <Skeleton key={i} style={{ height: 112, borderRadius: 16 }} />
             ))}
           </div>
+        ) : isError ? (
+          <div style={{ background: C.white, borderRadius: 16, padding: "32px 20px", textAlign: "center" }}>
+            <p style={{ fontFamily: SANS, fontSize: 14, color: C.body, margin: "0 0 14px" }}>
+              Something went wrong loading events. Please check your connection and try again.
+            </p>
+            <button
+              onClick={() => refetch()}
+              disabled={isFetching}
+              style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 44, padding: "0 24px", fontFamily: SANS, fontSize: 14, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
+            >
+              {isFetching ? "Trying…" : "Try again"}
+            </button>
+          </div>
         ) : filtered.length === 0 ? (
           <div
             style={{
