@@ -390,7 +390,7 @@ const Events = () => {
 
 
 
-  const { data: events, isLoading } = useQuery({
+  const { data: events, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["events-page"],
     queryFn: async () => {
       const { data, error } = await supabase.from("events").select("*").order("created_at");
