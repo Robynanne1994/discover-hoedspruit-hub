@@ -26,6 +26,7 @@ import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/de
 import { getCustomIcon } from "@/lib/customIcons";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
+import { Skeleton } from "@/components/ui/skeleton";
 
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -120,12 +121,12 @@ const ListingDetail = () => {
   const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
   const [heroImgError, setHeroImgError] = useState(false);
 
-  const { data: listing, isLoading } = useQuery({
+  const { data: listing, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["listing-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("listings").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("listings").select("*").eq("id", id!).maybeSingle();
       if (error) throw error;
-      return sanitizeDashes(data);
+      return data ? sanitizeDashes(data) : null;
     },
     enabled: !!id,
   });
@@ -266,9 +267,9 @@ const ListingDetail = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relatedSpecials, relatedEvents, listing, tab]);
 
-  if (isLoading || !listing) {
+  if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text }}>
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
         <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
@@ -283,9 +284,110 @@ const ListingDetail = () => {
             <BackArrowIcon size={18} color="#1A1A1A" />
           </button>
         </div>
-        <div style={{ padding: "80px 20px", textAlign: "center", color: C.muted, fontSize: 14 }}>
-          {isLoading ? "Loading..." : "Listing not found."}
+        <div style={{ padding: "16px 20px 0" }}>
+          <Skeleton style={{ width: "100%", height: 260, borderRadius: 20, background: "rgba(0,0,0,0.06)" }} />
+          <Skeleton style={{ width: "70%", height: 28, borderRadius: 8, marginTop: 20, background: "rgba(0,0,0,0.06)" }} />
+          <Skeleton style={{ width: "45%", height: 14, borderRadius: 6, marginTop: 12, background: "rgba(0,0,0,0.06)" }} />
+          <Skeleton style={{ width: "55%", height: 14, borderRadius: 6, marginTop: 8, background: "rgba(0,0,0,0.06)" }} />
+          <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+            <Skeleton style={{ flex: 1, height: 44, borderRadius: 999, background: "rgba(0,0,0,0.06)" }} />
+            <Skeleton style={{ flex: 1, height: 44, borderRadius: 999, background: "rgba(0,0,0,0.06)" }} />
+            <Skeleton style={{ flex: 1, height: 44, borderRadius: 999, background: "rgba(0,0,0,0.06)" }} />
+          </div>
+          <Skeleton style={{ width: "100%", height: 120, borderRadius: 16, marginTop: 20, background: "rgba(0,0,0,0.06)" }} />
         </div>
+        <BottomNav />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
+        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            style={{
+              width: 40, height: 40, borderRadius: "50%",
+              background: "#FFFFFF", border: "none", padding: 0, cursor: "pointer",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            }}
+          >
+            <BackArrowIcon size={18} color="#1A1A1A" />
+          </button>
+        </div>
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: HEAD, fontSize: 22, fontWeight: 700, color: C.heading, margin: "0 0 10px" }}>
+            Something went wrong
+          </h2>
+          <p style={{ fontFamily: FONT, fontSize: 14, color: C.muted, margin: "0 0 24px", lineHeight: 1.5 }}>
+            We couldn't load this listing. Please check your connection and try again.
+          </p>
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            style={{
+              background: "#423324", color: "#fff", border: "none", borderRadius: 999,
+              height: 48, padding: "0 28px", fontFamily: FONT, fontSize: 14, fontWeight: 500,
+              cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1,
+            }}
+          >
+            {isFetching ? "Trying…" : "Try again"}
+          </button>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
+
+  if (!listing) {
+    return (
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
+        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            style={{
+              width: 40, height: 40, borderRadius: "50%",
+              background: "#FFFFFF", border: "none", padding: 0, cursor: "pointer",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            }}
+          >
+            <BackArrowIcon size={18} color="#1A1A1A" />
+          </button>
+        </div>
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: HEAD, fontSize: 22, fontWeight: 700, color: C.heading, margin: "0 0 10px" }}>
+            Listing not found
+          </h2>
+          <p style={{ fontFamily: FONT, fontSize: 14, color: C.muted, margin: "0 0 24px", lineHeight: 1.5 }}>
+            This listing may have been removed or the link is out of date.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 260, margin: "0 auto" }}>
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                background: "#423324", color: "#fff", border: "none", borderRadius: 999,
+                height: 48, padding: "0 24px", fontFamily: FONT, fontSize: 14, fontWeight: 500, cursor: "pointer",
+              }}
+            >
+              Back to home
+            </button>
+            <button
+              onClick={() => navigate("/categories")}
+              style={{
+                background: "transparent", color: "#1A1A1A", border: "1px solid #E8E4DF", borderRadius: 999,
+                height: 48, padding: "0 24px", fontFamily: FONT, fontSize: 14, fontWeight: 500, cursor: "pointer",
+              }}
+            >
+              Browse listings
+            </button>
+          </div>
+        </div>
+        <BottomNav />
       </div>
     );
   }

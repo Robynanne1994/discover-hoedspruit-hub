@@ -20,9 +20,13 @@ const BottomNav = () => {
 
   return (
     <nav
-      className="fixed left-0 right-0 z-50 md:hidden"
+      className="fixed z-50"
       style={{
         bottom: 0,
+        left: "50%",
+        transform: "translateX(-50%)",
+        width: "100%",
+        maxWidth: 480,
         background: BAR_BG,
         borderRadius: "32px 32px 0 0",
         height: 66,

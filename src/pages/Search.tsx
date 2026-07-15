@@ -272,6 +272,21 @@ const EmptyRow = ({ text }: { text: string }) => (
   </div>
 );
 
+const ErrorRow = ({ onRetry, isFetching }: { onRetry: () => void; isFetching?: boolean }) => (
+  <div style={{ padding: "28px 20px", textAlign: "center" }}>
+    <p style={{ fontFamily: FONT, fontSize: 14, color: "rgba(18,18,20,0.7)", margin: "0 0 14px", lineHeight: 1.5 }}>
+      Something went wrong. Please check your connection and try again.
+    </p>
+    <button
+      onClick={onRetry}
+      disabled={isFetching}
+      style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 40, padding: "0 22px", fontFamily: FONT, fontSize: 13, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
+    >
+      {isFetching ? "Trying…" : "Try again"}
+    </button>
+  </div>
+);
+
 /* -------------------- Row -------------------- */
 
 interface RowProps {
@@ -518,7 +533,7 @@ const UsersResults = ({
   const iBlocked = blocks?.iBlocked;
   const blockedMe = blocks?.blockedMe;
 
-  const { data: rows, isLoading } = useQuery({
+  const { data: rows, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: [
       "search-users",
       sub,
@@ -562,16 +577,18 @@ const UsersResults = ({
           followingIds = (outRes.data || []).map((r: any) => r.following_id);
           followerIds = (inRes.data || []).map((r: any) => r.follower_id);
         }
-        const { data: discover } = await supabase.rpc("search_public_profiles", {
+        const { data: discover, error: discoverErr } = await supabase.rpc("search_public_profiles", {
           _term: term || "",
           _limit: 50,
         });
+        if (discoverErr) throw discoverErr;
         // Merge in followers (people who follow me) that I don't follow back,
         // so they surface as suggested with a Follow-back option.
         const notFollowedBackIds = followerIds.filter((id) => !followingIds.includes(id));
         let followerProfiles: any[] = [];
         if (notFollowedBackIds.length) {
-          const { data } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
+          const { data, error } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
+          if (error) throw error;
           followerProfiles = data || [];
         }
         const excluded = new Set<string>(followingIds);
@@ -594,10 +611,12 @@ const UsersResults = ({
       if (!currentUserId) return [];
       const col = sub === "followers" ? "follower_id" : "following_id";
       const matchCol = sub === "followers" ? "following_id" : "follower_id";
-      const { data: links } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
+      const { data: links, error: linksErr } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
+      if (linksErr) throw linksErr;
       const ids = (links || []).map((d: any) => d[col]);
       if (!ids.length) return [];
-      const { data } = await supabase.rpc("get_public_profiles", { _ids: ids });
+      const { data, error } = await supabase.rpc("get_public_profiles", { _ids: ids });
+      if (error) throw error;
       const filtered = term
         ? (data || []).filter((p: any) =>
             (p.display_name || "").toLowerCase().includes(term.toLowerCase()) ||
@@ -613,6 +632,7 @@ const UsersResults = ({
   const headerLabel = sub === "suggested" ? "Discover" : sub === "followers" ? "Followers" : "Following";
 
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!rows || rows.length === 0) {
     const emptyText = term
       ? "No people found"
@@ -646,7 +666,7 @@ const UsersResults = ({
 
 const ListingsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-listings", term],
     queryFn: async () => {
       let q = supabase
@@ -656,11 +676,13 @@ const ListingsResults = ({ query }: { query: string }) => {
         .order("created_at", { ascending: false })
         .limit(term ? 50 : 15);
       if (term) q = q.ilike("title", `%${term}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!data || data.length === 0) return <EmptyRow text={term ? "No listings found" : "No listings"} />;
   return (
     <>
@@ -711,7 +733,7 @@ const ListingsResults = ({ query }: { query: string }) => {
 
 const EventsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-events", term],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
@@ -722,11 +744,13 @@ const EventsResults = ({ query }: { query: string }) => {
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!data || data.length === 0) return <EmptyRow text={term ? "No events found" : "No upcoming events"} />;
   return (
     <>
@@ -778,7 +802,7 @@ const EventsResults = ({ query }: { query: string }) => {
 
 const SpecialsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-specials", term],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
@@ -790,11 +814,13 @@ const SpecialsResults = ({ query }: { query: string }) => {
         .order("created_at", { ascending: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
-      const { data } = await q;
+      const { data, error } = await q;
+      if (error) throw error;
       return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
   if (!data || data.length === 0) return <EmptyRow text={term ? "No specials found" : "No active specials"} />;
   return (
     <>

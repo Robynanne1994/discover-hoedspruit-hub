@@ -289,10 +289,10 @@ const CategoryPage = () => {
     enabled: !!user,
   });
 
-  const { data: category } = useQuery({
+  const { data: category, isLoading: categoryLoading, isError: categoryError, refetch: refetchCategory, isFetching: categoryFetching } = useQuery({
     queryKey: ["category", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("categories").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("categories").select("*").eq("id", id!).maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -313,7 +313,7 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
-  const { data: listings, isLoading } = useQuery({
+  const { data: listings, isLoading, isError: listingsError, refetch: refetchListings, isFetching: listingsFetching } = useQuery({
     queryKey: ["listings-by-category", id, activeSubId],
     queryFn: async () => {
       const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
@@ -720,6 +720,53 @@ const CategoryPage = () => {
       {children}
     </button>
   );
+
+  if (categoryError) {
+    return (
+      <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
+        <PageHeader title="Explore" />
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+            Something went wrong
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+            We couldn't load this category. Please check your connection and try again.
+          </p>
+          <button
+            onClick={() => refetchCategory()}
+            disabled={categoryFetching}
+            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: categoryFetching ? "default" : "pointer", opacity: categoryFetching ? 0.6 : 1 }}
+          >
+            {categoryFetching ? "Trying…" : "Try again"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!categoryLoading && !category) {
+    return (
+      <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
+        <PageHeader title="Explore" />
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+            Category not found
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+            This category doesn't exist or the link is out of date.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 260, margin: "0 auto" }}>
+            <button onClick={() => navigate("/categories")} style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 24px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              Back to Explore
+            </button>
+            <button onClick={() => navigate("/")} style={{ background: "transparent", color: INK, border: "1px solid #E8E4DF", borderRadius: 999, height: 48, padding: "0 24px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              Back to home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -1139,6 +1186,22 @@ const CategoryPage = () => {
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="w-full" style={{ height: 340, borderRadius: 20, background: "rgba(0,0,0,0.06)" }} />
           ))}
+        </div>
+      ) : listingsError ? (
+        <div style={{ textAlign: "center", padding: "60px 24px 80px" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+            Something went wrong
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+            We couldn't load these listings. Please check your connection and try again.
+          </p>
+          <button
+            onClick={() => refetchListings()}
+            disabled={listingsFetching}
+            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: listingsFetching ? "default" : "pointer", opacity: listingsFetching ? 0.6 : 1 }}
+          >
+            {listingsFetching ? "Trying…" : "Try again"}
+          </button>
         </div>
       ) : filteredListings.length > 0 ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 20, paddingRight: 20 }}>
