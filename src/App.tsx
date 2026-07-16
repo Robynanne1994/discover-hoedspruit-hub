@@ -127,6 +127,22 @@ const ConditionalBottomNav = () => {
   return <BottomNav />;
 };
 
+const ConditionalMain = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
+  return (
+    <main
+      className={
+        isAdmin
+          ? "w-full min-h-screen bg-background relative"
+          : "mx-auto w-full max-w-[480px] min-h-screen bg-background relative"
+      }
+    >
+      {children}
+    </main>
+  );
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -138,7 +154,7 @@ const App = () => (
           <GuestAuthProvider>
             <AuthGate>
               <ModerationBanner />
-              <main className="mx-auto w-full max-w-[480px] min-h-screen bg-background relative">
+              <ConditionalMain>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/welcome" element={<Welcome />} />
@@ -211,7 +227,7 @@ const App = () => (
               </Route>
               <Route path="*" element={<NotFound />} />
               </Routes>
-              </main>
+              </ConditionalMain>
               <ScrollToTop />
               <ConditionalBottomNav />
             </AuthGate>
