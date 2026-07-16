@@ -647,6 +647,16 @@ const AdminBushTelegraph = () => {
               />
             </div>
 
+            <div>
+              <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Local Channels section — 1:1. Falls back to card image if empty.)</span></Label>
+              <ImageUpload
+                bucket="local-channels-images"
+                value={form.homepage_image_url}
+                onChange={(url) => setForm({ ...form, homepage_image_url: url })}
+                aspect={1}
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Meta 1 (Platform)</Label>
