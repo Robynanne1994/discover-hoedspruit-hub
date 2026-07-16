@@ -23,7 +23,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "title_override", "is_featured", "sort_order"];
+const HEADERS = ["title", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "homepage_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "title_override", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
