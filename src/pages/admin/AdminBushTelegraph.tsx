@@ -257,6 +257,7 @@ const AdminBushTelegraph = () => {
       resource_type: r.resource_type || "link",
       image_url: r.image_url ?? "",
       detail_image_url: r.detail_image_url ?? "",
+      homepage_image_url: r.homepage_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
       admins: Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
