@@ -154,7 +154,7 @@ const App = () => (
           <GuestAuthProvider>
             <AuthGate>
               <ModerationBanner />
-              <main className="mx-auto w-full max-w-[480px] min-h-screen bg-background relative">
+              <ConditionalMain>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/welcome" element={<Welcome />} />
