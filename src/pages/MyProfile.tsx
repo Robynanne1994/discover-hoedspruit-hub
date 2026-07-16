@@ -633,8 +633,8 @@ const MyProfile = () => {
       <div style={{ padding: "20px 20px 0" }}>
         {tab === "listings" && (() => {
           const list = saved ?? [];
-          const cats = Array.from(new Set(list.map((it: any) => it.categories?.name).filter(Boolean))) as string[];
-          const filtered = listingCat === "all" ? list : list.filter((it: any) => it.categories?.name === listingCat);
+          const cats = Array.from(new Set(list.map((it: any) => it.categories?.title).filter(Boolean))) as string[];
+          const filtered = listingCat === "all" ? list : list.filter((it: any) => it.categories?.title === listingCat);
           return list.length ? (
             <>
               {cats.length > 1 && (
