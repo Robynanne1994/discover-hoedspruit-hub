@@ -64,6 +64,7 @@ const emptyForm = {
   resource_type: "link",
   image_url: "",
   detail_image_url: "",
+  homepage_image_url: "",
   qr_image_url: "",
   admins: [] as AdminEntry[],
   years_mode: "years" as YearsMode,
