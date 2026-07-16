@@ -662,7 +662,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={listingCat}
                   onChange={setListingCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
@@ -700,7 +700,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={dealCat}
                   onChange={setDealCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
@@ -745,7 +745,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={eventCat}
                   onChange={setEventCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
@@ -787,7 +787,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={resourceCat}
                   onChange={setResourceCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
