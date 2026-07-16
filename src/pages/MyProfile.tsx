@@ -631,40 +631,57 @@ const MyProfile = () => {
 
       {/* Tab content */}
       <div style={{ padding: "20px 20px 0" }}>
-        {tab === "listings" && (
-          saved?.length ? (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {saved.map((it: any) =>
-                renderCard(
-                  it,
-                  "listing",
-                  `/listing/${it.id}`,
-                  null
-
-                ),
+        {tab === "listings" && (() => {
+          const list = saved ?? [];
+          const cats = Array.from(new Set(list.map((it: any) => it.categories?.name).filter(Boolean))) as string[];
+          const filtered = listingCat === "all" ? list : list.filter((it: any) => it.categories?.name === listingCat);
+          return list.length ? (
+            <>
+              {cats.length > 1 && (
+                <SubTabs<string>
+                  value={listingCat}
+                  onChange={setListingCat}
+                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                />
               )}
-            </div>
+              {filtered.length ? (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {filtered.map((it: any) => renderCard(it, "listing", `/listing/${it.id}`, null))}
+                </div>
+              ) : (
+                <EmptyTab text="No saved listings in this category." />
+              )}
+            </>
           ) : (
             <EmptyTab text="No saved listings yet." />
-          )
-        )}
+          );
+        })()}
 
         {tab === "deals" && (() => {
           const now = Date.now();
-          const filtered = (savedSpecials ?? []).filter((it: any) => {
+          const timeFiltered = (savedSpecials ?? []).filter((it: any) => {
             const expired = it.valid_until && new Date(it.valid_until).getTime() < now;
             return dealsSub === "active" ? !expired : expired;
           });
+          const cats = Array.from(new Set(timeFiltered.map((it: any) => it.tag).filter(Boolean))) as string[];
+          const filtered = dealCat === "all" ? timeFiltered : timeFiltered.filter((it: any) => it.tag === dealCat);
           return (
             <>
               <SubTabs<"active" | "expired">
                 value={dealsSub}
-                onChange={setDealsSub}
+                onChange={(v) => { setDealsSub(v); setDealCat("all"); }}
                 options={[
                   { id: "active", label: "Active" },
                   { id: "expired", label: "Expired" },
                 ]}
               />
+              {cats.length > 1 && (
+                <SubTabs<string>
+                  value={dealCat}
+                  onChange={setDealCat}
+                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                />
+              )}
               {filtered.length ? (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {filtered.map((it: any) =>
@@ -685,22 +702,31 @@ const MyProfile = () => {
 
         {tab === "events" && (() => {
           const now = Date.now();
-          const filtered = (savedEvents ?? []).filter((it: any) => {
+          const timeFiltered = (savedEvents ?? []).filter((it: any) => {
             const ref = it.end_date || it.start_date;
             if (!ref) return eventsSub === "upcoming";
             const past = new Date(ref).getTime() < now;
             return eventsSub === "upcoming" ? !past : past;
           });
+          const cats = Array.from(new Set(timeFiltered.map((it: any) => it.tag).filter(Boolean))) as string[];
+          const filtered = eventCat === "all" ? timeFiltered : timeFiltered.filter((it: any) => it.tag === eventCat);
           return (
             <>
               <SubTabs<"upcoming" | "past">
                 value={eventsSub}
-                onChange={setEventsSub}
+                onChange={(v) => { setEventsSub(v); setEventCat("all"); }}
                 options={[
                   { id: "upcoming", label: "Upcoming" },
                   { id: "past", label: "Past" },
                 ]}
               />
+              {cats.length > 1 && (
+                <SubTabs<string>
+                  value={eventCat}
+                  onChange={setEventCat}
+                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                />
+              )}
               {filtered.length ? (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {filtered.map((it: any) =>
@@ -730,29 +756,46 @@ const MyProfile = () => {
           );
         })()}
 
-        {tab === "resources" && (
-          savedResources?.length ? (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {savedResources.map((it: any) => {
-                const displayTitle = (it.title_override?.trim()) || it.title;
-                const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
-                const href = it.slug ? `/local-channels/${it.slug}` : `/local-channels`;
-                return renderCard(
-                  { ...it, title: displayTitle },
-                  "resource",
-                  href,
-                  <>
-                    {metaParts.length > 1 && <span>{metaParts.join(" · ")}</span>}
-                    {metaParts.length === 1 && <span>{metaParts[0]}</span>}
-                  </>,
-                );
-              })}
-            </div>
+        {tab === "resources" && (() => {
+          const list = savedResources ?? [];
+          const cats = Array.from(new Set(list.map((it: any) => it.platform).filter(Boolean))) as string[];
+          const filtered = resourceCat === "all" ? list : list.filter((it: any) => it.platform === resourceCat);
+          return list.length ? (
+            <>
+              {cats.length > 1 && (
+                <SubTabs<string>
+                  value={resourceCat}
+                  onChange={setResourceCat}
+                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                />
+              )}
+              {filtered.length ? (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {filtered.map((it: any) => {
+                    const displayTitle = (it.title_override?.trim()) || it.title;
+                    const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
+                    const href = it.slug ? `/local-channels/${it.slug}` : `/local-channels`;
+                    return renderCard(
+                      { ...it, title: displayTitle },
+                      "resource",
+                      href,
+                      <>
+                        {metaParts.length > 1 && <span>{metaParts.join(" · ")}</span>}
+                        {metaParts.length === 1 && <span>{metaParts[0]}</span>}
+                      </>,
+                    );
+                  })}
+                </div>
+              ) : (
+                <EmptyTab text="No saved resources in this channel." />
+              )}
+            </>
           ) : (
             <EmptyTab text="No saved resources yet." />
-          )
-        )}
+          );
+        })()}
       </div>
+
     </div>
   );
 };
