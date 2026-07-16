@@ -189,12 +189,7 @@ const HomeLocalChannels = () => {
                     fontSize: 15,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    marginBottom: 5,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
+                    marginBottom: 6,
                     wordBreak: "break-word",
                   }}
                 >
