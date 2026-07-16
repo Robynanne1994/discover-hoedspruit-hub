@@ -412,7 +412,7 @@ const AdminBushTelegraph = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
       r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
-      r.image_url ?? "", r.detail_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
+      r.image_url ?? "", r.detail_image_url ?? "", r.homepage_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
       r.admin_name ?? "", r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
       r.tag_1 ?? "", r.tag_2 ?? "", r.title_override ?? "",
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
