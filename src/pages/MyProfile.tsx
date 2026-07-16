@@ -111,7 +111,12 @@ const MyProfile = () => {
   useEffect(() => {
     setEventsSub("upcoming");
     setDealsSub("active");
+    setListingCat("all");
+    setEventCat("all");
+    setDealCat("all");
+    setResourceCat("all");
   }, [tab]);
+
 
   const id = user?.id;
   const queryClient = useQueryClient();
