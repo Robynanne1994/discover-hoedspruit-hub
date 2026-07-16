@@ -199,7 +199,7 @@ const HomeLocalChannels = () => {
                   {r.title_override?.trim() || r.title}
                 </div>
                 {r.meta_2 && (
-                  <div style={{ fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
+                  <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E" }}>
                     {r.meta_2}
                   </div>
                 )}
