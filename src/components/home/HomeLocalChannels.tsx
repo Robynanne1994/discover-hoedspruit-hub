@@ -174,10 +174,9 @@ const HomeLocalChannels = () => {
                 <div
                   style={{
                     fontFamily: HN,
-                    fontSize: 10.5,
+                    fontSize: 12,
+                    fontWeight: 500,
                     color: "#6B6A5E",
-                    textTransform: "uppercase",
-                    letterSpacing: "1.8px",
                     marginBottom: 4,
                   }}
                 >
@@ -197,7 +196,7 @@ const HomeLocalChannels = () => {
                   {r.title_override?.trim() || r.title}
                 </div>
                 {r.meta_2 && (
-                  <div style={{ fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
+                  <div style={{ fontFamily: HN, fontSize: 12, fontWeight: 500, color: "#6B6A5E" }}>
                     {r.meta_2}
                   </div>
                 )}
