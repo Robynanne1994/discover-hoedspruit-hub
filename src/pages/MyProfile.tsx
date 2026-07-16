@@ -24,8 +24,11 @@ const PILL_BORDER = "#E8E4DF";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const titleCase = (s?: string | null) =>
-  (s || "").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+const titleCase = (s?: string | null) => {
+  if (!s) return "";
+  const str = s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+  return str.replace(/& Cafes\b/gi, "& Cafés");
+};
 
 const getInitial = (s?: string | null) => {
   if (!s?.trim()) return "?";
