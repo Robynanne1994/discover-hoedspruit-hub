@@ -26,8 +26,9 @@ const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-se
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
-  const str = s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-  return str.replace(/& Cafes\b/gi, "& Cafés");
+  // Use Unicode letter class so accented chars (é, à, ñ...) are treated as
+  // part of the word and the character right after them isn't re-uppercased.
+  return s.toLowerCase().replace(/(^|[^\p{L}\p{N}])(\p{L})/gu, (_m, sep, ch) => sep + ch.toUpperCase());
 };
 
 const getInitial = (s?: string | null) => {
@@ -60,7 +61,22 @@ function SubTabs<T extends string>({
   options: { id: T; label: string }[];
 }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "nowrap",
+        gap: 8,
+        marginBottom: 16,
+        overflowX: "auto",
+        WebkitOverflowScrolling: "touch",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        marginLeft: -20,
+        marginRight: -20,
+        padding: "0 20px",
+      }}
+      className="hide-scrollbar"
+    >
       {options.map((opt) => {
         const active = value === opt.id;
         return (
@@ -69,6 +85,8 @@ function SubTabs<T extends string>({
             type="button"
             onClick={() => onChange(opt.id)}
             style={{
+              flex: "0 0 auto",
+              whiteSpace: "nowrap",
               background: active ? "#423324" : "transparent",
               color: active ? "#fff" : INK,
               border: `1px solid ${active ? "#423324" : LINE}`,
@@ -644,7 +662,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={listingCat}
                   onChange={setListingCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
@@ -682,7 +700,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={dealCat}
                   onChange={setDealCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
@@ -727,7 +745,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={eventCat}
                   onChange={setEventCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
@@ -769,7 +787,7 @@ const MyProfile = () => {
                 <SubTabs<string>
                   value={resourceCat}
                   onChange={setResourceCat}
-                  options={[{ id: "all", label: "All" }, ...cats.map((c) => ({ id: c, label: titleCase(c) }))]}
+                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
                 />
               )}
               {filtered.length ? (
