@@ -26,8 +26,9 @@ const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-se
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
-  const str = s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-  return str.replace(/& Cafes\b/gi, "& Cafés");
+  // Use Unicode letter class so accented chars (é, à, ñ...) are treated as
+  // part of the word and the character right after them isn't re-uppercased.
+  return s.toLowerCase().replace(/(^|[^\p{L}\p{N}])(\p{L})/gu, (_m, sep, ch) => sep + ch.toUpperCase());
 };
 
 const getInitial = (s?: string | null) => {
