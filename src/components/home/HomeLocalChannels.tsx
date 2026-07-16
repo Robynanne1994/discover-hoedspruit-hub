@@ -187,6 +187,7 @@ const HomeLocalChannels = () => {
                   style={{
                     fontFamily: HN,
                     fontSize: 15,
+                    fontWeight: 400,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
                     marginBottom: 6,
