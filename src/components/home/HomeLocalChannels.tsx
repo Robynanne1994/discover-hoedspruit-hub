@@ -129,9 +129,10 @@ const HomeLocalChannels = () => {
               style={{
                 background: "#ffffff",
                 borderRadius: 16,
-                padding: 12,
+                padding: 0,
+                paddingRight: 10,
                 display: "flex",
-                alignItems: "center",
+                alignItems: "stretch",
                 gap: 12,
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
@@ -140,16 +141,15 @@ const HomeLocalChannels = () => {
                 cursor: "pointer",
                 width: "100%",
                 position: "relative",
+                overflow: "hidden",
               }}
             >
               <div
                 onClick={() => openResource(r)}
                 onPointerDown={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 style={{
-                  width: 74,
-                  height: 74,
-                  borderRadius: 14,
-                  overflow: "hidden",
+                  width: 90,
+                  height: 90,
                   background: "#F4EFE3",
                   flexShrink: 0,
                   display: "flex",
@@ -170,7 +170,7 @@ const HomeLocalChannels = () => {
                   <span>{PLATFORM_INITIAL[r.platform] || "•"}</span>
                 )}
               </div>
-              <div onClick={() => openResource(r)} style={{ flex: 1, minWidth: 1, cursor: "pointer" }}>
+              <div onClick={() => openResource(r)} style={{ flex: 1, minWidth: 1, cursor: "pointer", alignSelf: "center", paddingTop: 10, paddingBottom: 10 }}>
                 <div
                   style={{
                     fontFamily: HN,
