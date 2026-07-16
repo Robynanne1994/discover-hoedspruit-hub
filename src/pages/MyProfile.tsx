@@ -195,7 +195,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating, category_id, categories(name)")
+        .select("id, title, image_url, location, google_rating, category_id, categories(title)")
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
@@ -633,8 +633,8 @@ const MyProfile = () => {
       <div style={{ padding: "20px 20px 0" }}>
         {tab === "listings" && (() => {
           const list = saved ?? [];
-          const cats = Array.from(new Set(list.map((it: any) => it.categories?.name).filter(Boolean))) as string[];
-          const filtered = listingCat === "all" ? list : list.filter((it: any) => it.categories?.name === listingCat);
+          const cats = Array.from(new Set(list.map((it: any) => it.categories?.title).filter(Boolean))) as string[];
+          const filtered = listingCat === "all" ? list : list.filter((it: any) => it.categories?.title === listingCat);
           return list.length ? (
             <>
               {cats.length > 1 && (
