@@ -105,6 +105,7 @@ export type Database = {
           cta_label: string | null
           description: string | null
           detail_image_url: string | null
+          homepage_image_url: string | null
           id: string
           image_url: string | null
           is_featured: boolean
@@ -132,6 +133,7 @@ export type Database = {
           cta_label?: string | null
           description?: string | null
           detail_image_url?: string | null
+          homepage_image_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
@@ -159,6 +161,7 @@ export type Database = {
           cta_label?: string | null
           description?: string | null
           detail_image_url?: string | null
+          homepage_image_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean

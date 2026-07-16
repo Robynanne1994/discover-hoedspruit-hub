@@ -1,0 +1,1 @@
+ALTER TABLE public.bush_telegraph_resources ADD COLUMN IF NOT EXISTS homepage_image_url text;
