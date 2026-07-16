@@ -57,7 +57,7 @@ function SubTabs<T extends string>({
   options: { id: T; label: string }[];
 }) {
   return (
-    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
       {options.map((opt) => {
         const active = value === opt.id;
         return (
