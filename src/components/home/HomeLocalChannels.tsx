@@ -127,8 +127,9 @@ const HomeLocalChannels = () => {
             <div
               key={r.id}
               style={{
-                background: "transparent",
-                padding: "12px 0",
+                background: "#ffffff",
+                borderRadius: 16,
+                padding: 12,
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
@@ -147,7 +148,7 @@ const HomeLocalChannels = () => {
                 style={{
                   width: 74,
                   height: 74,
-                  borderRadius: 16,
+                  borderRadius: 14,
                   overflow: "hidden",
                   background: "#F4EFE3",
                   flexShrink: 0,
@@ -173,9 +174,10 @@ const HomeLocalChannels = () => {
                 <div
                   style={{
                     fontFamily: HN,
-                    fontSize: 11,
+                    fontSize: 10.5,
                     color: "#6B6A5E",
-                    letterSpacing: 0,
+                    textTransform: "uppercase",
+                    letterSpacing: "1.8px",
                     marginBottom: 4,
                   }}
                 >
@@ -184,9 +186,9 @@ const HomeLocalChannels = () => {
                 <div
                   style={{
                     fontFamily: HN,
-                    fontSize: 13,
+                    fontSize: 15,
                     color: "#1A1A1A",
-                    lineHeight: 1.2,
+                    lineHeight: 1.25,
                     marginBottom: 5,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -199,7 +201,7 @@ const HomeLocalChannels = () => {
                   {r.title_override?.trim() || r.title}
                 </div>
                 {r.meta_2 && (
-                  <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E" }}>
+                  <div style={{ fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
                     {r.meta_2}
                   </div>
                 )}
