@@ -25,7 +25,7 @@ const HomeLocalChannels = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("bush_telegraph_resources")
-        .select("id, slug, title, title_override, platform, meta, meta_2, url, image_url, is_featured, sort_order, resource_type")
+        .select("id, slug, title, title_override, platform, meta, meta_2, url, image_url, homepage_image_url, is_featured, sort_order, resource_type")
         .order("is_featured", { ascending: false })
         .order("sort_order", { ascending: true })
         .limit(4);
@@ -160,9 +160,9 @@ const HomeLocalChannels = () => {
                   color: "#6B6A5E",
                 }}
               >
-                {r.image_url ? (
+                {(r.homepage_image_url || r.image_url) ? (
                   <img
-                    src={r.image_url}
+                    src={r.homepage_image_url || r.image_url}
                     alt=""
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />

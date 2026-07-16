@@ -23,7 +23,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "title_override", "is_featured", "sort_order"];
+const HEADERS = ["title", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "homepage_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "title_override", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
@@ -37,6 +37,7 @@ type Resource = {
   resource_type: string;
   image_url: string | null;
   detail_image_url: string | null;
+  homepage_image_url: string | null;
   qr_image_url: string | null;
   admin_name: string | null;
   admins: AdminEntry[] | null;
@@ -63,6 +64,7 @@ const emptyForm = {
   resource_type: "link",
   image_url: "",
   detail_image_url: "",
+  homepage_image_url: "",
   qr_image_url: "",
   admins: [] as AdminEntry[],
   years_mode: "years" as YearsMode,
@@ -186,6 +188,7 @@ const AdminBushTelegraph = () => {
         description: rest.description || null,
         image_url: rest.image_url || null,
         detail_image_url: rest.detail_image_url || null,
+        homepage_image_url: rest.homepage_image_url || null,
         qr_image_url: rest.qr_image_url || null,
         admins: cleanAdmins,
         admin_name: cleanAdmins[0]?.name || null,
@@ -255,6 +258,7 @@ const AdminBushTelegraph = () => {
       resource_type: r.resource_type || "link",
       image_url: r.image_url ?? "",
       detail_image_url: r.detail_image_url ?? "",
+      homepage_image_url: r.homepage_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
       admins: Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
@@ -349,6 +353,7 @@ const AdminBushTelegraph = () => {
           resource_type: r.resource_type?.trim() || "link",
           image_url: r.image_url?.trim() || null,
           detail_image_url: r.detail_image_url?.trim() || null,
+          homepage_image_url: r.homepage_image_url?.trim() || null,
           qr_image_url: r.qr_image_url?.trim() || null,
           admin_name: r.admin_name?.trim() || null,
           years_running: r.years_running ? parseInt(r.years_running) || null : null,
@@ -407,7 +412,7 @@ const AdminBushTelegraph = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
       r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
-      r.image_url ?? "", r.detail_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
+      r.image_url ?? "", r.detail_image_url ?? "", r.homepage_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
       r.admin_name ?? "", r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
       r.tag_1 ?? "", r.tag_2 ?? "", r.title_override ?? "",
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
@@ -639,6 +644,16 @@ const AdminBushTelegraph = () => {
                 value={form.detail_image_url}
                 onChange={(url) => setForm({ ...form, detail_image_url: url })}
                 aspect={4 / 3}
+              />
+            </div>
+
+            <div>
+              <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Local Channels section — 1:1. Falls back to card image if empty.)</span></Label>
+              <ImageUpload
+                bucket="local-channels-images"
+                value={form.homepage_image_url}
+                onChange={(url) => setForm({ ...form, homepage_image_url: url })}
+                aspect={1}
               />
             </div>
 
