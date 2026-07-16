@@ -160,9 +160,9 @@ const HomeLocalChannels = () => {
                   color: "#6B6A5E",
                 }}
               >
-                {r.image_url ? (
+                {(r.homepage_image_url || r.image_url) ? (
                   <img
-                    src={r.image_url}
+                    src={r.homepage_image_url || r.image_url}
                     alt=""
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
