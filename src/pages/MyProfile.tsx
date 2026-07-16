@@ -61,7 +61,22 @@ function SubTabs<T extends string>({
   options: { id: T; label: string }[];
 }) {
   return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "nowrap",
+        gap: 8,
+        marginBottom: 16,
+        overflowX: "auto",
+        WebkitOverflowScrolling: "touch",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        marginLeft: -20,
+        marginRight: -20,
+        padding: "0 20px",
+      }}
+      className="hide-scrollbar"
+    >
       {options.map((opt) => {
         const active = value === opt.id;
         return (
@@ -70,6 +85,8 @@ function SubTabs<T extends string>({
             type="button"
             onClick={() => onChange(opt.id)}
             style={{
+              flex: "0 0 auto",
+              whiteSpace: "nowrap",
               background: active ? "#423324" : "transparent",
               color: active ? "#fff" : INK,
               border: `1px solid ${active ? "#423324" : LINE}`,
