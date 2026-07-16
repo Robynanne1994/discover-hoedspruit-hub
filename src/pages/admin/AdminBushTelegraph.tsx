@@ -353,6 +353,7 @@ const AdminBushTelegraph = () => {
           resource_type: r.resource_type?.trim() || "link",
           image_url: r.image_url?.trim() || null,
           detail_image_url: r.detail_image_url?.trim() || null,
+          homepage_image_url: r.homepage_image_url?.trim() || null,
           qr_image_url: r.qr_image_url?.trim() || null,
           admin_name: r.admin_name?.trim() || null,
           years_running: r.years_running ? parseInt(r.years_running) || null : null,
