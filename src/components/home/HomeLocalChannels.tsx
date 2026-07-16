@@ -149,7 +149,8 @@ const HomeLocalChannels = () => {
                 onPointerDown={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 style={{
                   width: 90,
-                  height: 90,
+                  minHeight: 90,
+                  alignSelf: "stretch",
                   background: "#F4EFE3",
                   flexShrink: 0,
                   display: "flex",
