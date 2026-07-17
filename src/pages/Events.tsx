@@ -660,14 +660,9 @@ const Events = () => {
         }
       />
 
-      {/* Gap before content */}
-      <div style={{ height: 10 }} />
-
-
-
       {/* Inline search input */}
       {searchOpen && (
-        <div style={{ padding: "0 20px 12px 20px" }}>
+        <div style={{ padding: "16px 20px 12px 20px" }}>
           <SearchBar
             variant="light"
             value={search}
@@ -683,13 +678,16 @@ const Events = () => {
         <div
           ref={filterBarRef}
           style={{
-            padding: "16px 20px 32px",
+            marginTop: 18,
+            paddingLeft: 20,
+            paddingRight: 20,
             display: "flex",
             gap: 10,
             alignItems: "center",
             overflowX: "auto",
             scrollbarWidth: "none",
           }}
+          className="scrollbar-hide"
         >
           {FILTERS.map((f) => {
             const active = activeFilter === f.value;
@@ -712,8 +710,12 @@ const Events = () => {
                   color: active ? "#FFFFFF" : C.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
+                <Calendar size={13} strokeWidth={1.8} />
                 {f.label} <span style={{ opacity: 1 }}>({count})</span>
               </button>
             );
