@@ -138,7 +138,7 @@ const HomeSpecials = () => {
                   <img src={s.homepage_image_url || s.image_url || s.detail_image_url || ""} alt={s.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
               </div>
-              <div style={{ flex: 1, minWidth: 0, alignSelf: "center", paddingTop: 0, paddingBottom: 10 }}>
+              <div style={{ flex: 1, minWidth: 0, alignSelf: "center", paddingTop: 4, paddingBottom: 10 }}>
                 <div
                   {...noTitleCaseProps(s)}
                   style={{
@@ -146,6 +146,7 @@ const HomeSpecials = () => {
                     fontSize: 15,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
+                    marginTop: 2,
                     marginBottom: 3,
                     wordBreak: "break-word",
                     display: "-webkit-box",
