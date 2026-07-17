@@ -157,7 +157,7 @@ const HomeSpecials = () => {
                   <div
                     style={{
                       fontFamily: HN,
-                      [^1^]
+                      fontSize: 11,
                       letterSpacing: "0.3px",
                       color: "#6B6A5E",
                       marginBottom: 4,
