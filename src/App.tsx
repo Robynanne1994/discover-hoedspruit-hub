@@ -162,6 +162,7 @@ const App = () => (
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/category/:id" element={<CategoryPage />} />
+              <Route path="/explore-listings" element={<ExploreListings />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/events" element={<Events />} />
