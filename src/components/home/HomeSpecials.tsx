@@ -77,6 +77,11 @@ const HomeSpecials = () => {
                     lineHeight: 1.25,
                     marginBottom: 3,
                     wordBreak: "break-word",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {getDisplayTitle(s)}
@@ -84,16 +89,23 @@ const HomeSpecials = () => {
                 {s.deal_label && (
                   <div
                     style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      alignSelf: "flex-start",
+                      background: "#F5F0E8",
+                      borderRadius: 4,
+                      padding: "2px 6px",
                       fontFamily: HN,
                       fontSize: 13,
                       fontWeight: 500,
                       color: "#423324",
                       lineHeight: 1.3,
                       marginBottom: 3,
-                      wordBreak: "break-word",
                     }}
                   >
-                    {s.deal_label}
+                    <Tag size={13} strokeWidth={1.6} />
+                    <span>{s.deal_label}</span>
                   </div>
                 )}
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
