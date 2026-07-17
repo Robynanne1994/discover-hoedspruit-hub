@@ -536,36 +536,6 @@ const Events = () => {
   }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
 
-  const sectionTitle = useMemo(() => {
-    const today = startOfToday();
-    switch (activeFilter) {
-      case "today":
-        return format(today, "d MMM yyyy");
-      case "this-week": {
-        const end = endOfWeek(today, { weekStartsOn: 1 });
-        const sameMonth = today.getMonth() === end.getMonth();
-        return sameMonth
-          ? `${format(today, "d")} – ${format(end, "d MMM")}`
-          : `${format(today, "d MMM")} – ${format(end, "d MMM")}`;
-      }
-      case "this-weekend": {
-        const { start, end } = getWeekendRange(today);
-        const sameMonth = start.getMonth() === end.getMonth();
-        return sameMonth
-          ? `${format(start, "d")} – ${format(end, "d MMM")}`
-          : `${format(start, "d MMM")} – ${format(end, "d MMM")}`;
-      }
-      case "this-month":
-        return format(today, "MMMM yyyy");
-      case "this-year":
-        return format(today, "yyyy");
-      case "past":
-        return "Past Events";
-      default:
-        return "Upcoming Events";
-    }
-  }, [activeFilter]);
-
   const handleFilterPill = (v: FilterType) => {
     updateParams({ f: v === "all" ? null : v });
   };
