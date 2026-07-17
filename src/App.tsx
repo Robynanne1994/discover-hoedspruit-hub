@@ -29,6 +29,7 @@ import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import AdminBushTelegraph from "./pages/admin/AdminBushTelegraph.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
+import ExploreListings from "./pages/ExploreListings.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
