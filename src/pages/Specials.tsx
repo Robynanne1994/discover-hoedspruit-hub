@@ -377,26 +377,20 @@ const Specials = () => {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 style={{
-                  background: isActive ? COLOR.pillActiveBg : COLOR.pillInactiveBg,
-                  border: `1px solid ${isActive ? COLOR.pillActiveBg : COLOR.pillBorder}`,
+                  background: isActive ? "#423324" : "#FFFFFF",
+                  border: `1px solid ${isActive ? "#423324" : "#E2DAC6"}`,
                   borderRadius: 999,
-                  padding: "8px 16px",
+                  padding: "8px 18px",
                   cursor: "pointer",
                   fontFamily: SANS,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 700,
                   letterSpacing: "0.01em",
-                  color: isActive ? COLOR.pillActiveFg : COLOR.ink,
+                  color: isActive ? "#FFFFFF" : COLOR.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
                 }}
               >
-                <span style={{ display: "inline-flex", alignItems: "center", color: isActive ? COLOR.pillActiveFg : COLOR.ink }}>
-                  {tabIcon(tab)}
-                </span>
                 {tab}
               </button>
             );
