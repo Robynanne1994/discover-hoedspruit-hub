@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { MapPin, Tag } from "lucide-react";
@@ -18,6 +19,76 @@ interface Special {
   deal_label: string;
   valid_until: string | null;
 }
+
+const MAX_LABEL_PX = 13;
+const MIN_LABEL_PX = 10;
+
+const AutoFitDealLabel = ({ label }: { label: string }) => {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+  const [fontSize, setFontSize] = useState(MAX_LABEL_PX);
+
+  useEffect(() => {
+    const fit = () => {
+      const wrap = wrapRef.current;
+      const text = textRef.current;
+      if (!wrap || !text) return;
+      const available = wrap.clientWidth;
+      let size = MAX_LABEL_PX;
+      text.style.fontSize = `${size}px`;
+      while (text.scrollWidth > available && size > MIN_LABEL_PX) {
+        size -= 0.5;
+        text.style.fontSize = `${size}px`;
+      }
+      setFontSize(size);
+    };
+
+    const raf = requestAnimationFrame(fit);
+    const id = setTimeout(fit, 100);
+    window.addEventListener("resize", fit);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(id);
+      window.removeEventListener("resize", fit);
+    };
+  }, [label]);
+
+  return (
+    <div
+      ref={wrapRef}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
+        alignSelf: "flex-start",
+        background: "#F5F0E8",
+        borderRadius: 4,
+        padding: "2px 6px",
+        fontFamily: HN,
+        fontWeight: 500,
+        color: "#423324",
+        lineHeight: 1.3,
+        marginBottom: 3,
+        maxWidth: "100%",
+        overflow: "hidden",
+        whiteSpace: "nowrap",
+      }}
+    >
+      <Tag size={13} strokeWidth={1.6} style={{ flexShrink: 0 }} />
+      <span
+        ref={textRef}
+        style={{
+          fontSize,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  );
+};
 
 const HomeSpecials = () => {
   const { data: specials } = useQuery({
@@ -86,31 +157,10 @@ const HomeSpecials = () => {
                 >
                   {getDisplayTitle(s)}
                 </div>
-                {s.deal_label && (
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 4,
-                      alignSelf: "flex-start",
-                      background: "#F5F0E8",
-                      borderRadius: 4,
-                      padding: "2px 6px",
-                      fontFamily: HN,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "#423324",
-                      lineHeight: 1.3,
-                      marginBottom: 3,
-                    }}
-                  >
-                    <Tag size={13} strokeWidth={1.6} />
-                    <span>{s.deal_label}</span>
-                  </div>
-                )}
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
-                  <MapPin size={12} strokeWidth={1.6} style={{ marginTop: 2, flexShrink: 0 }} />
-                  <span style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}>{s.business_name}</span>
+                {s.deal_label && <AutoFitDealLabel label={s.deal_label} />}
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E", overflow: "hidden" }}>
+                  <MapPin size={12} strokeWidth={1.6} style={{ flexShrink: 0 }} />
+                  <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.business_name}</span>
                 </div>
               </div>
             </Link>
