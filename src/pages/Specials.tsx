@@ -392,8 +392,12 @@ const Specials = () => {
                   color: isActive ? "#FFFFFF" : COLOR.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
+                {tabIcon(tab)}
                 {tab}
               </button>
             );
