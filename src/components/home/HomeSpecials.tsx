@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { MapPin } from "lucide-react";
+import { MapPin, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
