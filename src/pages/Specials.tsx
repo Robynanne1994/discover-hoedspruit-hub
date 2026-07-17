@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Store, Clock, ArrowLeft, MapPin } from "lucide-react";
+import { Search, SlidersHorizontal, X, Store, Clock, ArrowLeft, MapPin, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -30,6 +30,17 @@ const COLOR = {
 };
 
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
+
+const tabIcon = (tab: string) => {
+  const t = tab.toLowerCase();
+  if (t.includes("restaurant") || t.includes("food") || t.includes("café") || t.includes("cafe")) return <UtensilsCrossed size={13} strokeWidth={1.8} />;
+  if (t.includes("accommodation") || t.includes("stay") || t.includes("lodge") || t.includes("hotel")) return <Bed size={13} strokeWidth={1.8} />;
+  if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return <MapPin size={13} strokeWidth={1.8} />;
+  if (t.includes("shop") || t.includes("retail") || t.includes("shopping")) return <ShoppingBag size={13} strokeWidth={1.8} />;
+  if (t.includes("service") || t.includes("trade") || t.includes("business")) return <Wrench size={13} strokeWidth={1.8} />;
+  if (tab === "All Specials") return <Percent size={13} strokeWidth={1.8} />;
+  return <Tag size={13} strokeWidth={1.8} />;
+};
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "default", label: "Default" },
@@ -381,8 +392,12 @@ const Specials = () => {
                   color: isActive ? "#FFFFFF" : COLOR.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
+                {tabIcon(tab)}
                 {tab}
               </button>
             );
