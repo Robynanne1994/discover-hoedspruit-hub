@@ -75,12 +75,27 @@ const HomeSpecials = () => {
                     fontSize: 15,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    marginBottom: 6,
+                    marginBottom: 4,
                     wordBreak: "break-word",
                   }}
                 >
                   {getDisplayTitle(s)}
                 </div>
+                {s.deal_label && (
+                  <div
+                    style={{
+                      fontFamily: HN,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: "#423324",
+                      lineHeight: 1.3,
+                      marginBottom: 4,
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {s.deal_label}
+                  </div>
+                )}
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
                   <MapPin size={12} strokeWidth={1.6} style={{ marginTop: 2, flexShrink: 0 }} />
                   <span style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}>{s.business_name}</span>
