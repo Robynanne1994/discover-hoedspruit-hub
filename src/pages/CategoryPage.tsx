@@ -1323,7 +1323,7 @@ const CategoryPage = () => {
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                         {l.location ? (
                           <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED, flex: 1, minWidth: 0, lineHeight: 1.35 }}>
-                            <MapPin size={13} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0, transform: "translateY(-5px)" }} />
+                            <MapPin size={13} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0, transform: "translateY(-2px)" }} />
                             <span style={{ wordBreak: "break-word" }}>{l.location}</span>
                           </div>
                         ) : (
