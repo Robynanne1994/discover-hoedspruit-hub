@@ -120,109 +120,108 @@ const HomeSpecials = () => {
                   borderRadius: 16,
                   padding: 12,
                   display: "flex",
-                  flexDirection: "column",
+                  flexDirection: "row",
+                  alignItems: "stretch",
+                  gap: 12,
                   textDecoration: "none",
                   transition: "transform 150ms ease-out",
                 }}
               >
-                <div style={{ display: "flex", flexDirection: "row", gap: 12 }}>
-                  <div
-                    style={{
-                      width: 84,
-                      height: 84,
-                      borderRadius: 12,
-                      background: "#F4EFE3",
-                      flexShrink: 0,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {img && (
-                      <img
-                        src={img}
-                        alt={s.title}
-                        loading="lazy"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      flex: 1,
-                      minWidth: 0,
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: HN,
-                        fontSize: 11,
-                        letterSpacing: "0.3px",
-                        color: "#6B6A5E",
-                        marginBottom: 4,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {s.business_name}
-                    </div>
-                    <div
-                      {...noTitleCaseProps(s)}
-                      style={{
-                        fontFamily: HN,
-                        fontSize: 16,
-                        color: "#1A1A1A",
-                        lineHeight: 1.25,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {getDisplayTitle(s)}
-                    </div>
-                  </div>
+                <div
+                  style={{
+                    width: 96,
+                    flexShrink: 0,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: "#F4EFE3",
+                    alignSelf: "stretch",
+                  }}
+                >
+                  {img && (
+                    <img
+                      src={img}
+                      alt={s.title}
+                      loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
                 </div>
-
-                {body && (
+                <div
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
                   <div
                     style={{
-                      marginTop: 8,
                       fontFamily: HN,
-                      fontSize: 13,
+                      fontSize: 11,
+                      letterSpacing: "0.3px",
                       color: "#6B6A5E",
-                      lineHeight: 1.45,
+                      marginBottom: 4,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {s.business_name}
+                  </div>
+                  <div
+                    {...noTitleCaseProps(s)}
+                    style={{
+                      fontFamily: HN,
+                      fontSize: 16,
+                      color: "#1A1A1A",
+                      lineHeight: 1.25,
                       display: "-webkit-box",
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: "vertical",
                       overflow: "hidden",
+                      wordBreak: "break-word",
                     }}
                   >
-                    {body}
+                    {getDisplayTitle(s)}
                   </div>
-                )}
 
-                <div
-                  style={{
-                    marginTop: 10,
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  {s.deal_label && <Pill>{s.deal_label}</Pill>}
-                  {validity && <Pill>{validity}</Pill>}
-                  <ArrowUpRight
-                    size={14}
-                    strokeWidth={1.5}
-                    color="#6B6A5E"
-                    style={{ marginLeft: "auto" }}
-                  />
+                  {body && (
+                    <div
+                      style={{
+                        marginTop: 8,
+                        fontFamily: HN,
+                        fontSize: 13,
+                        color: "#6B6A5E",
+                        lineHeight: 1.45,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {body}
+                    </div>
+                  )}
+
+                  <div
+                    style={{
+                      marginTop: 10,
+                      display: "flex",
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    {s.deal_label && <Pill>{s.deal_label}</Pill>}
+                    {validity && <Pill>{validity}</Pill>}
+                    <ArrowUpRight
+                      size={14}
+                      strokeWidth={1.5}
+                      color="#6B6A5E"
+                      style={{ marginLeft: "auto" }}
+                    />
+                  </div>
                 </div>
               </Link>
             );
