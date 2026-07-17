@@ -680,12 +680,8 @@ const Events = () => {
                   color: active ? "#FFFFFF" : C.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
                 }}
               >
-                <Calendar size={13} strokeWidth={1.8} />
                 {f.label} <span style={{ opacity: 1 }}>({count})</span>
               </button>
             );
