@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft, MapPin, Bed, Utensils, PersonStanding } from "lucide-react";
+import { Search, SlidersHorizontal, X, Store, Clock, ArrowLeft, MapPin } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -138,14 +138,6 @@ const Specials = () => {
     return ["All Specials", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
 
-  const tabIcon = (tab: string) => {
-    const t = tab.toLowerCase();
-    if (t === "all specials") return <Tag size={16} strokeWidth={1.8} />;
-    if (t.includes("accommodation") || t.includes("stay") || t.includes("sleep")) return <Bed size={16} strokeWidth={1.8} />;
-    if (t.includes("food") || t.includes("drink") || t.includes("restaurant") || t.includes("dining")) return <Utensils size={16} strokeWidth={1.8} />;
-    if (t.includes("activity") || t.includes("activities") || t.includes("adventure") || t.includes("tour")) return <PersonStanding size={16} strokeWidth={1.8} />;
-    return <Tag size={16} strokeWidth={1.8} />;
-  };
 
   // Counts per category tag, respecting search but not active category/filterType
   const categoryCounts = useMemo(() => {
@@ -377,26 +369,20 @@ const Specials = () => {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 style={{
-                  background: isActive ? COLOR.pillActiveBg : COLOR.pillInactiveBg,
-                  border: `1px solid ${isActive ? COLOR.pillActiveBg : COLOR.pillBorder}`,
+                  background: isActive ? "#423324" : "#FFFFFF",
+                  border: `1px solid ${isActive ? "#423324" : "#E2DAC6"}`,
                   borderRadius: 999,
-                  padding: "8px 16px",
+                  padding: "8px 18px",
                   cursor: "pointer",
                   fontFamily: SANS,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 700,
                   letterSpacing: "0.01em",
-                  color: isActive ? COLOR.pillActiveFg : COLOR.ink,
+                  color: isActive ? "#FFFFFF" : COLOR.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
                 }}
               >
-                <span style={{ display: "inline-flex", alignItems: "center", color: isActive ? COLOR.pillActiveFg : COLOR.ink }}>
-                  {tabIcon(tab)}
-                </span>
                 {tab}
               </button>
             );
