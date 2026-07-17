@@ -728,37 +728,6 @@ const Events = () => {
 
       {/* List */}
       <div style={{ padding: "20px 20px 0 20px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-between",
-            marginBottom: 10,
-            marginTop: 0,
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: HEAD,
-              fontWeight: 700,
-              fontSize: 20,
-              color: C.ink,
-              margin: 0,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {sectionTitle}
-          </h2>
-          <span
-            style={{
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 15,
-              color: C.ink,
-            }}
-          >
-          </span>
-        </div>
 
         {isLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
