@@ -536,36 +536,6 @@ const Events = () => {
   }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
 
-  const sectionTitle = useMemo(() => {
-    const today = startOfToday();
-    switch (activeFilter) {
-      case "today":
-        return format(today, "d MMM yyyy");
-      case "this-week": {
-        const end = endOfWeek(today, { weekStartsOn: 1 });
-        const sameMonth = today.getMonth() === end.getMonth();
-        return sameMonth
-          ? `${format(today, "d")} – ${format(end, "d MMM")}`
-          : `${format(today, "d MMM")} – ${format(end, "d MMM")}`;
-      }
-      case "this-weekend": {
-        const { start, end } = getWeekendRange(today);
-        const sameMonth = start.getMonth() === end.getMonth();
-        return sameMonth
-          ? `${format(start, "d")} – ${format(end, "d MMM")}`
-          : `${format(start, "d MMM")} – ${format(end, "d MMM")}`;
-      }
-      case "this-month":
-        return format(today, "MMMM yyyy");
-      case "this-year":
-        return format(today, "yyyy");
-      case "past":
-        return "Past Events";
-      default:
-        return "Upcoming Events";
-    }
-  }, [activeFilter]);
-
   const handleFilterPill = (v: FilterType) => {
     updateParams({ f: v === "all" ? null : v });
   };
@@ -660,14 +630,9 @@ const Events = () => {
         }
       />
 
-      {/* Gap before content */}
-      <div style={{ height: 10 }} />
-
-
-
       {/* Inline search input */}
       {searchOpen && (
-        <div style={{ padding: "0 20px 12px 20px" }}>
+        <div style={{ padding: "16px 20px 12px 20px" }}>
           <SearchBar
             variant="light"
             value={search}
@@ -683,13 +648,16 @@ const Events = () => {
         <div
           ref={filterBarRef}
           style={{
-            padding: "16px 20px 32px",
+            marginTop: 18,
+            paddingLeft: 20,
+            paddingRight: 20,
             display: "flex",
             gap: 10,
             alignItems: "center",
             overflowX: "auto",
             scrollbarWidth: "none",
           }}
+          className="scrollbar-hide"
         >
           {FILTERS.map((f) => {
             const active = activeFilter === f.value;
@@ -712,8 +680,12 @@ const Events = () => {
                   color: active ? "#FFFFFF" : C.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
+                <Calendar size={13} strokeWidth={1.8} />
                 {f.label} <span style={{ opacity: 1 }}>({count})</span>
               </button>
             );
@@ -725,38 +697,7 @@ const Events = () => {
 
 
       {/* List */}
-      <div style={{ padding: "0 20px" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-between",
-            marginBottom: 10,
-            marginTop: 4,
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: HEAD,
-              fontWeight: 700,
-              fontSize: 20,
-              color: C.ink,
-              margin: 0,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {sectionTitle}
-          </h2>
-          <span
-            style={{
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 15,
-              color: C.ink,
-            }}
-          >
-          </span>
-        </div>
+      <div style={{ padding: "20px 20px 0 20px" }}>
 
         {isLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
