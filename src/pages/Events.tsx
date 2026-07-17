@@ -727,14 +727,14 @@ const Events = () => {
 
 
       {/* List */}
-      <div style={{ padding: "0 20px" }}>
+      <div style={{ padding: "20px 20px 0 20px" }}>
         <div
           style={{
             display: "flex",
             alignItems: "baseline",
             justifyContent: "space-between",
             marginBottom: 10,
-            marginTop: 4,
+            marginTop: 0,
           }}
         >
           <h2
