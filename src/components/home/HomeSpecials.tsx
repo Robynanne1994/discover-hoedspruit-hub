@@ -161,7 +161,7 @@ const HomeSpecials = () => {
                 {s.deal_label && <AutoFitDealLabel label={s.deal_label} />}
                 <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E", overflow: "hidden" }}>
                   <MapPin size={12} strokeWidth={1.6} style={{ flexShrink: 0 }} />
-                  <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", paddingTop: 1 }}>{s.business_name}</span>
+                  <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", paddingTop: 2 }}>{s.business_name}</span>
                 </div>
               </div>
             </Link>
