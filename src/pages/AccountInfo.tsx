@@ -362,12 +362,10 @@ const AccountInfo = () => {
 
     if (!trimmedFirstName) {
       toast.error("Please enter your name.");
-      startEditing("firstName");
       return;
     }
     if (!trimmedSurname) {
       toast.error("Please enter your surname.");
-      startEditing("surname");
       return;
     }
 
