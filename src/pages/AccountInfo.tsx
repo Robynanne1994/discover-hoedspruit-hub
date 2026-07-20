@@ -691,169 +691,92 @@ const AccountInfo = () => {
             </div>
           ) : (
             <>
-              <Row fieldKey="firstName" label="FIRST NAME" isFirst>
-                {editing === "firstName" ? (
-                  <>
-                    <input
-                      autoFocus
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      style={rowInputStyle}
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{firstName || "—"}</div>
-                )}
+              <Row label="FIRST NAME" isFirst>
+                <input
+                  value={firstName}
+                  onChange={(e) => `${setFirstName(e.target.value)}`}
+                  style={rowInputStyle}
+                />
               </Row>
 
-              <Row fieldKey="surname" label="SURNAME">
-                {editing === "surname" ? (
-                  <>
-                    <input
-                      autoFocus
-                      value={surname}
-                      onChange={(e) => setSurname(e.target.value)}
-                      style={rowInputStyle}
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{surname || "—"}</div>
-                )}
+              <Row label="SURNAME">
+                <input
+                  value={surname}
+                  onChange={(e) => setSurname(e.target.value)}
+                  style={rowInputStyle}
+                />
               </Row>
 
-              <Row fieldKey="username" label="Username">
-                {editing === "username" ? (
-                  <>
-                    <input
-                      autoFocus
-                      value={username}
-                      onChange={(e) =>
-                        setUsername(e.target.value.replace(/\s+/g, "").toLowerCase().replace(/^@+/, ""))
-                      }
-                      style={rowInputStyle}
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{username ? `@${username}` : "—"}</div>
-                )}
+              <Row label="Username">
+                <input
+                  value={username}
+                  onChange={(e) =>
+                    setUsername(e.target.value.replace(/\s+/g, "").toLowerCase().replace(/^@+/, ""))
+                  }
+                  style={rowInputStyle}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                />
               </Row>
 
-              <Row fieldKey="email" label="Email">
-                {editing === "email" ? (
-                  <>
-                    <input
-                      autoFocus
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      style={rowInputStyle}
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{email || "—"}</div>
-                )}
+              <Row label="Email">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={rowInputStyle}
+                />
               </Row>
 
-              <Row fieldKey="phone" label="Phone">
-                {editing === "phone" ? (
-                  <>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
-                      <DialCodePicker
-                        value={parsed.areaCode}
-                        onChange={(newCode) => {
-                          const ac = AREA_CODES.find((a) => a.code === newCode);
-                          setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
+              <Row label="Phone">
+                <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
+                  <DialCodePicker
+                    value={parsed.areaCode}
+                    onChange={(newCode) => {
+                      setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
+                    }}
+                  />
+                  <input
+                    type="tel"
+                    value={parsed.number}
+                    onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
+                    style={{ ...rowInputStyle, flex: 1 }}
+                    placeholder="063 241 0296"
+                  />
+                </div>
+              </Row>
+
+              <Row label="Residency">
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
+                  {RESIDENCY_OPTIONS.map((opt) => {
+                    const active = location === opt;
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setLocation(opt)}
+                        style={{
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "10px 14px",
+                          borderRadius: 10,
+                          border: `1px solid ${active ? DARK : LINE}`,
+                          background: active ? DARK : "#FFFFFF",
+                          color: active ? "#FFFFFF" : INK,
+                          fontFamily: FF,
+                          fontSize: 13,
+                          fontWeight: active ? 600 : 400,
+                          cursor: "pointer",
                         }}
-                      />
-                      <input
-                        autoFocus
-                        type="tel"
-                        value={parsed.number}
-                        onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
-                        style={{ ...rowInputStyle, flex: 1 }}
-                        placeholder="063 241 0296"
-                      />
-                    </div>
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={{ ...rowValueStyle, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{parsed.flag}</span>
-                    <span>{parsed.areaCode}</span>
-                    <span style={{ color: LINE }}>·</span>
-                    <span>{parsed.number || "—"}</span>
-                  </div>
-                )}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
               </Row>
 
-              <Row fieldKey="location" label="Residency">
-                {editing === "location" ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
-                    {RESIDENCY_OPTIONS.map((opt) => {
-                      const active = location === opt;
-                      return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setLocation(opt);
-                            setEditing(null);
-                          }}
-                          style={{
-                            width: "100%",
-                            textAlign: "left",
-                            padding: "10px 14px",
-                            borderRadius: 10,
-                            border: `1px solid ${active ? DARK : LINE}`,
-                            background: active ? DARK : "#FFFFFF",
-                            color: active ? "#FFFFFF" : INK,
-                            fontFamily: FF,
-                            fontSize: 13,
-                            fontWeight: active ? 600 : 400,
-                            cursor: "pointer",
-                          }}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCancelEdit();
-                      }}
-                      style={{
-                        alignSelf: "flex-start",
-                        marginTop: 2,
-                        background: "transparent",
-                        border: "none",
-                        padding: "4px 0",
-                        fontFamily: FF,
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: MUTED,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div style={rowValueStyle}>{location || "—"}</div>
-                )}
-              </Row>
-
-              <Row label="Password" isPassword>
+              <Row label="Password" onClick={() => setPwOpen(true)}>
                 <div style={{ ...rowValueStyle, letterSpacing: "2px" }}>••••••••</div>
               </Row>
             </>
