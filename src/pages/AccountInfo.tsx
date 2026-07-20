@@ -101,7 +101,6 @@ const rowInputStyle: React.CSSProperties = {
   background: "transparent",
   width: "100%",
   padding: 0,
-  paddingRight: 28,
 };
 
 type FieldKey = "firstName" | "surname" | "username" | "email" | "phone" | "location";
@@ -453,45 +452,6 @@ const AccountInfo = () => {
     }
   };
 
-  const getFieldValue = (key: FieldKey): string => {
-    switch (key) {
-      case "firstName":
-        return firstName;
-      case "surname":
-        return surname;
-      case "username":
-        return username;
-      case "email":
-        return email;
-      case "phone":
-        return phone;
-      case "location":
-        return location;
-    }
-  };
-
-  const applyFieldValue = (key: FieldKey, value: string) => {
-    switch (key) {
-      case "firstName":
-        setFirstName(value);
-        break;
-      case "surname":
-        setSurname(value);
-        break;
-      case "username":
-        setUsername(value);
-        break;
-      case "email":
-        setEmail(value);
-        break;
-      case "phone":
-        setPhone(value);
-        break;
-      case "location":
-        setLocation(value);
-        break;
-    }
-  };
 
 
   if (loading || !user) {
