@@ -68,7 +68,6 @@ const AutoFitDealLabel = ({ label }: { label: string }) => {
         fontWeight: 500,
         color: "#423324",
         lineHeight: 1.3,
-        marginBottom: 3,
         maxWidth: "100%",
         overflow: "hidden",
         whiteSpace: "nowrap",
@@ -138,7 +137,7 @@ const HomeSpecials = () => {
                   <img src={s.homepage_image_url || s.image_url || s.detail_image_url || ""} alt={s.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
               </div>
-              <div style={{ flex: 1, minWidth: 0, alignSelf: "center", paddingTop: 4, paddingBottom: 10 }}>
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", paddingTop: 8, paddingBottom: 8 }}>
                 <div
                   {...noTitleCaseProps(s)}
                   style={{
@@ -146,8 +145,6 @@ const HomeSpecials = () => {
                     fontSize: 14,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    marginTop: 2,
-                    marginBottom: 3,
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
