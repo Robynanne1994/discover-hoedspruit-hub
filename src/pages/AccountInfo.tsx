@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
@@ -101,10 +101,8 @@ const rowInputStyle: React.CSSProperties = {
   background: "transparent",
   width: "100%",
   padding: 0,
-  paddingRight: 28,
 };
 
-type FieldKey = "firstName" | "surname" | "username" | "email" | "phone" | "location";
 
 // Split a combined name on the first space so older accounts (which only have
 // a display_name) still populate the separate fields sensibly.
@@ -210,8 +208,6 @@ const AccountInfo = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [editing, setEditing] = useState<FieldKey | null>(null);
-  const [editSnapshot, setEditSnapshot] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -364,12 +360,10 @@ const AccountInfo = () => {
 
     if (!trimmedFirstName) {
       toast.error("Please enter your name.");
-      startEditing("firstName");
       return;
     }
     if (!trimmedSurname) {
       toast.error("Please enter your surname.");
-      startEditing("surname");
       return;
     }
 
@@ -445,7 +439,6 @@ const AccountInfo = () => {
         throw error;
       }
 
-      setEditing(null);
       toast.success("Saved.", {
         style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
       });
@@ -458,109 +451,7 @@ const AccountInfo = () => {
     }
   };
 
-  const getFieldValue = (key: FieldKey): string => {
-    switch (key) {
-      case "firstName":
-        return firstName;
-      case "surname":
-        return surname;
-      case "username":
-        return username;
-      case "email":
-        return email;
-      case "phone":
-        return phone;
-      case "location":
-        return location;
-    }
-  };
 
-  const applyFieldValue = (key: FieldKey, value: string) => {
-    switch (key) {
-      case "firstName":
-        setFirstName(value);
-        break;
-      case "surname":
-        setSurname(value);
-        break;
-      case "username":
-        setUsername(value);
-        break;
-      case "email":
-        setEmail(value);
-        break;
-      case "phone":
-        setPhone(value);
-        break;
-      case "location":
-        setLocation(value);
-        break;
-    }
-  };
-
-  // Begin editing a field, remembering its value so editing can be cancelled.
-  const startEditing = (key: FieldKey) => {
-    if (editing === key) return;
-    setEditSnapshot(getFieldValue(key));
-    setEditing(key);
-  };
-
-  // Cancel reverts the field to the value it had when editing began.
-  const handleCancelEdit = () => {
-    if (editing) applyFieldValue(editing, editSnapshot);
-    setEditing(null);
-  };
-
-  const handleDoneEdit = () => setEditing(null);
-
-  const EditActions = () => (
-    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-      <button
-        type="button"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleCancelEdit();
-        }}
-        style={{
-          flex: 1,
-          height: 38,
-          background: "transparent",
-          border: `1px solid ${LINE}`,
-          borderRadius: 999,
-          fontFamily: FF,
-          fontSize: 14,
-          fontWeight: 600,
-          color: MUTED,
-          cursor: "pointer",
-        }}
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleDoneEdit();
-        }}
-        style={{
-          flex: 1,
-          height: 38,
-          background: DARK,
-          border: "none",
-          borderRadius: 999,
-          fontFamily: FF,
-          fontSize: 14,
-          fontWeight: 600,
-          color: "#FFFFFF",
-          cursor: "pointer",
-        }}
-      >
-        Done
-      </button>
-    </div>
-  );
 
   if (loading || !user) {
     return (
@@ -578,53 +469,30 @@ const AccountInfo = () => {
   const parsed = parsePhone(phone);
 
   const Row = ({
-    fieldKey,
     label,
     children,
-    onActivate,
     isFirst,
-    isPassword,
+    onClick,
   }: {
-    fieldKey?: FieldKey;
     label: string;
     children: React.ReactNode;
-    onActivate?: () => void;
     isFirst?: boolean;
-    isPassword?: boolean;
-  }) => {
-    const handleClick = () => {
-      if (isPassword) {
-        setPwOpen(true);
-        return;
-      }
-      if (fieldKey) startEditing(fieldKey);
-      onActivate?.();
-    };
-    const isEditingThis = !!fieldKey && editing === fieldKey;
-    return (
-      <div
-        onClick={handleClick}
-        style={{
-          position: "relative",
-          paddingTop: 16,
-          paddingBottom: 18,
-          borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-          cursor: "pointer",
-        }}
-      >
-        <span className="text-primary" style={rowLabelStyle}>{label}</span>
-        {children}
-        {!isEditingThis && (
-          <Pencil
-            size={14}
-            strokeWidth={1.5}
-            color={MUTED}
-            style={{ position: "absolute", top: 18, right: 0, opacity: 0.6 }}
-          />
-        )}
-      </div>
-    );
-  };
+    onClick?: () => void;
+  }) => (
+    <div
+      onClick={onClick}
+      style={{
+        position: "relative",
+        paddingTop: 16,
+        paddingBottom: 18,
+        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+        cursor: onClick ? "pointer" : "default",
+      }}
+    >
+      <span className="text-primary" style={rowLabelStyle}>{label}</span>
+      {children}
+    </div>
+  );
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
@@ -780,169 +648,92 @@ const AccountInfo = () => {
             </div>
           ) : (
             <>
-              <Row fieldKey="firstName" label="FIRST NAME" isFirst>
-                {editing === "firstName" ? (
-                  <>
-                    <input
-                      autoFocus
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      style={rowInputStyle}
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{firstName || "—"}</div>
-                )}
+              <Row label="FIRST NAME" isFirst>
+                <input
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  style={rowInputStyle}
+                />
               </Row>
 
-              <Row fieldKey="surname" label="SURNAME">
-                {editing === "surname" ? (
-                  <>
-                    <input
-                      autoFocus
-                      value={surname}
-                      onChange={(e) => setSurname(e.target.value)}
-                      style={rowInputStyle}
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{surname || "—"}</div>
-                )}
+              <Row label="SURNAME">
+                <input
+                  value={surname}
+                  onChange={(e) => setSurname(e.target.value)}
+                  style={rowInputStyle}
+                />
               </Row>
 
-              <Row fieldKey="username" label="Username">
-                {editing === "username" ? (
-                  <>
-                    <input
-                      autoFocus
-                      value={username}
-                      onChange={(e) =>
-                        setUsername(e.target.value.replace(/\s+/g, "").toLowerCase().replace(/^@+/, ""))
-                      }
-                      style={rowInputStyle}
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{username ? `@${username}` : "—"}</div>
-                )}
+              <Row label="Username">
+                <input
+                  value={username}
+                  onChange={(e) =>
+                    setUsername(e.target.value.replace(/\s+/g, "").toLowerCase().replace(/^@+/, ""))
+                  }
+                  style={rowInputStyle}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                />
               </Row>
 
-              <Row fieldKey="email" label="Email">
-                {editing === "email" ? (
-                  <>
-                    <input
-                      autoFocus
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      style={rowInputStyle}
-                    />
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={rowValueStyle}>{email || "—"}</div>
-                )}
+              <Row label="Email">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={rowInputStyle}
+                />
               </Row>
 
-              <Row fieldKey="phone" label="Phone">
-                {editing === "phone" ? (
-                  <>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
-                      <DialCodePicker
-                        value={parsed.areaCode}
-                        onChange={(newCode) => {
-                          const ac = AREA_CODES.find((a) => a.code === newCode);
-                          setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
+              <Row label="Phone">
+                <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
+                  <DialCodePicker
+                    value={parsed.areaCode}
+                    onChange={(newCode) => {
+                      setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
+                    }}
+                  />
+                  <input
+                    type="tel"
+                    value={parsed.number}
+                    onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
+                    style={{ ...rowInputStyle, flex: 1 }}
+                    placeholder="063 241 0296"
+                  />
+                </div>
+              </Row>
+
+              <Row label="Residency">
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
+                  {RESIDENCY_OPTIONS.map((opt) => {
+                    const active = location === opt;
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setLocation(opt)}
+                        style={{
+                          width: "100%",
+                          textAlign: "left",
+                          padding: "10px 14px",
+                          borderRadius: 10,
+                          border: `1px solid ${active ? DARK : LINE}`,
+                          background: active ? DARK : "#FFFFFF",
+                          color: active ? "#FFFFFF" : INK,
+                          fontFamily: FF,
+                          fontSize: 13,
+                          fontWeight: active ? 600 : 400,
+                          cursor: "pointer",
                         }}
-                      />
-                      <input
-                        autoFocus
-                        type="tel"
-                        value={parsed.number}
-                        onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
-                        style={{ ...rowInputStyle, flex: 1 }}
-                        placeholder="063 241 0296"
-                      />
-                    </div>
-                    <EditActions />
-                  </>
-                ) : (
-                  <div style={{ ...rowValueStyle, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{parsed.flag}</span>
-                    <span>{parsed.areaCode}</span>
-                    <span style={{ color: LINE }}>·</span>
-                    <span>{parsed.number || "—"}</span>
-                  </div>
-                )}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
               </Row>
 
-              <Row fieldKey="location" label="Residency">
-                {editing === "location" ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
-                    {RESIDENCY_OPTIONS.map((opt) => {
-                      const active = location === opt;
-                      return (
-                        <button
-                          key={opt}
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setLocation(opt);
-                            setEditing(null);
-                          }}
-                          style={{
-                            width: "100%",
-                            textAlign: "left",
-                            padding: "10px 14px",
-                            borderRadius: 10,
-                            border: `1px solid ${active ? DARK : LINE}`,
-                            background: active ? DARK : "#FFFFFF",
-                            color: active ? "#FFFFFF" : INK,
-                            fontFamily: FF,
-                            fontSize: 13,
-                            fontWeight: active ? 600 : 400,
-                            cursor: "pointer",
-                          }}
-                        >
-                          {opt}
-                        </button>
-                      );
-                    })}
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCancelEdit();
-                      }}
-                      style={{
-                        alignSelf: "flex-start",
-                        marginTop: 2,
-                        background: "transparent",
-                        border: "none",
-                        padding: "4px 0",
-                        fontFamily: FF,
-                        fontSize: 13,
-                        fontWeight: 600,
-                        color: MUTED,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div style={rowValueStyle}>{location || "—"}</div>
-                )}
-              </Row>
-
-              <Row label="Password" isPassword>
+              <Row label="Password" onClick={() => setPwOpen(true)}>
                 <div style={{ ...rowValueStyle, letterSpacing: "2px" }}>••••••••</div>
               </Row>
             </>
