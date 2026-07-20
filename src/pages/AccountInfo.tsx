@@ -883,7 +883,7 @@ const AccountInfo = () => {
 
               <Row fieldKey="location" label="Residency">
                 {editing === "location" ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 6 }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
                     {RESIDENCY_OPTIONS.map((opt) => {
                       const active = location === opt;
                       return (
@@ -899,13 +899,13 @@ const AccountInfo = () => {
                           style={{
                             width: "100%",
                             textAlign: "left",
-                            padding: "13px 16px",
-                            borderRadius: 12,
+                            padding: "10px 14px",
+                            borderRadius: 10,
                             border: `1px solid ${active ? DARK : LINE}`,
                             background: active ? DARK : "#FFFFFF",
                             color: active ? "#FFFFFF" : INK,
                             fontFamily: FF,
-                            fontSize: 15,
+                            fontSize: 13,
                             fontWeight: active ? 600 : 400,
                             cursor: "pointer",
                           }}
@@ -928,7 +928,7 @@ const AccountInfo = () => {
                         border: "none",
                         padding: "4px 0",
                         fontFamily: FF,
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: 600,
                         color: MUTED,
                         cursor: "pointer",
