@@ -512,53 +512,30 @@ const AccountInfo = () => {
   const parsed = parsePhone(phone);
 
   const Row = ({
-    fieldKey,
     label,
     children,
-    onActivate,
     isFirst,
-    isPassword,
+    onClick,
   }: {
-    fieldKey?: FieldKey;
     label: string;
     children: React.ReactNode;
-    onActivate?: () => void;
     isFirst?: boolean;
-    isPassword?: boolean;
-  }) => {
-    const handleClick = () => {
-      if (isPassword) {
-        setPwOpen(true);
-        return;
-      }
-      if (fieldKey) startEditing(fieldKey);
-      onActivate?.();
-    };
-    const isEditingThis = !!fieldKey && editing === fieldKey;
-    return (
-      <div
-        onClick={handleClick}
-        style={{
-          position: "relative",
-          paddingTop: 16,
-          paddingBottom: 18,
-          borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-          cursor: "pointer",
-        }}
-      >
-        <span className="text-primary" style={rowLabelStyle}>{label}</span>
-        {children}
-        {!isEditingThis && (
-          <Pencil
-            size={14}
-            strokeWidth={1.5}
-            color={MUTED}
-            style={{ position: "absolute", top: 18, right: 0, opacity: 0.6 }}
-          />
-        )}
-      </div>
-    );
-  };
+    onClick?: () => void;
+  }) => (
+    <div
+      onClick={onClick}
+      style={{
+        position: "relative",
+        paddingTop: 16,
+        paddingBottom: 18,
+        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+        cursor: onClick ? "pointer" : "default",
+      }}
+    >
+      <span className="text-primary" style={rowLabelStyle}>{label}</span>
+      {children}
+    </div>
+  );
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
