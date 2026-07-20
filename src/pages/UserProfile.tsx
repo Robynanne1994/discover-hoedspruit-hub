@@ -646,14 +646,17 @@ const UserProfile = () => {
                   height: 32,
                   padding: "0 14px",
                   borderRadius: 999,
-                  background: following || requested ? "#F2EFE5" : "#423324",
-                  color: following || requested ? "#1A1A1A" : "#FFFFFF",
-                  border: `1px solid ${"#423324"}`,
+                  background: "#F2EFE5",
+                  color: "#1A1A1A",
+                  border: "1px solid #E8E4DF",
                   fontFamily: SANS,
                   fontWeight: 600,
                   fontSize: 13,
                   letterSpacing: "0.02em",
                   cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
                 {following ? "Following" : requested ? "Requested" : "Follow"}
