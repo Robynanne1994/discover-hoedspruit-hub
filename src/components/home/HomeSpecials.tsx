@@ -68,7 +68,6 @@ const AutoFitDealLabel = ({ label }: { label: string }) => {
         fontWeight: 500,
         color: "#423324",
         lineHeight: 1.3,
-        marginBottom: 3,
         maxWidth: "100%",
         overflow: "hidden",
         whiteSpace: "nowrap",
