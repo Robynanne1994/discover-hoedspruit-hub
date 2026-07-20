@@ -721,31 +721,22 @@ const MyProfile = () => {
 
         {tab === "events" && (() => {
           const now = Date.now();
-          const timeFiltered = (savedEvents ?? []).filter((it: any) => {
+          const filtered = (savedEvents ?? []).filter((it: any) => {
             const ref = it.end_date || it.start_date;
             if (!ref) return eventsSub === "upcoming";
             const past = new Date(ref).getTime() < now;
             return eventsSub === "upcoming" ? !past : past;
           });
-          const cats = Array.from(new Set(timeFiltered.map((it: any) => it.tag).filter(Boolean))) as string[];
-          const filtered = eventCat === "all" ? timeFiltered : timeFiltered.filter((it: any) => it.tag === eventCat);
           return (
             <>
               <SubTabs<"upcoming" | "past">
                 value={eventsSub}
-                onChange={(v) => { setEventsSub(v); setEventCat("all"); }}
+                onChange={setEventsSub}
                 options={[
                   { id: "upcoming", label: "Upcoming" },
                   { id: "past", label: "Past" },
                 ]}
               />
-              {cats.length > 1 && (
-                <SubTabs<string>
-                  value={eventCat}
-                  onChange={setEventCat}
-                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
-                />
-              )}
               {filtered.length ? (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {filtered.map((it: any) =>
