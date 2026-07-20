@@ -236,11 +236,11 @@ const ContactUs = () => {
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 <div>
                   <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Monday - Friday</span>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>08:00 - 17:00</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>09:00 - 17:00</span>
                 </div>
                 <div>
                   <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Saturday</span>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>08:00 - 12:00</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>09:00 - 12:00</span>
                 </div>
                 <div>
                   <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Sunday</span>
