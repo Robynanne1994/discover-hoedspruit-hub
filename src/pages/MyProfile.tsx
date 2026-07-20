@@ -115,7 +115,6 @@ const MyProfile = () => {
   const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
   const [dealsSub, setDealsSub] = useState<"active" | "expired">("active");
   const [listingCat, setListingCat] = useState<string>("all");
-  const [eventCat, setEventCat] = useState<string>("all");
   const [dealCat, setDealCat] = useState<string>("all");
   const [resourceCat, setResourceCat] = useState<string>("all");
 
