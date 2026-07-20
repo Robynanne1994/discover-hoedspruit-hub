@@ -138,20 +138,22 @@ const HomeSpecials = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "space-between", paddingTop: 8, paddingBottom: 8 }}>
-                <div
-                  {...noTitleCaseProps(s)}
-                  style={{
-                    fontFamily: HN,
-                    fontSize: 14,
-                    color: "#1A1A1A",
-                    lineHeight: 1.25,
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                  }}
-                >
-                  {getDisplayTitle(s)}
+                <div style={{ height: 35, overflow: "hidden" }}>
+                  <div
+                    {...noTitleCaseProps(s)}
+                    style={{
+                      fontFamily: HN,
+                      fontSize: 14,
+                      color: "#1A1A1A",
+                      lineHeight: 1.25,
+                      overflow: "hidden",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
+                    {getDisplayTitle(s)}
+                  </div>
                 </div>
                 {s.deal_label && (
                   <div style={{ marginTop: 6 }}>
