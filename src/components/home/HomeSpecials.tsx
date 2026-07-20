@@ -145,14 +145,19 @@ const HomeSpecials = () => {
                     fontSize: 14,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    whiteSpace: "nowrap",
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
                   }}
                 >
                   {getDisplayTitle(s)}
                 </div>
-                {s.deal_label && <AutoFitDealLabel label={s.deal_label} />}
+                {s.deal_label && (
+                  <div style={{ marginTop: 6 }}>
+                    <AutoFitDealLabel label={s.deal_label} />
+                  </div>
+                )}
                 <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E", overflow: "hidden" }}>
                   <MapPin size={12} strokeWidth={1.6} style={{ flexShrink: 0 }} />
                   <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", paddingTop: 2 }}>{s.business_name}</span>
