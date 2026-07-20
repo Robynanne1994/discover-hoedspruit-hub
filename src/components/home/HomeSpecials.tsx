@@ -143,7 +143,7 @@ const HomeSpecials = () => {
                   {...noTitleCaseProps(s)}
                   style={{
                     fontFamily: HN,
-                    fontSize: 15,
+                    fontSize: 14,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
                     marginTop: 2,
