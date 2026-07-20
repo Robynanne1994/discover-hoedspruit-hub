@@ -443,7 +443,6 @@ const AccountInfo = () => {
         throw error;
       }
 
-      setEditing(null);
       toast.success("Saved.", {
         style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
       });
