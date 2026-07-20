@@ -496,69 +496,6 @@ const AccountInfo = () => {
     }
   };
 
-  // Begin editing a field, remembering its value so editing can be cancelled.
-  const startEditing = (key: FieldKey) => {
-    if (editing === key) return;
-    setEditSnapshot(getFieldValue(key));
-    setEditing(key);
-  };
-
-  // Cancel reverts the field to the value it had when editing began.
-  const handleCancelEdit = () => {
-    if (editing) applyFieldValue(editing, editSnapshot);
-    setEditing(null);
-  };
-
-  const handleDoneEdit = () => setEditing(null);
-
-  const EditActions = () => (
-    <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-      <button
-        type="button"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleCancelEdit();
-        }}
-        style={{
-          flex: 1,
-          height: 38,
-          background: "transparent",
-          border: `1px solid ${LINE}`,
-          borderRadius: 999,
-          fontFamily: FF,
-          fontSize: 14,
-          fontWeight: 600,
-          color: MUTED,
-          cursor: "pointer",
-        }}
-      >
-        Cancel
-      </button>
-      <button
-        type="button"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={(e) => {
-          e.stopPropagation();
-          handleDoneEdit();
-        }}
-        style={{
-          flex: 1,
-          height: 38,
-          background: DARK,
-          border: "none",
-          borderRadius: 999,
-          fontFamily: FF,
-          fontSize: 14,
-          fontWeight: 600,
-          color: "#FFFFFF",
-          cursor: "pointer",
-        }}
-      >
-        Done
-      </button>
-    </div>
-  );
 
   if (loading || !user) {
     return (
