@@ -132,7 +132,6 @@ const MyProfile = () => {
     setEventsSub("upcoming");
     setDealsSub("active");
     setListingCat("all");
-    setEventCat("all");
     setDealCat("all");
     setResourceCat("all");
   }, [tab]);
