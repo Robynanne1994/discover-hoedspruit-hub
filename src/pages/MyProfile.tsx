@@ -746,15 +746,14 @@ const MyProfile = () => {
                       `/events/${it.id}`,
                       <>
                         {it.start_date && (
-                          <span>
+                          <div>
                             {new Date(it.start_date).toLocaleDateString("en-GB", {
                               day: "numeric",
                               month: "short",
                             })}
-                          </span>
+                          </div>
                         )}
-                        {it.start_date && it.location && <span> · </span>}
-                        {it.location && <span>{it.location}</span>}
+                        {it.location && <div>{it.location}</div>}
                       </>,
                     ),
                   )}
