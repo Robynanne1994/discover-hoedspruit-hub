@@ -103,7 +103,6 @@ const rowInputStyle: React.CSSProperties = {
   padding: 0,
 };
 
-type FieldKey = "firstName" | "surname" | "username" | "email" | "phone" | "location";
 
 // Split a combined name on the first space so older accounts (which only have
 // a display_name) still populate the separate fields sensibly.
@@ -652,7 +651,7 @@ const AccountInfo = () => {
               <Row label="FIRST NAME" isFirst>
                 <input
                   value={firstName}
-                  onChange={(e) => `${setFirstName(e.target.value)}`}
+                  onChange={(e) => setFirstName(e.target.value)}
                   style={rowInputStyle}
                 />
               </Row>
