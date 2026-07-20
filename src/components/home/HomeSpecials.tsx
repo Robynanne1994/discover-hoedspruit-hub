@@ -148,10 +148,7 @@ const HomeSpecials = () => {
                     lineHeight: 1.25,
                     marginTop: 2,
                     marginBottom: 3,
-                    wordBreak: "break-word",
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
+                    whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                   }}
