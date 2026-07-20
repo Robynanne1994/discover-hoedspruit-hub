@@ -210,8 +210,6 @@ const AccountInfo = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
-  const [editing, setEditing] = useState<FieldKey | null>(null);
-  const [editSnapshot, setEditSnapshot] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
