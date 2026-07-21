@@ -740,13 +740,13 @@ const AccountInfo = () => {
           const fallbackName = splitDisplayName((profile as any)?.display_name);
           const origFirst = ((profile as any)?.first_name ?? fallbackName.first ?? "") as string;
           const origSurname = ((profile as any)?.surname ?? fallbackName.surname ?? "") as string;
+          const origFullName = `${origFirst} ${origSurname}`.trim();
           const origUsername = ((profile as any)?.username || "") as string;
           const origEmail = ((profile as any)?.email || user?.email || "") as string;
           const origPhone = ((profile as any)?.phone || "") as string;
           const origLocation = ((profile as any)?.location || "") as string;
           const isDirty =
-            firstName.trim() !== origFirst.trim() ||
-            surname.trim() !== origSurname.trim() ||
+            fullName.trim() !== origFullName ||
             username.trim() !== origUsername.trim() ||
             email.trim() !== origEmail.trim() ||
             phone.trim() !== origPhone.trim() ||
