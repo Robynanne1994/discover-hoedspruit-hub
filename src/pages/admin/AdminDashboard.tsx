@@ -79,19 +79,8 @@ const AdminDashboard = () => {
     },
   });
 
-  // moderation = pending across the three pending tables
-  const moderation = useQuery({
-    queryKey: ["admin-count-moderation"],
-    queryFn: async () => {
-      const tables = ["listing_edits_pending", "events_pending", "specials_pending"] as const;
-      const results = await Promise.all(
-        tables.map((t) =>
-          supabase.from(t).select("*", { count: "exact", head: true }).eq("status", "pending"),
-        ),
-      );
-      return results.reduce((sum, r) => sum + (r.count ?? 0), 0);
-    },
-  });
+
+
 
   // users count via edge function (auth.users not directly queryable)
   const users = useQuery({
@@ -119,8 +108,8 @@ const AdminDashboard = () => {
   const submissions = (contacts.data ?? 0) + (feedback.data ?? 0);
 
   const cards = [
-    { label: "Moderation", count: moderation.data, to: "/admin/moderation", icon: ShieldCheck, hint: "Pending items" },
     { label: "Submissions", count: submissions, to: "/admin/submissions", icon: Inbox, hint: "Contact + feedback" },
+
     { label: "Reported Users", count: userReports.data, to: "/admin/user-reports", icon: Flag, hint: "Unread reports" },
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },
