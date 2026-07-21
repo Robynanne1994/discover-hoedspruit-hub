@@ -661,6 +661,16 @@ const AdminBushTelegraph = () => {
               />
             </div>
 
+            <div>
+              <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
+              <ImageUpload
+                bucket="local-channels-images"
+                value={form.saved_image_url}
+                onChange={(url) => setForm({ ...form, saved_image_url: url })}
+                aspect={4 / 3}
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Meta 1 (Platform)</Label>
