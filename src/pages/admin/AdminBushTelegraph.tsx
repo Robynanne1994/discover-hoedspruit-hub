@@ -191,6 +191,7 @@ const AdminBushTelegraph = () => {
         image_url: rest.image_url || null,
         detail_image_url: rest.detail_image_url || null,
         homepage_image_url: rest.homepage_image_url || null,
+        saved_image_url: rest.saved_image_url || null,
         qr_image_url: rest.qr_image_url || null,
         admins: cleanAdmins,
         admin_name: cleanAdmins[0]?.name || null,
