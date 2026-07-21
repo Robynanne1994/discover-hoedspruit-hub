@@ -137,7 +137,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     e.stopPropagation();
     if (!n.ref_id) return;
     if (accept) {
-  const respondFollowRequest = async (n: Notif, accept: boolean) => {
+
     if (!n.ref_id) return;
     if (accept) {
       await supabase
