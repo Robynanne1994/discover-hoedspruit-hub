@@ -39,12 +39,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
+    const handleDeletedAccount = async () => {
+      try {
+        await supabase.auth.signOut();
+      } catch {
+        /* ignore */
+      }
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/welcome")) {
+        window.location.href = "/welcome?deleted=1";
+      }
+    };
+
+    const verifyStillExists = async (u: User) => {
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) {
+        await handleDeletedAccount();
+        return false;
+      }
+      return true;
+    };
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          // Use non-blocking call but track loading
           checkAdmin(session.user.id).finally(() => {
             if (mounted) setLoading(false);
           });
@@ -55,10 +74,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
+        const ok = await verifyStillExists(session.user);
+        if (!ok) {
+          if (mounted) setLoading(false);
+          return;
+        }
         checkAdmin(session.user.id).finally(() => {
           if (mounted) setLoading(false);
         });
