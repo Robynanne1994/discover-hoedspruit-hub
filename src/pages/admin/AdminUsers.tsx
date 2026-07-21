@@ -145,17 +145,6 @@ const AdminUsers = () => {
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{fmt(u.created_at)}</td>
                   <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{fmt(u.last_sign_in_at)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {u.roles.length === 0 ? (
-                        <span className="text-xs text-muted-foreground">user</span>
-                      ) : (
-                        u.roles.map((r) => (
-                          <Badge key={r} variant="secondary" className="text-xs">{r}</Badge>
-                        ))
-                      )}
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
