@@ -468,31 +468,7 @@ const AccountInfo = () => {
 
   const parsed = parsePhone(phone);
 
-  const Row = ({
-    label,
-    children,
-    isFirst,
-    onClick,
-  }: {
-    label: string;
-    children: React.ReactNode;
-    isFirst?: boolean;
-    onClick?: () => void;
-  }) => (
-    <div
-      onClick={onClick}
-      style={{
-        position: "relative",
-        paddingTop: 16,
-        paddingBottom: 8,
-        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-        cursor: onClick ? "pointer" : "default",
-      }}
-    >
-      <span style={{ ...rowLabelStyle, color: "#423324" }}>{label}</span>
-      {children}
-    </div>
-  );
+
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
