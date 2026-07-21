@@ -626,7 +626,7 @@ const CategoryPage = () => {
     if (sortBy === "distance") {
       const kmOf = (l: any) => {
         const raw = l.km_from_town;
-        const n = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(/[^0-9.]/g, ""));
+        const n = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
         return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
       };
       return [...result].sort((a, b) => kmOf(a) - kmOf(b));
