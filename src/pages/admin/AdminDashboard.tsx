@@ -79,19 +79,8 @@ const AdminDashboard = () => {
     },
   });
 
-  // moderation = pending across the three pending tables
-  const moderation = useQuery({
-    queryKey: ["admin-count-moderation"],
-    queryFn: async () => {
-      const tables = ["listing_edits_pending", "events_pending", "specials_pending"] as const;
-      const results = await Promise.all(
-        tables.map((t) =>
-          supabase.from(t).select("*", { count: "exact", head: true }).eq("status", "pending"),
-        ),
-      );
-      return results.reduce((sum, r) => sum + (r.count ?? 0), 0);
-    },
-  });
+
+
 
   // users count via edge function (auth.users not directly queryable)
   const users = useQuery({
