@@ -1,49 +1,50 @@
-# Feedback replies: notification polish + Replies tab
+## Admin user management enhancements
 
-## 1. Admin reply → notification changes
-In `src/pages/admin/AdminSubmissions.tsx` (`sendReply` mutation):
-- Set notification `title` to exactly: `Admin has replied to your feedback`.
-- Set `body` to the admin reply text (unchanged).
-- Set `link` to `/feedback?tab=replies`.
-- Keep `ref_table = 'feedback'`, `ref_id = feedback.id`, `kind = 'feedback_reply'`.
+Add delete-user capability, richer activity stats, admin notes, and UX polish to the Admin → Users dialog.
 
-## 2. Notification card rendering (`src/pages/MyNotifications.tsx`)
-For notifications where `kind === 'feedback_reply'`:
-- Do NOT render the left icon tile (skip the icon square entirely so the text spans full width).
-- Layout:
-  - Title: `Admin has replied to your feedback` (existing 15/700 style).
-  - Subject line directly under the title: `Subject: <feedback.subject>` — 12px, weight 500, color `MUTED`, single line with ellipsis.
-  - Reply body: existing 13.5px body style, clamped to **2 lines** with ellipsis (already `WebkitLineClamp: 2`).
-  - Timestamp underneath as normal.
-- To get the subject, batch-fetch feedback rows for all feedback_reply notif `ref_id`s in a `useQuery` (mirrors the existing follow-request actor fetch pattern). Cache into a `Record<feedbackId, subject>`.
-- Clicking the card navigates to `/feedback?tab=replies` (uses existing `n.link`).
+### 1. Delete user (with confirmation)
+- Add a red "Delete User" button in the user details dialog (bottom of panel).
+- Clicking it opens an AlertDialog "Are you sure? This permanently removes the user and all their data. This cannot be undone."
+- On confirm, call an edge function `admin-delete-user` which:
+  - Validates caller is admin.
+  - Deletes user-owned rows from: `favourites`, `been_here`, `reviews`, `follows` (as follower_id AND following_id), `notification_preferences`, `feedback`, `collection_items` (via collections), `collections`, `user_roles`, `user_blocks` (both sides), `user_reports` (as reporter — keep reports against them for audit? see technical), `business_notifications`, `listing_edits_pending`, `events_pending`, `specials_pending`, `contact_submissions` (if user_id), `follow` notifications, `profiles`, then `auth.admin.deleteUser`.
+  - Returns success.
+- After success, refresh the users list and close the dialog.
 
-Same treatment (no icon, subject line, 2-line clamp, link) applied to `src/components/NotificationsDropdown.tsx` for `feedback_reply` items so the bell dropdown matches.
+### 2. Deleted-user experience
+- On app boot / auth state change in `useAuth`, if `getUser` returns "user not found" / session invalid after previously being signed in, sign out locally and route to `/welcome` with a toast: *"Something went wrong with your account. Please continue as a guest or create another account. Feel free to reach out to us at hello@hellohoedspruit.com."*
+- Show the same message inline on the Welcome screen when redirected with the `?deleted=1` query flag.
 
-## 3. Feedback page tabs (`src/pages/Feedback.tsx`)
-- Read `?tab=` via `useSearchParams`. Values: `submit` (default) and `replies`.
-- Query on mount: `select id, subject, message, admin_reply, replied_at, created_at from feedback where user_id = auth.uid() and admin_reply is not null order by replied_at desc`.
-- If the user has **at least one reply**, render a two-tab switcher directly under the `PageHeader` title:
-  - Tab 1: `Submit Feedback` (current form).
-  - Tab 2: `Feedback Replies`.
-  - Styling: same pill/segmented style used elsewhere in the app (ivory background, active pill = `#423324` bg / white text), 20px horizontal page padding, sits above the form.
-- If no replies exist, hide the tabs and show the form only (current behaviour).
+### 3. User ID truncation
+- Display truncated ID (first 8 + … + last 4) with a click-to-expand toggle. Also add a copy button next to it.
 
-### Replies tab content
-Same page background/header. For each reply, render an ivory card (same 16px radius, white bg, HN 400) with:
-- Top row: `SUBJECT` micro-label (11px uppercase, letter-spaced, muted) + subject text (15px, INK).
-- Divider (1px hairline).
-- Admin reply text in full (14px, 1.5 line-height).
-- Bottom meta row: date replied (e.g. `12 JUL 2026`) in the muted 11px uppercase style.
-- Original message shown as a small secondary block under the reply prefixed `Your message:` (13px muted, 3-line clamp) so the user has context.
+### 4. Extra activity fields in dialog
+Fetch counts alongside the existing user list (in `admin-list-users` edge function) for each user:
+- Feedback submitted
+- Reports filed (as reporter)
+- Reports received (as reported user)
+- Users blocked
+- Listing edit suggestions submitted (`listing_edits_pending`)
+- Local channel resources submitted (if tracked by `submitted_by` on `bush_telegraph_resources` — verify column exists; if not, skip)
+- Events submitted (`events_pending`)
+- Specials submitted (`specials_pending`)
+- Followers / Following counts
 
-No other layout changes to the submit form.
+Show these in a compact "Activity" section in the dialog.
 
-## 4. Data / backend
-No schema changes required — `feedback.subject`, `admin_reply`, `replied_at` already exist. All queries are client-side reads under existing RLS (users can already select their own feedback rows).
+### 5. Admin notes per user
+- New table `public.admin_user_notes` (user_id, note text, updated_by, updated_at). One row per user (unique on user_id).
+- Only admins can select/insert/update via RLS using `has_role(auth.uid(),'admin')`.
+- Dialog shows a textarea preloaded with the note; "Save note" button upserts it.
 
-## Files touched
-- `src/pages/admin/AdminSubmissions.tsx` — title + link string.
-- `src/pages/MyNotifications.tsx` — feedback_reply special-case rendering + subject fetch.
-- `src/components/NotificationsDropdown.tsx` — same feedback_reply rendering tweak.
-- `src/pages/Feedback.tsx` — tabs, replies query, replies list UI.
+### 6. Dialog visual polish
+- Row labels ("Email", "Phone", etc.) become darker/bolder: `#1A1A1A`, weight 600.
+- Values stay right-aligned with normal weight.
+
+### Technical notes
+- New file: `supabase/functions/admin-delete-user/index.ts` (mirrors `delete-account` but requires admin caller and takes a `user_id` param).
+- Update `supabase/functions/admin-list-users/index.ts` to add the extra counts (parallel queries, then map by user_id).
+- Migration: create `admin_user_notes` with GRANT + RLS + updated_at trigger.
+- `src/pages/admin/AdminUsers.tsx`: expand dialog with activity block, notes textarea, ID toggle+copy, delete button + AlertDialog.
+- `src/hooks/useAuth.tsx` + `src/pages/Welcome.tsx`: handle deleted-account redirect + toast.
+- Keep `user_reports` rows where the deleted user was the reported party? Recommend: keep the row but null out `reported_user_id` FK behaviour — since these rows may have FK to auth.users with cascade, verify and adjust in the delete function accordingly. Same for reviews/comments authored by the user (delete them per current pattern).
