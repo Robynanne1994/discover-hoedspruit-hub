@@ -650,18 +650,11 @@ const AccountInfo = () => {
             </div>
           ) : (
             <>
-              <Row label="FIRST NAME" isFirst>
+              <Row label="NAME & SURNAME" isFirst>
                 <input
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  style={rowInputStyle}
-                />
-              </Row>
-
-              <Row label="SURNAME">
-                <input
-                  value={surname}
-                  onChange={(e) => setSurname(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Name and surname"
                   style={rowInputStyle}
                 />
               </Row>
