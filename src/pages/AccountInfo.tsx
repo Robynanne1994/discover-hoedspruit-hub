@@ -487,7 +487,7 @@ const AccountInfo = () => {
         cursor: onClick ? "pointer" : "default",
       }}
     >
-      <span className="text-primary" style={rowLabelStyle}>{label}</span>
+      <span style={{ ...rowLabelStyle, color: "#423324" }}>{label}</span>
       {children}
     </div>
   );
