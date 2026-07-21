@@ -96,7 +96,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
 
   const unread = notifs.filter((n) => !n.is_read).length;
 
-  const followRequestRefIds = notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string);
+  const followRequestRefIds = notifs.filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id).map((n) => n.ref_id as string);
   const actorMap = useFollowRequestActors(followRequestRefIds);
 
   const feedbackRefIds = notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string);
@@ -137,16 +137,30 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     e.stopPropagation();
     if (!n.ref_id) return;
     if (accept) {
+
       await supabase
         .from("follows")
         .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
         .eq("id", n.ref_id);
+      setNotifs((prev) =>
+        prev.map((x) =>
+          x.id === n.id
+            ? {
+                ...x,
+                kind: "follow_request_accepted",
+                title: "You accepted this follow request",
+                body: "They are now following you.",
+                is_read: false,
+              }
+            : x
+        )
+      );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
+      setNotifs((prev) => prev.filter((x) => x.id !== n.id));
     }
-    // Trigger removes the notification row; refresh local list optimistically.
-    setNotifs((prev) => prev.filter((x) => x.id !== n.id));
   };
+
 
   return (
     <>
@@ -306,7 +320,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         }}
                       />
                     )}
-                    {n.kind === "follow_request" && n.ref_id && actorMap[n.ref_id] && (
+                    {(n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id && actorMap[n.ref_id] && (
                       <div
                         style={{
                           width: 32, height: 32, borderRadius: 999, overflow: "hidden", flexShrink: 0,
@@ -331,7 +345,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         )}
                       </div>
                     )}
-                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !(n.kind === "follow_request" && n.ref_id && actorMap[n.ref_id]) ? 17 : 0 }}>
+                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !((n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id && actorMap[n.ref_id]) ? 17 : 0 }}>
                       <div
                         style={{
                           display: "flex",
@@ -437,6 +451,31 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                           </button>
                         </div>
                       )}
+                      {n.kind === "follow_request_accepted" && n.link && (
+                        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onRowClick(n);
+                            }}
+                            style={{
+                              height: 30,
+                              padding: "0 14px",
+                              borderRadius: 999,
+                              background: "#423324",
+                              color: "#FFFFFF",
+                              border: "none",
+                              cursor: "pointer",
+                              fontFamily: SANS,
+                              fontSize: 12,
+                              fontWeight: 600,
+                            }}
+                          >
+                            Message
+                          </button>
+                        </div>
+                      )}
+
                     </div>
                   </div>
                 </button>

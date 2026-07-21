@@ -159,10 +159,14 @@ export default function MyNotifications() {
   }, [notifs]);
 
   const followRequestRefIds = useMemo(
-    () => notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string),
+    () =>
+      notifs
+        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id)
+        .map((n) => n.ref_id as string),
     [notifs]
   );
   const actorMap = useFollowRequestActors(followRequestRefIds);
+
 
   const feedbackRefIds = useMemo(
     () => notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string),
@@ -201,11 +205,28 @@ export default function MyNotifications() {
         .from("follows")
         .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
         .eq("id", n.ref_id);
+      // Server trigger converts the notification to 'follow_request_accepted'.
+      // Mirror that locally so the card updates instantly.
+      setNotifs((prev) =>
+        prev.map((x) =>
+          x.id === n.id
+            ? {
+                ...x,
+                kind: "follow_request_accepted",
+                title: "You accepted this follow request",
+                body: "They are now following you.",
+                link: x.link,
+                is_read: false,
+              }
+            : x
+        )
+      );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
+      setNotifs((prev) => prev.filter((x) => x.id !== n.id));
     }
-    setNotifs((prev) => prev.filter((x) => x.id !== n.id));
   }, []);
+
 
   const isEmpty = loaded && notifs.length === 0;
   const hasUnread = unreadCount > 0;
@@ -385,7 +406,7 @@ function NotifCard({
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
   const isFeedbackReply = n.kind === "feedback_reply";
-  const isUserRelated = n.kind === "follow_request";
+  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted";
   const showIcon = !isFeedbackReply && !isUserRelated;
   const initials = (actor?.display_name || "·")
     .trim()
@@ -519,6 +540,34 @@ function NotifCard({
             </button>
           </div>
         )}
+        {n.kind === "follow_request_accepted" && n.link && (
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+              }}
+              style={{
+                height: 34,
+                padding: "0 16px",
+                borderRadius: 999,
+                background: BROWN,
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              Message
+            </button>
+          </div>
+        )}
+
         <span
           style={{
             display: "inline-block",
