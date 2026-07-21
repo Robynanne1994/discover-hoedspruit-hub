@@ -345,7 +345,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         )}
                       </div>
                     )}
-                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !(n.kind === "follow_request" && n.ref_id && actorMap[n.ref_id]) ? 17 : 0 }}>
+                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !((n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id && actorMap[n.ref_id]) ? 17 : 0 }}>
                       <div
                         style={{
                           display: "flex",
