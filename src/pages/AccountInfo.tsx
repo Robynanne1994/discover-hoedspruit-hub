@@ -214,6 +214,7 @@ const AccountInfo = () => {
   const [isPrivate, setIsPrivate] = useState(false);
   const [activityPrivate, setActivityPrivate] = useState(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
+  const [residencyOpen, setResidencyOpen] = useState(false);
 
   const { data: pendingRequestCount } = useQuery({
     queryKey: ["follow-request-count", user?.id],
