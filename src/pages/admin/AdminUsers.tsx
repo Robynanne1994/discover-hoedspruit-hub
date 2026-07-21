@@ -32,8 +32,6 @@ interface AdminUser {
   created_at: string;
   last_sign_in_at: string | null;
   email_confirmed_at: string | null;
-  provider: string | null;
-  providers: string[];
   profile: {
     display_name?: string | null;
     username?: string | null;
@@ -272,12 +270,8 @@ const AdminUsers = () => {
                 </button>
               </Row>
               <Row label="Email"><span className="break-all">{selected.email || "—"}</span></Row>
-              <Row label="Email confirmed">{fmt(selected.email_confirmed_at)}</Row>
               <Row label="Phone">{selected.phone || selected.profile?.phone || "—"}</Row>
               <Row label="Location">{selected.profile?.location || "—"}</Row>
-              <Row label="Provider">
-                {(selected.providers?.length ? selected.providers : [selected.provider]).filter(Boolean).join(", ") || "email"}
-              </Row>
               <Row label="Joined">{fmt(selected.created_at)}</Row>
               <Row label="Last sign in">{fmt(selected.last_sign_in_at)}</Row>
 
