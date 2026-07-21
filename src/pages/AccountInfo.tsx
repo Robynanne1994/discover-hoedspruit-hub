@@ -74,6 +74,32 @@ function parsePhone(phone: string) {
   return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, "") };
 }
 
+const Row = ({
+  label,
+  children,
+  isFirst,
+  onClick,
+}: {
+  label: string;
+  children: React.ReactNode;
+  isFirst?: boolean;
+  onClick?: () => void;
+}) => (
+  <div
+    onClick={onClick}
+    style={{
+      position: "relative",
+      paddingTop: 16,
+      paddingBottom: 8,
+      borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      cursor: onClick ? "pointer" : "default",
+    }}
+  >
+    <span style={{ ...rowLabelStyle, color: "#423324" }}>{label}</span>
+    {children}
+  </div>
+);
+
 const rowLabelStyle: React.CSSProperties = {
   fontFamily: FF,
   fontSize: 11,
