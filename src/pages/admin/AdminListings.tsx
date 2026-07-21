@@ -988,6 +988,10 @@ const AdminListings = () => {
                   
                   <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
                 </div>
+                <div>
+                  <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
+                  <ImageUpload bucket="listing-images" value={form.saved_image_url} onChange={(url) => setForm({ ...form, saved_image_url: url })} aspect={4/3} />
+                </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                 <div>
                   <Label>KM from Town</Label>
