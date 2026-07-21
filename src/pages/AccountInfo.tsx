@@ -283,8 +283,9 @@ const AccountInfo = () => {
   useEffect(() => {
     if (profile && !initialized.current) {
       const fallbackName = splitDisplayName(profile.display_name);
-      setFirstName((profile as any).first_name ?? fallbackName.first);
-      setSurname((profile as any).surname ?? fallbackName.surname);
+      const first = ((profile as any).first_name ?? fallbackName.first ?? "").trim();
+      const last = ((profile as any).surname ?? fallbackName.surname ?? "").trim();
+      setFullName(first && last ? `${first} ${last}` : first || last);
       setUsername((profile as any).username || "");
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
