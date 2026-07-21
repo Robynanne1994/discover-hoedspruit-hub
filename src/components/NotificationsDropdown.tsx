@@ -320,7 +320,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         }}
                       />
                     )}
-                    {n.kind === "follow_request" && n.ref_id && actorMap[n.ref_id] && (
+                    {(n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id && actorMap[n.ref_id] && (
                       <div
                         style={{
                           width: 32, height: 32, borderRadius: 999, overflow: "hidden", flexShrink: 0,
