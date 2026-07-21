@@ -996,13 +996,13 @@ const AdminListings = () => {
                 <div>
                   <Label>KM from Town</Label>
                   <Input
-                    type="number"
+                    type="text"
                     inputMode="decimal"
-                    step="0.01"
-
-                    min="0"
                     value={form.km_from_town}
-                    onChange={(e) => setForm({ ...form, km_from_town: e.target.value })}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(",", ".").replace(/[^0-9.]/g, "");
+                      setForm({ ...form, km_from_town: v });
+                    }}
                     placeholder="e.g. 5"
                   />
                   <p className="text-xs text-muted-foreground mt-1">Numeric kilometres from Hoedspruit town centre. Used by the Distance filter on category pages.</p>
