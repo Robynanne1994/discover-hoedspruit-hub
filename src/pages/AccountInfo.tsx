@@ -360,12 +360,8 @@ const AccountInfo = () => {
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
 
-    if (!trimmedFirstName) {
-      toast.error("Please enter your name.");
-      return;
-    }
-    if (!trimmedSurname) {
-      toast.error("Please enter your surname.");
+    if (!trimmedFirstName || !trimmedSurname) {
+      toast.error("Please add your first name and last name.");
       return;
     }
 
@@ -654,7 +650,7 @@ const AccountInfo = () => {
                 <input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Name and surname"
+                  placeholder="First name and last name"
                   style={rowInputStyle}
                 />
               </Row>
