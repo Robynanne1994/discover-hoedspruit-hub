@@ -138,8 +138,6 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     if (!n.ref_id) return;
     if (accept) {
 
-    if (!n.ref_id) return;
-    if (accept) {
       await supabase
         .from("follows")
         .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
