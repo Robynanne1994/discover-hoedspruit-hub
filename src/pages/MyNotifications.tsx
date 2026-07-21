@@ -205,11 +205,28 @@ export default function MyNotifications() {
         .from("follows")
         .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
         .eq("id", n.ref_id);
+      // Server trigger converts the notification to 'follow_request_accepted'.
+      // Mirror that locally so the card updates instantly.
+      setNotifs((prev) =>
+        prev.map((x) =>
+          x.id === n.id
+            ? {
+                ...x,
+                kind: "follow_request_accepted",
+                title: "You accepted this follow request",
+                body: "They are now following you.",
+                link: x.link,
+                is_read: false,
+              }
+            : x
+        )
+      );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
+      setNotifs((prev) => prev.filter((x) => x.id !== n.id));
     }
-    setNotifs((prev) => prev.filter((x) => x.id !== n.id));
   }, []);
+
 
   const isEmpty = loaded && notifs.length === 0;
   const hasUnread = unreadCount > 0;
