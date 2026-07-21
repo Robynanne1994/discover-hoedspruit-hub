@@ -11,11 +11,11 @@ import {
   
   Radio,
   Users,
-  Briefcase,
+  
   Flag,
 } from "lucide-react";
 
-type CountableTable = "categories" | "listings" | "events" | "specials" | "bush_telegraph_resources" | "business_accounts";
+type CountableTable = "categories" | "listings" | "events" | "specials" | "bush_telegraph_resources";
 
 type ContactSubmissionsCountClient = {
   from: (table: "contact_submissions") => {
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   });
   
   const resources = useCount("resources", "bush_telegraph_resources");
-  const businesses = useCount("businesses", "business_accounts");
+  
   const contacts = useQuery({
     queryKey: ["admin-count-contact-submissions-unread"],
     queryFn: async () => {
@@ -129,8 +129,8 @@ const AdminDashboard = () => {
     
     { label: "Resources", count: resources.data, to: "/admin/local-channels", icon: Radio },
     { label: "Users", count: users.data, to: "/admin/users", icon: Users },
-    { label: "Businesses", count: businesses.data, to: "/admin/users?tab=businesses", icon: Briefcase },
   ];
+
 
   return (
     <div>
