@@ -96,7 +96,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
 
   const unread = notifs.filter((n) => !n.is_read).length;
 
-  const followRequestRefIds = notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string);
+  const followRequestRefIds = notifs.filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id).map((n) => n.ref_id as string);
   const actorMap = useFollowRequestActors(followRequestRefIds);
 
   const feedbackRefIds = notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string);
