@@ -72,6 +72,18 @@ const Welcome = () => {
     if (location.state?.mode) setMode(location.state.mode);
   }, [location.state?.mode]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("deleted") === "1") {
+      toast.error(
+        "Something went wrong with your account. Please continue as a guest or create another account. Feel free to reach out to us at hello@hellohoedspruit.com.",
+        { duration: 10000 },
+      );
+      // clean the query string so the toast doesn't re-fire
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);

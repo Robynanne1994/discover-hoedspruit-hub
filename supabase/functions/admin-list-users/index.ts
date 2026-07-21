@@ -60,10 +60,34 @@ Deno.serve(async (req) => {
 
     const ids = allUsers.map((u) => u.id);
 
-    const [{ data: profiles }, { data: roles }, { data: favCounts }] = await Promise.all([
+    const [
+      { data: profiles },
+      { data: roles },
+      { data: favCounts },
+      { data: feedbackRows },
+      { data: reportsFiled },
+      { data: reportsReceived },
+      { data: blocks },
+      { data: listingEdits },
+      { data: eventsPending },
+      { data: specialsPending },
+      { data: followers },
+      { data: following },
+      { data: notes },
+    ] = await Promise.all([
       admin.from("profiles").select("*").in("id", ids),
       admin.from("user_roles").select("user_id, role").in("user_id", ids),
       admin.from("favourites").select("user_id").in("user_id", ids),
+      admin.from("feedback").select("user_id").in("user_id", ids),
+      admin.from("user_reports").select("reporter_user_id").in("reporter_user_id", ids),
+      admin.from("user_reports").select("reported_user_id").in("reported_user_id", ids),
+      admin.from("user_blocks").select("blocker_id").in("blocker_id", ids),
+      admin.from("listing_edits_pending").select("owner_id").in("owner_id", ids),
+      admin.from("events_pending").select("owner_id").in("owner_id", ids),
+      admin.from("specials_pending").select("owner_id").in("owner_id", ids),
+      admin.from("follows").select("following_id").in("following_id", ids).eq("status", "accepted"),
+      admin.from("follows").select("follower_id").in("follower_id", ids).eq("status", "accepted"),
+      admin.from("admin_user_notes").select("user_id, note").in("user_id", ids),
     ]);
 
     const profileMap = Object.fromEntries((profiles ?? []).map((p: any) => [p.id, p]));
@@ -71,10 +95,25 @@ Deno.serve(async (req) => {
     (roles ?? []).forEach((r: any) => {
       rolesMap[r.user_id] = [...(rolesMap[r.user_id] ?? []), r.role];
     });
-    const favMap: Record<string, number> = {};
-    (favCounts ?? []).forEach((f: any) => {
-      favMap[f.user_id] = (favMap[f.user_id] ?? 0) + 1;
-    });
+    const count = (rows: any[] | null, key: string) => {
+      const m: Record<string, number> = {};
+      (rows ?? []).forEach((r: any) => {
+        const id = r[key];
+        if (id) m[id] = (m[id] ?? 0) + 1;
+      });
+      return m;
+    };
+    const favMap = count(favCounts, "user_id");
+    const feedbackMap = count(feedbackRows, "user_id");
+    const reportsFiledMap = count(reportsFiled, "reporter_user_id");
+    const reportsReceivedMap = count(reportsReceived, "reported_user_id");
+    const blocksMap = count(blocks, "blocker_id");
+    const listingEditsMap = count(listingEdits, "owner_id");
+    const eventsPendingMap = count(eventsPending, "owner_id");
+    const specialsPendingMap = count(specialsPending, "owner_id");
+    const followersMap = count(followers, "following_id");
+    const followingMap = count(following, "follower_id");
+    const notesMap = Object.fromEntries((notes ?? []).map((n: any) => [n.user_id, n.note]));
 
     const users = allUsers.map((u) => ({
       id: u.id,
@@ -88,6 +127,16 @@ Deno.serve(async (req) => {
       profile: profileMap[u.id] ?? null,
       roles: rolesMap[u.id] ?? [],
       favourites_count: favMap[u.id] ?? 0,
+      feedback_count: feedbackMap[u.id] ?? 0,
+      reports_filed_count: reportsFiledMap[u.id] ?? 0,
+      reports_received_count: reportsReceivedMap[u.id] ?? 0,
+      blocks_count: blocksMap[u.id] ?? 0,
+      listing_edits_count: listingEditsMap[u.id] ?? 0,
+      events_pending_count: eventsPendingMap[u.id] ?? 0,
+      specials_pending_count: specialsPendingMap[u.id] ?? 0,
+      followers_count: followersMap[u.id] ?? 0,
+      following_count: followingMap[u.id] ?? 0,
+      admin_note: notesMap[u.id] ?? "",
     }));
 
     users.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
