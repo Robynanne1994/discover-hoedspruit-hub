@@ -105,15 +105,14 @@ const AdminUsers = () => {
                 <th className="px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Email</th>
                 <th className="px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Joined</th>
                 <th className="px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Last sign in</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Roles</th>
               </tr>
             </thead>
             <tbody>
               {isLoading && (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">Loading…</td></tr>
+                <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">Loading…</td></tr>
               )}
               {!isLoading && filtered.length === 0 && (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">No users found.</td></tr>
+                <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">No users found.</td></tr>
               )}
               {filtered.map((u) => (
                 <tr
@@ -146,17 +145,6 @@ const AdminUsers = () => {
                   </td>
                   <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{fmt(u.created_at)}</td>
                   <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{fmt(u.last_sign_in_at)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {u.roles.length === 0 ? (
-                        <span className="text-xs text-muted-foreground">user</span>
-                      ) : (
-                        u.roles.map((r) => (
-                          <Badge key={r} variant="secondary" className="text-xs">{r}</Badge>
-                        ))
-                      )}
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
@@ -195,7 +183,6 @@ const AdminUsers = () => {
               <Row label="Phone" value={selected.phone || selected.profile?.phone || "—"} />
               <Row label="Location" value={selected.profile?.location || "—"} />
               <Row label="Provider" value={(selected.providers?.length ? selected.providers : [selected.provider]).filter(Boolean).join(", ") || "email"} />
-              <Row label="Roles" value={selected.roles.length ? selected.roles.join(", ") : "user"} />
               <Row label="Favourites" value={String(selected.favourites_count)} />
               <Row label="Joined" value={fmt(selected.created_at)} />
               <Row label="Last sign in" value={fmt(selected.last_sign_in_at)} />
