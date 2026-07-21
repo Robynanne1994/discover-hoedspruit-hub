@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   });
   
   const resources = useCount("resources", "bush_telegraph_resources");
-  const businesses = useCount("businesses", "business_accounts");
+  
   const contacts = useQuery({
     queryKey: ["admin-count-contact-submissions-unread"],
     queryFn: async () => {
