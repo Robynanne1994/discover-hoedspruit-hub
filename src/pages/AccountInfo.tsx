@@ -1259,23 +1259,90 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
 
 function DialCodePicker({ value, onChange }: { value: string; onChange: (code: string) => void }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const [rect, setRect] = useState<DOMRect | null>(null);
   const current = AREA_CODES.find((a) => a.code === value) || AREA_CODES[0];
 
   useEffect(() => {
     if (!open) return;
     const onDocDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (buttonRef.current?.contains(target) || menuRef.current?.contains(target)) return;
+      setOpen(false);
     };
+    const onScrollResize = () => setOpen(false);
     document.addEventListener("mousedown", onDocDown);
-    return () => document.removeEventListener("mousedown", onDocDown);
+    window.addEventListener("scroll", onScrollResize, true);
+    window.addEventListener("resize", onScrollResize);
+    return () => {
+      document.removeEventListener("mousedown", onDocDown);
+      window.removeEventListener("scroll", onScrollResize, true);
+      window.removeEventListener("resize", onScrollResize);
+    };
   }, [open]);
 
+  const toggle = () => {
+    if (!open && buttonRef.current) {
+      setRect(buttonRef.current.getBoundingClientRect());
+    }
+    setOpen((v) => !v);
+  };
+
+  const dropdown = (
+    <div
+      ref={menuRef}
+      style={{
+        position: "fixed",
+        top: (rect?.bottom ?? 0) + 6,
+        left: rect?.left ?? 0,
+        zIndex: 9999,
+        background: "#fff",
+        border: `1px solid ${LINE}`,
+        borderRadius: 12,
+        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+        maxHeight: 260,
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
+        minWidth: 200,
+      }}
+    >
+      {AREA_CODES.map((ac) => (
+        <button
+          key={ac.code + ac.country}
+          type="button"
+          onClick={() => {
+            onChange(ac.code);
+            setOpen(false);
+          }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            width: "100%",
+            padding: "10px 12px",
+            background: ac.code === value ? SOFT_CREAM : "transparent",
+            border: "none",
+            cursor: "pointer",
+            fontFamily: FF,
+            fontSize: 14,
+            color: INK,
+            textAlign: "left",
+          }}
+        >
+          <span style={{ width: 50 }}>{ac.code}</span>
+          <span style={{ color: MUTED }}>{ac.country}</span>
+        </button>
+      ))}
+    </div>
+  );
+
   return (
-    <div ref={ref} style={{ position: "relative" }}>
+    <div style={{ position: "relative" }}>
       <button
+        ref={buttonRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggle}
         style={{
           display: "inline-flex",
           alignItems: "center",
@@ -1294,51 +1361,7 @@ function DialCodePicker({ value, onChange }: { value: string; onChange: (code: s
         <span>{current.code}</span>
         <span style={{ fontSize: 10, color: MUTED, marginLeft: 2 }}>▾</span>
       </button>
-      {open && (
-        <div
-          style={{
-            position: "absolute",
-            top: "calc(100% + 6px)",
-            left: 0,
-            zIndex: 50,
-            background: "#fff",
-            border: `1px solid ${LINE}`,
-            borderRadius: 12,
-            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-            maxHeight: 240,
-            overflowY: "auto",
-            minWidth: 200,
-          }}
-        >
-          {AREA_CODES.map((ac) => (
-            <button
-              key={ac.code + ac.country}
-              type="button"
-              onClick={() => {
-                onChange(ac.code);
-                setOpen(false);
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                width: "100%",
-                padding: "10px 12px",
-                background: ac.code === value ? SOFT_CREAM : "transparent",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: FF,
-                fontSize: 14,
-                color: INK,
-                textAlign: "left",
-              }}
-            >
-              <span style={{ width: 50 }}>{ac.code}</span>
-              <span style={{ color: MUTED }}>{ac.country}</span>
-            </button>
-          ))}
-        </div>
-      )}
+      {open && createPortal(dropdown, document.body)}
     </div>
   );
 }
