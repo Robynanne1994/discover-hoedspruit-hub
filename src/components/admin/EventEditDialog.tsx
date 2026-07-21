@@ -199,6 +199,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(3:4 portrait — matches the events list card)</span></Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={140/188} /></div>
           <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
           <div><Label>Homepage Upcoming Events Image</Label><ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={23/30} /></div>
+          <div><Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label><ImageUpload bucket="listing-images" value={form.saved_image_url || ""} onChange={(url) => set("saved_image_url", url)} aspect={4/3} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
