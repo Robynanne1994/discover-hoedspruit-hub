@@ -295,7 +295,11 @@ const AdminFAQs = () => {
       else map.set(r.section, { items: [r], min: r.sort_order ?? 0 });
     });
     return Array.from(map.entries())
-      .sort((a, b) => a[1].min - b[1].min)
+      .sort((a, b) => {
+        if (a[0] === "About Hello Hoedspruit") return -1;
+        if (b[0] === "About Hello Hoedspruit") return 1;
+        return a[1].min - b[1].min;
+      })
       .map(([title, v]) => ({ title, items: v.items }));
   }, [rows]);
 
