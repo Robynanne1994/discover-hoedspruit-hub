@@ -127,7 +127,11 @@ const FAQs = () => {
         }
       });
       const list = Array.from(map.values())
-        .sort((a, b) => a.min - b.min)
+        .sort((a, b) => {
+          if (a.title === "About Hello Hoedspruit") return -1;
+          if (b.title === "About Hello Hoedspruit") return 1;
+          return a.min - b.min;
+        })
         .map(({ title, items }) => ({ title, items }));
       setSections(list);
       if (list[0]?.items[0]) setOpenKey(`${list[0].title}-${list[0].items[0].id}`);
