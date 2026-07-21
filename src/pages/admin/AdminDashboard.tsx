@@ -108,8 +108,8 @@ const AdminDashboard = () => {
   const submissions = (contacts.data ?? 0) + (feedback.data ?? 0);
 
   const cards = [
-    { label: "Moderation", count: moderation.data, to: "/admin/moderation", icon: ShieldCheck, hint: "Pending items" },
     { label: "Submissions", count: submissions, to: "/admin/submissions", icon: Inbox, hint: "Contact + feedback" },
+
     { label: "Reported Users", count: userReports.data, to: "/admin/user-reports", icon: Flag, hint: "Unread reports" },
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },
