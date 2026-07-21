@@ -1134,34 +1134,38 @@ const ListingDetail = () => {
   );
 
   const renderSpecials = () => (
-    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ padding: "20px" }}>
       <h2 style={headStyle}>Current Specials</h2>
-      {(relatedSpecials ?? []).map((s: any) =>
-        renderRelatedCard(
-          { id: s.id, title: s.title, image_url: s.image_url, badge: s.deal_label },
-          `/specials/${s.id}`
-        )
-      )}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {(relatedSpecials ?? []).map((s: any) =>
+          renderRelatedCard(
+            { id: s.id, title: s.title, image_url: s.image_url, badge: s.deal_label },
+            `/specials/${s.id}`
+          )
+        )}
+      </div>
     </div>
   );
 
   const renderEvents = () => (
-    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+    <div style={{ padding: "20px" }}>
       <h2 style={headStyle}>Upcoming Events</h2>
-      {(relatedEvents ?? [])
-        .slice()
-        .sort((a: any, b: any) => {
-          const da = getEventSortDate(a)?.getTime() ?? Infinity;
-          const db = getEventSortDate(b)?.getTime() ?? Infinity;
-          return da - db;
-        })
-        .map((e: any) => {
-          const dateText = formatEventDateRange(e) || e.date || "";
-          return renderRelatedCard(
-            { id: e.id, title: e.title, image_url: e.image_url, subtitle: dateText },
-            `/events/${e.id}`
-          );
-        })}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {(relatedEvents ?? [])
+          .slice()
+          .sort((a: any, b: any) => {
+            const da = getEventSortDate(a)?.getTime() ?? Infinity;
+            const db = getEventSortDate(b)?.getTime() ?? Infinity;
+            return da - db;
+          })
+          .map((e: any) => {
+            const dateText = formatEventDateRange(e) || e.date || "";
+            return renderRelatedCard(
+              { id: e.id, title: e.title, image_url: e.image_url, subtitle: dateText },
+              `/events/${e.id}`
+            );
+          })}
+      </div>
     </div>
   );
 
@@ -1519,7 +1523,7 @@ const ListingDetail = () => {
 
 // ----- Shared inline styles -----
 const headStyle: React.CSSProperties = {
-  margin: "0 0 12px",
+  margin: "0 0 10px",
   fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
   letterSpacing: 0, textTransform: "none",
   color: C.heading,
