@@ -352,8 +352,10 @@ const AccountInfo = () => {
 
   const handleSaveProfile = async () => {
     if (!user) return;
-    const trimmedFirstName = firstName.trim();
-    const trimmedSurname = surname.trim();
+    const trimmedFullName = fullName.trim();
+    const nameParts = trimmedFullName.split(/\s+/).filter(Boolean);
+    const trimmedFirstName = nameParts[0] || "";
+    const trimmedSurname = nameParts.slice(1).join(" ") || "";
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
