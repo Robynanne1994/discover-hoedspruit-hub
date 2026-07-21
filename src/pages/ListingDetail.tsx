@@ -566,7 +566,7 @@ const ListingDetail = () => {
 
   if (isListingAccommodation) {
     if (l.km_from_town) {
-      const kmNum = parseFloat(String(l.km_from_town).replace(/[^0-9.]/g, ""));
+      const kmNum = parseFloat(String(l.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
       const kmLabel = Number.isFinite(kmNum)
         ? (Math.round(kmNum * 100) / 100).toString()
         : String(l.km_from_town);
