@@ -147,7 +147,8 @@ function parseField(raw: string | undefined, type: FieldType, isUpdate: boolean)
       return { skip: false, value: v === "true" || v === "1" };
     }
     case "str_array": {
-      const parts = cell.split("|").map((s) => s.trim()).filter(Boolean);
+      const NORMALIZE: Record<string, string> = { "sit down": "Sit Down", "take away": "Takeaway", "takeaway": "Takeaway", "take-away": "Takeaway" };
+      const parts = cell.split("|").map((s) => s.trim()).filter(Boolean).map((s) => NORMALIZE[s.toLowerCase()] ?? s);
       return { skip: false, value: parts };
     }
     case "json": {
