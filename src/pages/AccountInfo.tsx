@@ -870,7 +870,7 @@ const pwInputStyle: React.CSSProperties = {
 
 const pwLabelStyle: React.CSSProperties = {
   fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
-  textTransform: "uppercase", color: "#715a3d", marginBottom: 6, display: "block",
+  textTransform: "uppercase", color: "#423324", marginBottom: 6, display: "block",
 };
 
 const PwField = ({
