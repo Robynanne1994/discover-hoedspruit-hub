@@ -183,7 +183,6 @@ const AdminUsers = () => {
               <Row label="Phone" value={selected.phone || selected.profile?.phone || "—"} />
               <Row label="Location" value={selected.profile?.location || "—"} />
               <Row label="Provider" value={(selected.providers?.length ? selected.providers : [selected.provider]).filter(Boolean).join(", ") || "email"} />
-              <Row label="Roles" value={selected.roles.length ? selected.roles.join(", ") : "user"} />
               <Row label="Favourites" value={String(selected.favourites_count)} />
               <Row label="Joined" value={fmt(selected.created_at)} />
               <Row label="Last sign in" value={fmt(selected.last_sign_in_at)} />
