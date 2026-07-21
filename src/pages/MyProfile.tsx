@@ -319,9 +319,9 @@ const MyProfile = () => {
       }}
     >
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#d6d6d6" }}>
-        {it.image_url && (
+        {(it.saved_image_url || it.image_url) && (
           <img
-            src={it.image_url}
+            src={it.saved_image_url || it.image_url}
             alt=""
             loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
