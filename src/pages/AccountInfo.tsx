@@ -202,8 +202,7 @@ const AccountInfo = () => {
     enabled: !!user,
   });
 
-  const [firstName, setFirstName] = useState("");
-  const [surname, setSurname] = useState("");
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
