@@ -614,7 +614,7 @@ const CategoryPage = () => {
       if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
       if (filterMaxKm < MAX_KM) {
         const raw = (l as any).km_from_town;
-        const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(/[^0-9.]/g, ""));
+        const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
         if (!Number.isFinite(km) || km > filterMaxKm) return false;
       }
       return true;
