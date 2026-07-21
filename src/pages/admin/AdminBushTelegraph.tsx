@@ -38,6 +38,7 @@ type Resource = {
   image_url: string | null;
   detail_image_url: string | null;
   homepage_image_url: string | null;
+  saved_image_url: string | null;
   qr_image_url: string | null;
   admin_name: string | null;
   admins: AdminEntry[] | null;
