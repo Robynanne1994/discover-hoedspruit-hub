@@ -107,7 +107,7 @@ const UserSaved = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating")
+        .select("id, title, image_url, saved_image_url, location, google_rating")
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
