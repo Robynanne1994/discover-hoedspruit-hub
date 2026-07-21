@@ -214,6 +214,7 @@ const AccountInfo = () => {
   const [isPrivate, setIsPrivate] = useState(false);
   const [activityPrivate, setActivityPrivate] = useState(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
+  const [residencyOpen, setResidencyOpen] = useState(false);
 
   const { data: pendingRequestCount } = useQuery({
     queryKey: ["follow-request-count", user?.id],
@@ -694,34 +695,47 @@ const AccountInfo = () => {
                 </div>
               </Row>
 
-              <Row label="Residency">
-                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
-                  {RESIDENCY_OPTIONS.map((opt) => {
-                    const active = location === opt;
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setLocation(opt)}
-                        style={{
-                          width: "100%",
-                          textAlign: "left",
-                          padding: "10px 14px",
-                          borderRadius: 10,
-                          border: `1px solid ${active ? DARK : LINE}`,
-                          background: active ? DARK : "#FFFFFF",
-                          color: active ? "#FFFFFF" : INK,
-                          fontFamily: FF,
-                          fontSize: 13,
-                          fontWeight: active ? 600 : 400,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
+              <Row
+                label="Residency"
+                onClick={() => !residencyOpen && setResidencyOpen(true)}
+              >
+                {!residencyOpen ? (
+                  <div style={{ ...rowValueStyle, cursor: "pointer" }}>
+                    {location || "Select residency"}
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 6 }}>
+                    {RESIDENCY_OPTIONS.map((opt) => {
+                      const active = location === opt;
+                      return (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setLocation(opt);
+                            setResidencyOpen(false);
+                          }}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "10px 14px",
+                            borderRadius: 10,
+                            border: `1px solid ${active ? DARK : LINE}`,
+                            background: active ? DARK : "#FFFFFF",
+                            color: active ? "#FFFFFF" : INK,
+                            fontFamily: FF,
+                            fontSize: 13,
+                            fontWeight: active ? 600 : 400,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {opt}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </Row>
 
               <Row label="Password" onClick={() => setPwOpen(true)}>
