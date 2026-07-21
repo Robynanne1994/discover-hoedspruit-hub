@@ -67,10 +67,10 @@ const AREA_CODES = [
 function parsePhone(phone: string) {
   for (const ac of AREA_CODES) {
     if (phone.startsWith(ac.code)) {
-      return { areaCode: ac.code, number: phone.slice(ac.code.length).trim(), flag: ac.flag };
+      return { areaCode: ac.code, number: phone.slice(ac.code.length).trim() };
     }
   }
-  return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, ""), flag: "🇿🇦" };
+  return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, "") };
 }
 
 const rowLabelStyle: React.CSSProperties = {
@@ -1290,7 +1290,6 @@ function DialCodePicker({ value, onChange }: { value: string; onChange: (code: s
           color: INK,
         }}
       >
-        <span style={{ fontSize: 16 }}>{current.flag}</span>
         <span>{current.code}</span>
         <span style={{ fontSize: 10, color: MUTED, marginLeft: 2 }}>▾</span>
       </button>
@@ -1333,7 +1332,6 @@ function DialCodePicker({ value, onChange }: { value: string; onChange: (code: s
                 textAlign: "left",
               }}
             >
-              <span style={{ fontSize: 16 }}>{ac.flag}</span>
               <span style={{ width: 50 }}>{ac.code}</span>
               <span style={{ color: MUTED }}>{ac.country}</span>
             </button>
