@@ -159,10 +159,14 @@ export default function MyNotifications() {
   }, [notifs]);
 
   const followRequestRefIds = useMemo(
-    () => notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string),
+    () =>
+      notifs
+        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id)
+        .map((n) => n.ref_id as string),
     [notifs]
   );
   const actorMap = useFollowRequestActors(followRequestRefIds);
+
 
   const feedbackRefIds = useMemo(
     () => notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string),
