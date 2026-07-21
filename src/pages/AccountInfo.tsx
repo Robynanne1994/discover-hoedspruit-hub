@@ -482,7 +482,7 @@ const AccountInfo = () => {
       style={{
         position: "relative",
         paddingTop: 16,
-        paddingBottom: 18,
+        paddingBottom: 8,
         borderTop: isFirst ? "none" : `1px solid ${LINE}`,
         cursor: onClick ? "pointer" : "default",
       }}
