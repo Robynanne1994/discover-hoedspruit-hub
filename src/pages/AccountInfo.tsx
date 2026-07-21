@@ -202,8 +202,7 @@ const AccountInfo = () => {
     enabled: !!user,
   });
 
-  const [firstName, setFirstName] = useState("");
-  const [surname, setSurname] = useState("");
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -284,8 +283,9 @@ const AccountInfo = () => {
   useEffect(() => {
     if (profile && !initialized.current) {
       const fallbackName = splitDisplayName(profile.display_name);
-      setFirstName((profile as any).first_name ?? fallbackName.first);
-      setSurname((profile as any).surname ?? fallbackName.surname);
+      const first = ((profile as any).first_name ?? fallbackName.first ?? "").trim();
+      const last = ((profile as any).surname ?? fallbackName.surname ?? "").trim();
+      setFullName(first && last ? `${first} ${last}` : first || last);
       setUsername((profile as any).username || "");
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
@@ -352,8 +352,10 @@ const AccountInfo = () => {
 
   const handleSaveProfile = async () => {
     if (!user) return;
-    const trimmedFirstName = firstName.trim();
-    const trimmedSurname = surname.trim();
+    const trimmedFullName = fullName.trim();
+    const nameParts = trimmedFullName.split(/\s+/).filter(Boolean);
+    const trimmedFirstName = nameParts[0] || "";
+    const trimmedSurname = nameParts.slice(1).join(" ") || "";
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
@@ -648,18 +650,11 @@ const AccountInfo = () => {
             </div>
           ) : (
             <>
-              <Row label="FIRST NAME" isFirst>
+              <Row label="NAME & SURNAME" isFirst>
                 <input
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  style={rowInputStyle}
-                />
-              </Row>
-
-              <Row label="SURNAME">
-                <input
-                  value={surname}
-                  onChange={(e) => setSurname(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Name and surname"
                   style={rowInputStyle}
                 />
               </Row>
@@ -745,13 +740,13 @@ const AccountInfo = () => {
           const fallbackName = splitDisplayName((profile as any)?.display_name);
           const origFirst = ((profile as any)?.first_name ?? fallbackName.first ?? "") as string;
           const origSurname = ((profile as any)?.surname ?? fallbackName.surname ?? "") as string;
+          const origFullName = `${origFirst} ${origSurname}`.trim();
           const origUsername = ((profile as any)?.username || "") as string;
           const origEmail = ((profile as any)?.email || user?.email || "") as string;
           const origPhone = ((profile as any)?.phone || "") as string;
           const origLocation = ((profile as any)?.location || "") as string;
           const isDirty =
-            firstName.trim() !== origFirst.trim() ||
-            surname.trim() !== origSurname.trim() ||
+            fullName.trim() !== origFullName ||
             username.trim() !== origUsername.trim() ||
             email.trim() !== origEmail.trim() ||
             phone.trim() !== origPhone.trim() ||
