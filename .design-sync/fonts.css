@@ -1,0 +1,20 @@
+/* Self-hosted Helvetica Neue — woff2 live in the repo at public/fonts/.
+   Wired into the bundle via cfg.extraFonts; the converter copies these into fonts/. */
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueUltraLight.woff2") format("woff2"); font-weight: 200; font-style: normal; font-display: swap; }
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueThin.woff2") format("woff2"); font-weight: 250; font-style: normal; font-display: swap; }
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueLight.woff2") format("woff2"); font-weight: 300; font-style: normal; font-display: swap; }
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueRoman.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueMedium.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueBold.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Helvetica Neue"; src: url("../public/fonts/HelveticaNeueHeavy.woff2") format("woff2"); font-weight: 900; font-style: normal; font-display: swap; }
+
+/* Bricolage Grotesque — used for h1/h2 headings and mastheads.
+   The app loads this from Google Fonts (<link> in index.html); self-hosted
+   here (variable woff2, latin) so designs render headings on-brand offline. */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("./fonts/BricolageGrotesque-Variable.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
