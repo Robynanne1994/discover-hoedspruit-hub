@@ -406,7 +406,7 @@ function NotifCard({
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
   const isFeedbackReply = n.kind === "feedback_reply";
-  const isUserRelated = n.kind === "follow_request";
+  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted";
   const showIcon = !isFeedbackReply && !isUserRelated;
   const initials = (actor?.display_name || "·")
     .trim()
