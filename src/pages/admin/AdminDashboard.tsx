@@ -15,7 +15,7 @@ import {
   Flag,
 } from "lucide-react";
 
-type CountableTable = "categories" | "listings" | "events" | "specials" | "bush_telegraph_resources" | "business_accounts";
+type CountableTable = "categories" | "listings" | "events" | "specials" | "bush_telegraph_resources";
 
 type ContactSubmissionsCountClient = {
   from: (table: "contact_submissions") => {
