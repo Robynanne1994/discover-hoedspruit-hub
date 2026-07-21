@@ -650,7 +650,7 @@ const AccountInfo = () => {
                 <input
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Name and surname"
+                  placeholder="First name and last name"
                   style={rowInputStyle}
                 />
               </Row>
