@@ -68,7 +68,7 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
-  "image_url", "detail_image_url", "homepage_image_url", "deal_label",
+  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "deal_label",
   "valid_from", "valid_until", "card_footer_text", "is_active",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
@@ -247,6 +247,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div>
             <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Active Specials section — 1:1. Falls back to card image if empty.)</span></Label>
             <ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={1} />
+          </div>
+          <div>
+            <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
+            <ImageUpload bucket="listing-images" value={form.saved_image_url || ""} onChange={(url) => set("saved_image_url", url)} aspect={4/3} />
           </div>
 
           {/* Validity + always active */}

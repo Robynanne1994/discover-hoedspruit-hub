@@ -115,6 +115,7 @@ export type Database = {
           post_frequency: string | null
           qr_image_url: string | null
           resource_type: string
+          saved_image_url: string | null
           since_year: number | null
           slug: string | null
           sort_order: number
@@ -143,6 +144,7 @@ export type Database = {
           post_frequency?: string | null
           qr_image_url?: string | null
           resource_type?: string
+          saved_image_url?: string | null
           since_year?: number | null
           slug?: string | null
           sort_order?: number
@@ -171,6 +173,7 @@ export type Database = {
           post_frequency?: string | null
           qr_image_url?: string | null
           resource_type?: string
+          saved_image_url?: string | null
           since_year?: number | null
           slug?: string | null
           sort_order?: number
@@ -461,6 +464,7 @@ export type Database = {
           price: string | null
           price_notes: string[]
           recurrence: string | null
+          saved_image_url: string | null
           social_media_label: string | null
           social_media_link: string | null
           start_date: string | null
@@ -514,6 +518,7 @@ export type Database = {
           price?: string | null
           price_notes?: string[]
           recurrence?: string | null
+          saved_image_url?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
           start_date?: string | null
@@ -567,6 +572,7 @@ export type Database = {
           price?: string | null
           price_notes?: string[]
           recurrence?: string | null
+          saved_image_url?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
           start_date?: string | null
@@ -1087,6 +1093,7 @@ export type Database = {
           price_range: string | null
           product_categories: string[] | null
           rooms_count: number | null
+          saved_image_url: string | null
           seating: string[] | null
           service_type: string[] | null
           services_offered: string[] | null
@@ -1225,6 +1232,7 @@ export type Database = {
           price_range?: string | null
           product_categories?: string[] | null
           rooms_count?: number | null
+          saved_image_url?: string | null
           seating?: string[] | null
           service_type?: string[] | null
           services_offered?: string[] | null
@@ -1363,6 +1371,7 @@ export type Database = {
           price_range?: string | null
           product_categories?: string[] | null
           rooms_count?: number | null
+          saved_image_url?: string | null
           seating?: string[] | null
           service_type?: string[] | null
           services_offered?: string[] | null
@@ -1765,6 +1774,7 @@ export type Database = {
           price: string | null
           price_label: string | null
           promo_code: string | null
+          saved_image_url: string | null
           savings: string | null
           sub_tag_1: string | null
           sub_tag_2: string | null
@@ -1801,6 +1811,7 @@ export type Database = {
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
+          saved_image_url?: string | null
           savings?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
@@ -1837,6 +1848,7 @@ export type Database = {
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
+          saved_image_url?: string | null
           savings?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null

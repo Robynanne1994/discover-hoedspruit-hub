@@ -38,6 +38,7 @@ type Resource = {
   image_url: string | null;
   detail_image_url: string | null;
   homepage_image_url: string | null;
+  saved_image_url: string | null;
   qr_image_url: string | null;
   admin_name: string | null;
   admins: AdminEntry[] | null;
@@ -65,6 +66,7 @@ const emptyForm = {
   image_url: "",
   detail_image_url: "",
   homepage_image_url: "",
+  saved_image_url: "",
   qr_image_url: "",
   admins: [] as AdminEntry[],
   years_mode: "years" as YearsMode,
@@ -189,6 +191,7 @@ const AdminBushTelegraph = () => {
         image_url: rest.image_url || null,
         detail_image_url: rest.detail_image_url || null,
         homepage_image_url: rest.homepage_image_url || null,
+        saved_image_url: rest.saved_image_url || null,
         qr_image_url: rest.qr_image_url || null,
         admins: cleanAdmins,
         admin_name: cleanAdmins[0]?.name || null,
@@ -259,6 +262,7 @@ const AdminBushTelegraph = () => {
       image_url: r.image_url ?? "",
       detail_image_url: r.detail_image_url ?? "",
       homepage_image_url: r.homepage_image_url ?? "",
+      saved_image_url: r.saved_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
       admins: Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
@@ -654,6 +658,16 @@ const AdminBushTelegraph = () => {
                 value={form.homepage_image_url}
                 onChange={(url) => setForm({ ...form, homepage_image_url: url })}
                 aspect={1}
+              />
+            </div>
+
+            <div>
+              <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
+              <ImageUpload
+                bucket="local-channels-images"
+                value={form.saved_image_url}
+                onChange={(url) => setForm({ ...form, saved_image_url: url })}
+                aspect={4 / 3}
               />
             </div>
 

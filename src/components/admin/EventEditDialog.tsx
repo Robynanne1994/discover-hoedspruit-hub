@@ -23,7 +23,7 @@ interface Props {
 
 const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "homepage_image_url", "recurrence", "performances", "price", "included", "price_notes", "notes", "booking_link", "booking_link_label",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "recurrence", "performances", "price", "included", "price_notes", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
   "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link",
@@ -199,6 +199,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(3:4 portrait — matches the events list card)</span></Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={140/188} /></div>
           <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
           <div><Label>Homepage Upcoming Events Image</Label><ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={23/30} /></div>
+          <div><Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label><ImageUpload bucket="listing-images" value={form.saved_image_url || ""} onChange={(url) => set("saved_image_url", url)} aspect={4/3} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
