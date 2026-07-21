@@ -105,7 +105,6 @@ const AdminUsers = () => {
                 <th className="px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Email</th>
                 <th className="px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Joined</th>
                 <th className="px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Last sign in</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Roles</th>
               </tr>
             </thead>
             <tbody>
