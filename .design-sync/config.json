@@ -3,8 +3,8 @@
   "shape": "package",
   "pkg": "vite_react_shadcn_ts",
   "globalName": "HelloHoedspruitDS",
-  "srcDir": "src/components/ui",
-  "tsconfig": "tsconfig.json",
+  "srcDir": "src/components",
+  "tsconfig": ".design-sync/tsconfig.ds.json",
   "cssEntry": ".design-sync/.cache/compiled.css",
   "extraFonts": [
     ".design-sync/fonts.css"
@@ -14,9 +14,11 @@
     "./.design-sync/extra-exports.tsx"
   ],
   "componentSrcMap": {
+    "A": null,
     "AccordionContent": null,
     "AccordionItem": null,
     "AccordionTrigger": null,
+    "ActionPicker": null,
     "AlertDescription": null,
     "AlertDialogAction": null,
     "AlertDialogCancel": null,
@@ -46,6 +48,7 @@
     "CarouselItem": null,
     "CarouselNext": null,
     "CarouselPrevious": null,
+    "CategoriesSection": null,
     "ChartContainer": null,
     "ChartLegend": null,
     "ChartLegendContent": null,
@@ -76,6 +79,8 @@
     "ContextMenuSubContent": null,
     "ContextMenuSubTrigger": null,
     "ContextMenuTrigger": null,
+    "DetailsDisplayDefaultsEditor": null,
+    "DetailsDisplayModeEditor": null,
     "DialogClose": null,
     "DialogContent": null,
     "DialogDescription": null,
@@ -108,17 +113,36 @@
     "DropdownMenuSubContent": null,
     "DropdownMenuSubTrigger": null,
     "DropdownMenuTrigger": null,
+    "Em": null,
+    "EventEditDialog": null,
+    "EventsSection": null,
     "FormControl": null,
     "FormDescription": null,
     "FormField": null,
     "FormItem": null,
     "FormLabel": null,
     "FormMessage": null,
+    "GalleryUpload": null,
+    "GlobalMenuTrigger": null,
+    "HomeListings": null,
+    "HomeLocalChannels": null,
+    "HomeSpecials": null,
+    "HomeWhatsOn": null,
+    "HomeWhatsOnEditor": null,
     "HoverCardContent": null,
     "HoverCardTrigger": null,
+    "ImageCropDialog": null,
+    "ImageLightbox": null,
+    "ImageUpload": null,
+    "IncludedChipsInput": null,
     "InputOTPGroup": null,
     "InputOTPSeparator": null,
     "InputOTPSlot": null,
+    "LegalPage": null,
+    "List": null,
+    "ListingActions": null,
+    "ListingContactPicker": null,
+    "MarkdownToolbar": null,
     "MenubarCheckboxItem": null,
     "MenubarContent": null,
     "MenubarGroup": null,
@@ -134,6 +158,10 @@
     "MenubarSubContent": null,
     "MenubarSubTrigger": null,
     "MenubarTrigger": null,
+    "ModerationActionDialog": null,
+    "MultiContactField": null,
+    "MyHoedspruitCardEditor": null,
+    "NavLink": null,
     "NavigationMenuContent": null,
     "NavigationMenuIndicator": null,
     "NavigationMenuItem": null,
@@ -141,18 +169,35 @@
     "NavigationMenuList": null,
     "NavigationMenuTrigger": null,
     "NavigationMenuViewport": null,
+    "NotificationsBell": null,
+    "P": null,
     "PaginationContent": null,
     "PaginationEllipsis": null,
     "PaginationItem": null,
     "PaginationLink": null,
     "PaginationNext": null,
     "PaginationPrevious": null,
+    "PolicyPageLayout": null,
     "PopoverContent": null,
     "PopoverTrigger": null,
+    "ProfileForm": null,
     "RadioGroupItem": null,
+    "RefineChip": null,
+    "RefineDrawer": null,
+    "RefineGroupLabel": null,
+    "RefineOption": null,
+    "RefineRectOption": null,
+    "RefineSection": null,
+    "RefineSlider": null,
+    "RefineToggle": null,
+    "ReportUserDialog": null,
     "ResizableHandle": null,
     "ResizablePanel": null,
+    "ReviewSection": null,
     "ScrollBar": null,
+    "ScrollToTop": null,
+    "SearchDialog": null,
+    "Section": null,
     "SelectContent": null,
     "SelectGroup": null,
     "SelectItem": null,
@@ -162,6 +207,7 @@
     "SelectSeparator": null,
     "SelectTrigger": null,
     "SelectValue": null,
+    "Seo": null,
     "SheetClose": null,
     "SheetContent": null,
     "SheetDescription": null,
@@ -193,6 +239,7 @@
     "SidebarRail": null,
     "SidebarSeparator": null,
     "SidebarTrigger": null,
+    "SpecialEditDialog": null,
     "TableBody": null,
     "TableCaption": null,
     "TableCell": null,
@@ -214,7 +261,11 @@
     "ToggleGroupItem": null,
     "TooltipContent": null,
     "TooltipProvider": null,
-    "TooltipTrigger": null
+    "TooltipTrigger": null,
+    "TriStateToggle": null,
+    "WeatherSection": null,
+    "ModerationBanner": null,
+    "OfflineScreen": null
   },
   "overrides": {
     "Dialog": {
@@ -300,7 +351,34 @@
     "Pagination": {
       "cardMode": "column",
       "viewport": "900x600"
+    },
+    "BottomNav": {
+      "cardMode": "single",
+      "viewport": "440x360"
+    },
+    "HeroSection": {
+      "cardMode": "single",
+      "viewport": "440x740"
+    },
+    "GlobalMenu": {
+      "cardMode": "single",
+      "viewport": "440x760"
+    },
+    "HomeMasthead": {
+      "cardMode": "single",
+      "viewport": "440x220"
+    },
+    "PageHeader": {
+      "cardMode": "single",
+      "viewport": "440x160"
+    },
+    "HomeCategoryChips": {
+      "cardMode": "single",
+      "viewport": "440x180"
     }
   },
-  "readmeHeader": ".design-sync/conventions.md"
+  "readmeHeader": ".design-sync/conventions.md",
+  "provider": {
+    "component": "DsPreviewProvider"
+  }
 }

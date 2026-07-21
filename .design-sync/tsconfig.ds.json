@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "..",
+    "paths": {
+      "@/integrations/supabase/client": [".design-sync/mocks/supabase.ts"],
+      "@/hooks/useAuth": [".design-sync/mocks/useAuth.tsx"],
+      "@/assets/hero-bushveld.jpg": [".design-sync/mocks/img-hero.ts"],
+      "@/assets/activities-card.jpg": [".design-sync/mocks/img-activities.ts"],
+      "@/assets/lodge-card.jpg": [".design-sync/mocks/img-lodge.ts"],
+      "@/assets/restaurant-card.jpg": [".design-sync/mocks/img-restaurant.ts"],
+      "@/*": ["src/*"]
+    }
+  }
+}

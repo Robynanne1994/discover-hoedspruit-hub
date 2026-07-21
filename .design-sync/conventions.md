@@ -56,6 +56,17 @@ The custom brand components are `PrimaryButton`, `SearchBar`, and `BackArrowIcon
 - Tokens + global rules: the bound `styles.css` and its `@import` closure (`_ds_bundle.css`, `fonts/fonts.css`).
 - Per-component API + usage: each component's `.d.ts` (props) and `.prompt.md`.
 
+## App feature components (the real building blocks)
+
+Beyond the primitives, this library ships the app's actual composed components — prefer these when building Hello Hoedspruit screens:
+
+- **Chrome / navigation:** `BottomNav` (the fixed brown-pill bottom tab bar — Home/Explore/Specials/Events/Profile), `PageHeader` (title + back button + underline), `HomeMasthead` (hH logo + "Hello Hoedspruit" + "YOUR LOWVELD LOCAL" + search), `BackButton`, `GlobalMenu` (slide-out account/help menu).
+- **Home sections:** `HomeCategoryChips` (the white rounded category tiles), `HomeSectionHead` (`primary` heading + optional `View all` action).
+- **Cards & content:** `EventCard` (`event` prop: title/date/time/location/tag/image_url), `UserCard` (`user` prop), `HeroSection`, `DisplayTitle` (`item` prop; honours `title_override`).
+- **Actions:** `FavouriteButton` (`itemId`/`itemType` — heart, absolute-positioned on a card), `ShareButton` (`title`/`url`), `FollowButton` (`targetUserId`), `FollowStats` (`userId`).
+
+These are the components that make a screen look like the app. Compose a home screen as `HomeMasthead` → `HomeCategoryChips` → `HomeSectionHead` + `EventCard`s → `BottomNav`. Data-driven list containers (HomeListings, WhatsOn, etc.) are intentionally not shipped — build lists from `EventCard`/`Card` with your own data.
+
 ## One idiomatic snippet
 
 ```jsx

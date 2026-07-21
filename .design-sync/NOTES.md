@@ -9,7 +9,7 @@ Repo-specific gotchas for future syncs. This repo is a **Lovable-generated Vite 
 ## Build shape
 - No library `dist/` — it's an app. The converter runs **synth-entry mode** (`export * from` every file under `srcDir`).
 - `node_modules/vite_react_shadcn_ts` doesn't exist (repo won't self-install), so `package-build` can't find `PKG_DIR`. Fix: **self-referential symlink** `ln -sfn "$(pwd)" node_modules/vite_react_shadcn_ts` (recreate per fresh clone; it's under node_modules so gitignored).
-- **Scope = `src/components/ui/` only** (`cfg.srcDir`). Reason: `src/components/ui/` is self-contained (radix + `cn` + a few libs). The app/feature components (`src/components/*`, `src/components/{home,listing,social,admin,events,profile}/`) import Supabase / react-router / react-query. The Supabase client (`src/integrations/supabase/client.ts`) calls `createClient(import.meta.env.VITE_...)` at module top level — pulling any of those into the single IIFE bundle risks a top-level throw that kills `window.HelloHoedspruitDS` entirely. Keep them out of the `ui/` scope.
+- **Scope = `src/components`** (`cfg.srcDir`) — covers the shadcn `ui/` primitives AND the app's feature components. NOTE: the feature components import Supabase / react-router / react-query, and the Supabase client (`src/integrations/supabase/client.ts`) calls `createClient(import.meta.env.VITE_...)` at module top level — which would throw at IIFE load and kill `window.HelloHoedspruitDS`. That's why the build **mocks the data layer** (see "Feature components" section below): `cfg.tsconfig` aliases the Supabase client + auth hooks to `.design-sync/mocks/`. Without those mocks, narrow the scope back to `src/components/ui` to avoid the poisoning.
 
 ## CSS / tokens
 - `src/index.css` is **Tailwind source** (`@tailwind`/`@apply`), NOT compiled CSS. Component utility classes (`bg-primary`, etc.) only exist after a Tailwind compile.
@@ -69,3 +69,26 @@ Repo-specific gotchas for future syncs. This repo is a **Lovable-generated Vite 
 - **Self-referential symlink** `node_modules/vite_react_shadcn_ts -> repo root` must be recreated per fresh clone (it's under node_modules, gitignored) before `package-build` can find PKG_DIR.
 - **Remote-image preview cells** (AspectRatio/Avatar) depend on the capture env's network fallback behaviour.
 - **Full npm install** (not `npm ci`) is required (stale lockfile); recharts must be present (chart.tsx is pruned but the file is bundled).
+
+## Feature components (second pass — the app's real building blocks)
+
+The primitive-only sync looked "off-brand" because the app's identity lives in feature components. This pass widens the build to `src/components/*` and adds them.
+
+### What makes it work (infra — all in `.design-sync/`)
+- **`cfg.srcDir = "src/components"`** — widened so feature components are in the bundle. `cfg.tsconfig = ".design-sync/tsconfig.ds.json"` aliases the data layer.
+- **Mocks** (`.design-sync/mocks/`): `supabase.ts` (chainable, thenable, resolves empty — stops the client throwing at IIFE load), `useAuth.tsx` (guest passthrough). Wired via tsconfig `paths`.
+- **`cfg.provider = {component: "DsPreviewProvider"}`** — defined in `extra-exports.tsx`, wraps every preview in `MemoryRouter > QueryClientProvider > AuthProvider > GuestAuthProvider`. **All four are required**: components use `useLocation`/`Link` (router), `useQuery` (query), `useAuth` (AuthProvider), and `FavouriteButton` needs `GuestAuthProvider` (else "useGuestAuth must be used within GuestAuthProvider" → blank card).
+- **Image aliases**: the bundle has no `.jpg` loader, so `@/assets/*.jpg` imports are aliased in `tsconfig.ds.json` to data-URL mock files (`.design-sync/mocks/img-*.ts`) — 3 real card images inlined, the 432KB hero replaced with a light SVG placeholder. `.png`/`.svg`/`.woff2` load natively (dataurl).
+- **Feature default exports** (all 15 are `export default`) are named-re-exported in `extra-exports.tsx` so they land on the window global (ESM `export *` drops defaults). Expect a non-fatal `[EXPORT_COLLISION]` warning listing them — it's fine (the main package doesn't actually export those names).
+- **Fixed-position components** (BottomNav) need a `transform: translateZ(0)` wrapper in the preview so `position:fixed` anchors to the card, not the page. `cardMode: single` + a viewport override frames the full-screen/tall ones (HeroSection, GlobalMenu, HomeMasthead, PageHeader, HomeCategoryChips).
+
+### Kept feature components (15, grouped by folder)
+BottomNav, PageHeader, BackButton, DisplayTitle, FavouriteButton, ShareButton, HeroSection, GlobalMenu (general); HomeMasthead, HomeSectionHead, HomeCategoryChips (home); EventCard (events); UserCard, FollowButton, FollowStats (social).
+
+### Nulled / skipped (won't render meaningfully with empty mock data)
+- **ModerationBanner, OfflineScreen** — return `null` unless a suspended-status / offline condition holds (mock has neither). Nulled.
+- **admin/** editors, **legal/**, **Refine\*** drawer parts, **Home{Listings,WhatsOn,Specials,LocalChannels}**, **CategoriesSection/EventsSection/WeatherSection/ReviewSection/ListingActions/ProfileForm** — data-fetch containers that render empty with the empty Supabase mock. Nulled for now. **To populate them later**: seed the React Query cache in `DsPreviewProvider`, or make `mocks/supabase.ts` return representative rows per table (currently returns `[]`).
+
+### Re-sync risk
+- The mocks return EMPTY data by design. If you want the container sections (home lists) populated, extend `mocks/supabase.ts` with canned rows — but keep it in sync with the real table shapes.
+- `tsconfig.ds.json` `extends ../tsconfig.json`; if the repo's tsconfig paths change, re-check the aliases.
