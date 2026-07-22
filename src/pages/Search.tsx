@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import Seo from "@/components/Seo";
+import PageHeader from "@/components/PageHeader";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
