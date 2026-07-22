@@ -1034,7 +1034,6 @@ export type Database = {
           business_owner_id: string | null
           business_started_year: number | null
           callout_fee: boolean | null
-          card_primary_subcategory: string | null
           category_id: string | null
           cause: string | null
           child_friendly: boolean | null
@@ -1174,7 +1173,6 @@ export type Database = {
           business_owner_id?: string | null
           business_started_year?: number | null
           callout_fee?: boolean | null
-          card_primary_subcategory?: string | null
           category_id?: string | null
           cause?: string | null
           child_friendly?: boolean | null
@@ -1314,7 +1312,6 @@ export type Database = {
           business_owner_id?: string | null
           business_started_year?: number | null
           callout_fee?: boolean | null
-          card_primary_subcategory?: string | null
           category_id?: string | null
           cause?: string | null
           child_friendly?: boolean | null
