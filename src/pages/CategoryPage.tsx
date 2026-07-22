@@ -1242,47 +1242,45 @@ const CategoryPage = () => {
                   flexDirection: "column",
                 }}
               >
-                <div style={{ padding: 8 }}>
-                  <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 12, overflow: "hidden", background: "#F4EFE3" }}>
-                    {l.image_url ? (
-                      <img
-                        src={l.image_url}
-                        alt={l.title}
-                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        loading="lazy"
-                      />
-                    ) : null}
+                <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#F4EFE3" }}>
+                  {l.image_url ? (
+                    <img
+                      src={l.image_url}
+                      alt={l.title}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                      loading="lazy"
+                    />
+                  ) : null}
 
-                    {l.google_rating ? (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 8,
-                          left: 8,
-                          background: "rgba(255,255,255,0.95)",
-                          borderRadius: 9999,
-                          padding: "3px 8px",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 4,
-                          fontFamily: sans,
-                          fontSize: 11,
-                          fontWeight: 600,
-                          color: INK,
-                          lineHeight: 1,
-                        }}
-                      >
-                        <span style={{ color: INK }}>★</span>
-                        {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
-                        {l.google_reviews_count ? (
-                          <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
-                        ) : null}
-                      </div>
-                    ) : null}
-
-                    <div style={{ position: "absolute", top: 4, right: 4 }}>
-                      <CardHeart listingId={l.id} />
+                  {l.google_rating ? (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 8,
+                        left: 8,
+                        background: "rgba(255,255,255,0.95)",
+                        borderRadius: 9999,
+                        padding: "3px 8px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 4,
+                        fontFamily: sans,
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: INK,
+                        lineHeight: 1,
+                      }}
+                    >
+                      <span style={{ color: INK }}>★</span>
+                      {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
+                      {l.google_reviews_count ? (
+                        <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
+                      ) : null}
                     </div>
+                  ) : null}
+
+                  <div style={{ position: "absolute", top: 4, right: 4 }}>
+                    <CardHeart listingId={l.id} />
                   </div>
                 </div>
 
