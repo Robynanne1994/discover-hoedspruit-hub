@@ -209,6 +209,7 @@ const App = () => (
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="homepage" element={<AdminHomepage />} />
+                <Route path="search-suggested" element={<AdminSearchSuggested />} />
                 <Route path="categories" element={<AdminCategories />} />
                 <Route path="categories/:id/order" element={<AdminCategoryOrder />} />
 
