@@ -1083,7 +1083,7 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 20, paddingRight: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="w-full" style={{ height: 220, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
           ))}
@@ -1105,7 +1105,7 @@ const CategoryPage = () => {
           </button>
         </div>
       ) : filteredListings.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, paddingLeft: 20, paddingRight: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, paddingLeft: 20, paddingRight: 20 }}>
           {filteredListings.map((l) => {
             const hasDetail = !!(
               l.long_description ||
