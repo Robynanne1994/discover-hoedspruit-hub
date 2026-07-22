@@ -1182,9 +1182,9 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 20, paddingRight: 20, display: "flex", flexDirection: "column", gap: 16 }}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 340, borderRadius: 20, background: "rgba(0,0,0,0.06)" }} />
+        <div style={{ paddingLeft: 20, paddingRight: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="w-full" style={{ height: 300, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
           ))}
         </div>
       ) : listingsError ? (
@@ -1204,7 +1204,7 @@ const CategoryPage = () => {
           </button>
         </div>
       ) : filteredListings.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 20, paddingRight: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, paddingLeft: 20, paddingRight: 20 }}>
           {filteredListings.map((l) => {
             const hasDetail = !!(
               l.long_description ||
@@ -1217,8 +1217,6 @@ const CategoryPage = () => {
 
             const allCats: string[] = (l as any)._allCategories || [];
             let subTitles: string[] = (l as any)._subTitles || [];
-            // Hide a generic subcategory (e.g. "Lodges") when a more specific one
-            // ending in the same word (e.g. "Luxury Lodges", "Safari Lodges") is also present.
             subTitles = subTitles.filter((s) => {
               const sLower = s.trim().toLowerCase();
               return !subTitles.some((other) => {
@@ -1229,7 +1227,7 @@ const CategoryPage = () => {
             });
             const otherCats = allCats.filter((c) => c && c !== categoryTitle);
             const orderedCats = subTitles.length > 0 ? subTitles : [categoryTitle, ...otherCats];
-
+            const eyebrow = orderedCats.slice(0, 2).join(" · ");
 
             return (
               <article
@@ -1237,119 +1235,104 @@ const CategoryPage = () => {
                 onClick={hasDetail ? () => navigate(`/listing/${l.id}?from=${encodeURIComponent(categoryTitle)}`, { state: { fromCategory: categoryTitle } }) : undefined}
                 style={{
                   background: CARD_BG,
-                  borderRadius: 20,
+                  borderRadius: 16,
                   overflow: "hidden",
                   cursor: hasDetail ? "pointer" : "default",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
-                <div style={{ position: "relative", width: "100%", height: 200, background: "#F4EFE3" }}>
-                  {l.image_url ? (
-                    <img
-                      src={l.image_url}
-                      alt={l.title}
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                      loading="lazy"
-                    />
-                  ) : null}
+                <div style={{ padding: 8 }}>
+                  <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 12, overflow: "hidden", background: "#F4EFE3" }}>
+                    {l.image_url ? (
+                      <img
+                        src={l.image_url}
+                        alt={l.title}
+                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        loading="lazy"
+                      />
+                    ) : null}
 
-                  {l.google_rating ? (
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 12,
-                        left: 12,
-                        background: "rgba(255,255,255,0.92)",
-                        borderRadius: 9999,
-                        padding: "5px 10px",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 5,
-                        fontFamily: sans,
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: INK,
-                      }}
-                    >
-                      <span style={{ color: INK }}>★</span>
-                      {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
-                      {l.google_reviews_count ? (
-                        <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
-                      ) : null}
+                    {l.google_rating ? (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 8,
+                          left: 8,
+                          background: "rgba(255,255,255,0.95)",
+                          borderRadius: 9999,
+                          padding: "3px 8px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 4,
+                          fontFamily: sans,
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: INK,
+                          lineHeight: 1,
+                        }}
+                      >
+                        <span style={{ color: INK }}>★</span>
+                        {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
+                        {l.google_reviews_count ? (
+                          <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    <div style={{ position: "absolute", top: 4, right: 4 }}>
+                      <CardHeart listingId={l.id} />
                     </div>
-                  ) : null}
-
-                  <CardHeart listingId={l.id} />
+                  </div>
                 </div>
 
-                <div style={{ padding: "16px 18px 18px" }}>
+                <div style={{ padding: "2px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
                   <h3
                     {...noTitleCaseProps(l)}
                     style={{
                       fontFamily: sans,
-                      fontSize: 20,
+                      fontSize: 15,
                       fontWeight: 700,
                       color: INK,
                       lineHeight: 1.2,
-                      margin: "0 0 6px 0",
+                      margin: 0,
                       wordBreak: "break-word",
                     }}
                   >
                     {getDisplayTitle(l)}
                   </h3>
 
-                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED }}>
-                    {orderedCats.map((c, i) => (
-                      <span key={`${c}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        {i > 0 && (
-                          <span
-                            aria-hidden
-                            style={{
-                              width: 3,
-                              height: 3,
-                              borderRadius: "50%",
-                              background: MUTED,
-                              display: "inline-block",
-                            }}
-                          />
-                        )}
-                        <span>{c}</span>
-                      </span>
-                    ))}
-                  </div>
+                  {eyebrow && (
+                    <p
+                      style={{
+                        fontFamily: sans,
+                        fontSize: 10,
+                        fontWeight: 600,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "#715A3D",
+                        margin: 0,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {eyebrow}
+                    </p>
+                  )}
 
-                  {(l.location || open !== null) && (
-                    <>
-                      <div style={{ height: 1, background: "rgba(0,0,0,0.08)", margin: "14px 0 12px" }} />
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-                        {l.location ? (
-                          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED, flex: 1, minWidth: 0, lineHeight: 1.35 }}>
-                            <MapPin size={13} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0, transform: "translateY(-1px)" }} />
-                            <span style={{ wordBreak: "break-word" }}>{l.location}</span>
-                          </div>
-                        ) : (
-                          <span />
-                        )}
-                        {open !== null && (
-                          <span
-                            style={{
-                              flexShrink: 0,
-                              border: `1.5px solid ${open ? "#BFE5C8" : "#F4C9C9"}`,
-                              color: open ? OPEN_COLOR : CLOSED_COLOR,
-                              background: open ? "#F1FAF3" : "#FBEFEF",
-                              fontFamily: sans,
-                              fontSize: 12,
-                              fontWeight: 700,
-                              letterSpacing: "0.08em",
-                              textTransform: "uppercase",
-                              padding: "5px 14px",
-                              borderRadius: 9999,
-                            }}
-                          >
-                            {open ? "Open" : "Closed"}
-                          </span>
-                        )}
-                      </div>
-                    </>
+                  {l.location && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: sans, fontSize: 12, color: MUTED, lineHeight: 1.3, minWidth: 0 }}>
+                      <MapPin size={12} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
+                      <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.location}</span>
+                    </div>
+                  )}
+
+                  {open !== null && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: open ? OPEN_COLOR : CLOSED_COLOR, marginTop: 2 }}>
+                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: open ? OPEN_COLOR : CLOSED_COLOR, display: "inline-block" }} />
+                      {open ? "Open" : "Closed"}
+                    </div>
                   )}
                 </div>
               </article>
