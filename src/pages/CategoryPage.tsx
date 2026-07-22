@@ -66,31 +66,6 @@ const titleSizeFor = (s: string) => {
 
 type SortKey = "default" | "name_asc" | "name_desc" | "rating" | "distance";
 
-// Resolve an icon for a Health & Medical subcategory by matching keywords in
-// its title, falling back to a generic medical icon so EVERY subcategory in the
-// category gets a tile (no hardcoded list to fall out of sync with the DB).
-const healthIconFor = (title: string) => {
-  const t = title.toLowerCase();
-  if (/pharmac|chemist|dispensar|tablet|medication/.test(t)) return PillIcon;
-  if (/dental|dentist|orthodont|tooth|teeth|oral/.test(t)) return Smile;
-  if (/optom|optic|eye|vision|spectacle|glasses|ophthalm/.test(t)) return Eye;
-  if (/vaccin|immunis|immuniz|inject/.test(t)) return Syringe;
-  if (/vet|veterin|animal/.test(t)) return PawPrint;
-  if (/ambulance|emergency|paramedic|rescue|first aid/.test(t)) return Ambulance;
-  if (/lab|patholog|blood|diagnost|pathol|test/.test(t)) return TestTubes;
-  if (/radiolog|x-ray|xray|scan|imaging|ultrasound|sonograph/.test(t)) return Microscope;
-  if (/physio|physiother|rehab|biokinet/.test(t)) return Activity;
-  if (/chiro|spine|spinal|orthopaed|orthoped|bone|podiat|foot/.test(t)) return Bone;
-  if (/psych|mental|counsel|therap|wellbeing|wellness|social work/.test(t)) return Brain;
-  if (/pediatr|paediatr|child|baby|infant|maternity|matern/.test(t)) return Baby;
-  if (/ear|nose|throat|\bent\b|hearing|audiolog/.test(t)) return Ear;
-  if (/disab|accessib|mobility|wheelchair|special needs/.test(t)) return Accessibility;
-  if (/hospital|surger|surgeon|specialist|medical centre|medical center/.test(t)) return Plus;
-  if (/clinic/.test(t)) return HeartPulse;
-  if (/\bgp\b|general practit|family (doctor|practice)|doctor|physician|practitioner|medical practice/.test(t)) return Stethoscope;
-  return HeartPulse; // generic medical fallback
-};
-
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const parseTime = (s: string) => {
