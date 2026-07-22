@@ -29,6 +29,7 @@ const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
   { label: "Moderation", path: "/admin/moderation", icon: ShieldCheck },
   { label: "Homepage", path: "/admin/homepage", icon: Home },
+  { label: "Search Suggested", path: "/admin/search-suggested", icon: SearchIcon },
   { label: "Users", path: "/admin/users", icon: Users },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },
