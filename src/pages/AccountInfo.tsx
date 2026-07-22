@@ -700,7 +700,7 @@ const AccountInfo = () => {
 
               <Row
                 label="Residency"
-                onClick={() => !residencyOpen && setResidencyOpen(true)}
+                onClick={() => setResidencyOpen((v) => !v)}
               >
                 {!residencyOpen ? (
                   <div style={{ ...rowValueStyle, cursor: "pointer" }}>
@@ -1268,19 +1268,29 @@ function DialCodePicker({ value, onChange }: { value: string; onChange: (code: s
 
   useEffect(() => {
     if (!open) return;
-    const onDocDown = (e: MouseEvent) => {
+    const onDocDown = (e: Event) => {
       const target = e.target as Node;
       if (buttonRef.current?.contains(target) || menuRef.current?.contains(target)) return;
       setOpen(false);
     };
-    const onScrollResize = () => setOpen(false);
+    // Close when the page behind scrolls, but NOT when the user scrolls the
+    // dropdown list itself — otherwise the menu vanishes as soon as you try
+    // to scroll down to the code you want.
+    const onScroll = (e: Event) => {
+      const target = e.target as Node | null;
+      if (target && menuRef.current?.contains(target)) return;
+      setOpen(false);
+    };
+    const onResize = () => setOpen(false);
     document.addEventListener("mousedown", onDocDown);
-    window.addEventListener("scroll", onScrollResize, true);
-    window.addEventListener("resize", onScrollResize);
+    document.addEventListener("touchstart", onDocDown);
+    window.addEventListener("scroll", onScroll, true);
+    window.addEventListener("resize", onResize);
     return () => {
       document.removeEventListener("mousedown", onDocDown);
-      window.removeEventListener("scroll", onScrollResize, true);
-      window.removeEventListener("resize", onScrollResize);
+      document.removeEventListener("touchstart", onDocDown);
+      window.removeEventListener("scroll", onScroll, true);
+      window.removeEventListener("resize", onResize);
     };
   }, [open]);
 
@@ -1306,6 +1316,7 @@ function DialCodePicker({ value, onChange }: { value: string; onChange: (code: s
         maxHeight: 260,
         overflowY: "auto",
         WebkitOverflowScrolling: "touch",
+        overscrollBehavior: "contain",
         minWidth: 200,
       }}
     >

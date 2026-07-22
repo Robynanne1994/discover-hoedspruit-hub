@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { MoreVertical, Star } from "lucide-react";
+import { MoreVertical, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import ReportUserDialog from "@/components/ReportUserDialog";
+import SavedCard from "@/components/profile/SavedCard";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 
 const PAGE_BG = "#E6E0CC";
@@ -54,10 +55,8 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 
 // Saved-items tab styling — mirrors MyProfile for an identical look
 const TAB_INK = "#1A1A1A";
-const TAB_MUTED = "#8A8275";
 const TAB_SUBTLE = "rgba(26,26,26,0.55)";
 const TAB_LINE = "rgba(26,26,26,0.10)";
-const TAB_CARD = "#FFFFFF";
 
 type Tab = "listings" | "deals" | "events" | "resources";
 
@@ -216,7 +215,7 @@ const UserProfile = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating")
+        .select("id, title, image_url, location, google_rating, google_reviews_count")
         .in("id", ids);
       const map = Object.fromEntries(
         (listings || []).map((l: any) => [l.id, l]),
@@ -345,68 +344,7 @@ const UserProfile = () => {
     href: string,
     subtitle: React.ReactNode,
   ) => (
-    <Link
-      key={it.id}
-      to={href}
-      style={{
-        background: TAB_CARD,
-        borderRadius: 16,
-        overflow: "hidden",
-        textDecoration: "none",
-        display: "block",
-      }}
-    >
-      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#d6d6d6" }}>
-        {it.image_url && (
-          <img
-            src={it.image_url}
-            alt=""
-            loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        )}
-        {type === "listing" && it.google_rating && (
-          <div
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              background: "rgba(255,255,255,0.92)",
-              borderRadius: 999,
-              padding: "3px 9px 3px 7px",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              fontFamily: SANS,
-              fontSize: 12,
-              fontWeight: 600,
-              color: TAB_INK,
-            }}
-          >
-            <Star size={11} strokeWidth={1.8} color={TAB_INK} />
-            {Number(it.google_rating).toFixed(1).replace(/\.0$/, "")}
-          </div>
-        )}
-      </div>
-      <div style={{ padding: "12px 14px 14px" }}>
-        <div
-          style={{
-            fontFamily: SANS,
-            fontWeight: 500,
-            fontSize: 15,
-            lineHeight: 1.25,
-            color: TAB_INK,
-            marginBottom: 4,
-            letterSpacing: "-0.1px",
-          }}
-        >
-          {titleCase(it.title)}
-        </div>
-        <div style={{ fontFamily: SANS, fontSize: 12.5, color: TAB_MUTED, letterSpacing: "0.01em" }}>
-          {subtitle}
-        </div>
-      </div>
-    </Link>
+    <SavedCard key={it.id} it={it} type={type} href={href} subtitle={subtitle} />
   );
 
   const EmptyTab = ({ text }: { text: string }) => (
@@ -1080,61 +1018,84 @@ const UserProfile = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Block confirmation */}
-      <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
-        <DialogContent style={{ background: CREAM, border: "none", borderRadius: 20 }}>
-          <DialogHeader>
-            <DialogTitle
-              style={{
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 16,
-                letterSpacing: "0.01em",
-                color: INK,
-              }}
-            >
-              Are you sure you want to block {titleCase(profile?.display_name) || (profile?.username ? `@${profile.username}` : "this user")}?
-            </DialogTitle>
-          </DialogHeader>
-          <DialogFooter style={{ display: "flex", gap: 10, marginTop: 12 }}>
-            <button
-              onClick={() => setBlockOpen(false)}
-              style={{
-                flex: 1,
-                height: 44,
-                borderRadius: 999,
-                background: "transparent",
-                border: `1px solid ${LINE}`,
-                color: INK,
-                fontFamily: SANS,
-                fontSize: 14,
-                cursor: "pointer",
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                handleBlock();
-                setBlockOpen(false);
-              }}
-              style={{
-                flex: 1,
-                height: 44,
-                borderRadius: 999,
-                background: INK,
-                border: "none",
-                color: CREAM,
-                fontFamily: SANS,
-                fontSize: 14,
-                cursor: "pointer",
-              }}
-            >
-              Block
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Block confirmation — bottom sheet matching the app's other modals */}
+      {blockOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
+          onClick={() => setBlockOpen(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              fontFamily: SANS,
+              width: "100%",
+              background: "#ffffff",
+              borderRadius: "20px 20px 0 0",
+              padding: "20px 20px 32px",
+              animation: "bu-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+            }}
+          >
+            <style>{`@keyframes bu-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.08em", color: "#8A8480", textTransform: "uppercase" }}>{"\n"}</div>
+              <button
+                onClick={() => setBlockOpen(false)}
+                aria-label="Close"
+                style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}
+              >
+                <X size={20} color={INK} strokeWidth={1.75} />
+              </button>
+            </div>
+            <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px" }}>
+              Block {titleCase(profile?.display_name) || (profile?.username ? `@${profile.username}` : "this user")}?
+            </h2>
+            <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.55, color: "#2b2420", margin: "0 0 20px" }}>
+              You will unfollow each other, and they won't be able to follow you or see your profile. You can unblock them at any time.
+            </p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <button
+                onClick={() => setBlockOpen(false)}
+                style={{
+                  flex: 1,
+                  height: 48,
+                  borderRadius: 9999,
+                  background: "transparent",
+                  border: "1px solid #C5C0BA",
+                  color: INK,
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  handleBlock();
+                  setBlockOpen(false);
+                }}
+                style={{
+                  flex: 1,
+                  height: 48,
+                  borderRadius: 9999,
+                  background: "#423324",
+                  color: "#FFFFFF",
+                  border: "none",
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                }}
+              >
+                Block User
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
 
       {id && (

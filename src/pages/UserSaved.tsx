@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Star } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
+import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
 
 const PAGE_BG = "#E6E0CC";
-const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const MUTED = "#8A8275";
 const SUBTLE = "rgba(26,26,26,0.55)";
 const LINE = "rgba(26,26,26,0.10)";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -107,7 +105,7 @@ const UserSaved = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, saved_image_url, location, google_rating")
+        .select("id, title, image_url, saved_image_url, location, google_rating, google_reviews_count")
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
@@ -183,62 +181,7 @@ const UserSaved = () => {
     href: string,
     subtitle: React.ReactNode,
   ) => (
-    <Link
-      key={it.id}
-      to={href}
-      style={{ background: CARD, borderRadius: 16, overflow: "hidden", textDecoration: "none", display: "block" }}
-    >
-      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#d6d6d6" }}>
-        {(it.saved_image_url || it.image_url) && (
-          <img
-            src={it.saved_image_url || it.image_url}
-            alt=""
-            loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        )}
-        {type === "listing" && it.google_rating && (
-          <div
-            style={{
-              position: "absolute",
-              top: 10,
-              left: 10,
-              background: "rgba(255,255,255,0.92)",
-              borderRadius: 999,
-              padding: "3px 9px 3px 7px",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              fontFamily: SANS,
-              fontSize: 12,
-              fontWeight: 600,
-              color: INK,
-            }}
-          >
-            <Star size={11} strokeWidth={1.8} color={INK} />
-            {Number(it.google_rating).toFixed(1).replace(/\.0$/, "")}
-          </div>
-        )}
-      </div>
-      <div style={{ padding: "12px 14px 14px" }}>
-        <div
-          style={{
-            fontFamily: SANS,
-            fontWeight: 500,
-            fontSize: 15,
-            lineHeight: 1.25,
-            color: INK,
-            marginBottom: 4,
-            letterSpacing: "-0.1px",
-          }}
-        >
-          {titleCase(it.title)}
-        </div>
-        <div style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED, letterSpacing: "0.01em" }}>
-          {subtitle}
-        </div>
-      </div>
-    </Link>
+    <SavedCard key={it.id} it={it} type={type} href={href} subtitle={subtitle} />
   );
 
   const EmptyTab = ({ text }: { text: string }) => (
