@@ -12,6 +12,7 @@ import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
 import Index from "./pages/Index.tsx";
 
 import Welcome from "./pages/Welcome.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import ModerationBanner from "./components/ModerationBanner.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
@@ -110,7 +111,9 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
 
   if (loading) return <>{children}</>;
   // Welcome route is always reachable so people can sign up/in later.
-  if (location.pathname === "/welcome") return <>{children}</>;
+  // Reset-password must also stay reachable — it's opened from an email link,
+  // often before any session exists on the device.
+  if (location.pathname === "/welcome" || location.pathname === "/reset-password") return <>{children}</>;
   // Only force the Welcome screen on the very first launch. After that,
   // unauthenticated visitors browse freely — sign-in prompts only appear
   // for account-based actions via requireAuth().
@@ -123,7 +126,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
 const ConditionalBottomNav = () => {
   const location = useLocation();
   const path = location.pathname;
-  if (path.startsWith("/admin") || path === "/welcome") return null;
+  if (path.startsWith("/admin") || path === "/welcome" || path === "/reset-password") return null;
   return <BottomNav />;
 };
 
@@ -158,6 +161,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/welcome" element={<Welcome />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/category/:id" element={<CategoryPage />} />

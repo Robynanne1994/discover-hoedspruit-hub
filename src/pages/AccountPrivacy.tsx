@@ -109,27 +109,30 @@ const AccountPrivacy = () => {
     },
   });
 
-  const [isPrivate, setIsPrivate] = useState(false);
+  // The switch state is derived straight from the cached profile so it is
+  // correct on the very first paint when navigating back to this page.
+  // pendingPrivate only overrides it while a save is in flight.
+  const [pendingPrivate, setPendingPrivate] = useState<boolean | null>(null);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
-
-  useEffect(() => {
-    if (profile) setIsPrivate(!!(profile as any).is_private);
-  }, [profile]);
+  const isPrivate = pendingPrivate ?? !!(profile as any)?.is_private;
 
   const togglePrivacy = async (value: boolean) => {
     if (!user) return;
     setSavingPrivacy(true);
-    const prev = isPrivate;
-    setIsPrivate(value);
+    setPendingPrivate(value);
     const { error } = await supabase
       .from("profiles")
       .upsert({ id: user.id, is_private: value } as any);
     setSavingPrivacy(false);
     if (error) {
-      setIsPrivate(prev);
+      setPendingPrivate(null);
       toast.error("Could not update privacy. Please try again.");
       return;
     }
+    queryClient.setQueryData(["profile", user.id], (old: any) =>
+      old ? { ...old, is_private: value } : { id: user.id, is_private: value }
+    );
+    setPendingPrivate(null);
     queryClient.invalidateQueries({ queryKey: ["profile"] });
     queryClient.invalidateQueries({ queryKey: ["user-profile"] });
     toast.success("Privacy updated.");
