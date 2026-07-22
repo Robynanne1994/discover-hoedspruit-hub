@@ -16,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import Seo from "@/components/Seo";
+import PageHeader from "@/components/PageHeader";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -99,43 +100,17 @@ const Search = () => {
         noIndex
       />
 
-      {/* Header: back button + search input */}
-      <div
-        style={{
-          padding: "calc(env(safe-area-inset-top) + 56px) 16px 12px",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
+      <PageHeader
+        title="Search"
+        onBack={() => {
+          if (fromProfile && profileId) navigate("/my-profile");
+          else navigate(-1);
         }}
-      >
-        <button
-          type="button"
-          aria-label="Back"
-          onClick={() => {
-            if (fromProfile && profileId) navigate("/my-profile");
-            else navigate(-1);
-          }}
-          style={{
-            width: 44,
-            height: 44,
-            flexShrink: 0,
-            borderRadius: "50%",
-            background: WHITE,
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
-        </button>
-        <div style={{ flex: 1, minWidth: 0, position: "relative", display: "flex", alignItems: "center" }}>
+      />
+
+      {/* Search input */}
+      <div style={{ padding: "16px 20px 12px" }}>
+        <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
           <SearchIcon
             size={16}
             strokeWidth={1.8}
@@ -200,6 +175,7 @@ const Search = () => {
           )}
         </div>
       </div>
+
 
       {/* Scope chips */}
       <div
@@ -413,6 +389,24 @@ const ListingsResults = ({ query }: { query: string }) => {
   const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-listings", term],
     queryFn: async () => {
+      // When there's no query, prefer admin-curated suggestions if any.
+      if (!term) {
+        const { data: curated } = await supabase
+          .from("site_content")
+          .select("content")
+          .eq("section", "search-suggested-listings")
+          .maybeSingle();
+        const ids = Array.isArray(curated?.content) ? (curated!.content as string[]) : [];
+        if (ids.length) {
+          const { data, error } = await supabase
+            .from("listings")
+            .select("id, title, title_override, location, image_url, is_featured")
+            .in("id", ids);
+          if (error) throw error;
+          const map = new Map((data || []).map((l) => [l.id, l]));
+          return ids.map((id) => map.get(id)).filter(Boolean) as any[];
+        }
+      }
       let q = supabase
         .from("listings")
         .select("id, title, title_override, location, image_url, is_featured")
