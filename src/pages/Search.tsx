@@ -1,28 +1,34 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserCheck, Heart, UserCircle } from "lucide-react";
-import SearchBar from "@/components/ui/SearchBar";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  Search as SearchIcon,
+  X,
+  Folder,
+  Calendar,
+  Tag,
+  User as UserIcon,
+  ChevronRight,
+  UserCircle,
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
-import BackButton from "@/components/BackButton";
-import PageHeader from "@/components/PageHeader";
-import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
-import { toast } from "sonner";
 import Seo from "@/components/Seo";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const PRIMARY = "#715a3d";
 const INK = "#1A1A1A";
-const BODY = "#2b2420";
 const PAGE_BG = "#E6E0CC";
-const IVORY = "#DCD4BD";
-const DIVIDER = "rgba(18,18,20,0.08)";
 const WHITE = "#FFFFFF";
-const PILL_BORDER = "#E8E4DF";
+const DARK = "#423324";
+const DARK_FG = "hsl(40 25% 98%)";
+const MUTED = "hsl(25 8% 48%)";
+const ROW_DIVIDER = "hsl(37 20% 93%)";
+const CHEVRON = "hsl(35 15% 72%)";
+const AVATAR_BG = "hsl(37 39% 92%)";
+const AVATAR_FG = "hsl(27 30% 34%)";
 
 const pressScale = (s = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
@@ -31,246 +37,264 @@ const pressScale = (s = "0.98") => ({
 });
 
 
-type TopTab = "users" | "businesses";
-type UserSub = "suggested" | "followers" | "following";
-type BizSub = "listings" | "events" | "specials";
+type Scope = "listings" | "events" | "specials" | "people";
+
+const SCOPES: { id: Scope; label: string; icon: React.ComponentType<any> }[] = [
+  { id: "listings", label: "Listings", icon: Folder },
+  { id: "events", label: "Events", icon: Calendar },
+  { id: "specials", label: "Specials", icon: Tag },
+  { id: "people", label: "People", icon: UserIcon },
+];
 
 const initialsOf = (displayName?: string | null, username?: string | null): string => {
   if (displayName?.trim()) {
-    const parts = displayName.trim().split(/\s+/);
-    const first = parts[0][0] ?? "";
+    const parts = displayName.trim().split(/\s+/).filter((w) => /^[a-z0-9]/i.test(w));
+    const first = parts[0]?.[0] ?? "";
     const second = parts[1]?.[0] ?? "";
     return `${first}${second}`.toUpperCase();
   }
-  if (username?.trim()) return username.trim()[0].toUpperCase();
+  if (username?.trim()) return username.trim().replace(/^@/, "")[0]?.toUpperCase() ?? "";
   return "";
+};
+
+const untilLabel = (date?: string | null): string | null => {
+  if (!date) return null;
+  try {
+    return `Until ${format(new Date(`${date}T00:00:00`), "d MMM")}`;
+  } catch {
+    return null;
+  }
 };
 
 
 const Search = () => {
-  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const fromProfileState = (location.state as { fromProfile?: boolean; profileId?: string } | null) ?? null;
   const fromProfile = !!fromProfileState?.fromProfile;
   const profileId = fromProfileState?.profileId;
-  const [topTab, setTopTab] = useState<TopTab>(fromProfile ? "users" : "businesses");
-  const [userSub, setUserSub] = useState<UserSub>("suggested");
-  const [bizSub, setBizSub] = useState<BizSub>("listings");
+  const [scope, setScope] = useState<Scope>(fromProfile ? "people" : "listings");
   const [query, setQuery] = useState("");
-
-  const placeholder = useMemo(() => {
-    if (topTab === "users") return "Search Hello Hoedspruit users";
-    return "Search listings, events & specials";
-  }, [topTab]);
+  const hasQuery = query.trim().length > 0;
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100 }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: PAGE_BG,
+        paddingBottom: "calc(env(safe-area-inset-bottom) + 110px)",
+      }}
+    >
+      <style>{`
+        .hh-search-input::placeholder { color: hsl(25 8% 55%); }
+        .hh-search-scopes { scrollbar-width: none; }
+        .hh-search-scopes::-webkit-scrollbar { display: none; }
+        .hh-search-row:hover { background: hsl(37 39% 97%); }
+        .hh-search-row:last-child { border-bottom: none !important; }
+      `}</style>
       <Seo
         title="Search — Hello Hoedspruit"
-        description="Search Hello Hoedspruit users, listings, events and specials across the Lowveld."
+        description="Search Hello Hoedspruit listings, events, specials and people across the Lowveld."
         path="/search"
         noIndex
       />
-      {/* Header */}
-      <div style={{ background: PAGE_BG }}>
-        <PageHeader
-          title="Search"
-          onBack={() => {
+
+      {/* Header: back button + search input */}
+      <div
+        style={{
+          padding: "calc(env(safe-area-inset-top) + 56px) 16px 12px",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={() => {
             if (fromProfile && profileId) navigate("/my-profile");
             else navigate(-1);
           }}
-        />
-      </div>
-
-      {/* Top tabs: Users / Businesses */}
-      <div style={{ display: "flex", padding: "4px 20px 0", gap: 0, borderBottom: `1px solid ${DIVIDER}` }}>
-        {(["businesses", "users"] as TopTab[]).map((t) => {
-          const active = topTab === t;
-          return (
+          style={{
+            width: 44,
+            height: 44,
+            flexShrink: 0,
+            borderRadius: "50%",
+            background: WHITE,
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+        </button>
+        <div style={{ flex: 1, minWidth: 0, position: "relative", display: "flex", alignItems: "center" }}>
+          <SearchIcon
+            size={16}
+            strokeWidth={1.8}
+            color={MUTED}
+            style={{ position: "absolute", left: 16, pointerEvents: "none" }}
+          />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search listings, events & specials"
+            aria-label="Search"
+            className="hh-search-input"
+            style={{
+              width: "100%",
+              boxSizing: "border-box",
+              height: 48,
+              border: "none",
+              borderRadius: 24,
+              background: WHITE,
+              padding: "0 42px",
+              fontFamily: FONT,
+              fontSize: 15,
+              color: INK,
+              outline: "none",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            }}
+          />
+          {hasQuery && (
             <button
-              key={t}
               type="button"
-              onClick={() => setTopTab(t)}
+              aria-label="Clear"
+              onClick={() => setQuery("")}
               style={{
-                flex: 1,
-                background: "none",
+                position: "absolute",
+                right: 6,
+                width: 36,
+                height: 36,
                 border: "none",
-                padding: "14px 0 12px",
+                background: "transparent",
+                padding: 0,
                 cursor: "pointer",
-                fontFamily: FONT,
-                fontSize: 16,
-                fontWeight: active ? 700 : 400,
-                color: active ? INK : "rgba(18,18,20,0.5)",
-                letterSpacing: "0.02em",
-                position: "relative",
-                textTransform: "capitalize",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
-              {t}
               <span
                 style={{
-                  position: "absolute",
-                  left: "20%",
-                  right: "20%",
-                  bottom: -1,
-                  height: 2,
-                  background: active ? INK : "transparent",
-                  borderRadius: 2,
+                  width: 20,
+                  height: 20,
+                  borderRadius: "50%",
+                  background: "hsl(35 15% 88%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-              />
+              >
+                <X size={11} strokeWidth={2.5} color={INK} />
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Scope chips */}
+      <div
+        className="hh-search-scopes"
+        style={{ padding: "2px 16px 14px", display: "flex", gap: 8, overflowX: "auto" }}
+      >
+        {SCOPES.map((s) => {
+          const active = scope === s.id;
+          const Icon = s.icon;
+          return (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => setScope(s.id)}
+              style={{
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "9px 15px",
+                border: "none",
+                borderRadius: 20,
+                background: active ? DARK : WHITE,
+                color: active ? DARK_FG : INK,
+                fontFamily: FONT,
+                fontSize: 13,
+                fontWeight: 600,
+                whiteSpace: "nowrap",
+                cursor: "pointer",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                transition: "transform 150ms ease-out",
+              }}
+              {...pressScale()}
+            >
+              <Icon size={14} strokeWidth={1.8} color={active ? DARK_FG : INK} style={{ flexShrink: 0 }} />
+              {s.label}
             </button>
           );
         })}
       </div>
 
-      {/* Search input */}
-      <div style={{ padding: "16px 20px 0 20px", marginBottom: 22 }}>
-        <SearchBar
-          variant="light"
-          value={query}
-          onChange={setQuery}
-          placeholder={placeholder}
-        />
-      </div>
-
-      {/* Sub pills */}
-      <div style={{ padding: "16px 20px 4px" }}>
-        {topTab === "users" ? (
-          <SubPills<UserSub>
-            value={userSub}
-            onChange={setUserSub}
-            options={[
-              { id: "suggested", label: "Suggested", icon: Users },
-              { id: "followers", label: "Followers", icon: UserCircle },
-              { id: "following", label: "Following", icon: UserCheck },
-            ]}
-          />
-        ) : (
-          <SubPills<BizSub>
-            value={bizSub}
-            onChange={setBizSub}
-            options={[
-              { id: "listings", label: "Listings", icon: FolderOpen },
-              { id: "events", label: "Events", icon: Calendar },
-              { id: "specials", label: "Specials", icon: Tag },
-            ]}
-          />
-        )}
-      </div>
-
       {/* Results */}
-      <div style={{ padding: "16px 0 0" }}>
-        {topTab === "users" && (
-          <UsersResults sub={userSub} query={query} currentUserId={user?.id} />
-        )}
-        {topTab === "businesses" && bizSub === "listings" && <ListingsResults query={query} />}
-        {topTab === "businesses" && bizSub === "events" && <EventsResults query={query} />}
-        {topTab === "businesses" && bizSub === "specials" && <SpecialsResults query={query} />}
+      <div style={{ padding: "0 16px", display: "flex", flexDirection: "column", gap: 8 }}>
+        <p
+          style={{
+            margin: "6px 2px 2px",
+            fontFamily: FONT,
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: MUTED,
+          }}
+        >
+          {hasQuery ? "Results" : "Suggested"}
+        </p>
+        <div
+          style={{
+            background: WHITE,
+            borderRadius: 18,
+            overflow: "hidden",
+            boxShadow: "0 2px 8px rgba(61,51,41,0.07)",
+          }}
+        >
+          {scope === "listings" && <ListingsResults query={query} />}
+          {scope === "events" && <EventsResults query={query} />}
+          {scope === "specials" && <SpecialsResults query={query} />}
+          {scope === "people" && <PeopleResults query={query} />}
+        </div>
       </div>
     </div>
   );
 };
 
-/* -------------------- Sub pills -------------------- */
+/* -------------------- Card states -------------------- */
 
-interface SubPillsProps<T extends string> {
-  value: T;
-  onChange: (v: T) => void;
-  options: { id: T; label: string; icon: React.ComponentType<any> }[];
-}
-function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<T>) {
+const LoadingRow = () => (
+  <div style={{ padding: "32px 20px", textAlign: "center", fontFamily: FONT, fontSize: 13, color: MUTED }}>
+    Loading…
+  </div>
+);
+
+const EmptyState = ({ query, fallback }: { query: string; fallback: string }) => {
+  const term = query.trim();
   return (
-    <div
-      style={{
-        display: "flex",
-        gap: 8,
-      }}
-    >
-      {options.map((opt) => {
-        const active = value === opt.id;
-        const Icon = opt.icon;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => onChange(opt.id)}
-            style={{
-              flex: 1,
-              background: active ? "#423324" : WHITE,
-              border: `1px solid ${active ? "#423324" : PILL_BORDER}`,
-              borderRadius: 999,
-              padding: "10px 12px",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              transition: "transform 150ms ease-out",
-            }}
-            {...pressScale()}
-          >
-            <Icon size={16} color={active ? WHITE : INK} strokeWidth={1.75} />
-            <span
-              style={{
-                fontFamily: FONT,
-                fontSize: 14,
-                fontWeight: 400,
-                color: active ? WHITE : INK,
-                letterSpacing: "0.01em",
-              }}
-            >
-              {opt.label}
-            </span>
-          </button>
-        );
-      })}
+    <div style={{ padding: "32px 20px", textAlign: "center", display: "flex", flexDirection: "column", gap: 6 }}>
+      <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, color: INK }}>
+        {term ? <>No results for &ldquo;{term}&rdquo;</> : fallback}
+      </span>
+      <span style={{ fontFamily: FONT, fontSize: 13, color: MUTED }}>
+        Try a different word, or switch to another tab above.
+      </span>
     </div>
   );
-}
-
-
-/* -------------------- Section header -------------------- */
-
-const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
-  <div
-    style={{
-      padding: "20px 20px 12px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      borderBottom: `1px solid ${DIVIDER}`,
-      marginBottom: 4,
-    }}
-  >
-    <span
-      style={{
-        fontFamily: '"Bricolage Grotesque", ' + FONT,
-        fontSize: 17,
-        fontWeight: 800,
-        letterSpacing: "0.06em",
-        textTransform: "uppercase",
-        color: "#1A1A1A",
-      }}
-    >
-      {count !== undefined ? `${label} (${count})` : label}
-    </span>
-  </div>
-);
-
-const EmptyRow = ({ text }: { text: string }) => (
-  <div
-    style={{
-      padding: "32px 20px",
-      textAlign: "center",
-      fontFamily: FONT,
-      fontSize: 14,
-      color: "rgba(18,18,20,0.5)",
-    }}
-  >
-    {text}
-  </div>
-);
+};
 
 const ErrorRow = ({ onRetry, isFetching }: { onRetry: () => void; isFetching?: boolean }) => (
   <div style={{ padding: "28px 20px", textAlign: "center" }}>
@@ -280,7 +304,7 @@ const ErrorRow = ({ onRetry, isFetching }: { onRetry: () => void; isFetching?: b
     <button
       onClick={onRetry}
       disabled={isFetching}
-      style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 40, padding: "0 22px", fontFamily: FONT, fontSize: 13, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
+      style={{ background: DARK, color: "#fff", border: "none", borderRadius: 999, height: 40, padding: "0 22px", fontFamily: FONT, fontSize: 13, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
     >
       {isFetching ? "Trying…" : "Try again"}
     </button>
@@ -295,370 +319,90 @@ interface RowProps {
   title: string;
   titleOverride?: string | null;
   subtitle?: string | null;
-  subtitle2?: string | null;
-  thumb?: "round" | "square";
-  action?: React.ReactNode;
   initials?: string;
+  /** People rows use the dark avatar treatment from the design. */
+  dark?: boolean;
 }
-const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb = "square", action, initials }: RowProps) => {
-
+const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark }: RowProps) => {
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
   return (
-  <Link
-    to={to}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 14,
-      padding: "12px 20px",
-      borderBottom: `1px solid ${DIVIDER}`,
-      textDecoration: "none",
-    }}
-  >
-    <div
+    <Link
+      to={to}
+      className="hh-search-row"
       style={{
-        width: 48,
-        height: 48,
-        borderRadius: 999,
-        background: !image && initials ? WHITE : IVORY,
-        border: !image && initials ? `1px solid ${PILL_BORDER}` : "none",
-        overflow: "hidden",
-        flexShrink: 0,
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        gap: 12,
+        padding: "12px 14px",
+        borderBottom: `1px solid ${ROW_DIVIDER}`,
+        textDecoration: "none",
       }}
     >
-
-      {image ? (
-        <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      ) : initials ? (
-        <span
-          style={{
-            fontFamily: FONT,
-            fontWeight: 500,
-            fontSize: 16,
-            color: INK,
-            letterSpacing: "normal",
-            textTransform: "uppercase",
-          }}
-        >
-          {initials}
-        </span>
-      ) : (
-        <UserCircle size={28} color="rgba(18,18,20,0.25)" />
-      )}
-    </div>
-
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <p
-        {...(hasOverride ? { "data-no-title-case": "true" } : {})}
+      <div
         style={{
-          margin: 0,
-          fontFamily: FONT,
-          fontSize: 16,
-          fontWeight: 700,
-          color: INK,
-          letterSpacing: "-0.1px",
+          width: 42,
+          height: 42,
+          flexShrink: 0,
+          borderRadius: "50%",
+          background: dark ? DARK : AVATAR_BG,
           overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {display}
-      </p>
-      {subtitle && (
-        <p
+        {image ? (
+          <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : initials ? (
+          <span
+            style={{
+              fontFamily: FONT,
+              fontSize: 13,
+              fontWeight: 700,
+              color: dark ? DARK_FG : AVATAR_FG,
+              textTransform: "uppercase",
+            }}
+          >
+            {initials}
+          </span>
+        ) : (
+          <UserCircle size={26} color={dark ? DARK_FG : AVATAR_FG} strokeWidth={1.6} />
+        )}
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 }}>
+        <span
+          {...(hasOverride ? { "data-no-title-case": "true" } : {})}
           style={{
-            margin: "2px 0 0",
             fontFamily: FONT,
-            fontSize: 11,
-            color: "rgba(18,18,20,0.5)",
-            letterSpacing: "0.01em",
+            fontSize: 15,
+            fontWeight: 700,
+            color: INK,
+            whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
           }}
         >
-          {subtitle}
-        </p>
-      )}
-      {subtitle2 && (
-        <p
-          style={{
-            margin: "1px 0 0",
-            fontFamily: FONT,
-            fontSize: 11,
-            color: "rgba(18,18,20,0.5)",
-            letterSpacing: "0.01em",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-          }}
-        >
-          {subtitle2}
-        </p>
-      )}
-    </div>
-    {action && <div style={{ flexShrink: 0 }}>{action}</div>}
-  </Link>
-  );
-};
-
-/* -------------------- Outline buttons -------------------- */
-
-const InlineFollowButton = ({ targetUserId, followsMe }: { targetUserId: string; followsMe?: boolean }) => {
-  const { user } = useAuth();
-  const { data: followStatus } = useIsFollowing(targetUserId);
-  const { follow, unfollow } = useFollowMutation(targetUserId);
-  const { data: blocks } = useBlockedUsers();
-  const queryClient = useQueryClient();
-  const isBlocked = blocks?.iBlocked.has(targetUserId) ?? false;
-  if (!user || user.id === targetUserId) return null;
-
-  const isAccepted = followStatus === "accepted";
-  const isPending = followStatus === "pending";
-
-  const handleUnblock = async () => {
-    const { error } = await supabase
-      .from("user_blocks" as any)
-      .delete()
-      .eq("blocker_id", user.id)
-      .eq("blocked_id", targetUserId);
-    if (error) {
-      toast.error("Could not unblock user. Please try again.");
-      return;
-    }
-    queryClient.setQueryData(["user-blocked", user.id, targetUserId], false);
-    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
-    queryClient.invalidateQueries({ queryKey: ["search-users"] });
-    toast.success("User unblocked");
-  };
-
-  const followLabel = followsMe ? "Follow Back" : "Follow";
-  const label = isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : followLabel;
-  const isFollow = label === "Follow" || label === "Follow Back";
-
-  return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (isBlocked) {
-          handleUnblock();
-          return;
-        }
-        if (isAccepted || isPending) unfollow.mutate();
-        else follow.mutate();
-      }}
-      style={{
-        background: isFollow ? "#423324" : "#F2EFE5",
-        border: "none",
-        borderRadius: 999,
-        padding: "8px 18px",
-        fontFamily: FONT,
-        fontSize: 13,
-        fontWeight: 700,
-        color: isFollow ? "#FFFFFF" : "#1A1A1A",
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        letterSpacing: "0.02em",
-        minWidth: 92,
-      }}
-    >
-      {label}
-    </button>
-  );
-};
-
-
-
-const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "listing" | "event" | "special" }) => {
-  const { user } = useAuth();
-  const isFav = useIsFavourited(itemId, itemType);
-  const toggle = useToggleFavourite();
-  return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (!user) {
-          toast.error("Please sign in to save");
-          return;
-        }
-        toggle.mutate({ itemId, itemType, currentlyFavourited: isFav });
-      }}
-      style={{
-        background: "transparent",
-        border: `1.5px solid #5b4632`,
-        borderRadius: 999,
-        width: 30,
-        height: 30,
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-      aria-label={isFav ? "Remove from saved" : "Save"}
-    >
-      <Heart
-        size={13}
-        color="#5b4632"
-        fill={isFav ? "#5b4632" : "none"}
-        strokeWidth={1.8}
-      />
-    </button>
-  );
-};
-
-/* -------------------- Results: Users -------------------- */
-
-const UsersResults = ({
-  sub,
-  query,
-  currentUserId,
-}: {
-  sub: UserSub;
-  query: string;
-  currentUserId?: string;
-}) => {
-  const term = query.trim();
-
-  const { data: blocks } = useBlockedUsers();
-  const iBlocked = blocks?.iBlocked;
-  const blockedMe = blocks?.blockedMe;
-
-  const { data: rows, isLoading, isError, refetch, isFetching } = useQuery({
-    queryKey: [
-      "search-users",
-      sub,
-      term,
-      currentUserId,
-      Array.from(iBlocked ?? []).sort().join(","),
-      Array.from(blockedMe ?? []).sort().join(","),
-    ],
-    queryFn: async () => {
-      // Helper: keep a profile if (a) they did not block me, and
-      // (b) for passive discovery, I did not block them. When the user
-      // types a search term we still hide users who blocked me, but we
-      // allow users I blocked through so I can still look them up by
-      // name/username.
-      const applyBlocks = (list: any[], { allowIBlockedOnTermMatch }: { allowIBlockedOnTermMatch: boolean }) => {
-        const t = term.toLowerCase();
-        return list.filter((p: any) => {
-          if (blockedMe?.has(p.id)) return false;
-          if (iBlocked?.has(p.id)) {
-            if (!allowIBlockedOnTermMatch || !t) return false;
-            const name = (p.display_name || "").toLowerCase();
-            const handle = (p.username || "").toLowerCase();
-            return name.includes(t) || handle.includes(t);
-          }
-          return true;
-        });
-      };
-
-      if (sub === "suggested") {
-        let followingIds: string[] = [];
-        let followerIds: string[] = [];
-        if (currentUserId) {
-          const [outRes, inRes] = await Promise.all([
-            supabase.from("follows").select("following_id").eq("follower_id", currentUserId),
-            supabase
-              .from("follows")
-              .select("follower_id")
-              .eq("following_id", currentUserId)
-              .eq("status", "accepted"),
-          ]);
-          followingIds = (outRes.data || []).map((r: any) => r.following_id);
-          followerIds = (inRes.data || []).map((r: any) => r.follower_id);
-        }
-        const { data: discover, error: discoverErr } = await supabase.rpc("search_public_profiles", {
-          _term: term || "",
-          _limit: 50,
-        });
-        if (discoverErr) throw discoverErr;
-        // Merge in followers (people who follow me) that I don't follow back,
-        // so they surface as suggested with a Follow-back option.
-        const notFollowedBackIds = followerIds.filter((id) => !followingIds.includes(id));
-        let followerProfiles: any[] = [];
-        if (notFollowedBackIds.length) {
-          const { data, error } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
-          if (error) throw error;
-          followerProfiles = data || [];
-        }
-        const excluded = new Set<string>(followingIds);
-        if (currentUserId) excluded.add(currentUserId);
-        const merged: any[] = [];
-        const seen = new Set<string>();
-        for (const p of [...followerProfiles, ...(discover || [])]) {
-          if (excluded.has(p.id) || seen.has(p.id)) continue;
-          if (term) {
-            const t = term.toLowerCase();
-            const name = (p.display_name || "").toLowerCase();
-            const handle = (p.username || "").toLowerCase();
-            if (!name.includes(t) && !handle.includes(t)) continue;
-          }
-          seen.add(p.id);
-          merged.push(p);
-        }
-        return applyBlocks(merged, { allowIBlockedOnTermMatch: true });
-      }
-      if (!currentUserId) return [];
-      const col = sub === "followers" ? "follower_id" : "following_id";
-      const matchCol = sub === "followers" ? "following_id" : "follower_id";
-      const { data: links, error: linksErr } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
-      if (linksErr) throw linksErr;
-      const ids = (links || []).map((d: any) => d[col]);
-      if (!ids.length) return [];
-      const { data, error } = await supabase.rpc("get_public_profiles", { _ids: ids });
-      if (error) throw error;
-      const filtered = term
-        ? (data || []).filter((p: any) =>
-            (p.display_name || "").toLowerCase().includes(term.toLowerCase()) ||
-            (p.username || "").toLowerCase().includes(term.toLowerCase()),
-          )
-        : data || [];
-      return applyBlocks(filtered, { allowIBlockedOnTermMatch: false });
-    },
-    enabled: (!!currentUserId || sub === "suggested") && blocks !== undefined,
-  });
-
-
-  const headerLabel = sub === "suggested" ? "Discover" : sub === "followers" ? "Followers" : "Following";
-
-  if (isLoading) return <EmptyRow text="Loading…" />;
-  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
-  if (!rows || rows.length === 0) {
-    const emptyText = term
-      ? "No people found"
-      : sub === "suggested"
-      ? "No new users — you're following everyone!"
-      : "No results";
-    return <EmptyRow text={emptyText} />;
-  }
-
-  return (
-    <>
-      <SectionHeader label={headerLabel} count={rows.length} />
-      {rows.map((u: any) => (
-        <ResultRow
-          key={u.id}
-          to={`/profile/${u.id}`}
-          image={u.avatar_url}
-          title={u.display_name || u.username || "User"}
-          subtitle={u.username ? `@${u.username}` : null}
-          thumb="round"
-          initials={initialsOf(u.display_name, u.username)}
-          action={<InlineFollowButton targetUserId={u.id} followsMe={sub === "followers"} />}
-        />
-      ))}
-
-    </>
+          {display}
+        </span>
+        {subtitle && (
+          <span
+            style={{
+              fontFamily: FONT,
+              fontSize: 12,
+              color: MUTED,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {subtitle}
+          </span>
+        )}
+      </div>
+      <ChevronRight size={15} strokeWidth={2} color={CHEVRON} style={{ flexShrink: 0 }} />
+    </Link>
   );
 };
 
@@ -666,7 +410,7 @@ const UsersResults = ({
 
 const ListingsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+  const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-listings", term],
     queryFn: async () => {
       let q = supabase
@@ -681,12 +425,11 @@ const ListingsResults = ({ query }: { query: string }) => {
       return data || [];
     },
   });
-  if (isLoading) return <EmptyRow text="Loading…" />;
   if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
-  if (!data || data.length === 0) return <EmptyRow text={term ? "No listings found" : "No listings"} />;
+  if (!data) return <LoadingRow />;
+  if (data.length === 0) return <EmptyState query={query} fallback="No listings yet" />;
   return (
     <>
-      <SectionHeader label={term ? "Listings" : "Suggested"} />
       {data.map((l) => (
         <ResultRow
           key={l.id}
@@ -695,36 +438,9 @@ const ListingsResults = ({ query }: { query: string }) => {
           title={l.title}
           titleOverride={(l as any).title_override}
           subtitle={l.location || null}
-          initials={initialsOf((l as any).title_override || l.title, undefined)}
+          initials={initialsOf((l as any).title_override || l.title)}
         />
       ))}
-      {!term && (
-        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
-          <Link
-            to="/categories"
-            state={{ fromSearch: true }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "#423324",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 999,
-              height: 48,
-              padding: "0 24px",
-              fontFamily: FONT,
-              fontWeight: 500,
-              fontSize: 14,
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            Discover More
-          </Link>
-        </div>
-      )}
-
     </>
   );
 };
@@ -733,7 +449,7 @@ const ListingsResults = ({ query }: { query: string }) => {
 
 const EventsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+  const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-events", term],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
@@ -749,12 +465,11 @@ const EventsResults = ({ query }: { query: string }) => {
       return data || [];
     },
   });
-  if (isLoading) return <EmptyRow text="Loading…" />;
   if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
-  if (!data || data.length === 0) return <EmptyRow text={term ? "No events found" : "No upcoming events"} />;
+  if (!data) return <LoadingRow />;
+  if (data.length === 0) return <EmptyState query={query} fallback="No upcoming events" />;
   return (
     <>
-      <SectionHeader label={term ? "Events" : "Upcoming events"} />
       {data.map((e) => (
         <ResultRow
           key={e.id}
@@ -762,38 +477,10 @@ const EventsResults = ({ query }: { query: string }) => {
           image={e.image_url}
           title={e.title}
           titleOverride={(e as any).title_override}
-          subtitle={e.date || null}
-          subtitle2={e.location || null}
-          initials={initialsOf((e as any).title_override || e.title, undefined)}
+          subtitle={[e.date, e.location].filter(Boolean).join(" · ") || null}
+          initials={initialsOf((e as any).title_override || e.title)}
         />
       ))}
-      {!term && (
-        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
-          <Link
-            to="/events"
-            state={{ fromSearch: true }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "#423324",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 999,
-              height: 48,
-              padding: "0 24px",
-              fontFamily: FONT,
-              fontWeight: 500,
-              fontSize: 14,
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            Discover More Events
-          </Link>
-        </div>
-      )}
-
     </>
   );
 };
@@ -802,7 +489,7 @@ const EventsResults = ({ query }: { query: string }) => {
 
 const SpecialsResults = ({ query }: { query: string }) => {
   const term = query.trim();
-  const { data, isLoading, isError, refetch, isFetching } = useQuery({
+  const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-specials", term],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
@@ -819,12 +506,11 @@ const SpecialsResults = ({ query }: { query: string }) => {
       return data || [];
     },
   });
-  if (isLoading) return <EmptyRow text="Loading…" />;
   if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
-  if (!data || data.length === 0) return <EmptyRow text={term ? "No specials found" : "No active specials"} />;
+  if (!data) return <LoadingRow />;
+  if (data.length === 0) return <EmptyState query={query} fallback="No active specials" />;
   return (
     <>
-      <SectionHeader label={term ? "Specials" : "Active specials"} />
       {data.map((s) => (
         <ResultRow
           key={s.id}
@@ -832,38 +518,120 @@ const SpecialsResults = ({ query }: { query: string }) => {
           image={s.image_url}
           title={s.title}
           titleOverride={(s as any).title_override}
-          subtitle={s.deal_label || null}
-          subtitle2={s.business_name || null}
-          initials={initialsOf((s as any).title_override || s.title, undefined)}
+          subtitle={[s.business_name, untilLabel(s.valid_until)].filter(Boolean).join(" · ") || null}
+          initials={initialsOf((s as any).title_override || s.title)}
         />
       ))}
-      {!term && (
-        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
-          <Link
-            to="/specials"
-            state={{ fromSearch: true }}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "#423324",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 999,
-              height: 48,
-              padding: "0 24px",
-              fontFamily: FONT,
-              fontWeight: 500,
-              fontSize: 14,
-              textDecoration: "none",
-              cursor: "pointer",
-            }}
-          >
-            Discover More Deals
-          </Link>
-        </div>
-      )}
+    </>
+  );
+};
 
+/* -------------------- Results: People -------------------- */
+
+const PeopleResults = ({ query }: { query: string }) => {
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+  const term = query.trim();
+
+  const { data: blocks } = useBlockedUsers();
+  const iBlocked = blocks?.iBlocked;
+  const blockedMe = blocks?.blockedMe;
+
+  const { data: rows, isError, refetch, isFetching } = useQuery({
+    queryKey: [
+      "search-people",
+      term,
+      currentUserId,
+      Array.from(iBlocked ?? []).sort().join(","),
+      Array.from(blockedMe ?? []).sort().join(","),
+    ],
+    queryFn: async () => {
+      // Keep a profile if (a) they did not block me, and (b) for passive
+      // discovery, I did not block them. When the user types a search term
+      // we still hide users who blocked me, but we allow users I blocked
+      // through so I can still look them up by name/username.
+      const applyBlocks = (list: any[]) => {
+        const t = term.toLowerCase();
+        return list.filter((p: any) => {
+          if (blockedMe?.has(p.id)) return false;
+          if (iBlocked?.has(p.id)) {
+            if (!t) return false;
+            const name = (p.display_name || "").toLowerCase();
+            const handle = (p.username || "").toLowerCase();
+            return name.includes(t) || handle.includes(t);
+          }
+          return true;
+        });
+      };
+
+      let followingIds: string[] = [];
+      let followerIds: string[] = [];
+      if (currentUserId) {
+        const [outRes, inRes] = await Promise.all([
+          supabase.from("follows").select("following_id").eq("follower_id", currentUserId),
+          supabase
+            .from("follows")
+            .select("follower_id")
+            .eq("following_id", currentUserId)
+            .eq("status", "accepted"),
+        ]);
+        followingIds = (outRes.data || []).map((r: any) => r.following_id);
+        followerIds = (inRes.data || []).map((r: any) => r.follower_id);
+      }
+      const { data: discover, error: discoverErr } = await supabase.rpc("search_public_profiles", {
+        _term: term || "",
+        _limit: 50,
+      });
+      if (discoverErr) throw discoverErr;
+      // Merge in followers (people who follow me) that I don't follow back,
+      // so they surface as suggested.
+      const notFollowedBackIds = followerIds.filter((id) => !followingIds.includes(id));
+      let followerProfiles: any[] = [];
+      if (notFollowedBackIds.length) {
+        const { data, error } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
+        if (error) throw error;
+        followerProfiles = data || [];
+      }
+      // Without a search term this is passive discovery: skip people I
+      // already follow. With a term, let anyone match so I can look up
+      // people I follow too.
+      const excluded = new Set<string>(term ? [] : followingIds);
+      if (currentUserId) excluded.add(currentUserId);
+      const merged: any[] = [];
+      const seen = new Set<string>();
+      for (const p of [...followerProfiles, ...(discover || [])]) {
+        if (excluded.has(p.id) || seen.has(p.id)) continue;
+        if (term) {
+          const t = term.toLowerCase();
+          const name = (p.display_name || "").toLowerCase();
+          const handle = (p.username || "").toLowerCase();
+          if (!name.includes(t) && !handle.includes(t)) continue;
+        }
+        seen.add(p.id);
+        merged.push(p);
+      }
+      return applyBlocks(merged);
+    },
+    enabled: !currentUserId || blocks !== undefined,
+  });
+
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
+  if (!rows) return <LoadingRow />;
+  if (rows.length === 0) return <EmptyState query={query} fallback="No people to suggest" />;
+  return (
+    <>
+      {rows.map((u: any) => (
+        <ResultRow
+          key={u.id}
+          to={`/profile/${u.id}`}
+          image={u.avatar_url}
+          title={u.display_name || u.username || "User"}
+          titleOverride={u.display_name || u.username}
+          subtitle={u.username ? `@${u.username}` : null}
+          initials={initialsOf(u.display_name, u.username)}
+          dark
+        />
+      ))}
     </>
   );
 };
