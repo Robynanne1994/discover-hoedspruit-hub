@@ -19,6 +19,7 @@ export const LISTING_FIELD_SPECS = {
   // ---------- Universal: identity & content ----------
   title: { type: "str" },
   title_override: { type: "str" },
+  card_primary_subcategory: { type: "str" },
   long_description: { type: "str" },
   image_url: { type: "str" },
   detail_image_url: { type: "str" },
@@ -179,7 +180,7 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 // ----- Field groupings used for CSV header selection per category -----
 
 export const UNIVERSAL_FIELDS = [
-  "title", "title_override", "long_description",
+  "title", "title_override", "card_primary_subcategory", "long_description",
   "image_url", "detail_image_url", "gallery_images", "location",
   "km_from_town",
   "phone", "phone_label", "email", "email_label",

@@ -1225,9 +1225,14 @@ const CategoryPage = () => {
                 return oLower !== sLower && oLower.endsWith(" " + sLower);
               });
             });
-            const otherCats = allCats.filter((c) => c && c !== categoryTitle);
-            const orderedCats = subTitles.length > 0 ? subTitles : [categoryTitle, ...otherCats];
-            const eyebrow = orderedCats.slice(0, 2).join(" · ");
+            // Show a single subcategory: the admin-chosen primary when it matches one of
+            // this listing's populated subs, otherwise the first populated sub, otherwise
+            // fall back to the category title.
+            const chosenPrimary = ((l as any).card_primary_subcategory || "").trim().toLowerCase();
+            const primarySub = chosenPrimary
+              ? subTitles.find((s) => s.trim().toLowerCase() === chosenPrimary) || subTitles[0]
+              : subTitles[0];
+            const eyebrow = primarySub || categoryTitle;
 
             return (
               <article
@@ -1294,6 +1299,10 @@ const CategoryPage = () => {
                       margin: 0,
                       wordBreak: "break-word",
                       minHeight: "36px",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
                     }}
                   >
                     {getDisplayTitle(l)}
