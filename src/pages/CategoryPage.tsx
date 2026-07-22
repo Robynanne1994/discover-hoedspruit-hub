@@ -1184,7 +1184,7 @@ const CategoryPage = () => {
       {isLoading ? (
         <div style={{ paddingLeft: 20, paddingRight: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 300, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
+            <Skeleton key={i} className="w-full" style={{ height: 220, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
           ))}
         </div>
       ) : listingsError ? (
