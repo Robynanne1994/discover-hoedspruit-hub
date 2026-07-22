@@ -1620,7 +1620,7 @@ const SuggestEditSheet = ({
             <XIcon size={20} color={C.heading} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: FONT, fontWeight: 400, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an Edit</h2>
+        <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an Edit</h2>
         <p style={{ fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
           Spotted something out of date or inaccurate on <strong style={{ color: C.heading, fontWeight: 700 }}>{listingTitle}</strong>? Please let us know and we will get it updated.
         </p>
