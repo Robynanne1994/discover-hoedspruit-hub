@@ -1184,7 +1184,7 @@ const CategoryPage = () => {
       {isLoading ? (
         <div style={{ paddingLeft: 20, paddingRight: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 300, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
+            <Skeleton key={i} className="w-full" style={{ height: 220, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
           ))}
         </div>
       ) : listingsError ? (
@@ -1242,7 +1242,7 @@ const CategoryPage = () => {
                   flexDirection: "column",
                 }}
               >
-                <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#F4EFE3" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#F4EFE3" }}>
                   {l.image_url ? (
                     <img
                       src={l.image_url}
@@ -1282,7 +1282,7 @@ const CategoryPage = () => {
                   <CardHeart listingId={l.id} />
                 </div>
 
-                <div style={{ padding: "2px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
+                <div style={{ padding: "10px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
                   <h3
                     {...noTitleCaseProps(l)}
                     style={{
@@ -1293,6 +1293,7 @@ const CategoryPage = () => {
                       lineHeight: 1.2,
                       margin: 0,
                       wordBreak: "break-word",
+                      minHeight: "36px",
                     }}
                   >
                     {getDisplayTitle(l)}
