@@ -175,10 +175,10 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
       aria-label={saved ? "Remove from favourites" : "Add to favourites"}
       style={{
         position: "absolute",
-        top: 12,
-        right: 12,
-        width: 32,
-        height: 32,
+        top: 8,
+        right: 8,
+        width: 26,
+        height: 26,
         borderRadius: 9999,
         background: "rgba(255, 255, 255, 0.95)",
         border: "none",
