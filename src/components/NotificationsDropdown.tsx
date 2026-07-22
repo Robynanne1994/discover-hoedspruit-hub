@@ -157,7 +157,21 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
       );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
-      setNotifs((prev) => prev.filter((x) => x.id !== n.id));
+      // Server trigger converts the notification to 'follow_request_declined'.
+      // Mirror that locally so the row stays in the list as history.
+      setNotifs((prev) =>
+        prev.map((x) =>
+          x.id === n.id
+            ? {
+                ...x,
+                kind: "follow_request_declined",
+                title: "You declined this follow request",
+                body: "Their follow request was declined.",
+                is_read: true,
+              }
+            : x
+        )
+      );
     }
   };
 

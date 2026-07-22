@@ -67,7 +67,7 @@ const relativeShort = (iso: string): string => {
   return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase();
 };
 
-const bucketOf = (iso: string): "today" | "yesterday" | "week" | "earlier" => {
+const bucketOf = (iso: string): "today" | "yesterday" | "week" | "month" | "earlier" => {
   const d = new Date(iso);
   const now = new Date();
   const startOfDay = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
@@ -77,6 +77,7 @@ const bucketOf = (iso: string): "today" | "yesterday" | "week" | "earlier" => {
   if (dayDiff <= 0) return "today";
   if (dayDiff === 1) return "yesterday";
   if (dayDiff < 7) return "week";
+  if (dayDiff < 30) return "month";
   return "earlier";
 };
 
@@ -99,7 +100,7 @@ export default function MyNotifications() {
       .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(100);
+      .limit(200);
     if (!error) {
       const rows = (data ?? []) as Notif[];
       if (initialUnreadRef.current === null) {
@@ -153,7 +154,7 @@ export default function MyNotifications() {
   );
 
   const buckets = useMemo(() => {
-    const groups: Record<string, Notif[]> = { today: [], yesterday: [], week: [], earlier: [] };
+    const groups: Record<string, Notif[]> = { today: [], yesterday: [], week: [], month: [], earlier: [] };
     notifs.forEach((n) => groups[bucketOf(n.created_at)].push(n));
     return groups;
   }, [notifs]);
@@ -223,7 +224,22 @@ export default function MyNotifications() {
       );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
-      setNotifs((prev) => prev.filter((x) => x.id !== n.id));
+      // Server trigger converts the notification to 'follow_request_declined'.
+      // Mirror that locally so the card stays in the list as history.
+      initialUnreadRef.current?.delete(n.id);
+      setNotifs((prev) =>
+        prev.map((x) =>
+          x.id === n.id
+            ? {
+                ...x,
+                kind: "follow_request_declined",
+                title: "You declined this follow request",
+                body: "Their follow request was declined.",
+                is_read: true,
+              }
+            : x
+        )
+      );
     }
   }, []);
 
@@ -298,11 +314,15 @@ export default function MyNotifications() {
 
       {/* List */}
       <div style={{ padding: "0 20px 100px" }}>
-        {(["today", "yesterday", "week", "earlier"] as const).map((key) => {
+        {(["today", "yesterday", "week", "month", "earlier"] as const).map((key) => {
           const items = buckets[key];
           if (items.length === 0) return null;
           const label =
-            key === "today" ? "Today" : key === "yesterday" ? "Yesterday" : key === "week" ? "This Week" : "Earlier";
+            key === "today" ? "Today"
+            : key === "yesterday" ? "Yesterday"
+            : key === "week" ? "This Week"
+            : key === "month" ? "This Month"
+            : "Earlier";
           return (
             <div key={key}>
               <div
