@@ -373,9 +373,10 @@ const AdminListings = () => {
         title_override: values.title_override?.trim() || null,
         card_primary_subcategory: values.card_primary_subcategory?.trim() || null,
         description: null,
-        image_url: (values.image_url || values.detail_image_url) || null,
+        // One cover image everywhere: listing cards, detail page and saved cards
+        image_url: (values.detail_image_url || values.image_url) || null,
         detail_image_url: (values.detail_image_url || values.image_url) || null,
-        saved_image_url: values.saved_image_url || null,
+        saved_image_url: (values.detail_image_url || values.image_url) || null,
         location: values.location || null,
         phone: values.phone || null,
         phone_label: (values.phone_label || "").trim() || null,
@@ -513,15 +514,30 @@ const AdminListings = () => {
         }
       }
 
+      const save = async (p: any): Promise<string> => {
+        if (editing) {
+          const { error } = await supabase.from("listings").update(p).eq("id", editing.id);
+          if (error) throw error;
+          return editing.id;
+        }
+        const { data, error } = await supabase.from("listings").insert(p).select("id").single();
+        if (error) throw error;
+        return data.id;
+      };
       let listingId: string;
-      if (editing) {
-        const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);
-        if (error) throw error;
-        listingId = editing.id;
-      } else {
-        const { data, error } = await supabase.from("listings").insert(payload).select("id").single();
-        if (error) throw error;
-        listingId = data.id;
+      try {
+        listingId = await save(payload);
+      } catch (e: any) {
+        // PGRST204: a payload column is missing from the API schema cache (e.g. a
+        // migration not applied yet). Drop that column and retry so the rest of the
+        // listing still saves.
+        const missing = e?.code === "PGRST204" ? /'(\w+)' column/.exec(e?.message ?? "")?.[1] : undefined;
+        if (missing && missing in payload) {
+          delete payload[missing];
+          listingId = await save(payload);
+        } else {
+          throw e;
+        }
       }
 
       // Sync categories junction
@@ -1010,18 +1026,8 @@ const AdminListings = () => {
                   </div>
                 )}
                 <div>
-                  <Label>Card Cover Image</Label>
-                  
-                  <ImageUpload bucket="listing-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} aspect={16/9} />
-                </div>
-                <div>
-                  <Label>Detail Cover Image</Label>
-                  
-                  <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
-                </div>
-                <div>
-                  <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
-                  <ImageUpload bucket="listing-images" value={form.saved_image_url} onChange={(url) => setForm({ ...form, saved_image_url: url })} aspect={4/3} />
+                  <Label>Cover Image <span className="text-xs text-muted-foreground font-normal">(4:3 — used on listing cards, the detail page and saved cards)</span></Label>
+                  <ImageUpload bucket="listing-images" value={form.detail_image_url || form.image_url} onChange={(url) => setForm({ ...form, detail_image_url: url, image_url: url, saved_image_url: url })} aspect={4/3} />
                 </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                 <div>
