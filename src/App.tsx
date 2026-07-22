@@ -25,6 +25,7 @@ import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminImport from "./pages/admin/AdminImport.tsx";
 import AdminEventsImport from "./pages/admin/AdminEventsImport.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
+import AdminSearchSuggested from "./pages/admin/AdminSearchSuggested.tsx";
 import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
