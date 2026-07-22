@@ -1279,9 +1279,7 @@ const CategoryPage = () => {
                     </div>
                   ) : null}
 
-                  <div style={{ position: "absolute", top: 4, right: 4 }}>
-                    <CardHeart listingId={l.id} />
-                  </div>
+                  <CardHeart listingId={l.id} />
                 </div>
 
                 <div style={{ padding: "2px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
