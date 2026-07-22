@@ -1560,7 +1560,7 @@ const suggestInputStyle: React.CSSProperties = {
 
 const suggestLabelStyle: React.CSSProperties = {
   fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
-  textTransform: "uppercase", color: C.primary, marginBottom: 6, display: "block",
+  textTransform: "uppercase", color: "#423324", marginBottom: 6, display: "block",
 };
 
 const SuggestEditSheet = ({
