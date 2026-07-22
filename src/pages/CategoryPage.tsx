@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, MapPin, Search, X, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile, LayoutGrid, Plus, Activity, Brain, PawPrint, Ambulance, Syringe, Bone, Baby, Ear, Accessibility, Microscope, TestTubes } from "lucide-react";
+import { SlidersHorizontal, MapPin, Search, X, Heart } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
