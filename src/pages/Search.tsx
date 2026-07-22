@@ -389,6 +389,24 @@ const ListingsResults = ({ query }: { query: string }) => {
   const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-listings", term],
     queryFn: async () => {
+      // When there's no query, prefer admin-curated suggestions if any.
+      if (!term) {
+        const { data: curated } = await supabase
+          .from("site_content")
+          .select("content")
+          .eq("section", "search-suggested-listings")
+          .maybeSingle();
+        const ids = Array.isArray(curated?.content) ? (curated!.content as string[]) : [];
+        if (ids.length) {
+          const { data, error } = await supabase
+            .from("listings")
+            .select("id, title, title_override, location, image_url, is_featured")
+            .in("id", ids);
+          if (error) throw error;
+          const map = new Map((data || []).map((l) => [l.id, l]));
+          return ids.map((id) => map.get(id)).filter(Boolean) as any[];
+        }
+      }
       let q = supabase
         .from("listings")
         .select("id, title, title_override, location, image_url, is_featured")
