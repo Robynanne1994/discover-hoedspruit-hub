@@ -1242,7 +1242,7 @@ const CategoryPage = () => {
                   flexDirection: "column",
                 }}
               >
-                <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#F4EFE3" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#F4EFE3" }}>
                   {l.image_url ? (
                     <img
                       src={l.image_url}
