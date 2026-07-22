@@ -48,7 +48,7 @@ const CREATE_LABEL_STYLE: React.CSSProperties = {
 const Welcome = () => {
   const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
   const initialMode = location.state?.mode ?? "welcome";
-  const [mode, setMode] = useState<"welcome" | "signin" | "signup">(initialMode);
+  const [mode, setMode] = useState<"welcome" | "signin" | "signup" | "forgot" | "forgotSent">(initialMode);
   const navigate = useNavigate();
   const { enterGuest } = useGuestAuth();
   const [email, setEmail] = useState("");
@@ -179,6 +179,114 @@ const Welcome = () => {
     }
     setLoading(false);
   };
+
+  const handleSendReset = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      toast.error("Please enter your email address.");
+      return;
+    }
+    setLoading(true);
+    const { supabase } = await import("@/integrations/supabase/client");
+    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(
+        /rate|seconds|too many/i.test(error.message)
+          ? "Please wait a moment before requesting another link."
+          : error.message || "Could not send the reset link. Please try again."
+      );
+      return;
+    }
+    setMode("forgotSent");
+  };
+
+  if (mode === "forgot" || mode === "forgotSent") {
+    const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+    return (
+      <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8" }}>
+        <PageHeader title="Reset Password" onBack={() => setMode("signin")} />
+        <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
+          {mode === "forgot" ? (
+            <>
+              <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 20px" }}>
+                Enter the email address for your account and we'll send you a secure
+                link to choose a new password.
+              </p>
+              <form onSubmit={handleSendReset} className="flex flex-col">
+                <div>
+                  <Label htmlFor="resetEmail" style={CREATE_LABEL_STYLE}>
+                    Email
+                  </Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="you@example.com"
+                    className="h-12 rounded-xl bg-card border-border text-[15px]"
+                    style={{ background: "#ffffff", color: "#1A1A1A" }}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full h-12 font-medium rounded-full mt-6"
+                  style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+                  disabled={loading}
+                >
+                  {loading ? "Sending..." : "Email Reset Link"}
+                </Button>
+              </form>
+              <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
+                Remembered it?{" "}
+                <button
+                  type="button"
+                  onClick={() => setMode("signin")}
+                  className="font-medium"
+                  style={{ fontFamily: FF, color: "#715a3d" }}
+                >
+                  Log in
+                </button>
+              </p>
+            </>
+          ) : (
+            <>
+              <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 20px" }}>
+                If an account exists for{" "}
+                <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{email.trim()}</span>
+                , we've sent it a password reset link. Open the link to choose a new
+                password — and check your spam folder if it doesn't arrive within a few
+                minutes.
+              </p>
+              <Button
+                onClick={() => setMode("signin")}
+                className="w-full h-12 font-medium rounded-full"
+                style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+              >
+                Back to Log In
+              </Button>
+              <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
+                Didn't get it?{" "}
+                <button
+                  type="button"
+                  onClick={() => handleSendReset()}
+                  disabled={loading}
+                  className="font-medium"
+                  style={{ fontFamily: FF, color: "#715a3d", opacity: loading ? 0.6 : 1 }}
+                >
+                  {loading ? "Sending..." : "Resend link"}
+                </button>
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   if (mode === "welcome") {
     return (
@@ -418,6 +526,22 @@ const Welcome = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+            {mode === "signin" && (
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                <button
+                  type="button"
+                  onClick={() => setMode("forgot")}
+                  style={{
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    color: "#715a3d",
+                    fontSize: 13,
+                    fontWeight: 500,
+                  }}
+                >
+                  Forgot Password?
+                </button>
+              </div>
+            )}
           </div>
           </div>
 

@@ -151,7 +151,11 @@ const Feedback = () => {
             return (
               <button
                 key={t.key}
-                onClick={() => setSearchParams(t.key === "submit" ? {} : { tab: "replies" })}
+                onClick={() =>
+                  // replace (not push) so switching pills never adds history
+                  // entries — Back always leaves the Feedback page entirely.
+                  setSearchParams(t.key === "submit" ? {} : { tab: "replies" }, { replace: true })
+                }
                 style={{
                   flex: 1,
                   height: 40,

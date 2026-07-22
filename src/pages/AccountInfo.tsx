@@ -1103,6 +1103,7 @@ const PhotoPickerSheet = ({
 };
 
 const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
+  const { user } = useAuth();
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -1111,6 +1112,11 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorField, setErrorField] = useState<{ field: "current" | "new" | "confirm"; msg: string } | null>(null);
+  // "change" = normal form, "forgot" = confirm sending a reset email,
+  // "sent" = the reset email has gone out.
+  const [view, setView] = useState<"change" | "forgot" | "sent">("change");
+  const [sendingReset, setSendingReset] = useState(false);
+  const accountEmail = user?.email || "";
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -1174,6 +1180,47 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
+  const handleSendResetLink = async () => {
+    if (sendingReset) return;
+    if (!accountEmail) {
+      toast.error("We couldn't find the email address for your account.");
+      return;
+    }
+    setSendingReset(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(accountEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setSendingReset(false);
+    if (error) {
+      toast.error(
+        /rate|seconds|too many/i.test(error.message)
+          ? "Please wait a moment before requesting another link."
+          : error.message || "Could not send the reset link. Please try again."
+      );
+      return;
+    }
+    setView("sent");
+  };
+
+  const sheetHeadingStyle: React.CSSProperties = {
+    fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px",
+  };
+  const sheetCopyStyle: React.CSSProperties = {
+    fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px",
+  };
+  const primaryBtnStyle: React.CSSProperties = {
+    fontFamily: FF, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
+    background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
+    letterSpacing: "0.04em",
+    display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+  };
+  const textLinkStyle: React.CSSProperties = {
+    marginTop: 14, width: "100%", background: "transparent", border: "none",
+    fontFamily: FF, fontSize: 14, fontWeight: 600, color: "#715a3d",
+    cursor: "pointer", padding: 4,
+  };
+
   return (
     <div
       role="dialog"
@@ -1197,63 +1244,117 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px" }}>Change Password</h2>
-        <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
-          Choose a strong new password. {PASSWORD_REQUIREMENTS_TEXT}
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <PwField
-            label="Current Password"
-            value={current}
-            onChange={(v) => {
-              setCurrent(v);
-              if (errorField?.field === "current") setErrorField(null);
-            }}
-            show={showCurrent}
-            setShow={setShowCurrent}
-            placeholder="Enter your current password"
-            autoFocus
-            error={errorField?.field === "current" ? errorField.msg : undefined}
-          />
-          <PwField
-            label="New Password"
-            value={next}
-            onChange={(v) => {
-              setNext(v);
-              if (errorField?.field === "new") setErrorField(null);
-            }}
-            show={showNext}
-            setShow={setShowNext}
-            placeholder="At least 8 characters"
-            error={errorField?.field === "new" ? errorField.msg : undefined}
-          />
-          <PwField
-            label="Confirm New Password"
-            value={confirm}
-            onChange={(v) => {
-              setConfirm(v);
-              if (errorField?.field === "confirm") setErrorField(null);
-            }}
-            show={showConfirm}
-            setShow={setShowConfirm}
-            placeholder="Re-enter your new password"
-            error={errorField?.field === "confirm" ? errorField.msg : undefined}
-          />
-        </div>
-        <button
-          onClick={handleSubmit}
-          disabled={!enabled}
-          style={{
-            fontFamily: FF, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
-            background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
-            letterSpacing: "0.04em",
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            cursor: enabled ? "pointer" : "default", opacity: enabled ? 1 : 0.6,
-          }}
-        >
-          {submitting ? "Updating…" : "Update Password"}
-          {!submitting && <Check size={14} strokeWidth={1.8} />}
-        </button>
+        {view === "change" && (
+          <>
+            <h2 style={sheetHeadingStyle}>Change Password</h2>
+            <p style={sheetCopyStyle}>
+              Choose a strong new password. {PASSWORD_REQUIREMENTS_TEXT}
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <PwField
+                label="Current Password"
+                value={current}
+                onChange={(v) => {
+                  setCurrent(v);
+                  if (errorField?.field === "current") setErrorField(null);
+                }}
+                show={showCurrent}
+                setShow={setShowCurrent}
+                placeholder="Enter your current password"
+                autoFocus
+                error={errorField?.field === "current" ? errorField.msg : undefined}
+              />
+              <PwField
+                label="New Password"
+                value={next}
+                onChange={(v) => {
+                  setNext(v);
+                  if (errorField?.field === "new") setErrorField(null);
+                }}
+                show={showNext}
+                setShow={setShowNext}
+                placeholder="At least 8 characters"
+                error={errorField?.field === "new" ? errorField.msg : undefined}
+              />
+              <PwField
+                label="Confirm New Password"
+                value={confirm}
+                onChange={(v) => {
+                  setConfirm(v);
+                  if (errorField?.field === "confirm") setErrorField(null);
+                }}
+                show={showConfirm}
+                setShow={setShowConfirm}
+                placeholder="Re-enter your new password"
+                error={errorField?.field === "confirm" ? errorField.msg : undefined}
+              />
+            </div>
+            <button
+              onClick={handleSubmit}
+              disabled={!enabled}
+              style={{
+                ...primaryBtnStyle,
+                cursor: enabled ? "pointer" : "default", opacity: enabled ? 1 : 0.6,
+              }}
+            >
+              {submitting ? "Updating…" : "Update Password"}
+              {!submitting && <Check size={14} strokeWidth={1.8} />}
+            </button>
+            <button type="button" onClick={() => setView("forgot")} style={textLinkStyle}>
+              Forgot Password
+            </button>
+          </>
+        )}
+
+        {view === "forgot" && (
+          <>
+            <h2 style={sheetHeadingStyle}>Forgot Password</h2>
+            <p style={sheetCopyStyle}>
+              No problem. We'll email a secure link to{" "}
+              <span style={{ color: INK, fontWeight: 600 }}>{accountEmail || "your account email"}</span>
+              . Open it and you can choose a brand-new password — no current password needed.
+            </p>
+            <button
+              onClick={handleSendResetLink}
+              disabled={sendingReset}
+              style={{
+                ...primaryBtnStyle, marginTop: 4,
+                cursor: sendingReset ? "default" : "pointer", opacity: sendingReset ? 0.6 : 1,
+              }}
+            >
+              {sendingReset ? "Sending…" : "Email Me a Reset Link"}
+            </button>
+            <button type="button" onClick={() => setView("change")} style={textLinkStyle}>
+              Back to Change Password
+            </button>
+          </>
+        )}
+
+        {view === "sent" && (
+          <>
+            <h2 style={sheetHeadingStyle}>Check Your Email</h2>
+            <p style={sheetCopyStyle}>
+              We've sent a password reset link to{" "}
+              <span style={{ color: INK, fontWeight: 600 }}>{accountEmail}</span>
+              . The link expires after about an hour. If it doesn't arrive within a few
+              minutes, check your spam folder.
+            </p>
+            <button
+              onClick={onClose}
+              style={{ ...primaryBtnStyle, marginTop: 4, cursor: "pointer" }}
+            >
+              Done
+            </button>
+            <button
+              type="button"
+              onClick={handleSendResetLink}
+              disabled={sendingReset}
+              style={{ ...textLinkStyle, opacity: sendingReset ? 0.6 : 1 }}
+            >
+              {sendingReset ? "Sending…" : "Resend Link"}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
