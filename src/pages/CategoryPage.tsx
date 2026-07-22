@@ -1282,7 +1282,7 @@ const CategoryPage = () => {
                   <CardHeart listingId={l.id} />
                 </div>
 
-                <div style={{ padding: "2px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
+                <div style={{ padding: "10px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
                   <h3
                     {...noTitleCaseProps(l)}
                     style={{
@@ -1293,6 +1293,7 @@ const CategoryPage = () => {
                       lineHeight: 1.2,
                       margin: 0,
                       wordBreak: "break-word",
+                      minHeight: "36px",
                     }}
                   >
                     {getDisplayTitle(l)}
