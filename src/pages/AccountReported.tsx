@@ -350,7 +350,7 @@ const AccountReported = () => {
   const [selected, setSelected] = useState<any | null>(null);
 
   useEffect(() => {
-    if (!loading && !user) navigate("/auth");
+    if (!loading && !user) navigate("/my-profile-guest", { replace: true });
   }, [user, loading, navigate]);
 
   const { data: reports, refetch } = useQuery({

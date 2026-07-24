@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useGuestAuth } from "@/hooks/useGuestAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Settings } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -108,7 +107,6 @@ function SubTabs<T extends string>({
 
 const MyProfile = () => {
   const { user, loading: authLoading } = useAuth();
-  const { isGuest } = useGuestAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("listings");
   const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
@@ -120,11 +118,10 @@ const MyProfile = () => {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) {
-      if (isGuest) navigate("/my-account", { replace: true });
-      else navigate("/welcome");
-    }
-  }, [authLoading, user, isGuest, navigate]);
+    // Personal profile is for signed-in users. Guests are sent to the
+    // browsable guest profile (which offers sign-in), never a full-screen wall.
+    if (!user) navigate("/my-profile-guest", { replace: true });
+  }, [authLoading, user, navigate]);
 
   // Reset pill filters to their first option whenever the main saved tab changes
   useEffect(() => {

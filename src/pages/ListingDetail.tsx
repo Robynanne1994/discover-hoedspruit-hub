@@ -10,6 +10,7 @@ import {
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
@@ -234,13 +235,11 @@ const ListingDetail = () => {
     },
   });
 
-  const requireAuth = () => {
-    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
-    return false;
-  };
+  const requireAuth = useRequireAuth();
 
   const handleToggleFavourite = () => {
-    if (requireAuth()) return;
+    // Guests get a dismissable bottom sheet, not a full-screen redirect.
+    if (!requireAuth("save favourites")) return;
     toggleFavourite.mutate({ itemId: id!, itemType: "listing", currentlyFavourited: isFavourited });
     toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };

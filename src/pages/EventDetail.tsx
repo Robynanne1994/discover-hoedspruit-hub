@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
@@ -211,13 +212,11 @@ const EventDetail = () => {
   const isFavourited = useIsFavourited(id!, "event");
   const toggleFavourite = useToggleFavourite();
 
-  const requireAuth = () => {
-    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
-    return false;
-  };
+  const requireAuth = useRequireAuth();
 
   const handleToggleFavourite = () => {
-    if (requireAuth()) return;
+    // Guests get a dismissable bottom sheet, not a full-screen redirect.
+    if (!requireAuth("save favourites")) return;
     toggleFavourite.mutate({ itemId: id!, itemType: "event", currentlyFavourited: isFavourited });
     toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };

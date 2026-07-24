@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useState } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
@@ -100,13 +101,11 @@ const SpecialDetail = () => {
   const isFavourited = useIsFavourited(id!, "special");
   const toggleFavourite = useToggleFavourite();
 
-  const requireAuth = () => {
-    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
-    return false;
-  };
+  const requireAuth = useRequireAuth();
 
   const handleToggleFavourite = () => {
-    if (requireAuth()) return;
+    // Guests get a dismissable bottom sheet, not a full-screen redirect.
+    if (!requireAuth("save favourites")) return;
     toggleFavourite.mutate({ itemId: id!, itemType: "special", currentlyFavourited: isFavourited });
   };
 

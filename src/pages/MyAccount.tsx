@@ -78,8 +78,10 @@ const MyAccount = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (!loading && !user && !isGuest) navigate("/welcome");
-  }, [user, loading, isGuest, navigate]);
+    // Account hub is for signed-in users. Guests are sent to the browsable
+    // guest profile (which offers sign-in) rather than a full-screen wall.
+    if (!loading && !user) navigate("/my-profile-guest", { replace: true });
+  }, [user, loading, navigate]);
 
   useEffect(() => {
     if (!user) { setUnreadCount(0); return; }
@@ -636,7 +638,8 @@ const MyAccount = () => {
           <button
             onClick={async () => {
               await signOut();
-              navigate("/welcome");
+              // Return to Home so they keep browsing as a guest.
+              navigate("/", { replace: true });
             }}
             style={{
               width: "100%",
