@@ -7,8 +7,8 @@ import OfflineScreen from "@/components/OfflineScreen";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
+import { AuthProvider } from "@/hooks/useAuth";
+import { GuestAuthProvider } from "@/hooks/useGuestAuth";
 import Index from "./pages/Index.tsx";
 
 import Welcome from "./pages/Welcome.tsx";
@@ -94,36 +94,6 @@ const queryClient = new QueryClient({
   },
 });
 
-const WELCOME_SEEN_KEY = "hh-welcome-seen";
-
-const AuthGate = ({ children }: { children: React.ReactNode }) => {
-  const { user, loading } = useAuth();
-  const { isGuest } = useGuestAuth();
-  const location = useLocation();
-
-  // Once the user has authenticated or opted into guest mode, remember that
-  // Welcome has been seen so subsequent launches (including cold starts on
-  // iOS) go straight to Home. Required by Apple Guideline 5.1.1(v).
-  React.useEffect(() => {
-    if (user || isGuest) {
-      try { localStorage.setItem(WELCOME_SEEN_KEY, "1"); } catch { /* ignore */ }
-    }
-  }, [user, isGuest]);
-
-  if (loading) return <>{children}</>;
-  // Welcome route is always reachable so people can sign up/in later.
-  // Reset-password must also stay reachable — it's opened from an email link,
-  // often before any session exists on the device.
-  if (location.pathname === "/welcome" || location.pathname === "/reset-password") return <>{children}</>;
-  // Only force the Welcome screen on the very first launch. After that,
-  // unauthenticated visitors browse freely — sign-in prompts only appear
-  // for account-based actions via requireAuth().
-  const hasSeenWelcome =
-    typeof window !== "undefined" && localStorage.getItem(WELCOME_SEEN_KEY) === "1";
-  if (!user && !isGuest && !hasSeenWelcome) return <Welcome />;
-  return <>{children}</>;
-};
-
 const ConditionalBottomNav = () => {
   const location = useLocation();
   const path = location.pathname;
@@ -156,8 +126,6 @@ const App = () => (
         <OfflineScreen />
         <BrowserRouter>
           <GuestAuthProvider>
-            <AuthGate>
-              
               <ConditionalMain>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -236,7 +204,6 @@ const App = () => (
               </ConditionalMain>
               <ScrollToTop />
               <ConditionalBottomNav />
-            </AuthGate>
           </GuestAuthProvider>
         </BrowserRouter>
       </AuthProvider>

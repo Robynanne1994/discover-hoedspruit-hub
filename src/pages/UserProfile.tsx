@@ -306,10 +306,8 @@ const UserProfile = () => {
     !isOwnProfile && !!(profile as any)?.is_private && !following;
 
   const handleFollowClick = () => {
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
+    // Guests get a dismissable bottom sheet, not a full-screen redirect.
+    if (!requireAuth("follow people")) return;
     if (following) {
       setUnfollowOpen(true);
     } else if (requested) {

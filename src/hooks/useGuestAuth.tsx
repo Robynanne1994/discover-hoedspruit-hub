@@ -2,12 +2,12 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, R
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 
 const GUEST_KEY = "hh-guest-mode";
@@ -77,17 +77,23 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
   return (
     <GuestAuthContext.Provider value={value}>
       {children}
-      <Dialog open={promptOpen} onOpenChange={setPromptOpen}>
-        <DialogContent className="max-w-sm rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">Create an account</DialogTitle>
-            <DialogDescription className="text-[15px] leading-snug pt-1">
+      {/* Dismissable bottom sheet. Tapping outside, the close button, or
+          "Not now" closes it back to wherever the guest was — it never
+          navigates away or traps them on a full-screen sign-in wall. */}
+      <Sheet open={promptOpen} onOpenChange={setPromptOpen}>
+        <SheetContent
+          side="bottom"
+          className="mx-auto max-w-[480px] rounded-t-3xl border-0 px-6 pb-8 pt-6"
+        >
+          <SheetHeader className="text-left">
+            <SheetTitle className="text-xl font-semibold">Create an account</SheetTitle>
+            <SheetDescription className="text-[15px] leading-snug pt-1">
               {action
                 ? `Sign up or log in to ${action}.`
                 : "Sign up or log in to use this feature."}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-2 mt-2">
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex flex-col gap-2 mt-5">
             <Button
               onClick={() => goAuth("signup")}
               className="w-full h-12 rounded-full"
@@ -110,8 +116,8 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
               Not now
             </button>
           </div>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     </GuestAuthContext.Provider>
   );
 };
