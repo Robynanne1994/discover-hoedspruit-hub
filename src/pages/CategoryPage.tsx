@@ -8,7 +8,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -132,19 +132,16 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
 // Reads from the shared favourites cache so a category page with 50 listings
 // only does ONE favourites query instead of 50.
 const CardHeart = ({ listingId }: { listingId: string }) => {
-  const { user } = useAuth();
   const saved = useIsFavourited(listingId, "listing");
   const toggle = useToggleFavourite();
+  const requireAuth = useRequireAuth();
 
   return (
     <button
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        if (!user) {
-          toast.error("Please sign in to save favourites");
-          return;
-        }
+        if (!requireAuth("save favourites")) return;
         toggle.mutate({ itemId: listingId, itemType: "listing", currentlyFavourited: saved });
       }}
       aria-label={saved ? "Remove from favourites" : "Add to favourites"}
