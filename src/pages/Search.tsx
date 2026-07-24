@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import {
   Search as SearchIcon,
   X,
@@ -47,6 +47,9 @@ const SCOPES: { id: Scope; label: string; icon: React.ComponentType<any> }[] = [
   { id: "people", label: "People", icon: UserIcon },
 ];
 
+const isScope = (v: string | null): v is Scope =>
+  v === "listings" || v === "events" || v === "specials" || v === "people";
+
 const initialsOf = (displayName?: string | null, username?: string | null): string => {
   if (displayName?.trim()) {
     const parts = displayName.trim().split(/\s+/).filter((w) => /^[a-z0-9]/i.test(w));
@@ -71,10 +74,27 @@ const untilLabel = (date?: string | null): string | null => {
 const Search = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const fromProfileState = (location.state as { fromProfile?: boolean; profileId?: string } | null) ?? null;
   const fromProfile = !!fromProfileState?.fromProfile;
   const profileId = fromProfileState?.profileId;
-  const [scope, setScope] = useState<Scope>(fromProfile ? "people" : "listings");
+
+  // The active tab lives in the URL (?tab=…) so it survives back-navigation:
+  // tapping a result, opening its detail page and hitting back restores the
+  // same tab instead of resetting to the first pill.
+  const tabParam = searchParams.get("tab");
+  const scope: Scope = isScope(tabParam) ? tabParam : fromProfile ? "people" : "listings";
+  const setScope = (next: Scope) => {
+    setSearchParams(
+      (prev) => {
+        const params = new URLSearchParams(prev);
+        params.set("tab", next);
+        return params;
+      },
+      { replace: true },
+    );
+  };
+
   const [query, setQuery] = useState("");
   const hasQuery = query.trim().length > 0;
 
