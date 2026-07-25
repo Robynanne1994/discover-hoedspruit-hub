@@ -1613,6 +1613,8 @@ export type Database = {
           specials_ending: boolean
           specials_new: boolean
           specials_new_categories: string[] | null
+          specials_updates: boolean
+          specials_updates_scope: string
           updated_at: string
           user_id: string
         }
@@ -1635,6 +1637,8 @@ export type Database = {
           specials_ending?: boolean
           specials_new?: boolean
           specials_new_categories?: string[] | null
+          specials_updates?: boolean
+          specials_updates_scope?: string
           updated_at?: string
           user_id: string
         }
@@ -1657,6 +1661,8 @@ export type Database = {
           specials_ending?: boolean
           specials_new?: boolean
           specials_new_categories?: string[] | null
+          specials_updates?: boolean
+          specials_updates_scope?: string
           updated_at?: string
           user_id?: string
         }

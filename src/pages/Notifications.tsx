@@ -20,6 +20,7 @@ type BoolKey =
   | "listings_new"
   | "listings_updates"
   | "specials_new"
+  | "specials_updates"
   | "specials_ending"
   | "community_followers"
   | "hh_app_updates";
@@ -38,6 +39,7 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   listings_new: false,
   listings_updates: true,
   specials_new: true,
+  specials_updates: false,
   specials_ending: true,
   community_followers: true,
   hh_app_updates: false,
@@ -117,6 +119,7 @@ const SECTIONS: SectionDef[] = [
     label: "Specials",
     rows: [
       { key: "specials_new", title: "New Specials", filterCol: "specials_new_categories", filterType: "specials_new" },
+      { key: "specials_updates", title: "Special Updates" },
       { key: "specials_ending", title: "Specials Ending Soon" },
     ],
   },
@@ -220,6 +223,7 @@ const Notifications = () => {
     specials_new_categories: null,
   });
   const [eventsUpdatesScope, setEventsUpdatesScope] = useState<"all" | "saved">("all");
+  const [specialsUpdatesScope, setSpecialsUpdatesScope] = useState<"all" | "saved">("all");
   const [loaded, setLoaded] = useState(false);
   // Live totals per source (real categories / event tags / special tags), used
   // to render the "X of Y" summary under each category-linked toggle.
@@ -259,6 +263,8 @@ const Notifications = () => {
         };
         const scope = ((data as any).events_updates_scope === "saved" ? "saved" : "all") as "all" | "saved";
         setEventsUpdatesScope(scope);
+        const sScope = ((data as any).specials_updates_scope === "saved" ? "saved" : "all") as "all" | "saved";
+        setSpecialsUpdatesScope(sScope);
         // If any category array is explicitly empty, turn off the parent toggle
         const catToBool: Record<CatKey, BoolKey> = {
           events_new_categories: "events_new",
@@ -322,20 +328,23 @@ const Notifications = () => {
   );
 
   const setScope = useCallback(
-    async (scope: "all" | "saved") => {
+    async (which: "events" | "specials", scope: "all" | "saved") => {
       if (!user) return;
-      const prev = eventsUpdatesScope;
-      setEventsUpdatesScope(scope);
+      const col = which === "events" ? "events_updates_scope" : "specials_updates_scope";
+      const prev = which === "events" ? eventsUpdatesScope : specialsUpdatesScope;
+      if (which === "events") setEventsUpdatesScope(scope);
+      else setSpecialsUpdatesScope(scope);
       const { error } = await supabase
         .from("notification_preferences")
-        .update({ events_updates_scope: scope } as any)
+        .update({ [col]: scope } as any)
         .eq("user_id", user.id);
       if (error) {
-        setEventsUpdatesScope(prev);
+        if (which === "events") setEventsUpdatesScope(prev);
+        else setSpecialsUpdatesScope(prev);
         toast.error("Could not save preference");
       }
     },
-    [user, eventsUpdatesScope],
+    [user, eventsUpdatesScope, specialsUpdatesScope],
   );
 
 
@@ -419,15 +428,20 @@ const Notifications = () => {
                         isFirst={i === 0}
                         filterLink={filterLink}
                       />
-                      {row.key === "events_updates" && bools.events_updates && masterOn && (
+                      {((row.key === "events_updates" && bools.events_updates) ||
+                        (row.key === "specials_updates" && bools.specials_updates)) && masterOn && (
                         <div style={{ display: "flex", gap: 16, paddingBottom: 16, marginTop: -4 }}>
                           {(["all", "saved"] as const).map((v) => {
-                            const active = eventsUpdatesScope === v;
-                            const label = v === "all" ? "All Events" : "Saved Events";
+                            const which: "events" | "specials" =
+                              row.key === "events_updates" ? "events" : "specials";
+                            const current = which === "events" ? eventsUpdatesScope : specialsUpdatesScope;
+                            const active = current === v;
+                            const noun = which === "events" ? "Events" : "Specials";
+                            const label = v === "all" ? `All ${noun}` : `Saved ${noun}`;
                             return (
                               <button
                                 key={v}
-                                onClick={() => setScope(v)}
+                                onClick={() => setScope(which, v)}
                                 style={{
                                   background: "none",
                                   border: "none",
@@ -444,7 +458,6 @@ const Notifications = () => {
                                 }}
                               >
                                 {label}
-                                {active && <span style={{ fontSize: 11 }}>→</span>}
                               </button>
                             );
                           })}
