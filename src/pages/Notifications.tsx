@@ -150,7 +150,7 @@ const PrefRow = ({
   isFirst: boolean;
   filterLink?: { to: string; selected: number; total: number; noun: string };
 }) => {
-  const nounPlural = filterLink ? filterLink.noun.toLowerCase() : "";
+  const nounPlural = filterLink ? filterLink.noun : "";
   const allSelected = filterLink && filterLink.selected === filterLink.total;
   const linkText = filterLink
     ? allSelected
