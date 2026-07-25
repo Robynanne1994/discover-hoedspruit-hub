@@ -8,7 +8,8 @@ import { toast } from "sonner";
 import {
   FILTER_TYPE_META,
   NotificationFilterType,
-  totalCategoryCount,
+  NotificationSource,
+  fetchNotificationOptions,
 } from "@/lib/notificationCategories";
 
 type BoolKey =
@@ -151,13 +152,16 @@ const PrefRow = ({
   onToggle: () => void;
   disabled?: boolean;
   isFirst: boolean;
-  filterLink?: { to: string; selected: number; total: number };
+  filterLink?: { to: string; selected: number; total: number; noun: string };
 }) => {
+  const nounPlural = filterLink
+    ? filterLink.noun.charAt(0).toUpperCase() + filterLink.noun.slice(1)
+    : "";
   const allSelected = filterLink && filterLink.selected === filterLink.total;
   const linkText = filterLink
     ? allSelected
-      ? `All ${filterLink.total} Categories ›`
-      : `${filterLink.selected} of ${filterLink.total} Categories ›`
+      ? `All ${filterLink.total} ${nounPlural} ›`
+      : `${filterLink.selected} of ${filterLink.total} ${nounPlural} ›`
     : null;
 
   return (
@@ -226,6 +230,22 @@ const Notifications = () => {
     specials_new_categories: null,
   });
   const [loaded, setLoaded] = useState(false);
+  // Live totals per source (real categories / event tags / special tags), used
+  // to render the "X of Y" summary under each category-linked toggle.
+  const [optionTotals, setOptionTotals] = useState<Partial<Record<NotificationSource, number>>>({});
+
+  useEffect(() => {
+    let active = true;
+    const sources: NotificationSource[] = ["category", "event_tag", "special_tag"];
+    Promise.all(sources.map((s) => fetchNotificationOptions(s).then((o) => [s, o.length] as const))).then(
+      (entries) => {
+        if (active) setOptionTotals(Object.fromEntries(entries) as Record<NotificationSource, number>);
+      },
+    );
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -375,10 +395,10 @@ const Notifications = () => {
                   const filterLink = row.filterCol && row.filterType
                     ? (() => {
                         const meta = FILTER_TYPE_META[row.filterType!];
-                        const total = totalCategoryCount(meta.groups);
+                        const total = optionTotals[meta.source] ?? 0;
                         const arr = cats[row.filterCol!];
-                        const selected = arr === null ? total : arr.length;
-                        return { to: `/notifications/categories/${row.filterType}`, selected, total };
+                        const selected = arr === null ? total : Math.min(arr.length, total);
+                        return { to: `/notifications/categories/${row.filterType}`, selected, total, noun: meta.itemNoun.many };
                       })()
                     : undefined;
                   return (
