@@ -1,26 +1,43 @@
-## Goal
-Update the category listing pages (`/category/:id`) so listings render as a **2-column grid** instead of the current single-column stack, matching the attached screenshot.
+# Account Notices page
 
-## Changes (frontend only)
+Give users a place to review every moderation action taken on their account (warnings, content removals, suspensions, bans, restorations), instead of dropping them on `/account-settings` with nothing to see.
 
-**File:** `src/pages/CategoryPage.tsx`
+## Data source
 
-1. **Grid layout**
-   - Replace the current single-column list with `display: grid; gridTemplateColumns: 1fr 1fr; gap: 12px` inside the same 20px horizontal page padding.
+Two tables already hold everything we need — no schema changes required:
 
-2. **Card format (per screenshot)**
-   - Card: white background, 16px radius, subtle border, `overflow: hidden`, flex column.
-   - Image: full-width, `aspect-ratio: 1 / 1` (square), sits flush to the top/sides with 8px inner padding wrapper and 12px inner radius — consistent with the Categories/Explore card style already used in the app.
-   - Rating pill (top-left of image) and heart save button (top-right of image) preserved but scaled down slightly to suit the smaller card (rating pill ~11px text, heart button ~28px circle).
-   - Below image: title (Helvetica Neue 700, 15px, `#1A1A1A`, wraps to 2 lines, no ellipsis truncation of words), subcategory line (10px uppercase eyebrow, `#6B6A5E`, single line with ellipsis), location row with `MapPin` icon (12px, `#6B6A5E`), open/closed status row (small dot + label, existing colors).
-   - Consistent internal padding: 12px sides, 10px bottom.
+- `moderation_actions` — full audit log: `action`, `reason`, `duration_days`, `created_at`, `related_report_id`, `target_user_id`. Currently admin-only via RLS.
+- `business_notifications` (kind = `moderation`) — the user-facing copy already sent at the time of the action.
 
-3. **Preserved behaviour**
-   - All existing filters, sorting, "Open Now" / "Saved" pills, refine drawer, search, header, empty/error states, skeletons, and data queries stay unchanged.
-   - Save/favourite, navigation to detail, and title display helpers (`getDisplayTitle`, `noTitleCaseProps`) unchanged.
-   - Loading skeletons updated to render in the same 2-column grid so the placeholder matches the new layout.
+We'll surface `moderation_actions` rows for the signed-in user (`target_user_id = auth.uid()`).
+
+## Changes
+
+1. **RLS policy** on `moderation_actions`: allow a user to `SELECT` their own rows (`target_user_id = auth.uid()`). Admin policies stay as-is. No grants change needed beyond `SELECT` to `authenticated` if not already present.
+
+2. **New route `/account-notices`** → `src/pages/AccountNotices.tsx`:
+   - Standard `PageHeader` ("Account Notices") and back button.
+   - Fetches the user's `moderation_actions` ordered by `created_at desc`.
+   - Each row is an ivory card showing:
+     - Title derived from `action` (Account Warning, Account Suspended, Account Banned, Content Removed, Account Restored).
+     - Date (e.g. "17 Jun 2026").
+     - `reason` / admin note body.
+     - For suspensions: "Until {created_at + duration_days}".
+     - Current status pill if this is the active state (pulled from `profiles.moderation_status`).
+   - Empty state: "No account notices. Your account is in good standing."
+
+3. **Entry point in Account Settings**: add an "Account Notices" row in the existing grouped list on `src/pages/AccountSettings.tsx` (same 22px icon + ArrowUpRight pattern used by the other rows). Show a small red dot if there are any unread moderation notifications.
+
+4. **Notification link**: update `apply_moderation_action` so newly created `business_notifications` rows for warnings/suspensions/bans/content-removed/restored use `link = '/account-notices'` instead of `/account-settings`. Also run a one-off `UPDATE` on existing `business_notifications` rows with `kind = 'moderation'` to repoint their `link`.
 
 ## Out of scope
-- No backend, data model, or query changes.
-- Categories index page (`/categories`) already uses a 2-column grid — no changes there.
-- Other list pages (Events, Specials, Search) unchanged.
+
+- No new admin surface (admins already have their moderation dashboard).
+- No changes to how notifications are rendered — only the destination changes.
+- Not exposing the reporter's identity or the original report contents.
+
+## Technical notes
+
+- Route registered in `App.tsx` behind the same auth gate as other account pages.
+- Reuse existing card/typography tokens from the design system (ivory `#F5F0E8` card, Bricolage title, Helvetica body, hairline dividers).
+- Query with react-query, keyed by user id.
