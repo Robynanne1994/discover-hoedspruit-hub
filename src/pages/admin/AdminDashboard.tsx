@@ -11,7 +11,7 @@ import {
   
   Radio,
   Users,
-  
+  Megaphone,
   Flag,
 } from "lucide-react";
 
@@ -105,6 +105,17 @@ const AdminDashboard = () => {
     },
   });
 
+  const appUpdates = useQuery({
+    queryKey: ["admin-count-app-update-broadcasts"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("app_update_broadcasts")
+        .select("*", { count: "exact", head: true });
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
   const submissions = (contacts.data ?? 0) + (feedback.data ?? 0);
 
   const cards = [
@@ -118,6 +129,7 @@ const AdminDashboard = () => {
     
     { label: "Resources", count: resources.data, to: "/admin/local-channels", icon: Radio },
     { label: "Users", count: users.data, to: "/admin/users", icon: Users },
+    { label: "App Updates", count: appUpdates.data, to: "/admin/app-updates", icon: Megaphone, hint: "Notify all users" },
   ];
 
 

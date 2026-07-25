@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,6 +33,7 @@ type Notif = {
 
 const iconFor = (kind: string) => {
   const k = (kind || "").toLowerCase();
+  if (k.includes("app_update") || k.includes("announcement") || k.includes("news")) return Megaphone;
   if (k.includes("follow")) return UserPlus;
   if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return Heart;
   if (k.includes("special") || k.includes("deal") || k.includes("offer")) return Tag;
@@ -46,6 +47,7 @@ const iconFor = (kind: string) => {
 
 const tintFor = (kind: string): { bg: string; fg: string } => {
   const k = (kind || "").toLowerCase();
+  if (k.includes("app_update") || k.includes("announcement") || k.includes("news")) return { bg: "#E7DEC9", fg: "#423324" };
   if (k.includes("special") || k.includes("deal") || k.includes("offer")) return { bg: "#E8DCC8", fg: "#423324" };
   if (k.includes("event") || k.includes("reminder")) return { bg: "#E8E6DF", fg: INK };
   if (k.includes("security") || k.includes("alert")) return { bg: "#D6EBDB", fg: "#2E7D4F" };

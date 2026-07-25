@@ -247,6 +247,39 @@ export type Database = {
         }
         Relationships: []
       }
+      app_update_broadcasts: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          pushed_count: number
+          recipient_count: number
+          sent_by: string | null
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          pushed_count?: number
+          recipient_count?: number
+          sent_by?: string | null
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          pushed_count?: number
+          recipient_count?: number
+          sent_by?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       business_notifications: {
         Row: {
           body: string | null
@@ -255,6 +288,7 @@ export type Database = {
           is_read: boolean
           kind: string
           link: string | null
+          push: boolean
           ref_id: string | null
           ref_table: string | null
           status: string
@@ -268,6 +302,7 @@ export type Database = {
           is_read?: boolean
           kind: string
           link?: string | null
+          push?: boolean
           ref_id?: string | null
           ref_table?: string | null
           status: string
@@ -281,6 +316,7 @@ export type Database = {
           is_read?: boolean
           kind?: string
           link?: string | null
+          push?: boolean
           ref_id?: string | null
           ref_table?: string | null
           status?: string
