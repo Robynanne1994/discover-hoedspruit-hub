@@ -219,6 +219,7 @@ const Notifications = () => {
     listings_updates_categories: null,
     specials_new_categories: null,
   });
+  const [eventsUpdatesScope, setEventsUpdatesScope] = useState<"all" | "saved">("all");
   const [loaded, setLoaded] = useState(false);
   // Live totals per source (real categories / event tags / special tags), used
   // to render the "X of Y" summary under each category-linked toggle.
