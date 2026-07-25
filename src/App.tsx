@@ -157,6 +157,7 @@ const App = () => (
               <Route path="/account-settings/privacy" element={<AccountPrivacy />} />
               <Route path="/account-settings/blocked" element={<AccountBlocked />} />
               <Route path="/account-settings/reported" element={<AccountReported />} />
+              <Route path="/account-notices" element={<AccountNotices />} />
               <Route path="/terms" element={<TermsPolicies />} />
               
               <Route path="/terms-of-use" element={<TermsOfUse />} />
