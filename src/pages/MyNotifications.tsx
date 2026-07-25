@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone, MoreHorizontal, MessageSquare, Send } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,8 +16,9 @@ const INK = "#1A1A1A";
 const MUTED = "#6B6A5E";
 const BODY = "#3A332B";
 const HAIRLINE = "rgba(0,0,0,0.06)";
-const DOT = "#2A2A24";
+const DOT = "#E0322B";
 const BROWN = "#423324";
+const AVATAR_BG = "#E9E1D3";
 
 type Notif = {
   id: string;
@@ -33,11 +34,12 @@ type Notif = {
 
 const iconFor = (kind: string) => {
   const k = (kind || "").toLowerCase();
+  if (k.includes("feedback")) return Send;
   if (k.includes("app_update") || k.includes("announcement") || k.includes("news")) return Megaphone;
   if (k.includes("follow")) return UserPlus;
   if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return Heart;
   if (k.includes("special") || k.includes("deal") || k.includes("offer")) return Tag;
-  if (k.includes("listing") || k.includes("place")) return Store;
+  if (k.includes("listing") || k.includes("place")) return Tag;
   if (k.includes("reminder")) return Clock;
   if (k.includes("event")) return Calendar;
   if (k.includes("tip")) return Sun;
@@ -45,28 +47,15 @@ const iconFor = (kind: string) => {
   return Bell;
 };
 
-const tintFor = (kind: string): { bg: string; fg: string } => {
-  const k = (kind || "").toLowerCase();
-  if (k.includes("app_update") || k.includes("announcement") || k.includes("news")) return { bg: "#E7DEC9", fg: "#423324" };
-  if (k.includes("special") || k.includes("deal") || k.includes("offer")) return { bg: "#E8DCC8", fg: "#423324" };
-  if (k.includes("event") || k.includes("reminder")) return { bg: "#E8E6DF", fg: INK };
-  if (k.includes("security") || k.includes("alert")) return { bg: "#D6EBDB", fg: "#2E7D4F" };
-  if (k.includes("welcome") || k.includes("profile") || k.includes("account")) return { bg: "#E8DCC8", fg: "#8B6F4B" };
-  if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return { bg: "#E8DCC8", fg: "#423324" };
-  return { bg: "#E8E6DF", fg: INK };
-};
-
 const relativeShort = (iso: string): string => {
   const then = new Date(iso).getTime();
   const diffMin = Math.max(0, Math.round((Date.now() - then) / 60000));
-  if (diffMin < 60) return `${Math.max(1, diffMin)}M AGO`;
+  if (diffMin < 60) return `${Math.max(1, diffMin)}m`;
   const h = Math.round(diffMin / 60);
-  if (h < 24) return `${h}H AGO`;
+  if (h < 24) return `${h}h`;
   const d = Math.round(h / 24);
-  if (d < 7) return `${d}D AGO`;
-  const w = Math.round(d / 7);
-  if (w < 5) return `${w}W AGO`;
-  return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase();
+  if (d < 7) return `${d}d`;
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 };
 
 const bucketOf = (iso: string): "today" | "yesterday" | "week" | "month" | "earlier" => {
@@ -245,6 +234,14 @@ export default function MyNotifications() {
     }
   }, []);
 
+  const deleteNotif = useCallback(async (id: string) => {
+    initialUnreadRef.current?.delete(id);
+    setNotifs((prev) => prev.filter((n) => n.id !== id));
+    await supabase.from("business_notifications").delete().eq("id", id);
+  }, []);
+
+
+
 
   const isEmpty = loaded && notifs.length === 0;
   const hasUnread = unreadCount > 0;
@@ -347,6 +344,7 @@ export default function MyNotifications() {
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
                     onClick={() => n.link && navigate(n.link)}
                     onRespond={respondFollowRequest}
+                    onDelete={deleteNotif}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
                     feedbackSubject={n.kind === "feedback_reply" && n.ref_id ? feedbackSubjects[n.ref_id] : undefined}
                   />
@@ -415,6 +413,7 @@ function NotifCard({
   isUnread,
   onClick,
   onRespond,
+  onDelete,
   actor,
   feedbackSubject,
 }: {
@@ -422,20 +421,23 @@ function NotifCard({
   isUnread: boolean;
   onClick: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
+  onDelete?: (id: string) => void;
   actor?: FollowActor;
   feedbackSubject?: string;
 }) {
   const Icon = iconFor(n.kind);
-  const tint = tintFor(n.kind);
-  const isFeedbackReply = n.kind === "feedback_reply";
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    window.addEventListener("click", close);
+    return () => window.removeEventListener("click", close);
+  }, [menuOpen]);
+
   const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted";
-  const showIcon = !isFeedbackReply && !isUserRelated;
-  const initials = (actor?.display_name || "·")
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("");
+  const avatarUrl = isUserRelated ? actor?.avatar_url : null;
+
   return (
     <div
       onClick={onClick}
@@ -443,119 +445,104 @@ function NotifCard({
         position: "relative",
         display: "flex",
         alignItems: "flex-start",
-        gap: showIcon ? 14 : 0,
-        background: CARD,
+        gap: 14,
+        background: isUnread ? CARD : "transparent",
         borderRadius: 16,
-        border: `1px solid ${HAIRLINE}`,
-        padding: 16,
+        border: isUnread ? `1px solid ${HAIRLINE}` : "none",
+        padding: isUnread ? "14px 16px" : "6px 4px",
         cursor: n.link ? "pointer" : "default",
       }}
     >
-      {showIcon && (
+      {/* Avatar with badge */}
+      <div style={{ position: "relative", width: 48, height: 48, flexShrink: 0 }}>
         <div
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            background: tint.bg,
+            width: 48,
+            height: 48,
+            borderRadius: "50%",
+            background: AVATAR_BG,
+            overflow: "hidden",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            flexShrink: 0,
           }}
         >
-          <Icon size={22} strokeWidth={1.8} color={tint.fg} />
+          {avatarUrl ? (
+            <img src={avatarUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : null}
         </div>
-      )}
-      <div style={{ flex: 1, minWidth: 0, paddingRight: isUnread ? 14 : 0 }}>
+        <div
+          style={{
+            position: "absolute",
+            bottom: -2,
+            left: -2,
+            width: 22,
+            height: 22,
+            borderRadius: "50%",
+            background: BROWN,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: `2px solid ${isUnread ? CARD : BG}`,
+          }}
+        >
+          <Icon size={11} strokeWidth={2.2} color="#fff" />
+        </div>
+      </div>
+
+      <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
         <p
           style={{
             margin: 0,
             fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 15,
-            lineHeight: 1.3,
+            fontSize: 14.5,
+            lineHeight: 1.4,
             color: INK,
             letterSpacing: "-0.1px",
           }}
         >
-          {n.title}
+          <span style={{ fontWeight: 700 }}>{n.title}</span>
+          {n.body && <span style={{ fontWeight: 400 }}> {n.body}</span>}
+          <span style={{ fontWeight: 400, color: MUTED, marginLeft: 6 }}>
+            {relativeShort(n.created_at)}
+          </span>
         </p>
-        {isFeedbackReply && feedbackSubject && (
+        {n.kind === "feedback_reply" && feedbackSubject && (
           <p
             style={{
               margin: "4px 0 0",
               fontFamily: SANS,
               fontSize: 12,
-              color: INK,
+              color: MUTED,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
             }}
           >
-            <span style={{ fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.4px" }}>Subject:</span>{" "}
-            <span style={{ fontWeight: 500 }}>{titleCaseSubject(feedbackSubject)}</span>
-          </p>
-        )}
-        {n.body && (
-          <p
-            style={{
-              margin: "4px 0 8px",
-              fontFamily: SANS,
-              fontWeight: 400,
-              fontSize: 13.5,
-              lineHeight: 1.45,
-              color: BODY,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {n.body}
+            <span style={{ fontWeight: 600 }}>Subject:</span>{" "}
+            <span>{titleCaseSubject(feedbackSubject)}</span>
           </p>
         )}
         {n.kind === "follow_request" && n.ref_id && onRespond && (
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onRespond(n, true);
-              }}
+              onClick={(e) => { e.stopPropagation(); onRespond(n, true); }}
               style={{
-                height: 34,
-                padding: "0 16px",
-                borderRadius: 999,
-                background: BROWN,
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 600,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
+                height: 32, padding: "0 16px", borderRadius: 999,
+                background: BROWN, color: "#fff", border: "none",
+                cursor: "pointer", fontFamily: SANS, fontSize: 13, fontWeight: 600,
+                display: "inline-flex", alignItems: "center", gap: 6,
               }}
             >
               <Check size={14} strokeWidth={2.4} /> Accept
             </button>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onRespond(n, false);
-              }}
+              onClick={(e) => { e.stopPropagation(); onRespond(n, false); }}
               style={{
-                height: 34,
-                padding: "0 16px",
-                borderRadius: 999,
-                background: "transparent",
-                color: INK,
-                border: `1px solid ${HAIRLINE}`,
-                cursor: "pointer",
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 600,
+                height: 32, padding: "0 16px", borderRadius: 999,
+                background: "transparent", color: INK,
+                border: `1px solid ${HAIRLINE}`, cursor: "pointer",
+                fontFamily: SANS, fontSize: 13, fontWeight: 600,
               }}
             >
               Decline
@@ -563,57 +550,79 @@ function NotifCard({
           </div>
         )}
         {n.kind === "follow_request_accepted" && n.link && (
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onClick();
-              }}
+              onClick={(e) => { e.stopPropagation(); onClick(); }}
               style={{
-                height: 34,
-                padding: "0 16px",
-                borderRadius: 999,
-                background: BROWN,
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 600,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
+                height: 32, padding: "0 16px", borderRadius: 999,
+                background: BROWN, color: "#fff", border: "none",
+                cursor: "pointer", fontFamily: SANS, fontSize: 13, fontWeight: 600,
+                display: "inline-flex", alignItems: "center", gap: 6,
               }}
             >
               Message
             </button>
           </div>
         )}
+      </div>
 
-        <span
+      {/* Three-dot menu */}
+      <button
+        onClick={(e) => { e.stopPropagation(); setMenuOpen((v) => !v); }}
+        aria-label="Options"
+        style={{
+          position: "absolute",
+          top: isUnread ? 12 : 4,
+          right: isUnread ? 10 : 0,
+          width: 28, height: 28, borderRadius: 999,
+          background: "transparent", border: "none",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer", padding: 0,
+        }}
+      >
+        <MoreHorizontal size={18} color={MUTED} strokeWidth={2} />
+      </button>
+      {menuOpen && (
+        <div
+          onClick={(e) => e.stopPropagation()}
           style={{
-            display: "inline-block",
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 11,
-            letterSpacing: "1.2px",
-            textTransform: "uppercase",
-            color: MUTED,
-            marginTop: 8,
+            position: "absolute",
+            top: isUnread ? 40 : 32,
+            right: isUnread ? 10 : 0,
+            background: CARD,
+            border: `1px solid ${HAIRLINE}`,
+            borderRadius: 12,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            padding: 4,
+            zIndex: 10,
+            minWidth: 180,
           }}
         >
-          {relativeShort(n.created_at)}
-        </span>
-      </div>
+          <button
+            onClick={() => { setMenuOpen(false); onDelete?.(n.id); }}
+            style={{
+              width: "100%", textAlign: "left",
+              padding: "10px 12px", borderRadius: 8,
+              background: "transparent", border: "none",
+              cursor: "pointer", fontFamily: SANS, fontSize: 14,
+              fontWeight: 500, color: INK,
+            }}
+          >
+            Delete notification
+          </button>
+        </div>
+      )}
+
       {isUnread && (
         <span
           aria-hidden
           style={{
             position: "absolute",
-            top: 16,
-            right: 16,
-            width: 8,
-            height: 8,
+            top: "50%",
+            right: 14,
+            transform: "translateY(-50%)",
+            width: 9,
+            height: 9,
             borderRadius: 999,
             background: DOT,
           }}
