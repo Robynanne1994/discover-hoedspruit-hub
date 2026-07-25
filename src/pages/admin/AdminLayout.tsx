@@ -28,7 +28,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
-  { label: "Moderation", path: "/admin/moderation", icon: ShieldCheck },
+  
   { label: "Homepage", path: "/admin/homepage", icon: Home },
   { label: "Search Suggested", path: "/admin/search-suggested", icon: SearchIcon },
   { label: "Users", path: "/admin/users", icon: Users },

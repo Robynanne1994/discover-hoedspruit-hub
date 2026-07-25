@@ -14,7 +14,7 @@ import Index from "./pages/Index.tsx";
 import Welcome from "./pages/Welcome.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
-import ModerationBanner from "./components/ModerationBanner.tsx";
+
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminCategoryOrder from "./pages/admin/AdminCategoryOrder.tsx";
@@ -72,7 +72,7 @@ import NotificationCategories from "./pages/NotificationCategories.tsx";
 import Specials from "./pages/Specials.tsx";
 import SearchPage from "./pages/Search.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
-import AdminModeration from "./pages/admin/AdminModeration.tsx";
+
 import AdminUsers from "./pages/admin/AdminUsers.tsx";
 import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
 import AdminReports from "./pages/admin/AdminReports.tsx";
@@ -193,7 +193,7 @@ const App = () => (
                 <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="app-updates" element={<AdminAppUpdates />} />
                 <Route path="import" element={<AdminImport />} />
-                <Route path="moderation" element={<AdminModeration />} />
+                
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="submissions" element={<AdminSubmissions />} />
                 <Route path="reports" element={<AdminReports />} />
