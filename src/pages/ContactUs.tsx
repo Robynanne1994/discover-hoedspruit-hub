@@ -227,28 +227,38 @@ const ContactUs = () => {
       </div>
 
       <div style={{ padding: "24px 20px 0" }}>
-        <SectionLabel>Office Hours</SectionLabel>
-        <div style={{ background: CARD, borderRadius: 16, overflow: "hidden" }}>
-          <Row
-            icon={<Clock size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow=""
-            value={
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                <div>
-                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Monday - Friday</span>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>09:00 - 17:00</span>
-                </div>
-                <div>
-                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Saturday</span>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>09:00 - 12:00</span>
-                </div>
-                <div>
-                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Sunday</span>
-                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>Closed</span>
-                </div>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, padding: "0 4px" }}>
+          <p style={{ fontFamily: `"Bricolage Grotesque", ${FF}`, fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1A1A1A", margin: 0 }}>Office Hours</p>
+          {(() => {
+            const now = new Date();
+            const day = now.getDay();
+            const mins = now.getHours() * 60 + now.getMinutes();
+            let open = false;
+            if (day >= 1 && day <= 5) open = mins >= 9 * 60 && mins < 17 * 60;
+            else if (day === 6) open = mins >= 9 * 60 && mins < 12 * 60;
+            if (!open) return null;
+            return (
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#2E7D4F" }} />
+                <span style={{ fontFamily: `"Bricolage Grotesque", ${FF}`, fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#2E7D4F" }}>Open Now</span>
               </div>
-            }
-          />
+            );
+          })()}
+        </div>
+        <div style={{ background: CARD, borderRadius: 16, overflow: "hidden", padding: "4px 18px" }}>
+          {[
+            { day: "Monday – Friday", hours: "09:00 – 17:00", closed: false },
+            { day: "Saturday", hours: "09:00 – 12:00", closed: false },
+            { day: "Sunday", hours: "Closed", closed: true },
+          ].map((r, i, arr) => (
+            <div key={r.day}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0" }}>
+                <span style={{ fontFamily: FF, fontSize: 15, fontWeight: r.closed ? 400 : 500, color: r.closed ? MUTED : INK }}>{r.day}</span>
+                <span style={{ fontFamily: FF, fontSize: 15, fontWeight: 400, color: r.closed ? MUTED : BODY }}>{r.hours}</span>
+              </div>
+              {i < arr.length - 1 && <div style={{ height: 1, background: "#EFE7D4" }} />}
+            </div>
+          ))}
         </div>
       </div>
 
