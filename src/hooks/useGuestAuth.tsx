@@ -30,7 +30,7 @@ interface GuestAuthContextType {
 const GuestAuthContext = createContext<GuestAuthContextType | undefined>(undefined);
 
 export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [isGuest, setIsGuest] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
@@ -47,6 +47,13 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, isGuest]);
 
+  // If the auth session hydrates while the sign-up prompt is open, close it —
+  // otherwise a returning user briefly sees "Create an Account" for an action
+  // they're actually already allowed to perform.
+  useEffect(() => {
+    if (user && promptOpen) setPromptOpen(false);
+  }, [user, promptOpen]);
+
   const enterGuest = useCallback(() => {
     localStorage.setItem(GUEST_KEY, "1");
     sessionStorage.setItem(GUEST_KEY, "1");
@@ -62,11 +69,15 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
   const requireAuth = useCallback(
     (a?: string) => {
       if (user) return true;
+      // Auth is still hydrating — don't flash the sign-up prompt at a user
+      // who actually has a valid session. Just swallow the interaction; the
+      // next tap after hydration will behave correctly.
+      if (loading) return false;
       setAction(a || "");
       setPromptOpen(true);
       return false;
     },
-    [user],
+    [user, loading],
   );
 
   const value = useMemo(
