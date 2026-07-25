@@ -344,6 +344,7 @@ export default function MyNotifications() {
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
                     onClick={() => n.link && navigate(n.link)}
                     onRespond={respondFollowRequest}
+                    onDelete={deleteNotif}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
                     feedbackSubject={n.kind === "feedback_reply" && n.ref_id ? feedbackSubjects[n.ref_id] : undefined}
                   />
