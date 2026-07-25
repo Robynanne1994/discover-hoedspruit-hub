@@ -20,6 +20,7 @@ type BoolKey =
   | "listings_new"
   | "listings_updates"
   | "specials_new"
+  | "specials_updates"
   | "specials_ending"
   | "community_followers"
   | "hh_app_updates";
@@ -38,6 +39,7 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   listings_new: false,
   listings_updates: true,
   specials_new: true,
+  specials_updates: false,
   specials_ending: true,
   community_followers: true,
   hh_app_updates: false,
