@@ -428,15 +428,20 @@ const Notifications = () => {
                         isFirst={i === 0}
                         filterLink={filterLink}
                       />
-                      {row.key === "events_updates" && bools.events_updates && masterOn && (
+                      {((row.key === "events_updates" && bools.events_updates) ||
+                        (row.key === "specials_updates" && bools.specials_updates)) && masterOn && (
                         <div style={{ display: "flex", gap: 16, paddingBottom: 16, marginTop: -4 }}>
                           {(["all", "saved"] as const).map((v) => {
-                            const active = eventsUpdatesScope === v;
-                            const label = v === "all" ? "All Events" : "Saved Events";
+                            const which: "events" | "specials" =
+                              row.key === "events_updates" ? "events" : "specials";
+                            const current = which === "events" ? eventsUpdatesScope : specialsUpdatesScope;
+                            const active = current === v;
+                            const noun = which === "events" ? "Events" : "Specials";
+                            const label = v === "all" ? `All ${noun}` : `Saved ${noun}`;
                             return (
                               <button
                                 key={v}
-                                onClick={() => setScope(v)}
+                                onClick={() => setScope(which, v)}
                                 style={{
                                   background: "none",
                                   border: "none",
@@ -453,7 +458,6 @@ const Notifications = () => {
                                 }}
                               >
                                 {label}
-                                {active && <span style={{ fontSize: 11 }}>→</span>}
                               </button>
                             );
                           })}
