@@ -382,7 +382,7 @@ export default function MyNotifications() {
                     key={n.id}
                     n={n}
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
-                    onClick={() => n.link && navigate(n.link)}
+                    onClick={n.link ? () => navigate(n.link!) : undefined}
                     onRespond={respondFollowRequest}
                     onDelete={deleteNotif}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
@@ -467,7 +467,7 @@ function NotifCard({
 }: {
   n: Notif;
   isUnread: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
   onDelete?: (id: string) => void;
   actor?: FollowActor;
