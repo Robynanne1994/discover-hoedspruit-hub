@@ -43,6 +43,7 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   specials_updates: false,
   specials_ending: true,
   community_followers: true,
+  community_follow_requests: true,
   hh_app_updates: false,
 };
 
