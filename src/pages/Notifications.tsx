@@ -313,8 +313,6 @@ const Notifications = () => {
         setBools(prevBools);
         setCats(prevCats);
         toast.error("Could not save preference");
-      } else {
-        toast("Saved.", { duration: 1500 });
       }
     },
     [user, bools, cats],
