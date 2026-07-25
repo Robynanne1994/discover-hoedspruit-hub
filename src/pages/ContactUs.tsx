@@ -236,11 +236,12 @@ const ContactUs = () => {
             let open = false;
             if (day >= 1 && day <= 5) open = mins >= 9 * 60 && mins < 17 * 60;
             else if (day === 6) open = mins >= 9 * 60 && mins < 12 * 60;
-            if (!open) return null;
+            const color = open ? "#2E7D4F" : "#B42318";
+            const label = open ? "Open Now" : "Closed Now";
             return (
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#2E7D4F" }} />
-                <span style={{ fontFamily: `"Bricolage Grotesque", ${FF}`, fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#2E7D4F" }}>Open Now</span>
+                <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
+                <span style={{ fontFamily: `"Bricolage Grotesque", ${FF}`, fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color }}>{label}</span>
               </div>
             );
           })()}
