@@ -387,6 +387,13 @@ export default function MyNotifications() {
                     onDelete={deleteNotif}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
                     feedbackSubject={n.kind === "feedback_reply" && n.ref_id ? feedbackSubjects[n.ref_id] : undefined}
+                    imageOverride={
+                      isAdminKind(n.kind)
+                        ? hhLogo
+                        : n.ref_table && n.ref_id
+                        ? refImages[`${n.ref_table}:${n.ref_id}`]
+                        : undefined
+                    }
                   />
                 ))}
               </div>
