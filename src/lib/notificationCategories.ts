@@ -44,10 +44,10 @@ export const FILTER_TYPE_META: Record<
   events_new: {
     eyebrow: "NEW EVENTS",
     title: "pick your kind of fun.",
-    subline: "Choose which event tags you want to be notified about.",
+    subline: "Choose which event categories you want to be notified about.",
     source: "event_tag",
     column: "events_new_categories",
-    itemNoun: { one: "tag", many: "tags" },
+    itemNoun: { one: "category", many: "categories" },
   },
   listings_new: {
     eyebrow: "NEW LISTINGS",
@@ -70,10 +70,10 @@ export const FILTER_TYPE_META: Record<
   specials_new: {
     eyebrow: "NEW SPECIALS",
     title: "pick your kind of deal.",
-    subline: "Choose which special tags you want to be notified about.",
+    subline: "Choose which special categories you want to be notified about.",
     source: "special_tag",
     column: "specials_new_categories",
-    itemNoun: { one: "tag", many: "tags" },
+    itemNoun: { one: "category", many: "categories" },
   },
 };
 
