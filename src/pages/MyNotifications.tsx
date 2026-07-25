@@ -484,8 +484,8 @@ function NotifCard({
     return () => window.removeEventListener("click", close);
   }, [menuOpen]);
 
-  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted";
-  const avatarUrl = isUserRelated ? actor?.avatar_url : null;
+  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined";
+  const avatarUrl = imageOverride || (isUserRelated ? actor?.avatar_url : null);
 
   return (
     <div
