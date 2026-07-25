@@ -550,8 +550,15 @@ function NotifCard({
             letterSpacing: "-0.1px",
           }}
         >
-          <span style={{ fontWeight: 700 }}>{n.title}</span>
-          {n.body && <span style={{ fontWeight: 400 }}> {n.body}</span>}
+          <span style={{ fontWeight: 700 }}>{n.kind === "app_update" ? "App Updates" : n.title}</span>
+          {n.kind === "app_update" ? (
+            <>
+              {n.title && <span style={{ fontWeight: 400 }}> {n.title}</span>}
+              {n.body && <span style={{ fontWeight: 400 }}> {n.body}</span>}
+            </>
+          ) : (
+            n.body && <span style={{ fontWeight: 400 }}> {n.body}</span>
+          )}
           <span style={{ fontWeight: 400, color: MUTED, marginLeft: 6 }}>
             {relativeShort(n.created_at)}
           </span>
