@@ -257,6 +257,8 @@ const Notifications = () => {
           listings_updates_categories: (data as any).listings_updates_categories ?? null,
           specials_new_categories: (data as any).specials_new_categories ?? null,
         };
+        const scope = ((data as any).events_updates_scope === "saved" ? "saved" : "all") as "all" | "saved";
+        setEventsUpdatesScope(scope);
         // If any category array is explicitly empty, turn off the parent toggle
         const catToBool: Record<CatKey, BoolKey> = {
           events_new_categories: "events_new",
