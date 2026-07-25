@@ -493,40 +493,25 @@ const Notifications = () => {
                         isFirst={i === 0}
                         filterLink={filterLink}
                       />
-                      {((row.key === "events_updates" && bools.events_updates) ||
-                        (row.key === "specials_updates" && bools.specials_updates)) && masterOn && (
-                        <div style={{ display: "flex", gap: 16, paddingBottom: 16, marginTop: -4 }}>
-                          {(["all", "saved"] as const).map((v) => {
-                            const which: "events" | "specials" =
-                              row.key === "events_updates" ? "events" : "specials";
-                            const current = which === "events" ? eventsUpdatesScope : specialsUpdatesScope;
-                            const active = current === v;
-                            const noun = which === "events" ? "Events" : "Specials";
-                            const label = v === "all" ? `All ${noun}` : `Saved ${noun}`;
-                            return (
-                              <button
-                                key={v}
-                                onClick={() => setScope(which, v)}
-                                style={{
-                                  background: "none",
-                                  border: "none",
-                                  padding: 0,
-                                  cursor: "pointer",
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 4,
-                                  fontFamily: SANS,
-                                  fontSize: 13,
-                                  fontWeight: 500,
-                                  color: active ? "#F26A48" : C.muted,
-                                  textDecoration: "none",
-                                }}
-                              >
-                                {label}
-                              </button>
-                            );
-                          })}
-                        </div>
+                      {row.key === "events_updates" && bools.events_updates && masterOn && (
+                        <ScopeSelector
+                          value={eventsUpdatesScope}
+                          onChange={(v) => setScope("events", v)}
+                          options={[
+                            { value: "all", label: "All Events" },
+                            { value: "saved", label: "Saved Only" },
+                          ]}
+                        />
+                      )}
+                      {row.key === "specials_updates" && bools.specials_updates && masterOn && (
+                        <ScopeSelector
+                          value={specialsUpdatesScope}
+                          onChange={(v) => setScope("specials", v)}
+                          options={[
+                            { value: "all", label: "All Specials" },
+                            { value: "saved", label: "Saved Only" },
+                          ]}
+                        />
                       )}
                     </div>
                   );
