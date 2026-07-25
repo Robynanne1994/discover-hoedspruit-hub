@@ -410,15 +410,42 @@ const Notifications = () => {
                       })()
                     : undefined;
                   return (
-                    <PrefRow
-                      key={row.key}
-                      title={row.title}
-                      checked={bools[row.key]}
-                      onToggle={() => toggleBool(row.key)}
-                      disabled={!masterOn}
-                      isFirst={i === 0}
-                      filterLink={filterLink}
-                    />
+                    <div key={row.key}>
+                      <PrefRow
+                        title={row.title}
+                        checked={bools[row.key]}
+                        onToggle={() => toggleBool(row.key)}
+                        disabled={!masterOn}
+                        isFirst={i === 0}
+                        filterLink={filterLink}
+                      />
+                      {row.key === "events_updates" && bools.events_updates && masterOn && (
+                        <div style={{ display: "flex", gap: 8, paddingBottom: 16, marginTop: -4 }}>
+                          {(["all", "saved"] as const).map((v) => {
+                            const active = eventsUpdatesScope === v;
+                            return (
+                              <button
+                                key={v}
+                                onClick={() => setScope(v)}
+                                style={{
+                                  padding: "8px 14px",
+                                  borderRadius: 999,
+                                  border: `1px solid ${active ? C.dark : C.line}`,
+                                  background: active ? C.dark : "transparent",
+                                  color: active ? "#fff" : C.ink,
+                                  fontFamily: SANS,
+                                  fontSize: 13,
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {v === "all" ? "All Events" : "Saved Events"}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
