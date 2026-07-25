@@ -288,6 +288,7 @@ export type Database = {
           is_read: boolean
           kind: string
           link: string | null
+          push: boolean
           ref_id: string | null
           ref_table: string | null
           status: string
@@ -301,6 +302,7 @@ export type Database = {
           is_read?: boolean
           kind: string
           link?: string | null
+          push?: boolean
           ref_id?: string | null
           ref_table?: string | null
           status: string
@@ -314,6 +316,7 @@ export type Database = {
           is_read?: boolean
           kind?: string
           link?: string | null
+          push?: boolean
           ref_id?: string | null
           ref_table?: string | null
           status?: string
