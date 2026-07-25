@@ -328,20 +328,23 @@ const Notifications = () => {
   );
 
   const setScope = useCallback(
-    async (scope: "all" | "saved") => {
+    async (which: "events" | "specials", scope: "all" | "saved") => {
       if (!user) return;
-      const prev = eventsUpdatesScope;
-      setEventsUpdatesScope(scope);
+      const col = which === "events" ? "events_updates_scope" : "specials_updates_scope";
+      const prev = which === "events" ? eventsUpdatesScope : specialsUpdatesScope;
+      if (which === "events") setEventsUpdatesScope(scope);
+      else setSpecialsUpdatesScope(scope);
       const { error } = await supabase
         .from("notification_preferences")
-        .update({ events_updates_scope: scope } as any)
+        .update({ [col]: scope } as any)
         .eq("user_id", user.id);
       if (error) {
-        setEventsUpdatesScope(prev);
+        if (which === "events") setEventsUpdatesScope(prev);
+        else setSpecialsUpdatesScope(prev);
         toast.error("Could not save preference");
       }
     },
-    [user, eventsUpdatesScope],
+    [user, eventsUpdatesScope, specialsUpdatesScope],
   );
 
 
