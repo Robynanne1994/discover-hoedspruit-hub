@@ -129,6 +129,7 @@ const SECTIONS: SectionDef[] = [
     label: "Community",
     rows: [
       { key: "community_followers", title: "New Followers" },
+      { key: "community_follow_requests", title: "Follower Requests" },
       { key: "hh_app_updates", title: "App Updates & News" },
     ],
   },
