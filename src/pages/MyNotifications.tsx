@@ -463,6 +463,7 @@ function NotifCard({
   onDelete,
   actor,
   feedbackSubject,
+  imageOverride,
 }: {
   n: Notif;
   isUnread: boolean;
@@ -471,6 +472,7 @@ function NotifCard({
   onDelete?: (id: string) => void;
   actor?: FollowActor;
   feedbackSubject?: string;
+  imageOverride?: string;
 }) {
   const Icon = iconFor(n.kind);
   const [menuOpen, setMenuOpen] = useState(false);
