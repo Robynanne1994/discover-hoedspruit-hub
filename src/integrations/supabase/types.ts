@@ -1601,6 +1601,7 @@ export type Database = {
           events_new_categories: string[] | null
           events_reminders: boolean
           events_updates: boolean
+          events_updates_scope: string
           hh_app_updates: boolean
           hh_tips: boolean
           id: string
@@ -1622,6 +1623,7 @@ export type Database = {
           events_new_categories?: string[] | null
           events_reminders?: boolean
           events_updates?: boolean
+          events_updates_scope?: string
           hh_app_updates?: boolean
           hh_tips?: boolean
           id?: string
@@ -1643,6 +1645,7 @@ export type Database = {
           events_new_categories?: string[] | null
           events_reminders?: boolean
           events_updates?: boolean
+          events_updates_scope?: string
           hh_app_updates?: boolean
           hh_tips?: boolean
           id?: string

@@ -219,6 +219,7 @@ const Notifications = () => {
     listings_updates_categories: null,
     specials_new_categories: null,
   });
+  const [eventsUpdatesScope, setEventsUpdatesScope] = useState<"all" | "saved">("all");
   const [loaded, setLoaded] = useState(false);
   // Live totals per source (real categories / event tags / special tags), used
   // to render the "X of Y" summary under each category-linked toggle.
@@ -256,6 +257,8 @@ const Notifications = () => {
           listings_updates_categories: (data as any).listings_updates_categories ?? null,
           specials_new_categories: (data as any).specials_new_categories ?? null,
         };
+        const scope = ((data as any).events_updates_scope === "saved" ? "saved" : "all") as "all" | "saved";
+        setEventsUpdatesScope(scope);
         // If any category array is explicitly empty, turn off the parent toggle
         const catToBool: Record<CatKey, BoolKey> = {
           events_new_categories: "events_new",
@@ -316,6 +319,23 @@ const Notifications = () => {
       }
     },
     [user, bools, cats],
+  );
+
+  const setScope = useCallback(
+    async (scope: "all" | "saved") => {
+      if (!user) return;
+      const prev = eventsUpdatesScope;
+      setEventsUpdatesScope(scope);
+      const { error } = await supabase
+        .from("notification_preferences")
+        .update({ events_updates_scope: scope } as any)
+        .eq("user_id", user.id);
+      if (error) {
+        setEventsUpdatesScope(prev);
+        toast.error("Could not save preference");
+      }
+    },
+    [user, eventsUpdatesScope],
   );
 
 
@@ -390,15 +410,42 @@ const Notifications = () => {
                       })()
                     : undefined;
                   return (
-                    <PrefRow
-                      key={row.key}
-                      title={row.title}
-                      checked={bools[row.key]}
-                      onToggle={() => toggleBool(row.key)}
-                      disabled={!masterOn}
-                      isFirst={i === 0}
-                      filterLink={filterLink}
-                    />
+                    <div key={row.key}>
+                      <PrefRow
+                        title={row.title}
+                        checked={bools[row.key]}
+                        onToggle={() => toggleBool(row.key)}
+                        disabled={!masterOn}
+                        isFirst={i === 0}
+                        filterLink={filterLink}
+                      />
+                      {row.key === "events_updates" && bools.events_updates && masterOn && (
+                        <div style={{ display: "flex", gap: 8, paddingBottom: 16, marginTop: -4 }}>
+                          {(["all", "saved"] as const).map((v) => {
+                            const active = eventsUpdatesScope === v;
+                            return (
+                              <button
+                                key={v}
+                                onClick={() => setScope(v)}
+                                style={{
+                                  padding: "8px 14px",
+                                  borderRadius: 999,
+                                  border: `1px solid ${active ? C.dark : C.line}`,
+                                  background: active ? C.dark : "transparent",
+                                  color: active ? "#fff" : C.ink,
+                                  fontFamily: SANS,
+                                  fontSize: 13,
+                                  fontWeight: 500,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {v === "all" ? "All Events" : "Saved Events"}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
               </div>
