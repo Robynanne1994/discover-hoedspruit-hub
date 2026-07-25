@@ -38,6 +38,39 @@ export type Database = {
         }
         Relationships: []
       }
+      app_update_broadcasts: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          pushed_count: number
+          recipient_count: number
+          sent_by: string | null
+          title: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          pushed_count?: number
+          recipient_count?: number
+          sent_by?: string | null
+          title: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          pushed_count?: number
+          recipient_count?: number
+          sent_by?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
       articles: {
         Row: {
           author: string | null
