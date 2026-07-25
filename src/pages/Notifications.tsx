@@ -422,7 +422,7 @@ const Notifications = () => {
                   overflow: "hidden",
                 }}
               >
-                {section.rows.map((row, i) => {
+                {section.rows.filter((r) => r.key !== "community_follow_requests" || isPrivate).map((row, i) => {
                   const filterLink = row.filterCol && row.filterType
                     ? (() => {
                         const meta = FILTER_TYPE_META[row.filterType!];
