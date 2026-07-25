@@ -215,6 +215,57 @@ const PrefRow = ({
   );
 };
 
+const ScopeSelector = ({
+  value,
+  onChange,
+  options,
+  disabled,
+}: {
+  value: "all" | "saved";
+  onChange: (v: "all" | "saved") => void;
+  options: { value: "all" | "saved"; label: string }[];
+  disabled?: boolean;
+}) => (
+  <div
+    style={{
+      display: "flex",
+      background: "#F5F0E8",
+      borderRadius: 999,
+      padding: 4,
+      gap: 4,
+      marginBottom: 16,
+      marginTop: -4,
+      opacity: disabled ? 0.55 : 1,
+      pointerEvents: disabled ? "none" : "auto",
+    }}
+  >
+    {options.map((opt) => {
+      const active = value === opt.value;
+      return (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          style={{
+            flex: 1,
+            background: active ? "#FFFFFF" : "transparent",
+            border: "none",
+            borderRadius: 999,
+            padding: "8px 12px",
+            cursor: "pointer",
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 600,
+            color: active ? C.ink : C.muted,
+            transition: "background-color 200ms ease-out, color 200ms ease-out",
+          }}
+        >
+          {opt.label}
+        </button>
+      );
+    })}
+  </div>
+);
+
 const Notifications = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
