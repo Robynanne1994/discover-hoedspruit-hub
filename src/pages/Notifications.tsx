@@ -150,14 +150,12 @@ const PrefRow = ({
   isFirst: boolean;
   filterLink?: { to: string; selected: number; total: number; noun: string };
 }) => {
-  const nounPlural = filterLink
-    ? filterLink.noun.charAt(0).toUpperCase() + filterLink.noun.slice(1)
-    : "";
+  const nounPlural = filterLink ? filterLink.noun.toLowerCase() : "";
   const allSelected = filterLink && filterLink.selected === filterLink.total;
   const linkText = filterLink
     ? allSelected
-      ? `All ${filterLink.total} ${nounPlural} ›`
-      : `${filterLink.selected} of ${filterLink.total} ${nounPlural} ›`
+      ? `All ${filterLink.total} ${nounPlural}`
+      : `${filterLink.selected} of ${filterLink.total} ${nounPlural}`
     : null;
 
   return (
@@ -196,19 +194,30 @@ const PrefRow = ({
         <Link
           to={filterLink.to}
           style={{
-            display: "inline-flex",
+            display: "flex",
             alignItems: "center",
-            gap: 4,
-            marginTop: 8,
-            fontFamily: SANS,
-            fontSize: 13,
-            fontWeight: 500,
-            color: "#F26A48",
+            gap: 10,
+            marginTop: 10,
+            padding: "10px 14px",
+            background: "#F5F0E8",
+            borderRadius: 12,
             textDecoration: "none",
           }}
         >
-          {linkText?.replace(" ›", "")}
-          <span style={{ fontSize: 11 }}>→</span>
+          <Tag size={16} color={C.ink} strokeWidth={1.5} />
+          <span
+            style={{
+              flex: 1,
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 500,
+              color: C.ink,
+              letterSpacing: "-0.1px",
+            }}
+          >
+            {linkText}
+          </span>
+          <ChevronRight size={18} color={C.muted} strokeWidth={1.5} />
         </Link>
       )}
     </div>
