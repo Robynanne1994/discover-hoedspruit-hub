@@ -206,10 +206,12 @@ const NotificationCategories = () => {
             ...baseText,
             marginLeft: "auto",
             fontFamily: SANS,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 14,
-            color: COLORS.muted,
+            fontWeight: 600,
+            fontSize: 13,
+            color: COLORS.ink,
+            alignSelf: "flex-end",
+            lineHeight: 1,
+            paddingBottom: 2,
           }}
         >
           {selected.length} of {total}
