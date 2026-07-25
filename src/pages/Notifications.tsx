@@ -44,7 +44,7 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   specials_ending: true,
   community_followers: true,
   community_follow_requests: true,
-  hh_app_updates: false,
+  hh_app_updates: true,
 };
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";

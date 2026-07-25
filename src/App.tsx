@@ -20,6 +20,7 @@ import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminCategoryOrder from "./pages/admin/AdminCategoryOrder.tsx";
 
 import AdminNotifications from "./pages/admin/AdminNotifications.tsx";
+import AdminAppUpdates from "./pages/admin/AdminAppUpdates.tsx";
 import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminImport from "./pages/admin/AdminImport.tsx";
@@ -190,6 +191,7 @@ const App = () => (
                 
                 <Route path="local-channels" element={<AdminBushTelegraph />} />
                 <Route path="notifications" element={<AdminNotifications />} />
+                <Route path="app-updates" element={<AdminAppUpdates />} />
                 <Route path="import" element={<AdminImport />} />
                 <Route path="moderation" element={<AdminModeration />} />
                 <Route path="users" element={<AdminUsers />} />
