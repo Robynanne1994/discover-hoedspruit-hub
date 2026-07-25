@@ -50,16 +50,17 @@ const AdminAppUpdates = () => {
 
   const send = useMutation({
     mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke("send-app-update", {
-        body: {
-          title: title.trim(),
-          body: body.trim(),
-          link: link.trim(),
-        },
+      const { data, error } = await supabase.rpc("send_app_update", {
+        p_title: title.trim(),
+        p_body: body.trim(),
+        p_link: link.trim(),
       });
       if (error) throw error;
-      if ((data as any)?.error) throw new Error((data as any).error);
-      return data as { recipient_count: number; pushed_count: number };
+      const row = Array.isArray(data) ? data[0] : data;
+      return (row ?? { recipient_count: 0, pushed_count: 0 }) as {
+        recipient_count: number;
+        pushed_count: number;
+      };
     },
     onSuccess: (data) => {
       toast.success(

@@ -2245,6 +2245,14 @@ export type Database = {
         Args: { _exclude_id?: string; _username: string }
         Returns: boolean
       }
+      send_app_update: {
+        Args: { p_body?: string; p_link?: string; p_title: string }
+        Returns: {
+          broadcast_id: string
+          pushed_count: number
+          recipient_count: number
+        }[]
+      }
       search_public_profiles: {
         Args: { _limit?: number; _term: string }
         Returns: {
