@@ -241,7 +241,7 @@ const ContactUs = () => {
             return (
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: color }} />
-                <span style={{ fontFamily: `"Bricolage Grotesque", ${FF}`, fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color }}>{label}</span>
+                <span style={{ fontFamily: `"Bricolage Grotesque", ${FF}`, fontSize: 13, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color }}>{label}</span>
               </div>
             );
           })()}
