@@ -34,11 +34,12 @@ type Notif = {
 
 const iconFor = (kind: string) => {
   const k = (kind || "").toLowerCase();
+  if (k.includes("feedback")) return Send;
   if (k.includes("app_update") || k.includes("announcement") || k.includes("news")) return Megaphone;
   if (k.includes("follow")) return UserPlus;
   if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return Heart;
   if (k.includes("special") || k.includes("deal") || k.includes("offer")) return Tag;
-  if (k.includes("listing") || k.includes("place")) return Store;
+  if (k.includes("listing") || k.includes("place")) return Tag;
   if (k.includes("reminder")) return Clock;
   if (k.includes("event")) return Calendar;
   if (k.includes("tip")) return Sun;
@@ -46,28 +47,15 @@ const iconFor = (kind: string) => {
   return Bell;
 };
 
-const tintFor = (kind: string): { bg: string; fg: string } => {
-  const k = (kind || "").toLowerCase();
-  if (k.includes("app_update") || k.includes("announcement") || k.includes("news")) return { bg: "#E7DEC9", fg: "#423324" };
-  if (k.includes("special") || k.includes("deal") || k.includes("offer")) return { bg: "#E8DCC8", fg: "#423324" };
-  if (k.includes("event") || k.includes("reminder")) return { bg: "#E8E6DF", fg: INK };
-  if (k.includes("security") || k.includes("alert")) return { bg: "#D6EBDB", fg: "#2E7D4F" };
-  if (k.includes("welcome") || k.includes("profile") || k.includes("account")) return { bg: "#E8DCC8", fg: "#8B6F4B" };
-  if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return { bg: "#E8DCC8", fg: "#423324" };
-  return { bg: "#E8E6DF", fg: INK };
-};
-
 const relativeShort = (iso: string): string => {
   const then = new Date(iso).getTime();
   const diffMin = Math.max(0, Math.round((Date.now() - then) / 60000));
-  if (diffMin < 60) return `${Math.max(1, diffMin)}M AGO`;
+  if (diffMin < 60) return `${Math.max(1, diffMin)}m`;
   const h = Math.round(diffMin / 60);
-  if (h < 24) return `${h}H AGO`;
+  if (h < 24) return `${h}h`;
   const d = Math.round(h / 24);
-  if (d < 7) return `${d}D AGO`;
-  const w = Math.round(d / 7);
-  if (w < 5) return `${w}W AGO`;
-  return new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }).toUpperCase();
+  if (d < 7) return `${d}d`;
+  return new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 };
 
 const bucketOf = (iso: string): "today" | "yesterday" | "week" | "month" | "earlier" => {
