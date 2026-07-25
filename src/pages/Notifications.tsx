@@ -321,6 +321,23 @@ const Notifications = () => {
     [user, bools, cats],
   );
 
+  const setScope = useCallback(
+    async (scope: "all" | "saved") => {
+      if (!user) return;
+      const prev = eventsUpdatesScope;
+      setEventsUpdatesScope(scope);
+      const { error } = await supabase
+        .from("notification_preferences")
+        .update({ events_updates_scope: scope } as any)
+        .eq("user_id", user.id);
+      if (error) {
+        setEventsUpdatesScope(prev);
+        toast.error("Could not save preference");
+      }
+    },
+    [user, eventsUpdatesScope],
+  );
+
 
   const masterOn = bools.push_enabled;
 
