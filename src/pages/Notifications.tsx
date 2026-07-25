@@ -230,6 +230,17 @@ const Notifications = () => {
   // Live totals per source (real categories / event tags / special tags), used
   // to render the "X of Y" summary under each category-linked toggle.
   const [optionTotals, setOptionTotals] = useState<Partial<Record<NotificationSource, number>>>({});
+  const [isPrivate, setIsPrivate] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("is_private")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => setIsPrivate(!!(data as any)?.is_private));
+  }, [user]);
 
   useEffect(() => {
     let active = true;
