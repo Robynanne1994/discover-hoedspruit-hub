@@ -331,7 +331,7 @@ const Welcome = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Create Account
+            Create an Account
           </Button>
 
           <Button
@@ -379,7 +379,7 @@ const Welcome = () => {
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8" }}>
       <PageHeader
-        title={mode === "signup" ? "Create Account" : "Welcome Back"}
+        title={mode === "signup" ? "Create an Account" : "Welcome Back"}
         onBack={() => setMode("welcome")}
       />
       <style>{`

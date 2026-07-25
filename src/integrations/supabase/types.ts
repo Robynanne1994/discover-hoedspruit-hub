@@ -1496,6 +1496,103 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_groups: {
+        Row: {
+          created_at: string
+          filter_type: string
+          id: string
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          filter_type: string
+          id?: string
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          filter_type?: string
+          id?: string
+          label?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      notification_item_mappings: {
+        Row: {
+          created_at: string
+          id: string
+          item_id: string
+          source_type: string
+          source_value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          item_id: string
+          source_type: string
+          source_value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          item_id?: string
+          source_type?: string
+          source_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_item_mappings_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "notification_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_items: {
+        Row: {
+          created_at: string
+          group_id: string
+          id: string
+          label: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_id: string
+          id?: string
+          label: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_id?: string
+          id?: string
+          label?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_items_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "notification_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_preferences: {
         Row: {
           community_activity: boolean

@@ -122,7 +122,7 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
               </button>
             </div>
             <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>
-              Create an account
+              Create an Account
             </h2>
             <p style={{ fontFamily: FONT, fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
               {action
