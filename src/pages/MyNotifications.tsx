@@ -467,7 +467,7 @@ function NotifCard({
 }: {
   n: Notif;
   isUnread: boolean;
-  onClick: () => void;
+  onClick?: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
   onDelete?: (id: string) => void;
   actor?: FollowActor;
