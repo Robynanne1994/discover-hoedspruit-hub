@@ -7,6 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, FollowActor } from "@/hooks/useFollowRequestActors";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
+import hhLogo from "@/assets/hh-logo.png";
+
+const isAdminKind = (k: string) => {
+  const s = (k || "").toLowerCase();
+  return s.includes("app_update") || s.includes("announcement") || s.includes("news") || s.includes("broadcast") || s.includes("feedback") || s.includes("moderation") || s.includes("report");
+};
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -181,6 +187,40 @@ export default function MyNotifications() {
     })();
   }, [feedbackRefIds, feedbackSubjects]);
 
+  // Fetch cover images for listing/event/special/resource notifications
+  const [refImages, setRefImages] = useState<Record<string, string>>({});
+  const refKeysToFetch = useMemo(() => {
+    const keys: Record<string, Set<string>> = {};
+    notifs.forEach((n) => {
+      if (!n.ref_table || !n.ref_id) return;
+      if (isAdminKind(n.kind)) return;
+      if (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined") return;
+      const t = n.ref_table;
+      if (t !== "listings" && t !== "events" && t !== "specials" && t !== "bush_telegraph_resources") return;
+      if (!keys[t]) keys[t] = new Set();
+      keys[t].add(n.ref_id);
+    });
+    return keys;
+  }, [notifs]);
+  useEffect(() => {
+    const tables = Object.keys(refKeysToFetch);
+    if (tables.length === 0) return;
+    (async () => {
+      const updates: Record<string, string> = {};
+      for (const t of tables) {
+        const ids = Array.from(refKeysToFetch[t]).filter((id) => !(`${t}:${id}` in refImages));
+        if (ids.length === 0) continue;
+        const { data } = await supabase.from(t as any).select("id,image_url,saved_image_url").in("id", ids);
+        (data as any[] | null)?.forEach((r) => {
+          const url = r.saved_image_url || r.image_url;
+          if (url) updates[`${t}:${r.id}`] = url;
+        });
+      }
+      if (Object.keys(updates).length > 0) setRefImages((prev) => ({ ...prev, ...updates }));
+    })();
+  }, [refKeysToFetch]);
+
+
   const markAllRead = useCallback(async () => {
     if (!user) return;
     const unread = notifs.filter((n) => !n.is_read).map((n) => n.id);
@@ -347,6 +387,13 @@ export default function MyNotifications() {
                     onDelete={deleteNotif}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
                     feedbackSubject={n.kind === "feedback_reply" && n.ref_id ? feedbackSubjects[n.ref_id] : undefined}
+                    imageOverride={
+                      isAdminKind(n.kind)
+                        ? hhLogo
+                        : n.ref_table && n.ref_id
+                        ? refImages[`${n.ref_table}:${n.ref_id}`]
+                        : undefined
+                    }
                   />
                 ))}
               </div>
@@ -416,6 +463,7 @@ function NotifCard({
   onDelete,
   actor,
   feedbackSubject,
+  imageOverride,
 }: {
   n: Notif;
   isUnread: boolean;
@@ -424,6 +472,7 @@ function NotifCard({
   onDelete?: (id: string) => void;
   actor?: FollowActor;
   feedbackSubject?: string;
+  imageOverride?: string;
 }) {
   const Icon = iconFor(n.kind);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -435,8 +484,8 @@ function NotifCard({
     return () => window.removeEventListener("click", close);
   }, [menuOpen]);
 
-  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted";
-  const avatarUrl = isUserRelated ? actor?.avatar_url : null;
+  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined";
+  const avatarUrl = imageOverride || (isUserRelated ? actor?.avatar_url : null);
 
   return (
     <div
