@@ -22,8 +22,6 @@ type BoolKey =
   | "specials_new"
   | "specials_ending"
   | "community_followers"
-  | "community_activity"
-  | "hh_tips"
   | "hh_app_updates";
 
 type CatKey =
@@ -42,8 +40,6 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   specials_new: true,
   specials_ending: true,
   community_followers: true,
-  community_activity: false,
-  hh_tips: true,
   hh_app_updates: false,
 };
 
@@ -128,12 +124,6 @@ const SECTIONS: SectionDef[] = [
     label: "Community",
     rows: [
       { key: "community_followers", title: "New Followers" },
-      { key: "community_activity", title: "Activity From People You Follow" },
-    ],
-  },
-  {
-    label: "From Hello Hoedspruit",
-    rows: [
       { key: "hh_app_updates", title: "App Updates & News" },
     ],
   },
