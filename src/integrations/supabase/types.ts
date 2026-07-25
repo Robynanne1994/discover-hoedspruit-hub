@@ -1596,6 +1596,7 @@ export type Database = {
       notification_preferences: {
         Row: {
           community_activity: boolean
+          community_follow_requests: boolean
           community_followers: boolean
           events_new: boolean
           events_new_categories: string[] | null
@@ -1620,6 +1621,7 @@ export type Database = {
         }
         Insert: {
           community_activity?: boolean
+          community_follow_requests?: boolean
           community_followers?: boolean
           events_new?: boolean
           events_new_categories?: string[] | null
@@ -1644,6 +1646,7 @@ export type Database = {
         }
         Update: {
           community_activity?: boolean
+          community_follow_requests?: boolean
           community_followers?: boolean
           events_new?: boolean
           events_new_categories?: string[] | null
