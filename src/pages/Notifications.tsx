@@ -420,26 +420,31 @@ const Notifications = () => {
                         filterLink={filterLink}
                       />
                       {row.key === "events_updates" && bools.events_updates && masterOn && (
-                        <div style={{ display: "flex", gap: 8, paddingBottom: 16, marginTop: -4 }}>
+                        <div style={{ display: "flex", gap: 16, paddingBottom: 16, marginTop: -4 }}>
                           {(["all", "saved"] as const).map((v) => {
                             const active = eventsUpdatesScope === v;
+                            const label = v === "all" ? "All Events" : "Saved Events";
                             return (
                               <button
                                 key={v}
                                 onClick={() => setScope(v)}
                                 style={{
-                                  padding: "8px 14px",
-                                  borderRadius: 999,
-                                  border: `1px solid ${active ? C.dark : C.line}`,
-                                  background: active ? C.dark : "transparent",
-                                  color: active ? "#fff" : C.ink,
+                                  background: "none",
+                                  border: "none",
+                                  padding: 0,
+                                  cursor: "pointer",
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 4,
                                   fontFamily: SANS,
                                   fontSize: 13,
                                   fontWeight: 500,
-                                  cursor: "pointer",
+                                  color: active ? "#F26A48" : C.muted,
+                                  textDecoration: "none",
                                 }}
                               >
-                                {v === "all" ? "All Events" : "Saved Events"}
+                                {label}
+                                {active && <span style={{ fontSize: 11 }}>→</span>}
                               </button>
                             );
                           })}
