@@ -55,6 +55,7 @@ import AccountInfo from "./pages/AccountInfo.tsx";
 import AccountPrivacy from "./pages/AccountPrivacy.tsx";
 import AccountBlocked from "./pages/AccountBlocked.tsx";
 import AccountReported from "./pages/AccountReported.tsx";
+import AccountNotices from "./pages/AccountNotices.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 
 import TermsOfUse from "./pages/TermsOfUse.tsx";
@@ -156,6 +157,7 @@ const App = () => (
               <Route path="/account-settings/privacy" element={<AccountPrivacy />} />
               <Route path="/account-settings/blocked" element={<AccountBlocked />} />
               <Route path="/account-settings/reported" element={<AccountReported />} />
+              <Route path="/account-notices" element={<AccountNotices />} />
               <Route path="/terms" element={<TermsPolicies />} />
               
               <Route path="/terms-of-use" element={<TermsOfUse />} />
