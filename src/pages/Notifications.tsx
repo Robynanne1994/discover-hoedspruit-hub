@@ -23,6 +23,7 @@ type BoolKey =
   | "specials_updates"
   | "specials_ending"
   | "community_followers"
+  | "community_follow_requests"
   | "hh_app_updates";
 
 type CatKey =
@@ -42,6 +43,7 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   specials_updates: false,
   specials_ending: true,
   community_followers: true,
+  community_follow_requests: true,
   hh_app_updates: false,
 };
 
@@ -127,6 +129,7 @@ const SECTIONS: SectionDef[] = [
     label: "Community",
     rows: [
       { key: "community_followers", title: "New Followers" },
+      { key: "community_follow_requests", title: "Follower Requests" },
       { key: "hh_app_updates", title: "App Updates & News" },
     ],
   },
@@ -228,6 +231,17 @@ const Notifications = () => {
   // Live totals per source (real categories / event tags / special tags), used
   // to render the "X of Y" summary under each category-linked toggle.
   const [optionTotals, setOptionTotals] = useState<Partial<Record<NotificationSource, number>>>({});
+  const [isPrivate, setIsPrivate] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from("profiles")
+      .select("is_private")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => setIsPrivate(!!(data as any)?.is_private));
+  }, [user]);
 
   useEffect(() => {
     let active = true;
@@ -408,7 +422,7 @@ const Notifications = () => {
                   overflow: "hidden",
                 }}
               >
-                {section.rows.map((row, i) => {
+                {section.rows.filter((r) => r.key !== "community_follow_requests" || isPrivate).map((row, i) => {
                   const filterLink = row.filterCol && row.filterType
                     ? (() => {
                         const meta = FILTER_TYPE_META[row.filterType!];
