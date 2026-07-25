@@ -23,6 +23,7 @@ type BoolKey =
   | "specials_updates"
   | "specials_ending"
   | "community_followers"
+  | "community_follow_requests"
   | "hh_app_updates";
 
 type CatKey =
