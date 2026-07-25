@@ -152,7 +152,6 @@ const NotificationCategories = () => {
         .update(payload as any)
         .eq("user_id", user.id);
       if (error) toast.error("Could not save");
-      else toast("Saved.", { duration: 1500 });
     },
     [user, meta, type],
   );
