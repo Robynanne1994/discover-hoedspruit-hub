@@ -234,6 +234,14 @@ export default function MyNotifications() {
     }
   }, []);
 
+  const deleteNotif = useCallback(async (id: string) => {
+    initialUnreadRef.current?.delete(id);
+    setNotifs((prev) => prev.filter((n) => n.id !== id));
+    await supabase.from("business_notifications").delete().eq("id", id);
+  }, []);
+
+
+
 
   const isEmpty = loaded && notifs.length === 0;
   const hasUnread = unreadCount > 0;
