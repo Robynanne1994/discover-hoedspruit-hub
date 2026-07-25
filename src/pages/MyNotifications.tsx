@@ -7,6 +7,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, FollowActor } from "@/hooks/useFollowRequestActors";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
+import hhLogo from "@/assets/hh-logo.png";
+
+const isAdminKind = (k: string) => {
+  const s = (k || "").toLowerCase();
+  return s.includes("app_update") || s.includes("announcement") || s.includes("news") || s.includes("broadcast") || s.includes("feedback") || s.includes("moderation") || s.includes("report");
+};
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
