@@ -481,15 +481,13 @@ const MyAccount = () => {
   const LINE = "#E2DAC6";
 
   const accountItems = [
-    { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
-    { label: "Account Privacy", href: "/account-settings/privacy", icon: Shield },
-    { label: "Account Notices", href: "/account-notices", icon: Bell },
-    { label: "Notification Preferences", href: "/notification-preferences", icon: Bell },
+    { label: "Info", href: "/account-settings/info", icon: UserCircle },
+    { label: "Privacy", href: "/account-settings/privacy", icon: Shield },
+    { label: "Notifications", href: "/notification-preferences", icon: Bell },
   ];
   const helpInfoItems = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
-    { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
 
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
@@ -602,13 +600,13 @@ const MyAccount = () => {
       }}
     >
       <Seo
-        title="My Account — Hello Hoedspruit"
+        title="Settings — Hello Hoedspruit"
         description="Manage your Hello Hoedspruit account, saved places, collections and preferences."
         path="/my-account"
         noIndex
       />
       {/* Top bar */}
-      <PageHeader title="Account" onBack={() => navigate(user ? "/my-profile" : "/")} />
+      <PageHeader title="Settings" onBack={() => navigate(user ? "/my-profile" : "/")} />
 
 
 
@@ -622,7 +620,7 @@ const MyAccount = () => {
         </>
       )}
 
-      <Eyebrow>Help & Info</Eyebrow>
+      <Eyebrow>Support</Eyebrow>
       <Card items={helpInfoItems} />
 
       {isAdmin && (

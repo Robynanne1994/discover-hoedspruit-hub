@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { HelpCircle, Info, FileText, Mail, ArrowUpRight } from "lucide-react";
+import { HelpCircle, FileText, Mail, MessageSquare, ArrowUpRight } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 
@@ -14,6 +14,7 @@ const ROWS = [
   { label: "FAQs", href: "/faqs", icon: HelpCircle },
   { label: "Terms & Policies", href: "/terms", icon: FileText },
   { label: "Contact Us", href: "/contact", icon: Mail },
+  { label: "Feedback", href: "/feedback", icon: MessageSquare },
 ];
 
 const Row = ({
