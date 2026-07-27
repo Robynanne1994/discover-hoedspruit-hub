@@ -588,7 +588,7 @@ const Categories = () => {
                     <p
                       style={{
                         fontFamily: FONT_BODY,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: 700,
                         lineHeight: 1.2,
                         color: COLORS.ink,
