@@ -668,21 +668,26 @@ const Events = () => {
                 ref={active ? activePillRef : undefined}
                 onClick={() => handleFilterPill(f.value)}
                 style={{
-                  background: active ? "#423324" : "#FFFFFF",
-                  border: `1px solid ${active ? "#423324" : "#E2DAC6"}`,
+                  background: active ? "#423324" : "transparent",
+                  border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.10)"}`,
                   borderRadius: 999,
-                  padding: "8px 18px",
+                  padding: "6px 14px",
                   cursor: "pointer",
                   fontFamily: SANS,
                   fontSize: 13,
-                  fontWeight: 700,
-                  letterSpacing: "0.01em",
-                  color: active ? "#FFFFFF" : C.ink,
+                  fontWeight: active ? 600 : 400,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1,
+                  color: active ? "#FFFFFF" : "#1A1A1A",
                   whiteSpace: "nowrap",
                   flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
                 }}
               >
-                {f.label} <span style={{ opacity: 1 }}>({count})</span>
+                {f.label} ({count})
+
               </button>
             );
           })}
