@@ -344,18 +344,19 @@ const Feedback = () => {
         </div>
 
         {/* Subject */}
-        <div>
+        <div style={{ opacity: type ? 1 : 0.5 }}>
           <label style={labelStyle}>Subject</label>
           <input
             className="fb-input"
             type="text"
-            placeholder="Briefly summarise your feedback"
+            disabled={!type}
+            placeholder={type ? "Briefly summarise your feedback" : "Choose what this is about first"}
             value={subject}
             onChange={(e) => {
               setSubject(e.target.value);
               if (errors.subject) setErrors((p) => ({ ...p, subject: undefined }));
             }}
-            style={inputBase}
+            style={{ ...inputBase, cursor: type ? "text" : "not-allowed" }}
           />
           {errors.subject && (
             <p style={{ fontSize: 12, color: "#B0432B", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
@@ -365,11 +366,12 @@ const Feedback = () => {
         </div>
 
         {/* Message */}
-        <div>
+        <div style={{ opacity: type ? 1 : 0.5 }}>
           <label style={labelStyle}>Message</label>
           <textarea
             className="fb-input"
-            placeholder="Tell us more..."
+            disabled={!type}
+            placeholder={type ? "Tell us more..." : "Choose what this is about first"}
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
@@ -381,6 +383,7 @@ const Feedback = () => {
               height: "auto", minHeight: 160,
               padding: "18px 22px",
               resize: "none", lineHeight: 1.5,
+              cursor: type ? "text" : "not-allowed",
             }}
           />
           {errors.message && (
@@ -389,6 +392,7 @@ const Feedback = () => {
             </p>
           )}
         </div>
+
 
         {/* Photo attachment (optional) */}
         <div>
