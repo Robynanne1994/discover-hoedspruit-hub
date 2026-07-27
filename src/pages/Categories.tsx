@@ -504,14 +504,14 @@ const Categories = () => {
               type="button"
               onClick={() => setSortMode(mode)}
               style={{
-                height: 40,
-                padding: "0 20px",
+                height: 32,
+                padding: "0 14px",
                 borderRadius: 999,
                 background: active ? COLORS.dark : COLORS.card,
                 color: active ? "#FFFFFF" : COLORS.ink,
                 border: active ? "none" : `1px solid ${COLORS.chipBorder}`,
                 fontFamily: FONT_BODY,
-                fontSize: 14,
+                fontSize: 12,
                 fontWeight: 700,
                 cursor: "pointer",
                 transition: "background 150ms ease, color 150ms ease",
