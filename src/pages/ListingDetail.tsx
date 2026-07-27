@@ -582,7 +582,7 @@ const ListingDetail = () => {
       const kmLabel = Number.isFinite(kmNum)
         ? (Math.round(kmNum * 100) / 100).toString()
         : String(l.km_from_town);
-      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}km from Town`, on: true }] });
+      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}Km from Town`, on: true }] });
     }
 
 
