@@ -595,6 +595,7 @@ const EventsResults = ({ query }: { query: string }) => {
           initials={initialsOf((e as any).title_override || e.title)}
         />
       ))}
+      {!term && <DiscoverMore to="/events" label="Discover More" />}
     </>
   );
 };
