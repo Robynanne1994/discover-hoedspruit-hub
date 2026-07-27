@@ -428,7 +428,7 @@ const MyProfile = () => {
                       style={{
                         fontFamily: SANS,
                         fontWeight: 300,
-                        fontSize: 14,
+                        fontSize: 13,
                         color: "rgba(26,26,26,0.6)",
                         marginTop: 3,
                       }}
