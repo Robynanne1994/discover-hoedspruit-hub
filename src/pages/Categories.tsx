@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowUpLeft, ArrowLeft, LayoutGrid, List } from "lucide-react";
+import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -654,7 +654,7 @@ const Categories = () => {
                       {count} {count === 1 ? "listing" : "listings"}
                     </p>
                   </div>
-                  <ArrowUpLeft size={20} color="#715A3D" strokeWidth={1.8} style={{ flexShrink: 0 }} />
+                  <ArrowUpRight size={20} color="#715A3D" strokeWidth={1.8} style={{ flexShrink: 0 }} />
                 </div>
               </Link>
             );
