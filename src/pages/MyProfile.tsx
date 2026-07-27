@@ -376,12 +376,12 @@ const MyProfile = () => {
 
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>
-        <section style={{ background: CARD, borderRadius: 24, padding: "18px 18px 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <section style={{ background: CARD, borderRadius: 18, padding: "16px 16px 14px" }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
             <div
               style={{
-                width: 72,
-                height: 72,
+                width: 64,
+                height: 64,
                 borderRadius: "50%",
                 overflow: "hidden",
                 flexShrink: 0,
@@ -399,13 +399,13 @@ const MyProfile = () => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <span style={{ fontFamily: SANS, fontWeight: 500, fontSize: 24, color: INK }}>
+                <span style={{ fontFamily: SANS, fontWeight: 500, fontSize: 22, color: INK }}>
                   {getInitial(profile?.display_name || profile?.username)}
                 </span>
               )}
             </div>
 
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
               {isLoading ? (
                 <Skeleton className="h-7 w-40" />
               ) : (
@@ -414,9 +414,9 @@ const MyProfile = () => {
                     style={{
                       fontFamily: HEAD,
                       fontWeight: 700,
-                      fontSize: 22,
-                      lineHeight: 1.15,
-                      letterSpacing: "-0.5px",
+                      fontSize: 16,
+                      lineHeight: 1.2,
+                      letterSpacing: "-0.3px",
                       color: INK,
                       margin: 0,
                     }}
@@ -427,10 +427,10 @@ const MyProfile = () => {
                     <div
                       style={{
                         fontFamily: SANS,
-                        fontWeight: 400,
-                        fontSize: 15,
-                        color: "rgba(26,26,26,0.5)",
-                        marginTop: 4,
+                        fontWeight: 300,
+                        fontSize: 14,
+                        color: "rgba(26,26,26,0.6)",
+                        marginTop: 3,
                       }}
                     >
                       @{profile.username.toLowerCase()}
@@ -445,22 +445,23 @@ const MyProfile = () => {
               aria-label="Edit profile"
               style={{
                 flexShrink: 0,
-                height: 38,
-                padding: "0 16px",
+                height: 32,
+                padding: "0 14px",
                 borderRadius: 999,
-                background: CARD,
+                background: "#F2EFE5",
                 color: INK,
-                border: "1.5px solid rgba(26,26,26,0.14)",
+                border: "1px solid #E8E4DF",
                 fontFamily: SANS,
-                fontWeight: 700,
-                fontSize: 14,
+                fontWeight: 600,
+                fontSize: 13,
+                letterSpacing: "0.02em",
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 7,
+                gap: 6,
               }}
             >
-              <Pencil size={14} strokeWidth={2} color={INK} />
+              <Pencil size={12} strokeWidth={2} color={INK} />
               Edit
             </button>
           </div>
@@ -468,33 +469,32 @@ const MyProfile = () => {
           {/* Stats inner card */}
           <div
             style={{
-              marginTop: 16,
+              marginTop: 14,
               background: "#F2EFE5",
-              borderRadius: 18,
-              padding: 4,
+              borderRadius: 14,
+              padding: "12px 6px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
-              alignItems: "stretch",
             }}
           >
             {[
-              { key: "followers", label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#", clickable: true, highlight: false },
-              { key: "following", label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#", clickable: true, highlight: false },
-              { key: "saved", label: "SAVED", value: savedCount ?? 0, to: "#", clickable: false, highlight: true },
+              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#", clickable: true },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#", clickable: true },
+              { label: "SAVED", value: savedCount ?? 0, to: "#", clickable: false },
             ].map((s, i) => {
               const inner = (
                 <>
-                  <span style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 24, color: INK, lineHeight: 1 }}>
+                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
                     {fmtCount(s.value)}
                   </span>
                   <span
                     style={{
                       fontFamily: SANS,
-                      fontSize: 11,
-                      fontWeight: 700,
-                      letterSpacing: "0.14em",
-                      color: "rgba(26,26,26,0.55)",
-                      marginTop: 8,
+                      fontSize: 10.5,
+                      fontWeight: 600,
+                      letterSpacing: "0.12em",
+                      color: "rgba(26,26,26,0.75)",
+                      marginTop: 6,
                     }}
                   >
                     {s.label}
@@ -505,22 +505,17 @@ const MyProfile = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
                 textDecoration: "none",
-                padding: "14px 4px",
-                borderRadius: 14,
-                background: s.highlight ? "#E9E2D3" : "transparent",
-                borderLeft: i === 0 || s.highlight ? "none" : "1px solid rgba(26,26,26,0.12)",
+                borderLeft: i === 0 ? "none" : `1px solid ${INK}`,
               };
               return s.clickable ? (
-                <Link key={s.key} to={s.to} style={sharedStyle}>{inner}</Link>
+                <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
               ) : (
-                <div key={s.key} style={sharedStyle}>{inner}</div>
+                <div key={s.label} style={sharedStyle}>{inner}</div>
               );
             })}
           </div>
         </section>
-
       </div>
 
       {/* Top tabs */}
