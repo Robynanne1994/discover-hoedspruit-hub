@@ -645,7 +645,7 @@ const Categories = () => {
                     />
                   )}
                 </div>
-                <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 14, padding: "14px 14px 14px 0" }}>
+                <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 14, padding: 14 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontFamily: FONT_BODY, fontSize: 17, fontWeight: 700, lineHeight: 1.2, color: COLORS.ink, margin: 0 }}>
                       {cat.title}
