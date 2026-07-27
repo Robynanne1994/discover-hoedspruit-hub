@@ -573,8 +573,8 @@ const ListingDetail = () => {
 
     // Capacity: sleeps & rooms
     const capacity: { label: string; on: boolean }[] = [];
-    if (l.sleeps) capacity.push({ label: `Sleeps ${l.sleeps} ${Number(l.sleeps) === 1 ? "person" : "people"}`, on: true });
-    if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "room" : "rooms"}`, on: true });
+    if (l.sleeps) capacity.push({ label: `Sleeps ${l.sleeps} ${Number(l.sleeps) === 1 ? "Person" : "People"}`, on: true });
+    if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "Room" : "Rooms"}`, on: true });
     if (capacity.length) sections.push({ key: "accom-capacity", title: "Capacity", iconComp: Users, fields: capacity });
 
     if (l.km_from_town) {
