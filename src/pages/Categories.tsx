@@ -23,7 +23,6 @@ const COLORS = {
 
 const Categories = () => {
   const [search, setSearch] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
