@@ -376,12 +376,17 @@ const Welcome = () => {
     );
   }
 
+  const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+  const fieldStyle: React.CSSProperties = {
+    background: "#ffffff",
+    color: "#1A1A1A",
+    borderColor: "rgba(26,26,26,0.10)",
+  };
+
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8" }}>
-      <PageHeader
-        title={mode === "signup" ? "Create an Account" : "Welcome Back"}
-        onBack={() => setMode("welcome")}
-      />
+    <div className="min-h-screen flex flex-col" style={{ background: "#E6E0CC", fontFamily: FF }}>
       <style>{`
         .residency-select [data-radix-select-trigger-icon] > svg {
           opacity: 1 !important;
@@ -389,9 +394,45 @@ const Welcome = () => {
         }
       `}</style>
 
-      <div className={`flex-1 px-6 pb-12 flex flex-col ${mode === "signup" ? "pt-4" : "pt-6"}`}>
+      <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
+        {/* Circular back button */}
+        <button
+          type="button"
+          onClick={() => setMode("welcome")}
+          aria-label="Back"
+          style={{
+            width: 44, height: 44, borderRadius: 9999, background: "#FFFFFF",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: "none", cursor: "pointer", marginBottom: 22,
+          }}
+        >
+          <ArrowLeft size={20} color="#1A1A1A" strokeWidth={1.75} />
+        </button>
+
+        <p
+          style={{
+            fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.14em",
+            textTransform: "uppercase", color: "#715A3D", margin: "0 0 6px",
+          }}
+        >
+          Your Lowveld Local
+        </p>
+        <h1
+          style={{
+            fontFamily: HEAD, fontSize: 38, fontWeight: 700, letterSpacing: "-0.02em",
+            color: "#1A1A1A", lineHeight: 1.05, margin: "0 0 10px",
+          }}
+        >
+          {mode === "signup" ? "Create account" : "Welcome back"}
+        </h1>
+        <p style={{ fontFamily: FF, fontSize: 15, lineHeight: 1.45, color: "#2B2420", margin: "0 0 26px" }}>
+          {mode === "signup"
+            ? "Join Hello Hoedspruit to save the places, events and specials you love."
+            : "Sign in to pick up your saved places, events and specials."}
+        </p>
+
         <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className={mode === "signup" ? "space-y-5" : "space-y-4"}>
+          <div className="space-y-4">
 
           {mode === "signup" && (
             <>
@@ -407,7 +448,7 @@ const Welcome = () => {
                   required
                   placeholder="Your first name"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={{ background: "#ffffff", color: "#1A1A1A" }}
+                  style={fieldStyle}
                 />
               </div>
               <div>
@@ -422,7 +463,7 @@ const Welcome = () => {
                   required
                   placeholder="Your surname"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={{ background: "#ffffff", color: "#1A1A1A" }}
+                  style={fieldStyle}
                 />
               </div>
               <div>
@@ -437,7 +478,7 @@ const Welcome = () => {
                   required
                   placeholder="Choose a unique username"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={{ background: "#ffffff", color: "#1A1A1A" }}
+                  style={fieldStyle}
                 />
               </div>
               <div>
@@ -471,7 +512,7 @@ const Welcome = () => {
                 background: "#fdecec",
                 border: "1px solid #e5484d",
                 color: "#b42318",
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontFamily: FF,
               }}
             >
               <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
@@ -491,8 +532,7 @@ const Welcome = () => {
               placeholder="you@example.com"
               className="h-12 rounded-xl bg-card border-border text-[15px]"
               style={{
-                background: "#ffffff",
-                color: "#1A1A1A",
+                ...fieldStyle,
                 ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
               }}
             />
@@ -509,11 +549,10 @@ const Welcome = () => {
                 onChange={(e) => { setPassword(e.target.value); if (authError) setAuthError(null); }}
                 required
                 minLength={8}
-                placeholder="Min 8 chars, with a number & symbol"
+                placeholder={mode === "signup" ? "Min 8 chars, with a number & symbol" : "Enter your password"}
                 className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
                 style={{
-                  background: "#ffffff",
-                  color: "#1A1A1A",
+                  ...fieldStyle,
                   ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
                 }}
               />
@@ -526,27 +565,47 @@ const Welcome = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            {mode === "signin" && (
-              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
-                <button
-                  type="button"
-                  onClick={() => setMode("forgot")}
+          </div>
+          </div>
+
+          {mode === "signin" && (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16 }}>
+              <button
+                type="button"
+                onClick={() => setKeepSignedIn((v) => !v)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  background: "none", border: "none", padding: 0, cursor: "pointer",
+                }}
+                aria-pressed={keepSignedIn}
+              >
+                <span
                   style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    color: "#715a3d",
-                    fontSize: 13,
-                    fontWeight: 500,
+                    width: 22, height: 22, borderRadius: 6,
+                    background: keepSignedIn ? "#423324" : "transparent",
+                    border: keepSignedIn ? "none" : "1.5px solid rgba(26,26,26,0.30)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0,
                   }}
                 >
-                  Forgot Password?
-                </button>
-              </div>
-            )}
-          </div>
-          </div>
+                  {keepSignedIn && <Check size={14} color="#FFFFFF" strokeWidth={3} />}
+                </span>
+                <span style={{ fontFamily: FF, fontSize: 14, color: "#2B2420" }}>Keep me signed in</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                style={{
+                  fontFamily: FF, color: "#715a3d", fontSize: 14, fontWeight: 500,
+                  textDecoration: "underline", textUnderlineOffset: 3,
+                }}
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
 
           <Button
-
             type="submit"
             className="w-full h-12 font-medium rounded-full mt-6"
             style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
@@ -560,13 +619,52 @@ const Welcome = () => {
           </Button>
         </form>
 
+        {/* OR divider */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "22px 0 16px" }}>
+          <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
+          <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: "#6B6A5E" }}>OR</span>
+          <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
+        </div>
 
-        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <button
+            type="button"
+            onClick={() => handleOAuth("google")}
+            disabled={oauthLoading !== null}
+            style={{
+              height: 48, borderRadius: 9999, background: "transparent",
+              border: "1.5px solid rgba(26,26,26,0.18)", color: "#1A1A1A",
+              fontFamily: FF, fontSize: 16, fontWeight: 500,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+              cursor: "pointer", opacity: oauthLoading ? 0.6 : 1,
+            }}
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
+          <button
+            type="button"
+            onClick={() => handleOAuth("apple")}
+            disabled={oauthLoading !== null}
+            style={{
+              height: 48, borderRadius: 9999, background: "transparent",
+              border: "1.5px solid rgba(26,26,26,0.18)", color: "#1A1A1A",
+              fontFamily: FF, fontSize: 16, fontWeight: 500,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+              cursor: "pointer", opacity: oauthLoading ? 0.6 : 1,
+            }}
+          >
+            <AppleIcon />
+            Continue with Apple
+          </button>
+        </div>
+
+        <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account yet?"}{" "}
           <button
             onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
             className="font-medium"
-            style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#715a3d" }}
+            style={{ fontFamily: FF, color: "#715a3d" }}
           >
             {mode === "signup" ? "Log in" : "Sign Up"}
           </button>
@@ -575,5 +673,6 @@ const Welcome = () => {
     </div>
   );
 };
+
 
 export default Welcome;
