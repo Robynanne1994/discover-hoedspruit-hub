@@ -466,11 +466,6 @@ const Welcome = () => {
         >
           {mode === "signup" ? "Create account" : "Welcome back"}
         </h1>
-        <p style={{ fontFamily: FF, fontSize: 15, lineHeight: 1.45, color: "#2B2420", margin: "0 0 26px" }}>
-          {mode === "signup"
-            ? "Join Hello Hoedspruit to save the places, events and specials you love."
-            : "Sign in to pick up your saved places, events and specials."}
-        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="space-y-4">
