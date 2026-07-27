@@ -238,7 +238,7 @@ const Feedback = () => {
 
       {/* Tabs */}
       {(
-        <div style={{ padding: "14px 20px 6px", display: "flex", gap: 12 }}>
+        <div style={{ padding: "10px 20px 6px", display: "flex", gap: 10 }}>
           {([
             { key: "submit", label: "Send Feedback" },
             { key: "replies", label: hasReplies ? `My Replies  (${replies.length})` : "My Replies" },
@@ -257,13 +257,13 @@ const Feedback = () => {
                 style={{
                   position: "relative",
                   flex: 1,
-                  height: 52,
+                  height: 40,
                   borderRadius: 999,
                   border: active ? "none" : "1px solid rgba(26,26,26,0.08)",
                   background: active ? SUBMIT_BG : CARD,
                   color: active ? "#fff" : INK,
                   fontFamily: FF,
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: 700,
                   letterSpacing: "-0.1px",
                   boxShadow: active ? "none" : "0 1px 4px rgba(0,0,0,0.04)",
@@ -277,10 +277,10 @@ const Feedback = () => {
                     aria-label="Unread reply"
                     style={{
                       position: "absolute",
-                      top: -3,
-                      right: -3,
-                      width: 12,
-                      height: 12,
+                      top: -2,
+                      right: -2,
+                      width: 10,
+                      height: 10,
                       borderRadius: 999,
                       background: RED,
                       border: `2px solid ${BG}`,
