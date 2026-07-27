@@ -256,6 +256,37 @@ const FAQs = () => {
         ))}
       </div>
 
+      {/* Contact CTA */}
+      <div
+        style={{
+          marginTop: 36,
+          padding: "0 20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontFamily: FF,
+            fontSize: 15,
+            fontWeight: 400,
+            lineHeight: 1.45,
+            color: BODY,
+            textAlign: "center",
+          }}
+        >
+          Still stuck? Please reach out to us for help!
+        </p>
+        <PrimaryButton
+          label="Contact Us"
+          onClick={() => navigate("/contact-us")}
+          style={{ width: "100%", maxWidth: 320 }}
+        />
+      </div>
+
       <BottomNav />
     </div>
   );
