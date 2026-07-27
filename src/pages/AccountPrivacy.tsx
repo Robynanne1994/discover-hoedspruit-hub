@@ -233,6 +233,7 @@ const AccountPrivacy = () => {
           <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
             <NavRow label="Blocked" onClick={() => navigate("/account-settings/blocked")} isFirst />
             <NavRow label="Reported" onClick={() => navigate("/account-settings/reported")} />
+            <NavRow label="Account Notices" onClick={() => navigate("/account-notices")} />
           </div>
         </div>
       </div>

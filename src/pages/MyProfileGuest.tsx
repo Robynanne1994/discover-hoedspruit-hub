@@ -2,9 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   Users,
   HelpCircle,
-  Info,
-  FileText,
-  Mail,
   ArrowUpRight,
 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
@@ -18,14 +15,10 @@ const INK = "#1A1A1A";
 const MUTED_INK = "#6B6A5E";
 const LINE = "#E2DAC6";
 
-const moreItems = [
+// Support is the constant block shared with the signed-in Settings hub.
+const supportItems = [
   { label: "Local Channels", href: "/local-channels", icon: Users },
-];
-
-const helpItems = [
-  { label: "FAQs", href: "/faqs", icon: HelpCircle },
-  { label: "Terms & Policies", href: "/terms", icon: FileText },
-  { label: "Contact", href: "/contact", icon: Mail },
+  { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
 ];
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
@@ -117,28 +110,34 @@ const MyProfileGuest = () => {
       }}
     >
       <Seo
-        title="Help & Info — Hello Hoedspruit"
-        description="Local channels, FAQs, about, terms and policies and contact for Hello Hoedspruit."
+        title="Profile — Hello Hoedspruit"
+        description="Sign in to save places, follow local channels and keep up with what's on around Hoedspruit."
         path="/my-profile-guest"
         noIndex
       />
 
-      <PageHeader title="Help & Info" onBack={() => navigate("/")} />
+      <PageHeader title="Profile" onBack={() => navigate("/")} />
 
       <div style={{ height: 24 }} />
 
-      <Eyebrow>More</Eyebrow>
-      <Card items={moreItems} />
-
-      <div style={{ height: 28 }} />
-
-      <Eyebrow>Help</Eyebrow>
-      <Card items={helpItems} />
-
-      <div style={{ height: 36 }} />
-
-      <Eyebrow>Account</Eyebrow>
-      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 10 }}>
+      {/* Sign-in card — the hero of the guest screen */}
+      <div style={{ margin: "0 24px", background: CARD, borderRadius: 20, padding: 24 }}>
+        <h2
+          style={{
+            fontFamily: '"Bricolage Grotesque", ' + SANS,
+            fontWeight: 400,
+            fontSize: 24,
+            lineHeight: 1.1,
+            letterSpacing: "-0.01em",
+            color: INK,
+            margin: "0 0 8px",
+          }}
+        >
+          Join Hello Hoedspruit
+        </h2>
+        <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.5, color: MUTED_INK, margin: "0 0 20px" }}>
+          Save your favourite places, follow local channels and keep up with what's on around town.
+        </p>
         <button
           onClick={() => navigate("/welcome", { state: { mode: "signup" } })}
           style={{
@@ -153,9 +152,10 @@ const MyProfileGuest = () => {
             fontWeight: 400,
             letterSpacing: "0.1px",
             cursor: "pointer",
+            marginBottom: 10,
           }}
         >
-          Create account
+          Create Account
         </button>
         <button
           onClick={() => navigate("/welcome", { state: { mode: "signin" } })}
@@ -173,9 +173,14 @@ const MyProfileGuest = () => {
             cursor: "pointer",
           }}
         >
-          Log in
+          Log In
         </button>
       </div>
+
+      <div style={{ height: 28 }} />
+
+      <Eyebrow>Support</Eyebrow>
+      <Card items={supportItems} />
     </div>
   );
 };
