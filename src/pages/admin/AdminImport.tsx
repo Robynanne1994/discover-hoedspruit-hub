@@ -218,9 +218,12 @@ const AdminImport = () => {
         return;
       }
       if (!isAllCategories) {
+        // Fields valid for the selected category (some fields are shared across
+        // categories, e.g. price_range on both Shopping and Accommodation).
+        const allowed = new Set<string>(csvHeaders);
         const warn = (label: string, set: Set<string>, active: boolean) => {
           if (active) return;
-          const extras = result.headers.filter((h) => set.has(h));
+          const extras = result.headers.filter((h) => set.has(h) && !allowed.has(h));
           if (extras.length > 0) toast.warning(`${label}-only columns found and will be ignored: ${extras.join(", ")}`);
         };
         warn("Restaurant", restaurantFieldSet, isRestaurant);
@@ -231,6 +234,7 @@ const AdminImport = () => {
         warn("Home & Garden", homeGardenFieldSet, isHomeGarden);
         warn("Weddings & Events", weddingsEventsFieldSet, isWeddingsEvents);
       }
+
       setParsed(result);
     };
     reader.readAsText(file);
