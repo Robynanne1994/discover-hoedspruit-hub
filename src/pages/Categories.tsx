@@ -185,9 +185,10 @@ const Categories = () => {
         description="Browse every category of local listings in Hoedspruit: places to eat, stay, shop, things to do, services and more."
         path="/categories"
       />
-      {/* Top bar: centered title + circular search */}
+      {/* Top bar: centered title */}
       <PageHeader
         title="Explore"
+        showBack={false}
         left={
           fromSearch ? (
             <button
@@ -209,70 +210,39 @@ const Categories = () => {
             </button>
           ) : null
         }
-        right={
-          <button
-            onClick={() => {
-              setSearchOpen((v) => {
-                if (v) setSearch("");
-                return !v;
-              });
-            }}
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.06)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            {searchOpen ? (
-              <X size={18} strokeWidth={1.8} color="#1A1A1A" />
-            ) : (
-              <Search size={18} strokeWidth={1.8} color="#1A1A1A" />
-            )}
-          </button>
-        }
       />
 
       {/* Inline search input */}
-      {searchOpen && (
-        <div style={{ padding: "16px 20px 0" }}>
-          <div
+      <div style={{ padding: "16px 20px 0" }}>
+        <div
+          style={{
+            height: 44,
+            background: "#FFFFFF",
+            borderRadius: 999,
+            padding: "0 18px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <Search size={16} strokeWidth={1.8} color={COLORS.ink} />
+          <input
+            type="text"
+            placeholder="Search categories, places or services"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             style={{
-              height: 44,
-              background: "#FFFFFF",
-              borderRadius: 999,
-              padding: "0 18px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              fontFamily: FONT_BODY,
+              fontSize: 14,
+              color: COLORS.ink,
             }}
-          >
-            <Search size={16} strokeWidth={1.8} color={COLORS.ink} />
-            <input
-              autoFocus
-              type="text"
-              placeholder="Search categories and listings"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                fontFamily: FONT_BODY,
-                fontSize: 14,
-                color: COLORS.ink,
-              }}
-            />
-          </div>
+          />
         </div>
-      )}
+      </div>
 
       {/* Listing search results */}
       {listingResults.length > 0 && (
