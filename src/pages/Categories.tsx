@@ -654,7 +654,7 @@ const Categories = () => {
                     {count} {count === 1 ? "listing" : "listings"}
                   </p>
                 </div>
-                <ChevronRight size={20} color={COLORS.muted} strokeWidth={1.8} style={{ flexShrink: 0 }} />
+                <ArrowUpLeft size={20} color="#715A3D" strokeWidth={1.8} style={{ flexShrink: 0 }} />
               </Link>
             );
           })}
