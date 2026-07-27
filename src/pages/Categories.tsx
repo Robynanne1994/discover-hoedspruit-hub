@@ -387,7 +387,7 @@ const Categories = () => {
           Quick Filters
         </p>
         <div className="cats-scroll" style={{ overflowX: "auto", paddingLeft: 20 }}>
-          <div style={{ display: "flex", gap: 10, paddingRight: 20 }}>
+          <div style={{ display: "flex", gap: 8, paddingRight: 20 }}>
             {QUICK_FILTERS.map((label) => {
               const active = activeQuick.includes(label);
               return (
@@ -397,14 +397,14 @@ const Categories = () => {
                   onClick={() => toggleQuick(label)}
                   style={{
                     flexShrink: 0,
-                    height: 40,
-                    padding: "0 18px",
+                    height: 32,
+                    padding: "0 14px",
                     borderRadius: 999,
                     background: active ? COLORS.dark : COLORS.card,
                     color: active ? "#FFFFFF" : COLORS.ink,
                     border: active ? "none" : `1px solid ${COLORS.chipBorder}`,
                     fontFamily: FONT_BODY,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: 700,
                     whiteSpace: "nowrap",
                     cursor: "pointer",
