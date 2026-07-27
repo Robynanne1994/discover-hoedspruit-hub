@@ -388,7 +388,9 @@ const FollowList = () => {
         <div
           style={{
             display: "flex",
-            borderBottom: `1px solid ${COLOR.line}`,
+            padding: 4,
+            borderRadius: 999,
+            background: "#DCD5C2",
           }}
         >
           {[
@@ -401,28 +403,29 @@ const FollowList = () => {
                 key={tab.key}
                 to={`/profile/${id}/${tab.key}`}
                 replace
-
                 style={{
                   flex: 1,
                   textAlign: "center",
-                  padding: "12px 0",
+                  padding: "13px 0",
+                  borderRadius: 999,
                   fontFamily: SANS,
-                  fontWeight: active ? 700 : 500,
+                  fontWeight: 700,
                   fontSize: 13,
-                  letterSpacing: "0.14em",
+                  letterSpacing: "0.12em",
                   textTransform: "uppercase",
-                  color: active ? COLOR.ink : COLOR.subtle,
+                  color: active ? "#FFFFFF" : "#8A8275",
+                  background: active ? COLOR.brown : "transparent",
                   textDecoration: "none",
-                  borderBottom: active ? `2px solid ${COLOR.ink}` : "2px solid transparent",
-                  marginBottom: -1,
+                  transition: "background 150ms ease, color 150ms ease",
                 }}
               >
-                {tab.label} ({tab.count})
+                {tab.label} · {tab.count}
               </Link>
             );
           })}
         </div>
       </div>
+
 
       {/* List card */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
