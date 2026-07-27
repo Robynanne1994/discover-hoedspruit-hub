@@ -246,7 +246,7 @@ const Welcome = () => {
   if (mode === "forgot" || mode === "forgotSent") {
     const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8" }}>
+      <div className="min-h-screen flex flex-col" style={{ background: "#E6E0CC" }}>
         <PageHeader title="Reset Password" onBack={() => setMode("signin")} />
         <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
           {mode === "forgot" ? (
@@ -329,7 +329,7 @@ const Welcome = () => {
 
   if (mode === "welcome") {
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      <div className="min-h-screen flex flex-col" style={{ background: "#E6E0CC", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <Seo
           title="Welcome to Hello Hoedspruit"
           description="Sign in or create a free account to save your favourite places, events and specials around Hoedspruit."
