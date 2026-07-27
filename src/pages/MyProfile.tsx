@@ -543,9 +543,10 @@ const MyProfile = () => {
                 cursor: "pointer",
                 fontFamily: SANS,
                 fontSize: 16,
-                fontWeight: active ? 700 : 400,
+                fontWeight: 700,
                 color: active ? INK : SUBTLE,
                 letterSpacing: "0.02em",
+                lineHeight: 1.2,
                 position: "relative",
                 textTransform: "capitalize",
               }}
