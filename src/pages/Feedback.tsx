@@ -78,7 +78,7 @@ const Feedback = () => {
   const [message, setMessage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [replyByEmail, setReplyByEmail] = useState(true);
+  const [replyByEmail, setReplyByEmail] = useState(false);
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -236,12 +236,12 @@ const Feedback = () => {
       <PageHeader title="Feedback" />
 
 
-      {/* Tabs (only if user has any admin replies) */}
-      {hasReplies && (
-        <div style={{ padding: "12px 20px 4px", display: "flex", gap: 10 }}>
+      {/* Tabs */}
+      {(
+        <div style={{ padding: "14px 20px 6px", display: "flex", gap: 12 }}>
           {([
             { key: "submit", label: "Send Feedback" },
-            { key: "replies", label: `My Replies (${replies.length})` },
+            { key: "replies", label: hasReplies ? `My Replies  (${replies.length})` : "My Replies" },
           ] as const).map((t) => {
             const active = activeTab === t.key;
             const showDot = t.key === "replies" && unreadReplies > 0;
