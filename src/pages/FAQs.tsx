@@ -281,10 +281,12 @@ const FAQs = () => {
           Still stuck? Please reach out to us for help!
         </p>
         <PrimaryButton
-          label="Contact Us"
+          fullWidth
           onClick={() => navigate("/contact-us")}
-          style={{ width: "100%", maxWidth: 320 }}
-        />
+          style={{ maxWidth: 320 }}
+        >
+          Contact Us
+        </PrimaryButton>
       </div>
 
       <BottomNav />
