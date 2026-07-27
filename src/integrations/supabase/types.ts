@@ -804,10 +804,13 @@ export type Database = {
           created_at: string
           feedback_type: string
           id: string
+          image_url: string | null
           is_read: boolean
           message: string
           replied_at: string | null
           replied_by: string | null
+          reply_by_email: boolean
+          reply_email: string | null
           subject: string | null
           user_id: string
         }
@@ -816,10 +819,13 @@ export type Database = {
           created_at?: string
           feedback_type: string
           id?: string
+          image_url?: string | null
           is_read?: boolean
           message: string
           replied_at?: string | null
           replied_by?: string | null
+          reply_by_email?: boolean
+          reply_email?: string | null
           subject?: string | null
           user_id: string
         }
@@ -828,10 +834,13 @@ export type Database = {
           created_at?: string
           feedback_type?: string
           id?: string
+          image_url?: string | null
           is_read?: boolean
           message?: string
           replied_at?: string | null
           replied_by?: string | null
+          reply_by_email?: boolean
+          reply_email?: string | null
           subject?: string | null
           user_id?: string
         }
