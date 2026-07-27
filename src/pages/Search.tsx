@@ -307,6 +307,69 @@ const ErrorRow = ({ onRetry, isFetching }: { onRetry: () => void; isFetching?: b
   </div>
 );
 
+/* -------------------- Follow action -------------------- */
+
+const RowFollowButton = ({ targetUserId }: { targetUserId: string }) => {
+  const { user } = useAuth();
+  const requireAuth = useRequireAuth();
+  const { data: status, isLoading } = useIsFollowing(targetUserId);
+  const { follow, unfollow } = useFollowMutation(targetUserId);
+
+  const { data: followsMe } = useQuery({
+    queryKey: ["follows-me", user?.id, targetUserId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("follows")
+        .select("status")
+        .eq("follower_id", targetUserId)
+        .eq("following_id", user!.id)
+        .eq("status", "accepted")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user && !!targetUserId && user.id !== targetUserId,
+  });
+
+  if (user && user.id === targetUserId) return null;
+
+  const isAccepted = status === "accepted";
+  const isPending = status === "pending";
+  const busy = follow.isPending || unfollow.isPending;
+  const label = isAccepted ? "Unfollow" : isPending ? "Requested" : followsMe ? "Follow Back" : "Follow";
+  const outlined = isAccepted || isPending;
+
+  return (
+    <button
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!requireAuth("follow people")) return;
+        if (isAccepted || isPending) unfollow.mutate();
+        else follow.mutate();
+      }}
+      disabled={isLoading || busy}
+      {...pressScale()}
+      style={{
+        flexShrink: 0,
+        height: 32,
+        padding: "0 14px",
+        borderRadius: 999,
+        fontFamily: FONT,
+        fontSize: 12,
+        fontWeight: 600,
+        cursor: "pointer",
+        transition: "transform 0.12s ease",
+        background: outlined ? "transparent" : DARK,
+        color: outlined ? "#715A3D" : "#FFFFFF",
+        border: outlined ? "1.5px solid #715A3D" : "none",
+        opacity: busy ? 0.6 : 1,
+      }}
+    >
+      {label}
+    </button>
+  );
+};
+
 /* -------------------- Row -------------------- */
 
 interface RowProps {
@@ -318,8 +381,10 @@ interface RowProps {
   initials?: string;
   /** People rows use the dark avatar treatment from the design. */
   dark?: boolean;
+  /** Replaces the trailing arrow (used for follow buttons). */
+  action?: React.ReactNode;
 }
-const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark }: RowProps) => {
+const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, action }: RowProps) => {
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
   return (
@@ -397,10 +462,13 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark }
           </span>
         )}
       </div>
-      <ChevronRight size={15} strokeWidth={2} color={CHEVRON} style={{ flexShrink: 0 }} />
+      {action ?? (
+        <ArrowUpRight size={18} strokeWidth={2} color="#715A3D" style={{ flexShrink: 0 }} />
+      )}
     </Link>
   );
 };
+
 
 /* -------------------- Results: Listings -------------------- */
 
