@@ -2241,6 +2241,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_email_available: {
+        Args: { _email: string; _exclude_id?: string }
+        Returns: boolean
+      }
+      is_phone_available: {
+        Args: { _exclude_id?: string; _phone: string }
+        Returns: boolean
+      }
       is_username_available: {
         Args: { _exclude_id?: string; _username: string }
         Returns: boolean

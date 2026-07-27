@@ -415,21 +415,24 @@ const AccountInfo = () => {
         }
       }
 
-      // Uniqueness checks against other users' profiles
-      const checks: Array<{ field: string; value: string; label: string }> = [];
-      if (trimmedEmail) checks.push({ field: "email", value: trimmedEmail, label: "email" });
-      if (trimmedPhone) checks.push({ field: "phone", value: trimmedPhone, label: "phone number" });
+      // Uniqueness checks against other users' profiles. These must go through
+      // SECURITY DEFINER RPCs (like the username check above): RLS only lets a
+      // user read their own profile row, so a direct `.neq("id", user.id)` query
+      // can never see another account's clash — it would always come back empty,
+      // silently letting duplicate emails and phone numbers through.
+      const uniquenessChecks: Array<{ rpc: string; value: string; label: string }> = [];
+      if (trimmedEmail)
+        uniquenessChecks.push({ rpc: "is_email_available", value: trimmedEmail, label: "email" });
+      if (trimmedPhone)
+        uniquenessChecks.push({ rpc: "is_phone_available", value: trimmedPhone, label: "phone number" });
 
-      for (const c of checks) {
-        const { data: existing, error: checkErr } = await supabase
-          .from("profiles")
-          .select("id")
-          .ilike(c.field, c.value)
-          .neq("id", user.id)
-          .limit(1)
-          .maybeSingle();
+      for (const c of uniquenessChecks) {
+        const { data: available, error: checkErr } = await supabase.rpc(
+          c.rpc as any,
+          { [c.rpc === "is_email_available" ? "_email" : "_phone"]: c.value, _exclude_id: user.id } as any
+        );
         if (checkErr) throw checkErr;
-        if (existing) {
+        if (!available) {
           toast.error(`That ${c.label} is already in use by another account.`);
           setSavingProfile(false);
           return;
