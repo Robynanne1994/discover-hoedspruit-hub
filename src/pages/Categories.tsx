@@ -129,18 +129,57 @@ const Categories = () => {
     enabled: !!user,
   });
 
+  const savedActive = activeQuick.includes("Saved");
+  // Stable, order-independent signature of the saved set so the query below
+  // refetches when the user saves/unsaves while the filter is open.
+  const savedListArray = useMemo(
+    () => (savedIds ? Array.from(savedIds).sort() : []),
+    [savedIds]
+  );
+
   const { data: filteredListings, isLoading: filteredLoading } = useQuery({
-    queryKey: ["explore-quick-filter-listings", activeQuick, user?.id],
+    queryKey: ["explore-quick-filter-listings", savedActive, savedActive ? savedListArray : "all"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("listings")
-        .select("id, title, title_override, image_url, location, category_id, opening_hours, child_friendly, good_for_kids, pets_allowed")
-        .order("is_featured", { ascending: false })
-        .limit(200);
-      if (error) throw error;
-      return data || [];
+      const cols =
+        "id, title, title_override, image_url, location, category_id, opening_hours, child_friendly, good_for_kids, pets_allowed";
+
+      // When "Saved" is active the result can only ever be a subset of the
+      // user's saved listings, so fetch those rows directly by id. This is
+      // bounded and — unlike a top-N featured slice — never drops a saved
+      // listing just because it isn't near the top of the full list.
+      if (savedActive) {
+        if (savedListArray.length === 0) return [];
+        const CHUNK = 200; // keep each `in(...)` URL comfortably short
+        const rows: any[] = [];
+        for (let i = 0; i < savedListArray.length; i += CHUNK) {
+          const chunk = savedListArray.slice(i, i + CHUNK);
+          const { data, error } = await supabase.from("listings").select(cols).in("id", chunk);
+          if (error) throw error;
+          rows.push(...(data || []));
+        }
+        return rows;
+      }
+
+      // Otherwise scan the full listing set (paginated) so Open Now / Kid
+      // Friendly / Pet Friendly cover every listing, not just the first page.
+      const PAGE = 1000;
+      const all: any[] = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data, error } = await supabase
+          .from("listings")
+          .select(cols)
+          .order("is_featured", { ascending: false })
+          .range(from, from + PAGE - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        all.push(...data);
+        if (data.length < PAGE) break;
+      }
+      return all;
     },
-    enabled: activeQuick.length > 0,
+    // Wait for the saved set to load before running the "Saved" branch so we
+    // never fetch against a half-loaded id list.
+    enabled: activeQuick.length > 0 && (!savedActive || savedIds !== undefined),
   });
 
   const quickFilteredResults = useMemo(() => {
@@ -153,6 +192,10 @@ const Categories = () => {
       return true;
     });
   }, [filteredListings, activeQuick, savedIds]);
+
+  // Treat "waiting for the saved set" as loading too, otherwise the empty
+  // state flashes before the saved ids resolve.
+  const quickLoading = filteredLoading || (savedActive && savedIds === undefined);
 
   const debouncedSearch = search.trim();
 
@@ -498,7 +541,7 @@ const Categories = () => {
                 {activeQuick.join(" + ")}
               </h2>
               <p style={{ margin: "4px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: "#6B6A5E" }}>
-                {filteredLoading
+                {quickLoading
                   ? "Loading..."
                   : `${quickFilteredResults.length} ${quickFilteredResults.length === 1 ? "result" : "results"}`}
               </p>
@@ -527,7 +570,7 @@ const Categories = () => {
             </button>
           </div>
 
-          {filteredLoading ? (
+          {quickLoading ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} style={{ width: "100%", height: 88, borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
