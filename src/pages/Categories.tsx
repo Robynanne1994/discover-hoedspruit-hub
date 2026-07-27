@@ -1,11 +1,14 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List } from "lucide-react";
+import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { isOpenNow } from "@/lib/openHours";
+import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
 
 
@@ -36,12 +39,23 @@ const Categories = () => {
   const [activeQuick, setActiveQuick] = useState<string[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
 
-  const toggleQuick = (label: string) =>
+  const hasQuickFilter = (label: string) => activeQuick.includes(label);
+
+  const toggleQuick = (label: string) => {
+    if (label === "Saved" && !user) {
+      requireAuth("view saved listings");
+      return;
+    }
     setActiveQuick((prev) =>
       prev.includes(label) ? prev.filter((x) => x !== label) : [...prev, label]
     );
+  };
+
+  const clearQuickFilters = () => setActiveQuick([]);
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-all"],
@@ -100,6 +114,45 @@ const Categories = () => {
       return counts;
     },
   });
+
+  const { data: savedIds } = useQuery({
+    queryKey: ["user-saved-listings", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("favourites" as any)
+        .select("item_id")
+        .eq("user_id", user!.id)
+        .eq("item_type", "listing");
+      if (error) throw error;
+      return new Set((data as any[]).map((r) => r.item_id as string));
+    },
+    enabled: !!user,
+  });
+
+  const { data: filteredListings, isLoading: filteredLoading } = useQuery({
+    queryKey: ["explore-quick-filter-listings", activeQuick, user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, title_override, image_url, location, category_id, opening_hours, child_friendly, good_for_kids, pets_allowed")
+        .order("is_featured", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: activeQuick.length > 0,
+  });
+
+  const quickFilteredResults = useMemo(() => {
+    if (!filteredListings) return [];
+    return filteredListings.filter((l: any) => {
+      if (hasQuickFilter("Open Now") && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
+      if (hasQuickFilter("Saved") && !(savedIds?.has(l.id))) return false;
+      if (hasQuickFilter("Kid Friendly") && !l.child_friendly && !l.good_for_kids) return false;
+      if (hasQuickFilter("Pet Friendly") && !l.pets_allowed) return false;
+      return true;
+    });
+  }, [filteredListings, activeQuick, savedIds]);
 
   const debouncedSearch = search.trim();
 
@@ -419,7 +472,134 @@ const Categories = () => {
         </div>
       </div>
 
+      {/* Quick filter results */}
+      {activeQuick.length > 0 && (
+        <div style={{ padding: "22px 20px 0" }}>
+          <div
+            style={{
+              padding: "0 0 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
+            <div>
+              <h2
+                style={{
+                  fontFamily: FONT_BODY,
+                  fontWeight: 700,
+                  fontSize: 22,
+                  lineHeight: 1.1,
+                  color: COLORS.ink,
+                  margin: 0,
+                }}
+              >
+                {activeQuick.join(" + ")}
+              </h2>
+              <p style={{ margin: "4px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: "#6B6A5E" }}>
+                {filteredLoading
+                  ? "Loading..."
+                  : `${quickFilteredResults.length} ${quickFilteredResults.length === 1 ? "result" : "results"}`}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={clearQuickFilters}
+              style={{
+                height: 32,
+                padding: "0 12px",
+                borderRadius: 999,
+                background: "transparent",
+                color: "#715A3D",
+                border: `1px solid ${COLORS.chipBorder}`,
+                fontFamily: FONT_BODY,
+                fontSize: 12,
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                cursor: "pointer",
+              }}
+            >
+              <X size={14} strokeWidth={2} />
+              Clear
+            </button>
+          </div>
+
+          {filteredLoading ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} style={{ width: "100%", height: 88, borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
+              ))}
+            </div>
+          ) : quickFilteredResults.length === 0 ? (
+            <div
+              style={{
+                background: COLORS.card,
+                borderRadius: 16,
+                padding: "22px 18px",
+                textAlign: "center",
+              }}
+            >
+              <p style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 16, color: COLORS.ink, margin: 0 }}>
+                No matches found
+              </p>
+              <p style={{ fontFamily: FONT_BODY, fontSize: 13, color: COLORS.muted, margin: "4px 0 0" }}>
+                Try a different combination of filters.
+              </p>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {quickFilteredResults.map((listing) => (
+                <Link
+                  key={listing.id}
+                  to={`/listing/${listing.id}`}
+                  style={{
+                    display: "flex",
+                    alignItems: "stretch",
+                    background: COLORS.card,
+                    borderRadius: 16,
+                    overflow: "hidden",
+                    textDecoration: "none",
+                    transition: "transform 150ms ease-out",
+                  }}
+                  onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
+                  onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  <div style={{ width: 88, alignSelf: "stretch", background: "#e6e0d2", flexShrink: 0 }}>
+                    {listing.image_url && (
+                      <img
+                        src={listing.image_url}
+                        alt={listing.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                      />
+                    )}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 12, padding: "12px 14px 12px 14px" }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, wordBreak: "break-word", lineHeight: 1.25 }}>
+                        {getDisplayTitle(listing)}
+                      </p>
+                      {listing.location && (
+                        <p style={{ display: "flex", alignItems: "center", fontSize: 12, color: COLORS.muted, margin: 0, marginTop: 2, gap: 4 }}>
+                          <MapPin size={11} strokeWidth={1.8} />
+                          {listing.location}
+                        </p>
+                      )}
+                    </div>
+                    <ArrowUpRight size={18} color="#1A1A1A" style={{ flexShrink: 0 }} />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* All Categories header + view toggle */}
+      {activeQuick.length === 0 && (<>
       <div
         style={{
           padding: "26px 20px 0",
@@ -661,6 +841,7 @@ const Categories = () => {
           })}
         </div>
       )}
+      </>)}
     </div>
   );
 };
