@@ -488,6 +488,16 @@ const ListingDetail = () => {
       fields: [{ label: labels[l.price_level] || "", on: true }] });
   }
 
+  // Distance is a universal field (populated for Shopping, Accommodation, etc.),
+  // so render it for every listing that has a km value — not just accommodation.
+  if (l.km_from_town) {
+    const kmNum = parseFloat(String(l.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
+    const kmLabel = Number.isFinite(kmNum)
+      ? (Math.round(kmNum * 100) / 100).toString()
+      : String(l.km_from_town);
+    sections.push({ key: "distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}km from Town`, on: true }] });
+  }
+
   if (isListingRestaurant) {
     const known = ["Dine-in", "Takeaway", "Delivery"];
     const norm = (l.service_type || []).map((s: string) => {
@@ -584,15 +594,6 @@ const ListingDetail = () => {
     }
     if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "Room" : "Rooms"}`, on: true });
     if (capacity.length) sections.push({ key: "accom-capacity", title: "Capacity", iconComp: Users, fields: capacity });
-
-    if (l.km_from_town) {
-      const kmNum = parseFloat(String(l.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
-      const kmLabel = Number.isFinite(kmNum)
-        ? (Math.round(kmNum * 100) / 100).toString()
-        : String(l.km_from_town);
-      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}km from Town`, on: true }] });
-    }
-
 
     const breakfastLabel = l.has_breakfast === true
       ? (l.breakfast_included === true ? "Breakfast (Included)"
