@@ -367,27 +367,29 @@ const AdminImport = () => {
         // Resolve subcategories. In category-scoped imports, only resolve under the selected category
         // (so we never touch another category's subcategory links).
         const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
-        const resolvedSubIds: string[] = [];
+        const resolvedSubIdsRaw: string[] = [];
         const subResolutionCatIds = isAllCategories ? resolvedCatIds : [selectedCategoryId];
         for (const subName of subNames) {
           let found = false;
           for (const cId of subResolutionCatIds) {
             const key = `${cId}::${subName.toLowerCase()}`;
             const subId = subMap.get(key);
-            if (subId) { resolvedSubIds.push(subId); found = true; break; }
+            if (subId) { resolvedSubIdsRaw.push(subId); found = true; break; }
           }
           if (!found && subResolutionCatIds.length > 0) {
             const parentCatId = subResolutionCatIds[0];
             const { data: newSub, error: subErr } = await supabase
               .from("subcategories").insert({ title: subName, category_id: parentCatId }).select("id").single();
             if (!subErr && newSub) {
-              resolvedSubIds.push(newSub.id);
+              resolvedSubIdsRaw.push(newSub.id);
               subMap.set(`${parentCatId}::${subName.toLowerCase()}`, newSub.id);
             } else {
               results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
             }
           }
         }
+        const resolvedSubIds = Array.from(new Set(resolvedSubIdsRaw));
+
 
         // Images are managed exclusively via the Lovable editor — CSV image_url and
         // gallery_images cells are honored only when explicitly provided.
