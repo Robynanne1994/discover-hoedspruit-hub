@@ -616,13 +616,13 @@ const Categories = () => {
                 to={`/category/${cat.id}`}
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  gap: 14,
+                  alignItems: "stretch",
                   background: COLORS.card,
                   borderRadius: 16,
-                  padding: 14,
+                  padding: 0,
                   textDecoration: "none",
                   transition: "transform 150ms ease-out",
+                  overflow: "hidden",
                 }}
                 onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
                 onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -630,9 +630,8 @@ const Categories = () => {
               >
                 <div
                   style={{
-                    width: 60,
-                    height: 60,
-                    borderRadius: 12,
+                    width: 96,
+                    borderRadius: "16px 0 0 16px",
                     overflow: "hidden",
                     background: "#e6e0d2",
                     flexShrink: 0,
@@ -646,15 +645,17 @@ const Categories = () => {
                     />
                   )}
                 </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontFamily: FONT_BODY, fontSize: 17, fontWeight: 700, lineHeight: 1.2, color: COLORS.ink, margin: 0 }}>
-                    {cat.title}
-                  </p>
-                  <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.muted }}>
-                    {count} {count === 1 ? "listing" : "listings"}
-                  </p>
+                <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 14, padding: "14px 14px 14px 0" }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontFamily: FONT_BODY, fontSize: 17, fontWeight: 700, lineHeight: 1.2, color: COLORS.ink, margin: 0 }}>
+                      {cat.title}
+                    </p>
+                    <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.muted }}>
+                      {count} {count === 1 ? "listing" : "listings"}
+                    </p>
+                  </div>
+                  <ArrowUpLeft size={20} color="#715A3D" strokeWidth={1.8} style={{ flexShrink: 0 }} />
                 </div>
-                <ArrowUpLeft size={20} color="#715A3D" strokeWidth={1.8} style={{ flexShrink: 0 }} />
               </Link>
             );
           })}
