@@ -78,7 +78,7 @@ const Feedback = () => {
   const [message, setMessage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [replyByEmail, setReplyByEmail] = useState(true);
+  const [replyByEmail, setReplyByEmail] = useState(false);
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -96,7 +96,7 @@ const Feedback = () => {
         .eq("user_id", user.id)
         .not("admin_reply", "is", null)
         .order("replied_at", { ascending: false });
-      setReplies((data ?? []) as Reply[]);
+      setReplies((data ?? []) as unknown as Reply[]);
 
       const { count } = await supabase
         .from("business_notifications")
@@ -236,12 +236,12 @@ const Feedback = () => {
       <PageHeader title="Feedback" />
 
 
-      {/* Tabs (only if user has any admin replies) */}
-      {hasReplies && (
-        <div style={{ padding: "12px 20px 4px", display: "flex", gap: 10 }}>
+      {/* Tabs */}
+      {(
+        <div style={{ padding: "14px 20px 6px", display: "flex", gap: 12 }}>
           {([
             { key: "submit", label: "Send Feedback" },
-            { key: "replies", label: `My Replies (${replies.length})` },
+            { key: "replies", label: hasReplies ? `My Replies  (${replies.length})` : "My Replies" },
           ] as const).map((t) => {
             const active = activeTab === t.key;
             const showDot = t.key === "replies" && unreadReplies > 0;
@@ -257,14 +257,16 @@ const Feedback = () => {
                 style={{
                   position: "relative",
                   flex: 1,
-                  height: 46,
+                  height: 52,
                   borderRadius: 999,
-                  border: active ? "none" : "1px solid rgba(66,51,36,0.12)",
+                  border: active ? "none" : "1px solid rgba(26,26,26,0.08)",
                   background: active ? SUBMIT_BG : CARD,
                   color: active ? "#fff" : INK,
                   fontFamily: FF,
-                  fontSize: 14.5,
+                  fontSize: 16,
                   fontWeight: 700,
+                  letterSpacing: "-0.1px",
+                  boxShadow: active ? "none" : "0 1px 4px rgba(0,0,0,0.04)",
                   cursor: "pointer",
                   transition: "transform 0.15s ease, background 0.15s ease",
                 }}
@@ -275,10 +277,10 @@ const Feedback = () => {
                     aria-label="Unread reply"
                     style={{
                       position: "absolute",
-                      top: 6,
-                      right: 10,
-                      width: 10,
-                      height: 10,
+                      top: -3,
+                      right: -3,
+                      width: 12,
+                      height: 12,
                       borderRadius: 999,
                       background: RED,
                       border: `2px solid ${BG}`,
@@ -342,18 +344,19 @@ const Feedback = () => {
         </div>
 
         {/* Subject */}
-        <div>
+        <div style={{ opacity: type ? 1 : 0.5 }}>
           <label style={labelStyle}>Subject</label>
           <input
             className="fb-input"
             type="text"
-            placeholder="Briefly summarise your feedback"
+            disabled={!type}
+            placeholder={type ? "Briefly summarise your feedback" : "Choose what this is about first"}
             value={subject}
             onChange={(e) => {
               setSubject(e.target.value);
               if (errors.subject) setErrors((p) => ({ ...p, subject: undefined }));
             }}
-            style={inputBase}
+            style={{ ...inputBase, cursor: type ? "text" : "not-allowed" }}
           />
           {errors.subject && (
             <p style={{ fontSize: 12, color: "#B0432B", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
@@ -363,11 +366,12 @@ const Feedback = () => {
         </div>
 
         {/* Message */}
-        <div>
+        <div style={{ opacity: type ? 1 : 0.5 }}>
           <label style={labelStyle}>Message</label>
           <textarea
             className="fb-input"
-            placeholder="Tell us more..."
+            disabled={!type}
+            placeholder={type ? "Tell us more..." : "Choose what this is about first"}
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
@@ -379,6 +383,7 @@ const Feedback = () => {
               height: "auto", minHeight: 160,
               padding: "18px 22px",
               resize: "none", lineHeight: 1.5,
+              cursor: type ? "text" : "not-allowed",
             }}
           />
           {errors.message && (
@@ -387,6 +392,7 @@ const Feedback = () => {
             </p>
           )}
         </div>
+
 
         {/* Photo attachment (optional) */}
         <div>
@@ -476,7 +482,7 @@ const Feedback = () => {
           >
             <span style={{ minWidth: 0 }}>
               <span style={{ display: "block", fontFamily: FF, fontSize: 15.5, fontWeight: 700, color: INK }}>
-                Reply to me by email
+                Reply to me by email as well
               </span>
               <span
                 style={{
@@ -550,6 +556,11 @@ const Feedback = () => {
 
       {activeTab === "replies" && (
         <div style={{ padding: "16px 20px 0", display: "flex", flexDirection: "column", gap: 12 }}>
+          {!hasReplies && (
+            <p style={{ margin: "24px 0 0", textAlign: "center", fontFamily: FF, fontSize: 14, color: MUTED }}>
+              You have no replies yet. We will get back to you here once we have responded.
+            </p>
+          )}
           {replies.map((r) => (
             <div
               key={r.id}
