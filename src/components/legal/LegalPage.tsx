@@ -80,7 +80,7 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
           letterSpacing: "0.06em",
           textTransform: "uppercase",
           color: "#1A1A1A",
-          margin: "0 0 12px 0",
+          margin: "0 0 8px 0",
           padding: 0,
         }}
       >
