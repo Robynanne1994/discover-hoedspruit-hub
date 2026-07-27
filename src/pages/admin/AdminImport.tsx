@@ -437,7 +437,10 @@ const AdminImport = () => {
           if (!spec) continue;
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
           if (parsed.skip === true) continue;
-          if (parsed.skip === false) payloadRecord[fieldName] = parsed.value;
+          if (parsed.skip === false) {
+            payloadRecord[fieldName] =
+              fieldName === "km_from_town" ? normalizeKm(parsed.value) : parsed.value;
+          }
         }
 
         // Remove undefined keys (defensive)
