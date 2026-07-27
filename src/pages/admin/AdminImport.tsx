@@ -367,27 +367,29 @@ const AdminImport = () => {
         // Resolve subcategories. In category-scoped imports, only resolve under the selected category
         // (so we never touch another category's subcategory links).
         const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
-        const resolvedSubIds: string[] = [];
+        const resolvedSubIdsRaw: string[] = [];
         const subResolutionCatIds = isAllCategories ? resolvedCatIds : [selectedCategoryId];
         for (const subName of subNames) {
           let found = false;
           for (const cId of subResolutionCatIds) {
             const key = `${cId}::${subName.toLowerCase()}`;
             const subId = subMap.get(key);
-            if (subId) { resolvedSubIds.push(subId); found = true; break; }
+            if (subId) { resolvedSubIdsRaw.push(subId); found = true; break; }
           }
           if (!found && subResolutionCatIds.length > 0) {
             const parentCatId = subResolutionCatIds[0];
             const { data: newSub, error: subErr } = await supabase
               .from("subcategories").insert({ title: subName, category_id: parentCatId }).select("id").single();
             if (!subErr && newSub) {
-              resolvedSubIds.push(newSub.id);
+              resolvedSubIdsRaw.push(newSub.id);
               subMap.set(`${parentCatId}::${subName.toLowerCase()}`, newSub.id);
             } else {
               results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
             }
           }
         }
+        const resolvedSubIds = Array.from(new Set(resolvedSubIdsRaw));
+
 
         // Images are managed exclusively via the Lovable editor — CSV image_url and
         // gallery_images cells are honored only when explicitly provided.
@@ -478,8 +480,9 @@ const AdminImport = () => {
             results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
             continue;
           }
-          if (item.resolvedCatIds.length > 0) {
-            const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+          const uniqueCatIds = Array.from(new Set(item.resolvedCatIds));
+          if (uniqueCatIds.length > 0) {
+            const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
             const { error: catInsErr } = await supabase
               .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
             if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
@@ -490,16 +493,19 @@ const AdminImport = () => {
             results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
             continue;
           }
-          if (item.resolvedSubIds.length > 0) {
-            const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+          const uniqueSubIds = Array.from(new Set(item.resolvedSubIds));
+          if (uniqueSubIds.length > 0) {
+            const subRows = uniqueSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
             const { error: subInsErr } = await supabase
               .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
             if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
           }
+
         } else {
           // Category-scoped mode: upsert links additively for the selected category +
           // any extras in the CSV's "categories" column. Never delete links for other categories.
-          const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+          const uniqueCatIds = Array.from(new Set(item.resolvedCatIds));
+          const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
           if (catRows.length > 0) {
             const { error: catInsErr } = await supabase
               .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
@@ -522,14 +528,16 @@ const AdminImport = () => {
                 .from("listing_subcategories").delete().in("id", subLinkIdsToDelete);
               if (subDelErr) results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
             }
-            if (item.resolvedSubIds.length > 0) {
-              const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+            const uniqueSubIds = Array.from(new Set(item.resolvedSubIds));
+            if (uniqueSubIds.length > 0) {
+              const subRows = uniqueSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
               const { error: subInsErr } = await supabase
                 .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
               if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
             }
           }
         }
+
       }
 
       // Handle listings present in the selected category but missing from the CSV.
