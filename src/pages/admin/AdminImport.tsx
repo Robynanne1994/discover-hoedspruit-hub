@@ -63,7 +63,18 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   if (currentRow.some((value) => value.length > 0)) rows.push(currentRow);
   if (rows.length === 0) return { headers: [], rows: [] };
 
-  const headers = rows[0].map((header) => header.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
+  // Normalise headers: lowercase, strip quotes/BOM, collapse any run of
+  // spaces/dashes/other separators into a single underscore. This means
+  // "Km From Town", "km-from-town" and "km_from_town" all map to km_from_town.
+  const headers = rows[0].map((header) =>
+    header
+      .replace(/^\uFEFF/, "")
+      .toLowerCase()
+      .replace(/["']/g, "")
+      .trim()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+  );
   const dataRows = rows.slice(1)
     .map((values) => {
       const row: Record<string, string> = {};
