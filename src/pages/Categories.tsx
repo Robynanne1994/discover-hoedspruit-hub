@@ -353,10 +353,10 @@ const Categories = () => {
             </>
           )}
 
-          {/* Everything else - 2 column grid */}
+          {/* All listings - 2 column grid */}
           {gridCategories.length > 0 && (
             <>
-              <SectionHead title="Everything Else" />
+              <SectionHead title="All Listings" />
               <div style={{ padding: "0 20px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {gridCategories.map((cat) => {
