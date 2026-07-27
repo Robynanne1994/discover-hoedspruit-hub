@@ -97,18 +97,28 @@ const HomeMasthead = () => {
               <Bell size={18} color="#1A1A1A" strokeWidth={1.8} />
               {unread > 0 && (
                 <span
-                  aria-hidden
+                  aria-label={`${unread} unread notifications`}
                   style={{
                     position: "absolute",
-                    top: 2,
-                    right: 2,
-                    width: 10,
-                    height: 10,
+                    top: -2,
+                    right: -2,
+                    minWidth: 18,
+                    height: 18,
+                    padding: "0 5px",
                     borderRadius: 999,
                     background: "#E0322B",
+                    color: "#FFFFFF",
                     border: "2px solid #ffffff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    lineHeight: 1,
                   }}
-                />
+                >
+                  {unread > 9 ? "9+" : unread}
+                </span>
               )}
             </Link>
           )}
