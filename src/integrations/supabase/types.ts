@@ -1161,6 +1161,7 @@ export type Database = {
           shop_type: string | null
           show_attributes: boolean
           sleeps: number | null
+          sleeps_children: number | null
           smoking_allowed: boolean | null
           specialities: string | null
           title: string
@@ -1301,6 +1302,7 @@ export type Database = {
           shop_type?: string | null
           show_attributes?: boolean
           sleeps?: number | null
+          sleeps_children?: number | null
           smoking_allowed?: boolean | null
           specialities?: string | null
           title: string
@@ -1441,6 +1443,7 @@ export type Database = {
           shop_type?: string | null
           show_attributes?: boolean
           sleeps?: number | null
+          sleeps_children?: number | null
           smoking_allowed?: boolean | null
           specialities?: string | null
           title?: string

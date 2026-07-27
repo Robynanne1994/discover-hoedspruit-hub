@@ -64,7 +64,8 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
 
   // Accommodation
   amenities: "pipe-separated free text, e.g. Pool | Wi-Fi | Air-con",
-  sleeps: "integer total guest capacity",
+  sleeps: "integer total adult guest capacity",
+  sleeps_children: "integer children capacity",
   rooms_count: "integer",
   avg_price_per_person_per_night: "text, e.g. R1 200",
 

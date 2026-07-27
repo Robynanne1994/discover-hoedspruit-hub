@@ -122,6 +122,7 @@ export const LISTING_FIELD_SPECS = {
   // ---------- Accommodation ----------
   amenities: { type: "str_array" },
   sleeps: { type: "int" },
+  sleeps_children: { type: "int" },
   km_from_town: { type: "str" },
   has_restaurant: { type: "bool" },
   has_bar: { type: "bool" },
@@ -220,7 +221,7 @@ export const SHOPPING_ONLY_FIELDS = [
 ] as const;
 
 export const ACCOMMODATION_ONLY_FIELDS = [
-  "pets_allowed", "sleeps", "price_range", "amenities",
+  "pets_allowed", "sleeps", "sleeps_children", "price_range", "amenities",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",
   "has_swimming_pool", "has_laundry", "child_friendly", "has_spa", "has_fitness_centre",
   "has_airport_shuttle", "airport_shuttle_free", "has_aircon", "has_wifi_accom",
