@@ -794,6 +794,25 @@ const Events = () => {
         </RefineSection>
 
         <RefineSection
+        <RefineSection
+          label="Time Frame"
+          summary={activeFilter === "all" ? undefined : FILTERS.find((f) => f.value === activeFilter)?.label}
+          open={openSection === "time"}
+          onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
+        >
+          <div>
+            {FILTERS.map((f) => (
+              <RefineRectOption
+                key={f.value}
+                label={`${f.label} (${getFilterCount(f.value, sortedEvents)})`}
+                active={activeFilter === f.value}
+                onClick={() => setActiveFilter(f.value)}
+              />
+            ))}
+          </div>
+        </RefineSection>
+
+        <RefineSection
           label="Category"
           summary={tagFilter || undefined}
           open={openSection === "tag"}
