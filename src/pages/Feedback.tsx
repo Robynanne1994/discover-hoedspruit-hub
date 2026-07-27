@@ -96,7 +96,7 @@ const Feedback = () => {
         .eq("user_id", user.id)
         .not("admin_reply", "is", null)
         .order("replied_at", { ascending: false });
-      setReplies((data ?? []) as Reply[]);
+      setReplies((data ?? []) as unknown as Reply[]);
 
       const { count } = await supabase
         .from("business_notifications")
@@ -257,14 +257,16 @@ const Feedback = () => {
                 style={{
                   position: "relative",
                   flex: 1,
-                  height: 46,
+                  height: 52,
                   borderRadius: 999,
-                  border: active ? "none" : "1px solid rgba(66,51,36,0.12)",
+                  border: active ? "none" : "1px solid rgba(26,26,26,0.08)",
                   background: active ? SUBMIT_BG : CARD,
                   color: active ? "#fff" : INK,
                   fontFamily: FF,
-                  fontSize: 14.5,
+                  fontSize: 16,
                   fontWeight: 700,
+                  letterSpacing: "-0.1px",
+                  boxShadow: active ? "none" : "0 1px 4px rgba(0,0,0,0.04)",
                   cursor: "pointer",
                   transition: "transform 0.15s ease, background 0.15s ease",
                 }}
@@ -275,10 +277,10 @@ const Feedback = () => {
                     aria-label="Unread reply"
                     style={{
                       position: "absolute",
-                      top: 6,
-                      right: 10,
-                      width: 10,
-                      height: 10,
+                      top: -3,
+                      right: -3,
+                      width: 12,
+                      height: 12,
                       borderRadius: 999,
                       background: RED,
                       border: `2px solid ${BG}`,
