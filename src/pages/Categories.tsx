@@ -377,11 +377,11 @@ const Categories = () => {
             padding: "0 20px",
             margin: "0 0 12px",
             fontFamily: FONT_BODY,
-            fontSize: 12,
+            fontSize: 10,
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: COLORS.muted,
+            color: "#6B6A5E",
           }}
         >
           Quick Filters
