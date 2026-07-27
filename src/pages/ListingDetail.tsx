@@ -573,7 +573,15 @@ const ListingDetail = () => {
 
     // Capacity: sleeps & rooms
     const capacity: { label: string; on: boolean }[] = [];
-    if (l.sleeps) capacity.push({ label: `Sleeps ${l.sleeps} ${Number(l.sleeps) === 1 ? "Person" : "People"}`, on: true });
+    const sleepsAdults = (l as any).sleeps;
+    const sleepsChildren = (l as any).sleeps_children;
+    if (sleepsAdults && sleepsChildren) {
+      capacity.push({ label: `Sleeps ${sleepsAdults} ${Number(sleepsAdults) === 1 ? "Adult" : "Adults"} and ${sleepsChildren} ${Number(sleepsChildren) === 1 ? "Child" : "Children"}`, on: true });
+    } else if (sleepsAdults) {
+      capacity.push({ label: `Sleeps ${sleepsAdults} ${Number(sleepsAdults) === 1 ? "Person" : "People"}`, on: true });
+    } else if (sleepsChildren) {
+      capacity.push({ label: `Sleeps ${sleepsChildren} ${Number(sleepsChildren) === 1 ? "Child" : "Children"}`, on: true });
+    }
     if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "Room" : "Rooms"}`, on: true });
     if (capacity.length) sections.push({ key: "accom-capacity", title: "Capacity", iconComp: Users, fields: capacity });
 
