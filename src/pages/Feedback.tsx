@@ -482,7 +482,7 @@ const Feedback = () => {
           >
             <span style={{ minWidth: 0 }}>
               <span style={{ display: "block", fontFamily: FF, fontSize: 15.5, fontWeight: 700, color: INK }}>
-                Reply to me by email
+                Reply to me by email as well
               </span>
               <span
                 style={{
