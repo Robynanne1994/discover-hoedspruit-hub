@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { Bell, X, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -45,6 +46,7 @@ interface Props {
 export const NotificationsBell = ({ background = CREAM }: Props) => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -133,6 +135,21 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     setNotifs((prev) => prev.map((n) => ({ ...n, is_read: true })));
   };
 
+  // The follower count, "pending requests" line, followers list and the
+  // Following pills are all React Query caches keyed independently of this
+  // component's local state. Responding to a request here writes straight to
+  // Supabase, so those caches must be invalidated or they stay stale until a
+  // manual refresh.
+  const invalidateFollowCaches = () => {
+    qc.invalidateQueries({ queryKey: ["follow-counts"] });
+    qc.invalidateQueries({ queryKey: ["followers"] });
+    qc.invalidateQueries({ queryKey: ["following"] });
+    qc.invalidateQueries({ queryKey: ["follow-requests"] });
+    qc.invalidateQueries({ queryKey: ["follow-request-count"] });
+    qc.invalidateQueries({ queryKey: ["my-following-ids"] });
+    qc.invalidateQueries({ queryKey: ["is-following"] });
+  };
+
   const respondFollowRequest = async (n: Notif, accept: boolean, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!n.ref_id) return;
@@ -142,6 +159,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
         .from("follows")
         .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
         .eq("id", n.ref_id);
+      invalidateFollowCaches();
       setNotifs((prev) =>
         prev.map((x) =>
           x.id === n.id
@@ -157,6 +175,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
       );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
+      invalidateFollowCaches();
       // Server trigger converts the notification to 'follow_request_declined'.
       // Mirror that locally so the row stays in the list as history.
       setNotifs((prev) =>
