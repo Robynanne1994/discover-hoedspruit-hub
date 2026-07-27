@@ -1098,7 +1098,7 @@ const ListingDetail = () => {
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
                 {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
                 <h3 style={{
-                  margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
+                  margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
                   letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
                 }}>{s.title}</h3>
               </div>
