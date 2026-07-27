@@ -380,15 +380,16 @@ const Specials = () => {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 style={{
-                  background: isActive ? "#423324" : "#FFFFFF",
-                  border: `1px solid ${isActive ? "#423324" : "#E2DAC6"}`,
+                  background: isActive ? "#423324" : "transparent",
+                  border: `1px solid ${isActive ? "#423324" : "rgba(26,26,26,0.10)"}`,
                   borderRadius: 999,
-                  padding: "8px 18px",
+                  padding: "6px 14px",
                   cursor: "pointer",
                   fontFamily: SANS,
                   fontSize: 13,
-                  fontWeight: 700,
-                  letterSpacing: "0.01em",
+                  fontWeight: isActive ? 600 : 400,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1,
                   color: isActive ? "#FFFFFF" : COLOR.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
