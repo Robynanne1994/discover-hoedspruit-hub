@@ -36,19 +36,9 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
       {/* Sections */}
       <div style={{ padding: "24px 20px 0", display: "flex", flexDirection: "column", gap: 32 }}>
         {lastUpdated && (
-          <div
-            style={{
-              fontFamily: DISPLAY,
-              fontWeight: 700,
-              fontSize: 15,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: INK,
-              lineHeight: 1.4,
-            }}
-          >
-            Last Updated: <span style={{ fontWeight: 400 }}>{lastUpdated}</span>
-          </div>
+          <Section heading="Last Updated">
+            <P last>{lastUpdated}</P>
+          </Section>
         )}
         {children}
       </div>
