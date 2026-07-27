@@ -794,7 +794,6 @@ const Events = () => {
         </RefineSection>
 
         <RefineSection
-        <RefineSection
           label="Time Frame"
           summary={activeFilter === "all" ? undefined : FILTERS.find((f) => f.value === activeFilter)?.label}
           open={openSection === "time"}
