@@ -564,6 +564,19 @@ const ListingDetail = () => {
   }
 
   if (isListingAccommodation) {
+    // Capacity: sleeps & rooms
+    const capacity: { label: string; on: boolean }[] = [];
+    if (l.sleeps) capacity.push({ label: `Sleeps ${l.sleeps} ${Number(l.sleeps) === 1 ? "person" : "people"}`, on: true });
+    if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "room" : "rooms"}`, on: true });
+    if (capacity.length) sections.push({ key: "accom-capacity", title: "Capacity", iconComp: Users, fields: capacity });
+
+    // Pricing: average price per person per night & price range
+    const pricing: { label: string; on: boolean }[] = [];
+    const avgPrice = (l as any).avg_price_per_person_per_night;
+    if (avgPrice) pricing.push({ label: `${String(avgPrice).trim()} per person per night`, on: true });
+    if (l.price_range) pricing.push({ label: `${String(l.price_range).trim()}`, on: true });
+    if (pricing.length) sections.push({ key: "accom-pricing", title: "Pricing", iconComp: Banknote, fields: pricing });
+
     if (l.km_from_town) {
       const kmNum = parseFloat(String(l.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
       const kmLabel = Number.isFinite(kmNum)
@@ -571,6 +584,7 @@ const ListingDetail = () => {
         : String(l.km_from_town);
       sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}km from Town`, on: true }] });
     }
+
 
     const food = filterDefined([
       { label: "Restaurant", value: l.has_restaurant }, { label: "Bar", value: l.has_bar },
