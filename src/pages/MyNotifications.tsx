@@ -159,7 +159,7 @@ export default function MyNotifications() {
   const followRequestRefIds = useMemo(
     () =>
       notifs
-        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id)
+        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "new_follower") && n.ref_id)
         .map((n) => n.ref_id as string),
     [notifs]
   );
@@ -484,7 +484,7 @@ function NotifCard({
     return () => window.removeEventListener("click", close);
   }, [menuOpen]);
 
-  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined";
+  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined" || n.kind === "new_follower";
   const avatarUrl = imageOverride || (isUserRelated ? actor?.avatar_url : null);
 
   return (

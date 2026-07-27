@@ -19,6 +19,9 @@ project_id = "dgkfsavtyclwkramearr"
 [functions.send-app-update]
 verify_jwt = false
 
+[functions.send-push]
+verify_jwt = false
+
 [functions.admin-list-users]
 verify_jwt = false
 
