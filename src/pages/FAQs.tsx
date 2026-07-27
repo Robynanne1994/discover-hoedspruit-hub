@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
+import PrimaryButton from "@/components/ui/PrimaryButton";
 import { supabase } from "@/integrations/supabase/client";
 import Seo from "@/components/Seo";
 
