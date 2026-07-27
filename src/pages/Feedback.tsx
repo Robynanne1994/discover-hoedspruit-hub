@@ -556,6 +556,11 @@ const Feedback = () => {
 
       {activeTab === "replies" && (
         <div style={{ padding: "16px 20px 0", display: "flex", flexDirection: "column", gap: 12 }}>
+          {!hasReplies && (
+            <p style={{ margin: "24px 0 0", textAlign: "center", fontFamily: FF, fontSize: 14, color: MUTED }}>
+              You have no replies yet. We will get back to you here once we have responded.
+            </p>
+          )}
           {replies.map((r) => (
             <div
               key={r.id}
