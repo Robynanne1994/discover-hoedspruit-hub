@@ -77,7 +77,29 @@ const Welcome = () => {
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [keepSignedIn, setKeepSignedIn] = useState(true);
+  const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
   const { signIn, signUp } = useAuth();
+
+  const handleOAuth = async (provider: "google" | "apple") => {
+    setOauthLoading(provider);
+    try {
+      const result = await lovable.auth.signInWithOAuth(provider, {
+        redirect_uri: window.location.origin,
+      });
+      if ((result as any).error) {
+        toast.error((result as any).error.message || "Could not sign in. Please try again.");
+        setOauthLoading(null);
+        return;
+      }
+      if ((result as any).redirected) return;
+      navigate("/", { replace: true });
+    } catch (err: any) {
+      toast.error(err?.message || "Could not sign in. Please try again.");
+    }
+    setOauthLoading(null);
+  };
+
 
   const RESIDENCY_OPTIONS = [
     { label: "Local", value: "I live in Hoedspruit" },
