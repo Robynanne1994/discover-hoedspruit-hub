@@ -205,7 +205,9 @@ const Welcome = () => {
         toast.success("Account created! You're in.");
       }
     } else {
+      localStorage.setItem("hh-keep-signed-in", keepSignedIn ? "1" : "0");
       const { error } = await signIn(email, password);
+
       if (error) {
         const msg = /invalid login credentials|invalid.*password|invalid.*email/i.test(error.message)
           ? "Incorrect email or password. Please try again."
