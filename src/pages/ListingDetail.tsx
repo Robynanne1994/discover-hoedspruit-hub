@@ -567,9 +567,9 @@ const ListingDetail = () => {
     // Pricing: average price per person per night & price range
     const pricing: { label: string; on: boolean }[] = [];
     const avgPrice = (l as any).avg_price_per_person_per_night;
-    if (avgPrice) pricing.push({ label: `${String(avgPrice).trim()} per person per night`, on: true });
+    if (avgPrice) pricing.push({ label: `Average of ${String(avgPrice).trim()} per person per night`, on: true });
     if (l.price_range) pricing.push({ label: `${String(l.price_range).trim()}`, on: true });
-    if (pricing.length) sections.push({ key: "accom-pricing", title: "Average", iconComp: Banknote, fields: pricing });
+    if (pricing.length) sections.push({ key: "accom-pricing", title: "Pricing", iconComp: Banknote, fields: pricing });
 
     // Capacity: sleeps & rooms
     const capacity: { label: string; on: boolean }[] = [];
