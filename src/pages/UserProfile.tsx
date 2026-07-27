@@ -741,9 +741,10 @@ const UserProfile = () => {
                   cursor: "pointer",
                   fontFamily: SANS,
                   fontSize: 16,
-                  fontWeight: active ? 700 : 400,
+                  fontWeight: 700,
                   color: active ? TAB_INK : TAB_SUBTLE,
                   letterSpacing: "0.02em",
+                  lineHeight: 1.2,
                   position: "relative",
                   textTransform: "capitalize",
                 }}
