@@ -554,6 +554,7 @@ const ListingsResults = ({ query }: { query: string }) => {
           initials={initialsOf((l as any).title_override || l.title)}
         />
       ))}
+      {!term && <DiscoverMore to="/categories" label="Discover More" />}
     </>
   );
 };
