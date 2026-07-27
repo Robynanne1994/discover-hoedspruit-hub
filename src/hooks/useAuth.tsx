@@ -36,8 +36,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // If the user opted out of "Keep me signed in", end the session when the
+  // tab/window is closed rather than persisting it to the next visit.
+  useEffect(() => {
+    const onHide = () => {
+      if (localStorage.getItem("hh-keep-signed-in") === "0") {
+        supabase.auth.signOut();
+      }
+    };
+    window.addEventListener("pagehide", onHide);
+    return () => window.removeEventListener("pagehide", onHide);
+  }, []);
+
   useEffect(() => {
     let mounted = true;
+
 
     const handleDeletedAccount = async () => {
       try {
