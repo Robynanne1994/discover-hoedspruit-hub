@@ -93,7 +93,7 @@ const FAQRow = ({
           paddingBottom: 18,
           paddingRight: 8,
         }}
-        dangerouslySetInnerHTML={{ __html: item.answer }}
+        dangerouslySetInnerHTML={{ __html: formatAnswer(item.answer) }}
       />
     )}
   </div>
