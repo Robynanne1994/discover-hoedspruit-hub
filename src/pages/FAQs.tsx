@@ -23,6 +23,19 @@ type Section = { title: string; items: FAQ[] };
 
 const stripHtml = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").toLowerCase();
 
+// Preserve line and paragraph breaks entered in the admin editor.
+// If the answer already contains block-level HTML, leave it as-is.
+const formatAnswer = (answer: string) => {
+  if (!answer) return "";
+  const hasBlockHtml = /<(p|br|ul|ol|li|div|h[1-6])\b/i.test(answer);
+  if (hasBlockHtml) return answer;
+  return answer
+    .replace(/\r\n/g, "\n")
+    .split(/\n{2,}/)
+    .map((para) => `<p>${para.replace(/\n/g, "<br />")}</p>`)
+    .join("");
+};
+
 const FAQRow = ({
   item,
   isFirst,
