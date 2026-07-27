@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
-  Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
+  Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint, Users, Banknote,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
 } from "lucide-react";
