@@ -200,7 +200,18 @@ const AccountNotices = () => {
           }}
         >
           Notices from the Hello Hoedspruit moderation team appear here. If you believe a notice was
-          issued in error, please contact support from the Help Centre.
+          issued in error, please contact support from the{" "}
+          <a
+            href="/help-centre"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/help-centre");
+            }}
+            style={{ color: "#715A3D", fontWeight: 700, textDecoration: "none" }}
+          >
+            Help Centre
+          </a>
+          .
         </p>
       </div>
     </div>
