@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { bayesianScore } from "@/lib/ratingScore";
+import { isOpenNow } from "@/lib/openHours";
 import Seo from "@/components/Seo";
 
 
@@ -65,47 +66,6 @@ const titleSizeFor = (s: string) => {
 };
 
 type SortKey = "default" | "name_asc" | "name_desc" | "rating" | "distance";
-
-const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-const parseTime = (s: string) => {
-  const [h, mm] = s.replace(".", ":").split(":");
-  return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
-};
-
-const todayHours = (openingHours: Record<string, string> | null | undefined) => {
-  if (!openingHours) return null;
-  const now = new Date();
-  const todayIdx = now.getDay();
-  const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
-  const raw = openingHours[todayLabel.toLowerCase()];
-  return typeof raw === "string" ? raw : null;
-};
-
-const isAlwaysOpen = (v: string | null | undefined): boolean => {
-  if (!v) return false;
-  return /always\s*open|24\s*\/?\s*7|open\s*24|24\s*hours?|24h\b/i.test(v);
-};
-
-const isOpenNow = (openingHours: Record<string, string> | null | undefined): boolean => {
-  const v = todayHours(openingHours);
-  if (!v || /closed/i.test(v)) return false;
-  if (isAlwaysOpen(v)) return true;
-  const m = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-  if (!m) return false;
-  const cur = new Date().getHours() * 60 + new Date().getMinutes();
-  const o = parseTime(m[1]);
-  let c = parseTime(m[2]);
-  if (c <= o) c += 24 * 60;
-  return cur >= o && cur <= c;
-};
-
-const opensAt = (openingHours: Record<string, string> | null | undefined): string | null => {
-  const v = todayHours(openingHours);
-  if (!v || /closed/i.test(v)) return null;
-  const m = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]/);
-  return m ? m[1].replace(".", ":") : null;
-};
 
 // Filter chip used inside the filter sheet
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
