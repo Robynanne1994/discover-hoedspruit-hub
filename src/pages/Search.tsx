@@ -472,6 +472,34 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, 
   );
 };
 
+/* -------------------- Discover more -------------------- */
+
+const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
+  <Link
+    to={to}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      height: 48,
+      margin: "12px 14px 14px",
+      borderRadius: 9999,
+      background: DARK,
+      color: "#FFFFFF",
+      fontFamily: FONT,
+      fontSize: 15,
+      fontWeight: 600,
+      textDecoration: "none",
+      transition: "transform 0.12s ease, opacity 0.12s ease",
+    }}
+    {...pressScale()}
+  >
+    {label}
+    <ArrowUpRight size={18} strokeWidth={2} color="#FFFFFF" />
+  </Link>
+);
+
 
 /* -------------------- Results: Listings -------------------- */
 
@@ -526,6 +554,7 @@ const ListingsResults = ({ query }: { query: string }) => {
           initials={initialsOf((l as any).title_override || l.title)}
         />
       ))}
+      {!term && <DiscoverMore to="/categories" label="Discover More" />}
     </>
   );
 };
@@ -566,6 +595,7 @@ const EventsResults = ({ query }: { query: string }) => {
           initials={initialsOf((e as any).title_override || e.title)}
         />
       ))}
+      {!term && <DiscoverMore to="/events" label="Discover More" />}
     </>
   );
 };
@@ -607,6 +637,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
           initials={initialsOf((s as any).title_override || s.title)}
         />
       ))}
+      {!term && <DiscoverMore to="/specials" label="Discover More" />}
     </>
   );
 };
