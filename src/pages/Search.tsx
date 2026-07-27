@@ -715,7 +715,9 @@ const PeopleResults = ({ query }: { query: string }) => {
           subtitle={u.username ? `@${u.username}` : null}
           initials={initialsOf(u.display_name, u.username)}
           dark
+          action={<RowFollowButton targetUserId={u.id} />}
         />
+
       ))}
     </>
   );
