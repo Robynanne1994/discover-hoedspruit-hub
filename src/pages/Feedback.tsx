@@ -236,60 +236,72 @@ const Feedback = () => {
       <PageHeader title="Feedback" />
 
 
-      {/* Tabs */}
+      {/* Tabs — segmented toggle */}
       {(
-        <div style={{ padding: "10px 20px 6px", display: "flex", gap: 10 }}>
-          {([
-            { key: "submit", label: "Send Feedback" },
-            { key: "replies", label: hasReplies ? `My Replies  (${replies.length})` : "My Replies" },
-          ] as const).map((t) => {
-            const active = activeTab === t.key;
-            const showDot = t.key === "replies" && unreadReplies > 0;
-            return (
-              <button
-                key={t.key}
-                onClick={() =>
-                  // replace (not push) so switching pills never adds history
-                  // entries — Back always leaves the Feedback page entirely.
-                  setSearchParams(t.key === "submit" ? {} : { tab: "replies" }, { replace: true })
-                }
-                {...tap}
-                style={{
-                  position: "relative",
-                  flex: 1,
-                  height: 40,
-                  borderRadius: 999,
-                  border: active ? "none" : "1px solid rgba(26,26,26,0.08)",
-                  background: active ? SUBMIT_BG : CARD,
-                  color: active ? "#fff" : INK,
-                  fontFamily: FF,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  letterSpacing: "-0.1px",
-                  boxShadow: active ? "none" : "0 1px 4px rgba(0,0,0,0.04)",
-                  cursor: "pointer",
-                  transition: "transform 0.15s ease, background 0.15s ease",
-                }}
-              >
-                {t.label}
-                {showDot && (
-                  <span
-                    aria-label="Unread reply"
-                    style={{
-                      position: "absolute",
-                      top: -2,
-                      right: -2,
-                      width: 10,
-                      height: 10,
-                      borderRadius: 999,
-                      background: RED,
-                      border: `2px solid ${BG}`,
-                    }}
-                  />
-                )}
-              </button>
-            );
-          })}
+        <div style={{ padding: "10px 20px 6px" }}>
+          <div
+            role="tablist"
+            style={{
+              display: "flex",
+              gap: 4,
+              padding: 4,
+              borderRadius: 999,
+              background: "#D8D0BE",
+            }}
+          >
+            {([
+              { key: "submit", label: "Send Feedback" },
+              { key: "replies", label: hasReplies ? `My Replies (${replies.length})` : "My Replies" },
+            ] as const).map((t) => {
+              const active = activeTab === t.key;
+              const showDot = t.key === "replies" && unreadReplies > 0;
+              return (
+                <button
+                  key={t.key}
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() =>
+                    // replace (not push) so switching pills never adds history
+                    // entries — Back always leaves the Feedback page entirely.
+                    setSearchParams(t.key === "submit" ? {} : { tab: "replies" }, { replace: true })
+                  }
+                  {...tap}
+                  style={{
+                    position: "relative",
+                    flex: 1,
+                    height: 40,
+                    borderRadius: 999,
+                    border: "none",
+                    background: active ? CARD : "transparent",
+                    color: active ? INK : MUTED,
+                    fontFamily: FF,
+                    fontSize: 14,
+                    fontWeight: active ? 700 : 600,
+                    letterSpacing: "-0.1px",
+                    boxShadow: active ? "0 1px 3px rgba(0,0,0,0.10)" : "none",
+                    cursor: "pointer",
+                    transition: "transform 0.15s ease, background 0.15s ease, color 0.15s ease",
+                  }}
+                >
+                  {t.label}
+                  {showDot && (
+                    <span
+                      aria-label="Unread reply"
+                      style={{
+                        position: "absolute",
+                        top: 4,
+                        right: 8,
+                        width: 8,
+                        height: 8,
+                        borderRadius: 999,
+                        background: RED,
+                      }}
+                    />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
 
