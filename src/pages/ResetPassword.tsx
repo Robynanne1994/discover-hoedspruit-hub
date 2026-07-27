@@ -46,10 +46,21 @@ const ResetPassword = () => {
     // Supabase reports an expired or already-used link as error params in the
     // URL hash instead of a token, e.g. #error=access_denied&error_code=otp_expired.
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const queryParams = new URLSearchParams(window.location.search);
     if (hashParams.get("error")) {
       setStatus("invalid");
       return;
     }
+
+    // Did the user actually arrive via a reset link? Supabase delivers recovery
+    // credentials either in the URL hash (implicit flow: access_token /
+    // type=recovery) or the query string (PKCE flow: ?code=). When credentials
+    // are present the link is genuine — it just has to be exchanged for a
+    // session, which can take a while on a slow connection.
+    const hasRecoveryCredentials =
+      hashParams.has("access_token") ||
+      hashParams.get("type") === "recovery" ||
+      queryParams.has("code");
 
     // A valid link signs the user in with a recovery session. The client
     // processes the URL token itself, so wait for the session to appear —
@@ -62,13 +73,21 @@ const ResetPassword = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setStatus((s) => (s === "resent" ? s : "ready"));
     });
-    const timeout = window.setTimeout(() => {
-      setStatus((s) => (s === "checking" ? "invalid" : s));
-    }, 4000);
+
+    // Only fall back to "invalid" when there were no recovery credentials to
+    // begin with — i.e. the page was opened without a real link. A valid link
+    // must never be rejected just because a slow connection is still turning it
+    // into a session; in that case we keep waiting for the auth event above.
+    let timeout: number | undefined;
+    if (!hasRecoveryCredentials) {
+      timeout = window.setTimeout(() => {
+        setStatus((s) => (s === "checking" ? "invalid" : s));
+      }, 4000);
+    }
 
     return () => {
       subscription.unsubscribe();
-      window.clearTimeout(timeout);
+      if (timeout !== undefined) window.clearTimeout(timeout);
     };
   }, []);
 
