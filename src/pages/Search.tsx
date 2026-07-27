@@ -7,16 +7,19 @@ import {
   Calendar,
   Tag,
   User as UserIcon,
-  ChevronRight,
+  ArrowUpRight,
   UserCircle,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
+
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
