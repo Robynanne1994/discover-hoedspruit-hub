@@ -605,35 +605,69 @@ const Categories = () => {
                     borderRadius: 16,
                     overflow: "hidden",
                     textDecoration: "none",
+                    height: 88,
                     transition: "transform 150ms ease-out",
                   }}
                   onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
                   onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 >
-                  <div style={{ width: 88, alignSelf: "stretch", background: "#e6e0d2", flexShrink: 0 }}>
+                  <div style={{ width: 88, height: 88, background: "#e6e0d2", flexShrink: 0 }}>
                     {listing.image_url && (
                       <img
                         src={listing.image_url}
                         alt={listing.title}
-                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        style={{ width: 88, height: 88, objectFit: "cover", display: "block" }}
                       />
                     )}
                   </div>
                   <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 12, padding: "12px 14px 12px 14px" }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, wordBreak: "break-word", lineHeight: 1.25 }}>
+                      <p
+                        {...noTitleCaseProps(listing)}
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: COLORS.ink,
+                          margin: 0,
+                          lineHeight: 1.25,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
                         {getDisplayTitle(listing)}
                       </p>
                       {listing.location && (
-                        <p style={{ display: "flex", alignItems: "center", fontSize: 12, color: COLORS.muted, margin: 0, marginTop: 2, gap: 4 }}>
-                          <MapPin size={11} strokeWidth={1.8} />
-                          {listing.location}
+                        <p
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            fontSize: 12,
+                            color: COLORS.muted,
+                            margin: 0,
+                            marginTop: 2,
+                            gap: 4,
+                            minWidth: 0,
+                          }}
+                        >
+                          <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0 }} />
+                          <span
+                            style={{
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              minWidth: 0,
+                            }}
+                          >
+                            {listing.location}
+                          </span>
                         </p>
                       )}
                     </div>
                     <ArrowUpRight size={18} color="#1A1A1A" style={{ flexShrink: 0 }} />
                   </div>
+
                 </Link>
               ))}
             </div>
