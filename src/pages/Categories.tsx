@@ -597,7 +597,7 @@ const Categories = () => {
                     >
                       {cat.title}
                     </p>
-                    <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 13, color: COLORS.muted }}>
+                    <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: COLORS.muted }}>
                       {count} {count === 1 ? "listing" : "listings"}
                     </p>
                   </div>
