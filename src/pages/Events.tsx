@@ -373,7 +373,7 @@ const Events = () => {
   
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | null>("tag");
   const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
   const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
 
@@ -615,13 +615,13 @@ const Events = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: tagFilter ? "#423324" : "#FFFFFF",
+                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any") ? "#423324" : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: tagFilter ? "#FFFFFF" : "#1A1A1A",
+                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />
@@ -791,6 +791,24 @@ const Events = () => {
           <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
           <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
           <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
+        </RefineSection>
+
+        <RefineSection
+          label="Time Frame"
+          summary={activeFilter === "all" ? undefined : FILTERS.find((f) => f.value === activeFilter)?.label}
+          open={openSection === "time"}
+          onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
+        >
+          <div>
+            {FILTERS.map((f) => (
+              <RefineRectOption
+                key={f.value}
+                label={`${f.label} (${getFilterCount(f.value, sortedEvents)})`}
+                active={activeFilter === f.value}
+                onClick={() => setActiveFilter(f.value)}
+              />
+            ))}
+          </div>
         </RefineSection>
 
         <RefineSection
