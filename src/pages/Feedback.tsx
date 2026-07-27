@@ -1,16 +1,35 @@
-import { useState, useEffect, CSSProperties } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { Loader2, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef, CSSProperties } from "react";
+import { useSearchParams } from "react-router-dom";
+import {
+  Loader2,
+  AlertTriangle,
+  MapPin,
+  Pencil,
+  Lightbulb,
+  Heart,
+  MessageCircle,
+  Camera,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 
 
-const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
+// Each topic maps to a friendly label + icon. The label is stored (lowercased)
+// as feedback_type so the admin panel shows the same wording the user picked.
+const TOPICS: ReadonlyArray<{ label: string; icon: LucideIcon }> = [
+  { label: "Report a Problem", icon: AlertTriangle },
+  { label: "Suggest a Listing", icon: MapPin },
+  { label: "Wrong Information", icon: Pencil },
+  { label: "Feature Idea", icon: Lightbulb },
+  { label: "Say Thanks", icon: Heart },
+  { label: "Something Else", icon: MessageCircle },
+];
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -18,8 +37,8 @@ const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const MUTED = "#7A6E5C";
-const LABEL = "#9A8E7A";
 const SUBMIT_BG = "#423324";
+const RED = "#C0432B";
 
 const tap = {
   onPointerDown: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; },
@@ -42,31 +61,68 @@ const titleCaseSubject = (s: string | null | undefined) => {
   }).join("");
 };
 
+type Reply = {
+  id: string;
+  subject: string | null;
+  message: string;
+  admin_reply: string;
+  replied_at: string;
+  image_url: string | null;
+};
+
 const Feedback = () => {
-  const navigate = useNavigate();
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
   const [type, setType] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [replyByEmail, setReplyByEmail] = useState(true);
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") === "replies" ? "replies" : "submit";
-  const [replies, setReplies] = useState<Array<{ id: string; subject: string | null; message: string; admin_reply: string; replied_at: string }>>([]);
+  const [replies, setReplies] = useState<Reply[]>([]);
+  const [unreadReplies, setUnreadReplies] = useState(0);
+
   useEffect(() => {
-    if (!user) return;
+    if (!user) { setReplies([]); setUnreadReplies(0); return; }
     (async () => {
       const { data } = await supabase
         .from("feedback")
-        .select("id,subject,message,admin_reply,replied_at")
+        .select("id,subject,message,admin_reply,replied_at,image_url")
         .eq("user_id", user.id)
         .not("admin_reply", "is", null)
         .order("replied_at", { ascending: false });
-      setReplies((data ?? []) as any);
+      setReplies((data ?? []) as Reply[]);
+
+      const { count } = await supabase
+        .from("business_notifications")
+        .select("id", { head: true, count: "exact" })
+        .eq("user_id", user.id)
+        .eq("kind", "feedback_reply")
+        .eq("is_read", false);
+      setUnreadReplies(count ?? 0);
     })();
   }, [user]);
+
   const hasReplies = replies.length > 0;
+
+  // Opening the replies tab clears the "unread reply" state (the red dot).
+  useEffect(() => {
+    if (activeTab !== "replies" || !user || unreadReplies === 0) return;
+    (async () => {
+      await supabase
+        .from("business_notifications")
+        .update({ is_read: true })
+        .eq("user_id", user.id)
+        .eq("kind", "feedback_reply")
+        .eq("is_read", false);
+      setUnreadReplies(0);
+    })();
+  }, [activeTab, user, unreadReplies]);
 
   useEffect(() => {
     const id = "feedback-placeholder-style";
@@ -79,9 +135,44 @@ const Feedback = () => {
     document.head.appendChild(style);
   }, []);
 
+  const handlePhotoPick = () => {
+    if (!user) { requireAuth("add a photo"); return; }
+    fileRef.current?.click();
+  };
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (fileRef.current) fileRef.current.value = "";
+    if (!file) return;
+    if (!user) { requireAuth("add a photo"); return; }
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please choose an image file.");
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error("That image is too large (max 8MB).");
+      return;
+    }
+    setUploading(true);
+    try {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage
+        .from("feedback-images")
+        .upload(path, file, { contentType: file.type, upsert: false });
+      if (error) throw error;
+      const { data } = supabase.storage.from("feedback-images").getPublicUrl(path);
+      setImageUrl(data.publicUrl);
+    } catch {
+      toast.error("Couldn't upload that photo. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     const errs: typeof errors = {};
-    if (!type) errs.type = "Please select what this is about";
+    if (!type) errs.type = "Please choose what this is about";
     if (!subject.trim()) errs.subject = "Please add a subject";
     if (!message.trim()) errs.message = "Please share your feedback";
     setErrors(errs);
@@ -90,17 +181,22 @@ const Feedback = () => {
 
     setSubmitting(true);
     try {
+      const wantsEmail = replyByEmail && !!user;
       const { error: dbError } = await supabase.from("feedback" as any).insert({
         user_id: user?.id || null,
         feedback_type: type.toLowerCase(),
         subject: subject.trim() || null,
         message: message.trim(),
+        image_url: imageUrl || null,
+        reply_by_email: wantsEmail,
+        reply_email: wantsEmail ? user?.email ?? null : null,
       } as any);
       if (dbError) throw dbError;
       toast.success("Thank you. We have received your feedback. Someone from our team will be in touch with you ASAP.");
       setSubject("");
       setMessage("");
       setType("");
+      setImageUrl("");
       setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -142,12 +238,13 @@ const Feedback = () => {
 
       {/* Tabs (only if user has any admin replies) */}
       {hasReplies && (
-        <div style={{ padding: "12px 20px 4px", display: "flex", gap: 8 }}>
+        <div style={{ padding: "12px 20px 4px", display: "flex", gap: 10 }}>
           {([
-            { key: "submit", label: "Submit Feedback" },
-            { key: "replies", label: "Feedback Replies" },
+            { key: "submit", label: "Send Feedback" },
+            { key: "replies", label: `My Replies (${replies.length})` },
           ] as const).map((t) => {
             const active = activeTab === t.key;
+            const showDot = t.key === "replies" && unreadReplies > 0;
             return (
               <button
                 key={t.key}
@@ -156,20 +253,38 @@ const Feedback = () => {
                   // entries — Back always leaves the Feedback page entirely.
                   setSearchParams(t.key === "submit" ? {} : { tab: "replies" }, { replace: true })
                 }
+                {...tap}
                 style={{
+                  position: "relative",
                   flex: 1,
-                  height: 40,
+                  height: 46,
                   borderRadius: 999,
-                  border: "none",
-                  background: active ? "#423324" : "#F5EFDD",
+                  border: active ? "none" : "1px solid rgba(66,51,36,0.12)",
+                  background: active ? SUBMIT_BG : CARD,
                   color: active ? "#fff" : INK,
                   fontFamily: FF,
-                  fontSize: 13,
-                  fontWeight: 600,
+                  fontSize: 14.5,
+                  fontWeight: 700,
                   cursor: "pointer",
+                  transition: "transform 0.15s ease, background 0.15s ease",
                 }}
               >
                 {t.label}
+                {showDot && (
+                  <span
+                    aria-label="Unread reply"
+                    style={{
+                      position: "absolute",
+                      top: 6,
+                      right: 10,
+                      width: 10,
+                      height: 10,
+                      borderRadius: 999,
+                      background: RED,
+                      border: `2px solid ${BG}`,
+                    }}
+                  />
+                )}
               </button>
             );
           })}
@@ -178,39 +293,49 @@ const Feedback = () => {
 
       {/* Form */}
       {activeTab === "submit" && (
-      <div style={{ padding: "16px 24px 0", display: "flex", flexDirection: "column", gap: 18 }}>{/* was: padding "0 24px" */}
-        {/* Topic */}
+      <div style={{ padding: "16px 24px 0", display: "flex", flexDirection: "column", gap: 18 }}>
+        {/* Topic — what's it about? */}
         <div>
-          <label style={labelStyle}>Topic</label>
-          <div style={{ position: "relative" }}>
-            <select
-              className="fb-input"
-              value={type}
-              onChange={(e) => {
-                setType(e.target.value);
-                if (errors.type) setErrors((p) => ({ ...p, type: undefined }));
-              }}
-              style={{
-                ...inputBase,
-                appearance: "none", WebkitAppearance: "none", MozAppearance: "none",
-                paddingRight: 44,
-                color: type ? INK : MUTED,
-                cursor: "pointer",
-              }}
-            >
-              <option value="" disabled>What is this about?</option>
-              {FEEDBACK_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
-            <ChevronDown
-              size={18}
-              color={MUTED}
-              style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
-            />
+          <label style={labelStyle}>What's it about?</label>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {TOPICS.map(({ label, icon: Icon }) => {
+              const selected = type === label;
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  onClick={() => {
+                    setType(label);
+                    if (errors.type) setErrors((p) => ({ ...p, type: undefined }));
+                  }}
+                  {...tap}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 9,
+                    width: "100%",
+                    height: 52,
+                    padding: "0 14px",
+                    borderRadius: 16,
+                    border: selected ? "none" : "1px solid rgba(66,51,36,0.10)",
+                    background: selected ? SUBMIT_BG : CARD,
+                    color: selected ? "#fff" : INK,
+                    fontFamily: FF,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    textAlign: "left",
+                    cursor: "pointer",
+                    transition: "transform 0.15s ease, background 0.15s ease",
+                  }}
+                >
+                  <Icon size={18} color={selected ? "#fff" : INK} strokeWidth={1.9} style={{ flexShrink: 0 }} />
+                  <span style={{ lineHeight: 1.1 }}>{label}</span>
+                </button>
+              );
+            })}
           </div>
           {errors.type && (
-            <p style={{ fontSize: 12, color: "#B0432B", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
+            <p style={{ fontSize: 12, color: "#B0432B", margin: "8px 0 0", paddingLeft: 4, fontFamily: FF }}>
               {errors.type}
             </p>
           )}
@@ -262,6 +387,126 @@ const Feedback = () => {
             </p>
           )}
         </div>
+
+        {/* Photo attachment (optional) */}
+        <div>
+          <label style={labelStyle}>Add a photo (optional)</label>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            onChange={handleFile}
+            style={{ display: "none" }}
+          />
+          {imageUrl ? (
+            <div
+              style={{
+                position: "relative",
+                borderRadius: 16,
+                overflow: "hidden",
+                background: CARD,
+              }}
+            >
+              <img
+                src={imageUrl}
+                alt="Attachment preview"
+                style={{ width: "100%", maxHeight: 220, objectFit: "cover", display: "block" }}
+              />
+              <button
+                type="button"
+                onClick={() => setImageUrl("")}
+                aria-label="Remove photo"
+                style={{
+                  position: "absolute", top: 10, right: 10,
+                  width: 32, height: 32, borderRadius: 999,
+                  background: "rgba(26,26,26,0.72)", border: "none",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer",
+                }}
+              >
+                <X size={16} color="#fff" strokeWidth={2.2} />
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handlePhotoPick}
+              disabled={uploading}
+              {...tap}
+              style={{
+                width: "100%",
+                minHeight: 64,
+                padding: "0 22px",
+                borderRadius: 16,
+                background: CARD,
+                border: "1px dashed rgba(66,51,36,0.28)",
+                display: "flex", alignItems: "center", gap: 12,
+                cursor: uploading ? "wait" : "pointer",
+                color: MUTED,
+                fontFamily: FF, fontSize: 15, fontWeight: 600,
+                transition: "transform 0.15s ease",
+              }}
+            >
+              {uploading ? (
+                <>
+                  <Loader2 size={20} color={MUTED} className="animate-spin" />
+                  Uploading…
+                </>
+              ) : (
+                <>
+                  <Camera size={20} color={SUBMIT_BG} strokeWidth={1.8} />
+                  <span style={{ color: SUBMIT_BG }}>Add a screenshot or photo</span>
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        {/* Reply to me by email (logged-in users only) */}
+        {user?.email && (
+          <button
+            type="button"
+            onClick={() => setReplyByEmail((v) => !v)}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
+              width: "100%", textAlign: "left",
+              background: CARD, border: "none", borderRadius: 16,
+              padding: "16px 20px", cursor: "pointer",
+            }}
+          >
+            <span style={{ minWidth: 0 }}>
+              <span style={{ display: "block", fontFamily: FF, fontSize: 15.5, fontWeight: 700, color: INK }}>
+                Reply to me by email
+              </span>
+              <span
+                style={{
+                  display: "block", fontFamily: FF, fontSize: 13, fontWeight: 400, color: MUTED,
+                  marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                }}
+              >
+                {user.email}
+              </span>
+            </span>
+            <span
+              role="switch"
+              aria-checked={replyByEmail}
+              style={{
+                position: "relative", flexShrink: 0,
+                width: 52, height: 30, borderRadius: 999,
+                background: replyByEmail ? SUBMIT_BG : "#D8D0BE",
+                transition: "background 0.18s ease",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute", top: 3, left: replyByEmail ? 25 : 3,
+                  width: 24, height: 24, borderRadius: 999, background: "#fff",
+                  transition: "left 0.18s ease",
+                }}
+              />
+            </span>
+          </button>
+        )}
 
         {/* Submit */}
         {(() => {
@@ -334,11 +579,18 @@ const Feedback = () => {
                   style={{
                     margin: 0, fontFamily: FF, fontSize: 13, lineHeight: 1.5, color: MUTED,
                     display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "pre-wrap",
-                    marginBottom: 8,
+                    marginBottom: r.image_url ? 10 : 8,
                   }}
                 >
                   {r.message}
                 </p>
+                {r.image_url && (
+                  <img
+                    src={r.image_url}
+                    alt="Your attachment"
+                    style={{ width: "100%", maxHeight: 180, objectFit: "cover", borderRadius: 12, display: "block" }}
+                  />
+                )}
               </div>
               <div>
                 <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: "#423324", marginBottom: 6 }}>

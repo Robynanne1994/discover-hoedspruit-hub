@@ -30,6 +30,9 @@ type Feedback = {
   admin_reply?: string | null;
   replied_at?: string | null;
   replied_by?: string | null;
+  image_url?: string | null;
+  reply_by_email?: boolean | null;
+  reply_email?: string | null;
 };
 
 type ResourceSuggestion = Contact & {
@@ -538,6 +541,27 @@ const FeedbackReplyPanel = ({
         {feedback.feedback_type}
       </Badge>
       <p className="text-sm whitespace-pre-wrap text-foreground">{feedback.message}</p>
+
+      {feedback.image_url && (
+        <a href={feedback.image_url} target="_blank" rel="noopener noreferrer" className="block">
+          <img
+            src={feedback.image_url}
+            alt="User attachment"
+            className="max-h-64 w-full rounded-lg border border-border object-cover"
+          />
+        </a>
+      )}
+
+      {feedback.reply_by_email && (
+        <a
+          href={`mailto:${feedback.reply_email || feedback._profile?.email || ""}?subject=Re: ${feedback.subject || `${feedback.feedback_type} feedback`}`}
+          className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 text-sm text-primary hover:underline"
+        >
+          <Mail className="h-4 w-4" />
+          User asked for an email reply
+          {(feedback.reply_email || feedback._profile?.email) ? ` · ${feedback.reply_email || feedback._profile?.email}` : ""}
+        </a>
+      )}
 
       {hasReply && !editing && (
         <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-1">
