@@ -307,7 +307,7 @@ const Feedback = () => {
                   key={label}
                   type="button"
                   onClick={() => {
-                    setType(label);
+                    setType(selected ? "" : label);
                     if (errors.type) setErrors((p) => ({ ...p, type: undefined }));
                   }}
                   {...tap}
