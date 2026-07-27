@@ -378,46 +378,43 @@ const Categories = () => {
                         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                       >
-                        <div style={{ padding: 8 }}>
-                          <div
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            aspectRatio: "1 / 1",
+                            background: "#e6e0d2",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {cat.image_url && (
+                            <img
+                              src={cat.image_url}
+                              alt={cat.title}
+                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          )}
+                          <span
                             style={{
-                              position: "relative",
-                              width: "100%",
-                              aspectRatio: "1 / 1",
-                              background: "#e6e0d2",
-                              overflow: "hidden",
-                              borderRadius: 12,
+                              position: "absolute",
+                              top: 8,
+                              right: 8,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              background: "#FFFFFF",
+                              color: COLORS.ink,
+                              fontFamily: FONT_BODY,
+                              fontSize: 12,
+                              fontWeight: 700,
+                              lineHeight: 1,
+                              padding: "6px 8px 6px 10px",
+                              borderRadius: 999,
                             }}
                           >
-                            {cat.image_url && (
-                              <img
-                                src={cat.image_url}
-                                alt={cat.title}
-                                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                              />
-                            )}
-                            <span
-                              style={{
-                                position: "absolute",
-                                top: 8,
-                                right: 8,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 4,
-                                background: "#FFFFFF",
-                                color: COLORS.ink,
-                                fontFamily: FONT_BODY,
-                                fontSize: 12,
-                                fontWeight: 700,
-                                lineHeight: 1,
-                                padding: "6px 8px 6px 10px",
-                                borderRadius: 999,
-                              }}
-                            >
-                              ({count})
-                              <ArrowUpRight size={12} strokeWidth={2.4} color={COLORS.ink} />
-                            </span>
-                          </div>
+                            ({count})
+                            <ArrowUpRight size={12} strokeWidth={2.4} color={COLORS.ink} />
+                          </span>
                         </div>
                         <div
                           style={{
