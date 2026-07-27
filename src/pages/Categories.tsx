@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight, ArrowLeft } from "lucide-react";
+import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
