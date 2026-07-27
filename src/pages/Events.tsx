@@ -615,13 +615,13 @@ const Events = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: tagFilter ? "#423324" : "#FFFFFF",
+                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any") ? "#423324" : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: tagFilter ? "#FFFFFF" : "#1A1A1A",
+                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />
