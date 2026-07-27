@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight, ArrowLeft } from "lucide-react";
+import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -23,7 +23,6 @@ const COLORS = {
 
 const Categories = () => {
   const [search, setSearch] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
@@ -186,9 +185,10 @@ const Categories = () => {
         description="Browse every category of local listings in Hoedspruit: places to eat, stay, shop, things to do, services and more."
         path="/categories"
       />
-      {/* Top bar: centered title + circular search */}
+      {/* Top bar: centered title */}
       <PageHeader
         title="Explore"
+        showBack={false}
         left={
           fromSearch ? (
             <button
@@ -210,70 +210,39 @@ const Categories = () => {
             </button>
           ) : null
         }
-        right={
-          <button
-            onClick={() => {
-              setSearchOpen((v) => {
-                if (v) setSearch("");
-                return !v;
-              });
-            }}
-            aria-label={searchOpen ? "Close search" : "Open search"}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.06)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            {searchOpen ? (
-              <X size={18} strokeWidth={1.8} color="#1A1A1A" />
-            ) : (
-              <Search size={18} strokeWidth={1.8} color="#1A1A1A" />
-            )}
-          </button>
-        }
       />
 
       {/* Inline search input */}
-      {searchOpen && (
-        <div style={{ padding: "16px 20px 0" }}>
-          <div
+      <div style={{ padding: "16px 20px 0" }}>
+        <div
+          style={{
+            height: 44,
+            background: "#FFFFFF",
+            borderRadius: 999,
+            padding: "0 18px",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <Search size={16} strokeWidth={1.8} color={COLORS.ink} />
+          <input
+            type="text"
+            placeholder="Search categories, places or services"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             style={{
-              height: 44,
-              background: "#FFFFFF",
-              borderRadius: 999,
-              padding: "0 18px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              fontFamily: FONT_BODY,
+              fontSize: 14,
+              color: COLORS.ink,
             }}
-          >
-            <Search size={16} strokeWidth={1.8} color={COLORS.ink} />
-            <input
-              autoFocus
-              type="text"
-              placeholder="Search categories and listings"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                fontFamily: FONT_BODY,
-                fontSize: 14,
-                color: COLORS.ink,
-              }}
-            />
-          </div>
+          />
         </div>
-      )}
+      </div>
 
       {/* Listing search results */}
       {listingResults.length > 0 && (
@@ -384,10 +353,10 @@ const Categories = () => {
             </>
           )}
 
-          {/* Everything else - 2 column grid */}
+          {/* All listings - 2 column grid */}
           {gridCategories.length > 0 && (
             <>
-              <SectionHead title="Everything Else" />
+              <SectionHead title="All Listings" />
               <div style={{ padding: "0 20px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {gridCategories.map((cat) => {
@@ -409,46 +378,43 @@ const Categories = () => {
                         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                       >
-                        <div style={{ padding: 8 }}>
-                          <div
+                        <div
+                          style={{
+                            position: "relative",
+                            width: "100%",
+                            aspectRatio: "1 / 1",
+                            background: "#e6e0d2",
+                            overflow: "hidden",
+                          }}
+                        >
+                          {cat.image_url && (
+                            <img
+                              src={cat.image_url}
+                              alt={cat.title}
+                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          )}
+                          <span
                             style={{
-                              position: "relative",
-                              width: "100%",
-                              aspectRatio: "1 / 1",
-                              background: "#e6e0d2",
-                              overflow: "hidden",
-                              borderRadius: 12,
+                              position: "absolute",
+                              top: 8,
+                              right: 8,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              background: "#FFFFFF",
+                              color: COLORS.ink,
+                              fontFamily: FONT_BODY,
+                              fontSize: 12,
+                              fontWeight: 700,
+                              lineHeight: 1,
+                              padding: "6px 8px 6px 10px",
+                              borderRadius: 999,
                             }}
                           >
-                            {cat.image_url && (
-                              <img
-                                src={cat.image_url}
-                                alt={cat.title}
-                                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                              />
-                            )}
-                            <span
-                              style={{
-                                position: "absolute",
-                                top: 8,
-                                right: 8,
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: 4,
-                                background: "#FFFFFF",
-                                color: COLORS.ink,
-                                fontFamily: FONT_BODY,
-                                fontSize: 12,
-                                fontWeight: 700,
-                                lineHeight: 1,
-                                padding: "6px 8px 6px 10px",
-                                borderRadius: 999,
-                              }}
-                            >
-                              ({count})
-                              <ArrowUpRight size={12} strokeWidth={2.4} color={COLORS.ink} />
-                            </span>
-                          </div>
+                            ({count})
+                            <ArrowUpRight size={12} strokeWidth={2.4} color={COLORS.ink} />
+                          </span>
                         </div>
                         <div
                           style={{
