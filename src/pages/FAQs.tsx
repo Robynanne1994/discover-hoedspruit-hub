@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
+import PrimaryButton from "@/components/ui/PrimaryButton";
 import { supabase } from "@/integrations/supabase/client";
 import Seo from "@/components/Seo";
 
@@ -253,6 +254,39 @@ const FAQs = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Contact CTA */}
+      <div
+        style={{
+          marginTop: 36,
+          padding: "0 20px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontFamily: FF,
+            fontSize: 15,
+            fontWeight: 400,
+            lineHeight: 1.45,
+            color: BODY,
+            textAlign: "center",
+          }}
+        >
+          Still stuck? Please reach out to us for help!
+        </p>
+        <PrimaryButton
+          fullWidth
+          onClick={() => navigate("/contact-us")}
+          style={{ maxWidth: 320 }}
+        >
+          Contact Us
+        </PrimaryButton>
       </div>
 
       <BottomNav />
