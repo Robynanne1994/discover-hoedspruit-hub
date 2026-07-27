@@ -504,7 +504,8 @@ const AdminImport = () => {
         } else {
           // Category-scoped mode: upsert links additively for the selected category +
           // any extras in the CSV's "categories" column. Never delete links for other categories.
-          const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+          const uniqueCatIds = Array.from(new Set(item.resolvedCatIds));
+          const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
           if (catRows.length > 0) {
             const { error: catInsErr } = await supabase
               .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
@@ -527,14 +528,16 @@ const AdminImport = () => {
                 .from("listing_subcategories").delete().in("id", subLinkIdsToDelete);
               if (subDelErr) results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
             }
-            if (item.resolvedSubIds.length > 0) {
-              const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+            const uniqueSubIds = Array.from(new Set(item.resolvedSubIds));
+            if (uniqueSubIds.length > 0) {
+              const subRows = uniqueSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
               const { error: subInsErr } = await supabase
                 .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
               if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
             }
           }
         }
+
       }
 
       // Handle listings present in the selected category but missing from the CSV.
