@@ -382,7 +382,7 @@ const Categories = () => {
                           style={{
                             position: "relative",
                             width: "100%",
-                            aspectRatio: "5 / 4",
+                            aspectRatio: "1 / 1",
                             background: "#e6e0d2",
                             overflow: "hidden",
                           }}
