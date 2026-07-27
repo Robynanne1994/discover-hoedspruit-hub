@@ -101,6 +101,19 @@ const weddingsEventsFieldSet = new Set<string>(WEDDINGS_EVENTS_ONLY_FIELDS);
 
 // ---- Schema-driven CSV (de)serialization ----
 
+// Distance from town: accept "2,5", "2.5", "2.5 km", "2,50km" etc.
+// Stored as a plain numeric string with up to 2 decimal places.
+function normalizeKm(value: unknown): string | null {
+  if (value === null || value === undefined) return null;
+  const raw = String(value).trim();
+  if (!raw) return null;
+  const cleaned = raw.replace(/,/g, ".").replace(/[^0-9.]/g, "");
+  const n = parseFloat(cleaned);
+  if (!Number.isFinite(n)) return null;
+  return String(Math.round(n * 100) / 100);
+}
+
+
 function serializeField(value: unknown, type: FieldType): string {
   if (value === null || value === undefined) return "";
   switch (type) {
