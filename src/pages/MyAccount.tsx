@@ -481,8 +481,8 @@ const MyAccount = () => {
   const LINE = "#E2DAC6";
 
   const accountItems = [
-    { label: "Info", href: "/account-settings/info", icon: UserCircle },
-    { label: "Privacy", href: "/account-settings/privacy", icon: Shield },
+    { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
+    { label: "Account Privacy", href: "/account-settings/privacy", icon: Shield },
     { label: "Notifications", href: "/notification-preferences", icon: Bell },
   ];
   const helpInfoItems = [
