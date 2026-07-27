@@ -373,7 +373,7 @@ const Events = () => {
   
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | null>("tag");
   const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
   const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
 
