@@ -490,7 +490,7 @@ const MyProfile = () => {
                   <span
                     style={{
                       fontFamily: SANS,
-                      fontSize: 10.5,
+                      fontSize: 10,
                       fontWeight: 600,
                       letterSpacing: "0.12em",
                       color: "rgba(26,26,26,0.75)",
