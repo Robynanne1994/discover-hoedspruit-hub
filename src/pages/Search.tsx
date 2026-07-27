@@ -637,6 +637,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
           initials={initialsOf((s as any).title_override || s.title)}
         />
       ))}
+      {!term && <DiscoverMore to="/specials" label="Discover More" />}
     </>
   );
 };
