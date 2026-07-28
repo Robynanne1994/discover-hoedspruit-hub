@@ -19,8 +19,7 @@ const CookiePolicy = () => (
       <List
         items={[
           "To keep you signed in to your account between visits.",
-          "To remember your preferences, like which tabs you last opened on the saved page.",
-          "To understand how the app is used so we can make it better.",
+          "To remember your preferences, like which tabs you last opened on the saved page and whether you asked to stay signed in.",
           "To keep the service secure and detect unusual activity.",
         ]}
       />
