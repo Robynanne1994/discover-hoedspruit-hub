@@ -486,6 +486,11 @@ const MyAccount = () => {
     { label: "Account Privacy", href: "/account-settings/privacy", icon: Shield },
     { label: "Notifications", href: "/notification-preferences", icon: Bell },
   ];
+  const submissionsItems = [
+    { label: "Business Listing Submissions", href: "https://hellohoedspruit.co/submissions/listing", icon: Store },
+    { label: "Event Submissions", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar },
+    { label: "Promotion Submissions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag },
+  ];
   const helpInfoItems = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
