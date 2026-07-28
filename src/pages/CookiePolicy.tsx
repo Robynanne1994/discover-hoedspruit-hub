@@ -27,7 +27,7 @@ const CookiePolicy = () => (
 
     <Section heading="Third-Party Cookies">
       <P>
-        Some cookies are set by third parties we work with, such as our authentication and analytics providers. These providers have their own privacy policies, and we only use ones we trust to handle your data with the same care we do.
+        A small number of cookies and similar technologies are set by the providers who run our sign-in and hosting, Lovable Cloud and Supabase. They are used only to make signing in and staying signed in work, and these providers have their own privacy policies. We do not use advertising or tracking cookies.
       </P>
     </Section>
 
