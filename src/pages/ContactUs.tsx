@@ -228,7 +228,7 @@ const ContactUs = () => {
           <Row
             icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
             eyebrow="Website"
-            value="Send us a message"
+            value="Fill out our contact form"
             href={WEBSITE_CONTACT_URL}
             external
           />
