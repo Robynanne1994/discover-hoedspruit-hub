@@ -224,6 +224,14 @@ const ContactUs = () => {
             href={WHATSAPP_URL}
             external
           />
+          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <Row
+            icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
+            eyebrow="Website"
+            value="Send us a message"
+            href={WEBSITE_CONTACT_URL}
+            external
+          />
         </div>
       </div>
 
