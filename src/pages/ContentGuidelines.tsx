@@ -5,7 +5,7 @@ const EMAIL = "admin@hellohoedspruit.co";
 const ContentGuidelines = () => (
   <LegalPage
     title="Community Guidelines"
-    lastUpdated="15 June 2026"
+    lastUpdated="28 July 2026"
     
   >
     <Section heading="Be Respectful">
