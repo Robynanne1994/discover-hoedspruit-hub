@@ -1,4 +1,4 @@
-import { Mail, Phone, ArrowUpRight, Clock } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, Clock, Globe } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
@@ -41,6 +41,7 @@ const CONTACT_EMAIL = "admin@hellohoedspruit.co";
 const CONTACT_PHONE = "061 332 1709";
 const PHONE_DIGITS = "27613321709";
 const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
+const WEBSITE_CONTACT_URL = "https://hellohoedspruit.co/help/contact";
 const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
 const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61573298922814";
 const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
@@ -221,6 +222,14 @@ const ContactUs = () => {
             eyebrow="WhatsApp"
             value={CONTACT_PHONE}
             href={WHATSAPP_URL}
+            external
+          />
+          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <Row
+            icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
+            eyebrow="Website"
+            value="Send us a message"
+            href={WEBSITE_CONTACT_URL}
             external
           />
         </div>
