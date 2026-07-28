@@ -90,7 +90,7 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
               fontWeight: 500,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: MUTED,
+              color: "#423324",
               marginBottom: 4,
             }}
           >
