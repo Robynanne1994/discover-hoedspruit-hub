@@ -14,6 +14,7 @@ import Seo from "@/components/Seo";
 
 import {
   Heart,
+  MapPinpoint,
   MapPinCheck,
   Star,
   Plus,
@@ -44,6 +45,7 @@ import {
   Shield,
   Briefcase,
   ArrowUpRight,
+  Store,
 } from "lucide-react";
 import {
   DropdownMenu,
