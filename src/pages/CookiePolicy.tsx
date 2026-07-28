@@ -39,7 +39,7 @@ const CookiePolicy = () => (
 
     <Section heading="Changes to This Policy">
       <P>
-        We may update this policy from time to time. When we do, we will change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated policy.
+        We may update this policy from time to time. When we do, we will change the date at the top of this page. If the changes are significant, we will let you know inside the app.
       </P>
     </Section>
 
