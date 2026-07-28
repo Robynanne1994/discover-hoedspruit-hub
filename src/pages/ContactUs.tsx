@@ -41,6 +41,7 @@ const CONTACT_EMAIL = "admin@hellohoedspruit.co";
 const CONTACT_PHONE = "061 332 1709";
 const PHONE_DIGITS = "27613321709";
 const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
+const WEBSITE_CONTACT_URL = "https://hellohoedspruit.co/help/contact";
 const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
 const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61573298922814";
 const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
