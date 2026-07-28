@@ -44,6 +44,7 @@ import {
   Shield,
   Briefcase,
   ArrowUpRight,
+  Store,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -485,6 +486,11 @@ const MyAccount = () => {
     { label: "Account Privacy", href: "/account-settings/privacy", icon: Shield },
     { label: "Notifications", href: "/notification-preferences", icon: Bell },
   ];
+  const submissionsItems = [
+    { label: "Business Listing Submissions", href: "https://hellohoedspruit.co/submissions/listing", icon: Store },
+    { label: "Event Submissions", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar },
+    { label: "Promotion Submissions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag },
+  ];
   const helpInfoItems = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
@@ -569,6 +575,48 @@ const MyAccount = () => {
     </Link>
   );
 
+  const ExternalRow = ({
+    item,
+    isFirst,
+  }: {
+    item: { label: string; href: string; icon?: any };
+    isFirst: boolean;
+  }) => (
+    <a
+      href={item.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: "18px 0",
+        textDecoration: "none",
+        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      }}
+    >
+      {item.icon ? (
+        <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+        </div>
+      ) : null}
+      <span
+        style={{
+          flex: 1,
+          fontFamily: SANS,
+          fontSize: 16,
+          fontWeight: 400,
+          letterSpacing: "-0.1px",
+          color: INK,
+          lineHeight: 1.25,
+        }}
+      >
+        {item.label}
+      </span>
+      <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+    </a>
+  );
+
   const Card = ({
     items,
     heartFirst = false,
@@ -586,6 +634,25 @@ const MyAccount = () => {
     >
       {items.map((item, i) => (
         <Row key={item.label} item={item} isFirst={i === 0} heart={heartFirst && i === 0} />
+      ))}
+    </div>
+  );
+
+  const ExternalCard = ({
+    items,
+  }: {
+    items: { label: string; href: string; icon?: any }[];
+  }) => (
+    <div
+      style={{
+        background: CARD,
+        borderRadius: 20,
+        margin: "0 24px",
+        padding: "4px 22px",
+      }}
+    >
+      {items.map((item, i) => (
+        <ExternalRow key={item.label} item={item} isFirst={i === 0} />
       ))}
     </div>
   );
@@ -619,6 +686,11 @@ const MyAccount = () => {
           <div style={{ height: 28 }} />
         </>
       )}
+
+      <Eyebrow>Submissions</Eyebrow>
+      <ExternalCard items={submissionsItems} />
+
+      <div style={{ height: 28 }} />
 
       <Eyebrow>Support</Eyebrow>
       <Card items={helpInfoItems} />
