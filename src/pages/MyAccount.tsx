@@ -14,7 +14,6 @@ import Seo from "@/components/Seo";
 
 import {
   Heart,
-  MapPinpoint,
   MapPinCheck,
   Star,
   Plus,
