@@ -80,7 +80,7 @@ const Row = ({
   isFirst,
   onClick,
 }: {
-  label: string;
+  label: React.ReactNode;
   children: React.ReactNode;
   isFirst?: boolean;
   onClick?: () => void;
@@ -683,24 +683,6 @@ const AccountInfo = () => {
                 />
               </Row>
 
-              <Row label="Phone">
-                <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
-                  <DialCodePicker
-                    value={parsed.areaCode}
-                    onChange={(newCode) => {
-                      setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
-                    }}
-                  />
-                  <input
-                    type="tel"
-                    value={parsed.number}
-                    onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
-                    style={{ ...rowInputStyle, flex: 1 }}
-                    placeholder="063 241 0296"
-                  />
-                </div>
-              </Row>
-
               <Row
                 label="Residency"
                 onClick={() => setResidencyOpen((v) => !v)}
@@ -742,6 +724,33 @@ const AccountInfo = () => {
                     })}
                   </div>
                 )}
+              </Row>
+
+              <Row
+                label={
+                  <span>
+                    Phone{" "}
+                    <span style={{ fontWeight: 400, color: MUTED, textTransform: "none", letterSpacing: "0.02em" }}>
+                      optional
+                    </span>
+                  </span>
+                }
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
+                  <DialCodePicker
+                    value={parsed.areaCode}
+                    onChange={(newCode) => {
+                      setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
+                    }}
+                  />
+                  <input
+                    type="tel"
+                    value={parsed.number}
+                    onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
+                    style={{ ...rowInputStyle, flex: 1 }}
+                    placeholder="063 241 0296"
+                  />
+                </div>
               </Row>
 
               <Row label="Password" onClick={() => setPwOpen(true)}>
