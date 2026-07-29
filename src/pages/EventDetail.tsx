@@ -67,7 +67,7 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
   letterSpacing: 0, textTransform: "none", color: C.heading,
 };
 const paraStyle: React.CSSProperties = {
@@ -673,7 +673,7 @@ const EventDetail = () => {
           <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
             {r.Icon && <r.Icon size={16} strokeWidth={1.5} color={C.primary} />}
             <h3 style={{
-              margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
+              margin: 0, fontFamily: FONT, fontWeight: 550, fontSize: 12,
               letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1,
             }}>{r.label}</h3>
             {r.href && <ArrowUpRight size={16} color={C.muted} />}
@@ -777,7 +777,7 @@ const EventDetail = () => {
                       <div key={i} style={{ padding: 18, borderBottom: isLast ? undefined : `1px solid ${C.divider}` }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
                           <s.Icon size={16} strokeWidth={1.5} color={C.primary} />
-                          <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
+                          <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 550, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
                         </div>
                         {s.body}
                       </div>

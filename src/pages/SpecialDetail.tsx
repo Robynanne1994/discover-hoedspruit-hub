@@ -52,7 +52,7 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
   letterSpacing: 0, textTransform: "none",
   color: C.heading,
 };

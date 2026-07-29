@@ -1099,7 +1099,7 @@ const ListingDetail = () => {
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
                 {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
                 <h3 style={{
-                  margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
+                  margin: 0, fontFamily: FONT, fontWeight: 550, fontSize: 12,
                   letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
                 }}>{s.title}</h3>
               </div>
@@ -1550,7 +1550,7 @@ const ListingDetail = () => {
 // ----- Shared inline styles -----
 const headStyle: React.CSSProperties = {
   margin: "0 0 10px",
-  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
   letterSpacing: 0, textTransform: "none",
   color: C.heading,
 };
