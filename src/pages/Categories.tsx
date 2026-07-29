@@ -460,7 +460,7 @@ const Categories = () => {
                   {featured.title}
                 </span>
               </div>
-              <ChevronRight size={20} color={COLORS.muted} strokeWidth={1.8} />
+              <ArrowUpRight size={18} color="#1A1A1A" strokeWidth={1.5} style={{ flexShrink: 0 }} />
             </Link>
           ))}
         </div>
