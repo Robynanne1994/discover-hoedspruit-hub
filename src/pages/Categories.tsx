@@ -690,7 +690,7 @@ const Categories = () => {
           <h2
             style={{
               fontFamily: "Nohemi",
-              fontWeight: 700,
+              fontWeight: 550,
               fontSize: 28,
               lineHeight: 1.05,
               color: COLORS.ink,
