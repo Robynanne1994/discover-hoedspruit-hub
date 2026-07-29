@@ -1091,7 +1091,7 @@ const UserProfile = () => {
               Block {titleCase(profile?.display_name) || (profile?.username ? `@${profile.username}` : "this user")}?
             </h2>
             <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.55, color: "#2b2420", margin: "0 0 20px" }}>
-              You will unfollow each other, and they won't be able to follow you or see your profile. You can unblock them at any time.
+              You will unfollow each other, and they won't be able to follow you or see your profile. You can unblock them at a later stage through your account privacy settings.
             </p>
             <div style={{ display: "flex", gap: 10 }}>
               <button
