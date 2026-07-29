@@ -80,7 +80,7 @@ const Row = ({
   isFirst,
   onClick,
 }: {
-  label: string;
+  label: React.ReactNode;
   children: React.ReactNode;
   isFirst?: boolean;
   onClick?: () => void;
