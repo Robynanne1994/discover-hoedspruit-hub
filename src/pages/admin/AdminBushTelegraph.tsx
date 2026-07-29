@@ -179,8 +179,8 @@ const AdminBushTelegraph = () => {
     mutationFn: async (payload: typeof emptyForm & { id?: string }) => {
       const { id, use_title_override, years_running, since_year, years_mode, admins, ...rest } = payload;
       const cleanAdmins = (admins || [])
-        .map((a) => ({ name: (a.name || "").trim(), image_url: (a.image_url || "").trim() }))
-        .filter((a) => a.name || a.image_url);
+        .map((a) => ({ name: (a.name || "").trim() }))
+        .filter((a) => a.name);
       const data: any = {
         ...rest,
         sort_order: Number(rest.sort_order) || 0,
