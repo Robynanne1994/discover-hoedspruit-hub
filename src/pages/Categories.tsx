@@ -689,7 +689,7 @@ const Categories = () => {
         <div style={{ minWidth: 0 }}>
           <h2
             style={{
-              fontFamily: FONT_BODY,
+              fontFamily: "Nohemi",
               fontWeight: 700,
               fontSize: 28,
               lineHeight: 1.05,
