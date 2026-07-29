@@ -16,15 +16,16 @@ interface Special {
   homepage_image_url: string | null;
   deal_label: string;
   card_footer_text: string | null;
-  price_label: string | null;
+  sub_tag_1: string | null;
+  sub_tag_2: string | null;
   valid_until: string | null;
 }
 
-const endsLabel = (validUntil: string | null) => {
-  if (!validUntil) return "Ongoing";
-  const d = new Date(validUntil);
-  if (isNaN(d.getTime())) return "Ongoing";
-  return `Ends ${d.getDate()} ${d.toLocaleString("en-GB", { month: "short" })}`;
+const formatEnds = (d: string | null) => {
+  if (!d) return "Ongoing";
+  const date = new Date(d);
+  if (isNaN(date.getTime())) return "Ongoing";
+  return `Ends ${date.toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`;
 };
 
 const HomeSpecials = () => {
@@ -35,10 +36,11 @@ const HomeSpecials = () => {
       const { data } = await supabase
         .from("specials")
         .select(
-          "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, deal_label, card_footer_text, price_label, valid_until"
+          "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, deal_label, card_footer_text, sub_tag_1, sub_tag_2, valid_until, is_featured, created_at",
         )
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
+        .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
       return (data || []) as Special[];
     },
@@ -50,10 +52,10 @@ const HomeSpecials = () => {
     <section>
       <HomeSectionHead primary="Active Specials" actionHref="/specials" />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
-        <div style={{ display: "flex", gap: 10, paddingRight: 20 }}>
+        <div style={{ display: "flex", gap: 12, paddingRight: 20 }}>
           {specials.map((s) => {
-            const avatar = s.homepage_image_url || s.image_url || s.detail_image_url || "";
-            const subtitle = s.card_footer_text || s.price_label || "";
+            const schedule = s.card_footer_text || s.sub_tag_1 || s.sub_tag_2 || "";
+            const avatar = s.homepage_image_url || s.image_url || s.detail_image_url;
             return (
               <Link
                 key={s.id}
@@ -64,9 +66,9 @@ const HomeSpecials = () => {
                 style={{
                   width: 268,
                   flexShrink: 0,
-                  background: "#FFFFFF",
+                  background: "#ffffff",
                   borderRadius: 16,
-                  padding: "14px 16px 12px",
+                  padding: 16,
                   display: "flex",
                   flexDirection: "column",
                   textDecoration: "none",
@@ -80,10 +82,10 @@ const HomeSpecials = () => {
                       fontFamily: HN,
                       fontSize: 11,
                       fontWeight: 700,
-                      letterSpacing: "0.10em",
+                      letterSpacing: "0.08em",
                       textTransform: "uppercase",
                       color: "#B42318",
-                      lineHeight: 1.2,
+                      marginBottom: 6,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -95,13 +97,11 @@ const HomeSpecials = () => {
                 <div
                   {...noTitleCaseProps(s)}
                   style={{
-                    marginTop: 8,
                     fontFamily: HN,
                     fontSize: 16,
                     fontWeight: 700,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    height: 20,
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -111,27 +111,24 @@ const HomeSpecials = () => {
                 </div>
                 <div
                   style={{
-                    marginTop: 6,
                     fontFamily: HN,
                     fontSize: 13,
                     color: "#6B6A5E",
-                    lineHeight: 1.3,
-                    height: 17,
+                    marginTop: 4,
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
+                    minHeight: 18,
                   }}
                 >
-                  {subtitle}
+                  {schedule}
                 </div>
-
-                <div style={{ height: 1, background: "rgba(26,26,26,0.10)", margin: "12px 0 10px" }} />
-
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ height: 1, background: "rgba(26,26,26,0.10)", margin: "12px 0" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div
                     style={{
-                      width: 28,
-                      height: 28,
+                      width: 32,
+                      height: 32,
                       borderRadius: "50%",
                       overflow: "hidden",
                       background: "#F4EFE3",
@@ -152,7 +149,7 @@ const HomeSpecials = () => {
                       flex: 1,
                       minWidth: 0,
                       fontFamily: HN,
-                      fontSize: 13,
+                      fontSize: 14,
                       fontWeight: 700,
                       color: "#1A1A1A",
                       whiteSpace: "nowrap",
@@ -162,16 +159,8 @@ const HomeSpecials = () => {
                   >
                     {s.business_name}
                   </span>
-                  <span
-                    style={{
-                      fontFamily: HN,
-                      fontSize: 13,
-                      color: "#6B6A5E",
-                      whiteSpace: "nowrap",
-                      flexShrink: 0,
-                    }}
-                  >
-                    {endsLabel(s.valid_until)}
+                  <span style={{ fontFamily: HN, fontSize: 13, color: "#6B6A5E", flexShrink: 0 }}>
+                    {formatEnds(s.valid_until)}
                   </span>
                 </div>
               </Link>
