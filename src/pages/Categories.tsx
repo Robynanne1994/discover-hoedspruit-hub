@@ -700,7 +700,7 @@ const Categories = () => {
             All Categories
           </h2>
           <p style={{ margin: "6px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: "#6B6A5E" }}>
-            {sortedGrid.length} {sortedGrid.length === 1 ? "category" : "categories"} · {totalListings} listings
+            {sortedGrid.length}&nbsp;{sortedGrid.length === 1 ? "Category" : "Categories"} · {totalListings}&nbsp;Listings
           </p>
         </div>
 
