@@ -22,17 +22,22 @@ export const useHomepageSection = (
           ? (siteContent.content as string[])
           : [];
 
+      const pinFeatured = (rows: any[]) => [
+        ...rows.filter((l) => l?.is_featured),
+        ...rows.filter((l) => !l?.is_featured),
+      ];
+
       let curatedListings: any[] = [];
       if (curatedIds.length > 0) {
         const { data } = await supabase
           .from("listings")
-          .select("id, title, title_override, image_url, google_rating, google_reviews_count, location")
+          .select("id, title, title_override, image_url, google_rating, google_reviews_count, location, is_featured")
           .in("id", curatedIds);
         const map = new Map((data || []).map((l) => [l.id, l]));
         curatedListings = curatedIds.map((id) => map.get(id)).filter(Boolean);
       }
 
-      if (curatedListings.length >= TARGET) return curatedListings.slice(0, TARGET);
+      if (curatedListings.length >= TARGET) return pinFeatured(curatedListings).slice(0, TARGET);
 
       // 2. Fill remaining slots from category auto-picks
       let categoryQuery;
@@ -51,7 +56,7 @@ export const useHomepageSection = (
       }
 
       const { data: categories } = await categoryQuery;
-      if (!categories?.length) return curatedListings;
+      if (!categories?.length) return pinFeatured(curatedListings);
 
       const categoryId = categories[0].id;
 
@@ -64,14 +69,17 @@ export const useHomepageSection = (
 
       const { data: autoPicks } = await supabase
         .from("listings")
-        .select("id, title, title_override, image_url, google_rating, google_reviews_count, location")
+        .select("id, title, title_override, image_url, google_rating, google_reviews_count, location, is_featured")
         .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
+        .order("is_featured", { ascending: false })
         .limit(TARGET + curatedIds.length);
 
       const curatedIdSet = new Set(curatedListings.map((l) => l.id));
       const fillers = (autoPicks || []).filter((l) => !curatedIdSet.has(l.id));
 
-      return [...curatedListings, ...fillers].slice(0, TARGET);
+      // Featured listings always surface first in the homepage row
+      return pinFeatured([...curatedListings, ...fillers]).slice(0, TARGET);
+
     },
 
   });
