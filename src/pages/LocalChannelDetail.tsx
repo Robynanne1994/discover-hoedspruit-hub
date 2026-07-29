@@ -318,9 +318,9 @@ const LocalChannelDetail = () => {
                 </h2>
                 {(() => {
 
-                  const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
-                    ? resource.admins.filter((a: any) => a?.name || a?.image_url)
-                    : (resource.admin_name ? [{ name: resource.admin_name }] : []);
+                  const admins: { name: string }[] = Array.isArray(resource.admins) && resource.admins.length
+                    ? resource.admins.filter((a: any) => a?.name).map((a: any) => ({ name: a.name }))
+                    : (resource.admin_name ? resource.admin_name.split("|").map((n: string) => n.trim()).filter(Boolean).map((name: string) => ({ name })) : []);
                   const yearsValue = resource.since_year
                     ? `Since ${resource.since_year}`
                     : (resource.years_running != null
@@ -364,9 +364,7 @@ const LocalChannelDetail = () => {
                                     background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
                                     fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
                                   }}>
-                                    {a.image_url
-                                      ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                      : (a.name || "?").trim().charAt(0).toUpperCase()}
+                                    {(a.name || "?").trim().charAt(0).toUpperCase()}
                                   </div>
                                   <span style={{ fontFamily: HN, fontSize: 14, color: INK }}>{a.name}</span>
                                 </div>

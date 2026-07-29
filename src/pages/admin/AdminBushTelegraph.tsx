@@ -13,7 +13,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
 
-type AdminEntry = { name: string; image_url: string };
+type AdminEntry = { name: string };
 type YearsMode = "years" | "since";
 
 const RESOURCE_TYPES = [
@@ -23,7 +23,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "homepage_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "title_override", "is_featured", "sort_order"];
+const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "homepage_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
@@ -179,8 +179,8 @@ const AdminBushTelegraph = () => {
     mutationFn: async (payload: typeof emptyForm & { id?: string }) => {
       const { id, use_title_override, years_running, since_year, years_mode, admins, ...rest } = payload;
       const cleanAdmins = (admins || [])
-        .map((a) => ({ name: (a.name || "").trim(), image_url: (a.image_url || "").trim() }))
-        .filter((a) => a.name || a.image_url);
+        .map((a) => ({ name: (a.name || "").trim() }))
+        .filter((a) => a.name);
       const data: any = {
         ...rest,
         sort_order: Number(rest.sort_order) || 0,
@@ -194,7 +194,7 @@ const AdminBushTelegraph = () => {
         saved_image_url: rest.saved_image_url || null,
         qr_image_url: rest.qr_image_url || null,
         admins: cleanAdmins,
-        admin_name: cleanAdmins[0]?.name || null,
+        admin_name: cleanAdmins.map((a) => a.name).join("|") || null,
         years_running: years_mode === "years" && years_running !== "" ? Number(years_running) || null : null,
         since_year: years_mode === "since" && since_year !== "" ? Number(since_year) || null : null,
         post_frequency: rest.post_frequency?.trim() || null,
@@ -265,8 +265,8 @@ const AdminBushTelegraph = () => {
       saved_image_url: r.saved_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
       admins: Array.isArray(r.admins) && r.admins.length
-        ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
-        : (r.admin_name ? [{ name: r.admin_name, image_url: "" }] : []),
+        ? r.admins.map((a: any) => ({ name: a?.name ?? "" })).filter((a: any) => a.name)
+        : (r.admin_name ? r.admin_name.split("|").map((n) => n.trim()).filter(Boolean).map((name) => ({ name })) : []),
       years_mode: r.since_year != null ? "since" : "years",
       years_running: r.years_running ?? "",
       since_year: r.since_year ?? "",
@@ -360,6 +360,11 @@ const AdminBushTelegraph = () => {
           homepage_image_url: r.homepage_image_url?.trim() || null,
           qr_image_url: r.qr_image_url?.trim() || null,
           admin_name: r.admin_name?.trim() || null,
+          admins: (r.admin_name || "")
+            .split("|")
+            .map((n) => n.trim())
+            .filter(Boolean)
+            .map((name) => ({ name })),
           years_running: r.years_running ? parseInt(r.years_running) || null : null,
           post_frequency: r.post_frequency?.trim() || null,
           tag_1: r.tag_1?.trim() || null,
@@ -415,10 +420,13 @@ const AdminBushTelegraph = () => {
   const downloadExport = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
-      r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
+      r.title, r.title_override ?? "", r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
       r.image_url ?? "", r.detail_image_url ?? "", r.homepage_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
-      r.admin_name ?? "", r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
-      r.tag_1 ?? "", r.tag_2 ?? "", r.title_override ?? "",
+      (Array.isArray(r.admins) && r.admins.length
+        ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
+        : (r.admin_name ?? "")),
+      r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
+      r.tag_1 ?? "", r.tag_2 ?? "",
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
     ].map(escapeCSV).join(","));
     downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
@@ -733,27 +741,15 @@ const AdminBushTelegraph = () => {
                         placeholder="e.g. Jane Smith"
                       />
                     </div>
-                    <div>
-                      <Label className="text-xs">Photo</Label>
-                      <ImageUpload
-                        bucket="local-channels-images"
-                        value={a.image_url}
-                        onChange={(url) => {
-                          const next = [...form.admins];
-                          next[idx] = { ...next[idx], image_url: url };
-                          setForm({ ...form, admins: next });
-                        }}
-                        aspect={1}
-                      />
-                    </div>
                   </div>
+
                 ))}
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   className="gap-1"
-                  onClick={() => setForm({ ...form, admins: [...form.admins, { name: "", image_url: "" }] })}
+                  onClick={() => setForm({ ...form, admins: [...form.admins, { name: "" }] })}
                 >
                   <Plus className="h-3 w-3" /> Add another admin
                 </Button>
