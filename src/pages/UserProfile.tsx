@@ -477,7 +477,7 @@ const UserProfile = () => {
                 height: 32,
                 padding: "0 14px",
                 borderRadius: 999,
-                background: INK,
+                background: "#423324",
                 color: "#fff",
                 border: "none",
                 fontFamily: SANS,
