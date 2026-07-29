@@ -740,20 +740,8 @@ const AdminBushTelegraph = () => {
                         }}
                         placeholder="e.g. Jane Smith"
                       />
-                    </div>
-                    <div>
-                      <Label className="text-xs">Photo</Label>
-                      <ImageUpload
-                        bucket="local-channels-images"
-                        value={a.image_url}
-                        onChange={(url) => {
-                          const next = [...form.admins];
-                          next[idx] = { ...next[idx], image_url: url };
-                          setForm({ ...form, admins: next });
-                        }}
-                        aspect={1}
-                      />
-                    </div>
+                  </div>
+
                   </div>
                 ))}
                 <Button
