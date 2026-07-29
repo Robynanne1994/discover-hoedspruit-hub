@@ -35,7 +35,7 @@ const HomeMasthead = () => {
               aria-label="Hello Hoedspruit — Your Lowveld local guide to restaurants, lodges, events and specials"
               style={{
                 margin: 0,
-                fontFamily: HEAD,
+                fontFamily: NOHEMI,
                 fontWeight: 400,
                 fontSize: 22,
                 lineHeight: 1.05,
