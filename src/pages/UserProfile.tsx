@@ -322,17 +322,10 @@ const UserProfile = () => {
     setMenuOpen(false);
     const url = window.location.href;
     try {
-      if (navigator.share) {
-        await navigator.share({
-          title: profile?.display_name || "Profile",
-          url,
-        });
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast("Link copied");
-      }
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied to clipboard!");
     } catch {
-      /* cancelled */
+      toast.error("Could not copy link");
     }
   };
 
