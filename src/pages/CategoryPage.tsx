@@ -14,7 +14,7 @@ import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import { bayesianScore } from "@/lib/ratingScore";
+import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { isOpenNow } from "@/lib/openHours";
 import Seo from "@/components/Seo";
 
@@ -66,6 +66,17 @@ const titleSizeFor = (s: string) => {
 };
 
 type SortKey = "default" | "name_asc" | "name_desc" | "rating" | "distance";
+
+// google_rating / google_reviews_count can arrive as a number, a numeric string
+// or an empty string. Anything that isn't a positive number counts as "no rating".
+const ratingNumber = (raw: unknown) => {
+  if (raw === null || raw === undefined || raw === "") return 0;
+  const n = typeof raw === "number" ? raw : parseFloat(String(raw));
+  return Number.isFinite(n) ? n : 0;
+};
+
+const hasGoogleRating = (l: { google_rating?: unknown; google_reviews_count?: unknown }) =>
+  ratingNumber(l.google_rating) > 0 && ratingNumber(l.google_reviews_count) > 0;
 
 // Filter chip used inside the filter sheet
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
@@ -512,12 +523,25 @@ const CategoryPage = () => {
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
 
+  // Mean rating (C) for the Bayesian score — calculated from the full unfiltered
+  // category dataset so that active filters never move the baseline. Falls back
+  // to the shared constant when too few listings carry reviews to be meaningful.
+  const categoryRatingMean = useMemo(() => {
+    const rated = (listings || []).filter((l) => hasGoogleRating(l));
+    if (rated.length < 5) return RATING_FALLBACK_MEAN;
+    const sum = rated.reduce((acc, l) => acc + ratingNumber(l.google_rating), 0);
+    return sum / rated.length;
+  }, [listings]);
+
   const filteredListings = useMemo(() => {
     if (!listings) return [];
     const q = search.trim().toLowerCase();
     // When the user is actively searching, bypass the other filters so that
     // an empty filter-result state doesn't prevent search from finding matches.
     const result = listings.filter((l) => {
+      // Highest Rated only ranks listings that actually have a rating, so
+      // unrated listings drop out entirely while that sort is active.
+      if (sortBy === "rating" && !hasGoogleRating(l)) return false;
       if (q) {
         return (l.title || "").toLowerCase().includes(q);
       }
@@ -564,22 +588,24 @@ const CategoryPage = () => {
       return [...result].sort((a, b) => kmOf(a) - kmOf(b));
     }
     if (sortBy === "rating") {
-      const scoreFor = (l: any) => {
-        const agg = reviewAggregates?.get(l.id);
-        const internalCount = agg?.count ?? 0;
-        const internalAvg = internalCount > 0 ? (agg!.sum / internalCount) : 0;
-        return bayesianScore({
-          googleRating: l.google_rating,
-          googleCount: l.google_reviews_count,
-          internalAvg,
-          internalCount,
-        });
-      };
-      return [...result].sort((a, b) => scoreFor(b) - scoreFor(a));
+      // Score is internal to sorting only — never displayed.
+      const scoreFor = (l: { google_rating?: unknown; google_reviews_count?: unknown }) =>
+        bayesianRating(
+          ratingNumber(l.google_rating),
+          ratingNumber(l.google_reviews_count),
+          categoryRatingMean,
+        );
+      return [...result].sort((a, b) => {
+        const byScore = scoreFor(b) - scoreFor(a);
+        if (byScore !== 0) return byScore;
+        const byCount = ratingNumber(b.google_reviews_count) - ratingNumber(a.google_reviews_count);
+        if (byCount !== 0) return byCount;
+        return (a.title || "").localeCompare(b.title || "");
+      });
     }
     return result;
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, reviewAggregates]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
