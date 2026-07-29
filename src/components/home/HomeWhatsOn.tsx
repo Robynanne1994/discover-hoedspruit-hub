@@ -6,6 +6,16 @@ import { getEventDates } from "@/lib/eventDates";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+function formatTime(t?: string | null) {
+  if (!t) return "";
+  const m = /^(\d{1,2}):(\d{2})/.exec(t);
+  if (!m) return t;
+  let h = parseInt(m[1], 10);
+  const suffix = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return `${h}:${m[2]} ${suffix}`;
+}
+
 const MONTHS_SHORT = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 const HomeWhatsOn = () => {
@@ -22,7 +32,7 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, title_override, location, date, start_date, end_date, image_url, homepage_image_url")
+          .select("id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
@@ -36,7 +46,7 @@ const HomeWhatsOn = () => {
       const todayIso = today.toISOString().slice(0, 10);
       const { data } = await supabase
         .from("events")
-        .select("id, title, title_override, location, date, start_date, end_date, image_url, homepage_image_url")
+        .select("id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url")
         .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
@@ -56,11 +66,13 @@ const HomeWhatsOn = () => {
     <section>
       <HomeSectionHead primary="Upcoming Events" actionHref="/events" />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
-        <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
+        <div style={{ display: "flex", gap: 8, paddingRight: 20 }}>
           {events.map((e) => {
             const { start } = getEventDates(e);
             const dayNum = start?.getDate();
             const monLbl = start ? MONTHS_SHORT[start.getMonth()] : "";
+            const timeLbl = formatTime((e as any).start_time);
+            const metaLine = [timeLbl, e.location].filter(Boolean).join(" \u00b7 ");
             return (
               <Link
                 key={e.id}
@@ -70,11 +82,11 @@ const HomeWhatsOn = () => {
                 onPointerLeave={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
                 style={{
                   position: "relative",
-                  width: 230,
-                  height: 300,
+                  width: 144,
+                  height: 192,
                   flexShrink: 0,
                   background: "#F4EFE3",
-                  borderRadius: 16,
+                  borderRadius: 14,
                   overflow: "hidden",
                   textDecoration: "none",
                   transition: "transform 150ms ease-out",
@@ -93,43 +105,62 @@ const HomeWhatsOn = () => {
                   style={{
                     position: "absolute",
                     inset: 0,
-                    background: "linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.65) 100%)",
+                    background: "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 38%, rgba(0,0,0,0.72) 100%)",
                   }}
                 />
                 {dayNum != null && (
                   <div
                     style={{
                       position: "absolute",
-                      top: 12,
-                      right: 12,
-                      width: 50,
-                      height: 50,
+                      top: 8,
+                      left: 8,
+                      padding: "4px 9px",
                       borderRadius: 999,
-                      background: "rgba(255,255,255,0.92)",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      background: "rgba(255,255,255,0.94)",
+                      fontFamily: HN,
+                      fontSize: 10,
+                      fontWeight: 600,
+                      letterSpacing: "0.06em",
+                      color: "#1A1A1A",
                       lineHeight: 1,
                     }}
                   >
-                    <span style={{ fontFamily: HN, fontSize: 9, letterSpacing: "0.08em", color: "#6B6A5E" }}>{monLbl}</span>
-                    <span style={{ fontFamily: HN, fontSize: 17, color: "#1A1A1A", marginTop: 2 }}>{dayNum}</span>
+                    {dayNum} {monLbl}
                   </div>
                 )}
-                <div style={{ position: "absolute", left: 14, right: 14, bottom: 14 }}>
+                <div style={{ position: "absolute", left: 10, right: 10, bottom: 10 }}>
                   <div
                     {...noTitleCaseProps(e)}
                     style={{
                       fontFamily: HN,
-                      fontSize: 17,
+                      fontSize: 13,
+                      fontWeight: 600,
                       color: "#ffffff",
                       lineHeight: 1.2,
-                      wordBreak: "break-word",
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
                     }}
                   >
                     {getDisplayTitle(e)}
                   </div>
+                  {metaLine && (
+                    <div
+                      style={{
+                        marginTop: 4,
+                        fontFamily: HN,
+                        fontSize: 10.5,
+                        color: "rgba(255,255,255,0.88)",
+                        lineHeight: 1.2,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {metaLine}
+                    </div>
+                  )}
                 </div>
               </Link>
             );
