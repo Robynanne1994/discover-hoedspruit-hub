@@ -179,8 +179,14 @@ const MyProfileGuest = () => {
 
       <div style={{ height: 28 }} />
 
+      <Eyebrow>Submissions</Eyebrow>
+      <ExternalCard items={submissionsItems} />
+
+      <div style={{ height: 28 }} />
+
       <Eyebrow>Support</Eyebrow>
       <Card items={supportItems} />
+
     </div>
   );
 };
