@@ -207,6 +207,15 @@ const Welcome = () => {
           }
         }
         toast.success("Account created! You're in.");
+        // Make sure the new account is signed in, then land on the homepage.
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          localStorage.setItem("hh-keep-signed-in", "1");
+          await signIn(email, password);
+        }
+        setLoading(false);
+        navigate("/", { replace: true });
+        return;
       }
     } else {
       localStorage.setItem("hh-keep-signed-in", keepSignedIn ? "1" : "0");
