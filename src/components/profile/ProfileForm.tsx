@@ -6,6 +6,7 @@ import { Camera, Loader2, ArrowLeft, Pencil } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
@@ -111,20 +112,47 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const [phone, setPhone] = useState(profile?.phone || "+27");
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
+  // Object URL of the file the user just picked, held while they crop it.
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
 
-  const uploadAvatar = async (file: File) => {
+  // Picking a file opens the cropper; only the cropped square is uploaded.
+  const handleAvatarPicked = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be under 10MB");
+      return;
+    }
+    setCropSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+  };
+
+  const closeCropper = () => {
+    setCropSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  };
+
+  const uploadAvatar = async (blob: Blob) => {
     if (!user) return;
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const path = `${user.id}/avatar.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      const path = `${user.id}/avatar.jpg`;
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       setAvatarUrl(newUrl);
       await supabase.from("profiles").update({ avatar_url: newUrl }).eq("id", user.id);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      closeCropper();
       toast.success("Profile photo updated");
     } catch (err: any) {
       toast.error(err.message || "Upload failed");
@@ -411,7 +439,8 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             style={{ display: "none" }}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) uploadAvatar(file);
+              if (file) handleAvatarPicked(file);
+              e.target.value = "";
             }}
           />
         </div>
@@ -592,6 +621,13 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
           </button>
         </div>
       </form>
+
+      <AvatarCropDialog
+        imageSrc={cropSrc}
+        busy={uploading}
+        onCancel={closeCropper}
+        onConfirm={uploadAvatar}
+      />
     </div>
   );
 };
