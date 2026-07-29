@@ -874,6 +874,7 @@ const Categories = () => {
                 style={{
                   display: "flex",
                   alignItems: "stretch",
+                  height: 96,
                   background: COLORS.card,
                   borderRadius: 16,
                   padding: 0,
@@ -888,7 +889,7 @@ const Categories = () => {
                 <div
                   style={{
                     width: 96,
-                    borderRadius: "16px 0 0 16px",
+                    height: 96,
                     overflow: "hidden",
                     background: "#e6e0d2",
                     flexShrink: 0,
@@ -904,10 +905,34 @@ const Categories = () => {
                 </div>
                 <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 14, padding: 14 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontFamily: FONT_BODY, fontSize: 15, fontWeight: 700, lineHeight: 1.25, color: "#1A1A1A", margin: 0 }}>
+                    <p
+                      style={{
+                        fontFamily: FONT_BODY,
+                        fontSize: 15,
+                        fontWeight: 700,
+                        lineHeight: 1.2,
+                        color: COLORS.ink,
+                        margin: 0,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {cat.title}
                     </p>
-                    <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.muted }}>
+                    <p
+                      style={{
+                        margin: "3px 0 0",
+                        fontFamily: FONT_BODY,
+                        fontSize: 12.5,
+                        fontWeight: 400,
+                        lineHeight: 1.2,
+                        color: COLORS.muted,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
                       {count}&nbsp;{count === 1 ? "Listing" : "Listings"}
                     </p>
                   </div>
