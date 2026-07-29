@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { invalidateBlockQueries } from "@/hooks/useBlockedUsers";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 
@@ -38,6 +39,10 @@ const AccountBlocked = () => {
       const map = new Map(((profs as any[]) ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((b: any) => ({ ...b, profile: map.get(b.blocked_id) }));
     },
+    // The global cache never refetches on mount; this list has to show who is
+    // actually blocked right now, including blocks made from a profile screen.
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   const unblock = async (id: string, blockedId: string) => {
@@ -46,11 +51,10 @@ const AccountBlocked = () => {
       toast.error("Could not unblock. Please try again.");
       return;
     }
+    // Unblocking only lifts the hiding: they become visible again in search,
+    // suggestions and follow lists. No follow is restored in either direction.
     queryClient.setQueryData(["user-blocked", user?.id, blockedId], false);
-    queryClient.invalidateQueries({ queryKey: ["user-blocks"] });
-    queryClient.invalidateQueries({ queryKey: ["blocked-users", user?.id] });
-    queryClient.invalidateQueries({ queryKey: ["blocked-by"] });
-    queryClient.invalidateQueries({ queryKey: ["search-users"] });
+    await invalidateBlockQueries(queryClient);
     toast.success("Unblocked.");
   };
 
