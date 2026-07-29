@@ -265,8 +265,8 @@ const AdminBushTelegraph = () => {
       saved_image_url: r.saved_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
       admins: Array.isArray(r.admins) && r.admins.length
-        ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
-        : (r.admin_name ? [{ name: r.admin_name, image_url: "" }] : []),
+        ? r.admins.map((a: any) => ({ name: a?.name ?? "" })).filter((a: any) => a.name)
+        : (r.admin_name ? r.admin_name.split("|").map((n) => n.trim()).filter(Boolean).map((name) => ({ name })) : []),
       years_mode: r.since_year != null ? "since" : "years",
       years_running: r.years_running ?? "",
       since_year: r.since_year ?? "",
