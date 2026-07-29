@@ -740,9 +740,9 @@ const AdminBushTelegraph = () => {
                         }}
                         placeholder="e.g. Jane Smith"
                       />
+                    </div>
                   </div>
 
-                  </div>
                 ))}
                 <Button
                   type="button"
