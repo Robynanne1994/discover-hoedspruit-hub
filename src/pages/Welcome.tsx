@@ -475,35 +475,22 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div>
-                <Label htmlFor="firstName" style={CREATE_LABEL_STYLE}>
-                  First Name
+                <Label htmlFor="fullName" style={CREATE_LABEL_STYLE}>
+                  First &amp; Last Name
                 </Label>
                 <Input
-                  id="firstName"
+                  id="fullName"
                   type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(capitaliseName(e.target.value))}
                   required
-                  placeholder="Your first name"
+                  autoCapitalize="words"
+                  placeholder="Your first and last name"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
                   style={fieldStyle}
                 />
               </div>
-              <div>
-                <Label htmlFor="lastName" style={CREATE_LABEL_STYLE}>
-                  Surname
-                </Label>
-                <Input
-                  id="lastName"
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  placeholder="Your surname"
-                  className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={fieldStyle}
-                />
-              </div>
+
               <div>
                 <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
