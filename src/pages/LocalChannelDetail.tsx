@@ -364,9 +364,7 @@ const LocalChannelDetail = () => {
                                     background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
                                     fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
                                   }}>
-                                    {a.image_url
-                                      ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                      : (a.name || "?").trim().charAt(0).toUpperCase()}
+                                    {(a.name || "?").trim().charAt(0).toUpperCase()}
                                   </div>
                                   <span style={{ fontFamily: HN, fontSize: 14, color: INK }}>{a.name}</span>
                                 </div>
