@@ -1,3 +1,12 @@
+/* Nohemi — self-hosted variable woff2 (covers weights 100–900) */
+@font-face {
+  font-family: "Nohemi";
+  src: url("/fonts/Nohemi-VF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Helvetica Neue — self-hosted woff2 */
 @font-face {
   font-family: "Helvetica Neue";
