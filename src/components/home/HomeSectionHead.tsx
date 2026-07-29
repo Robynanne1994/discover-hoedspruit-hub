@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Props {
   primary: string;
