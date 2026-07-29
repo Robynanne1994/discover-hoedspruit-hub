@@ -2251,6 +2251,10 @@ export type Database = {
         Args: { _exclude_id?: string; _username: string }
         Returns: boolean
       }
+      respond_to_follow_request: {
+        Args: { _accept: boolean; _request_id: string }
+        Returns: undefined
+      }
       search_public_profiles: {
         Args: { _limit?: number; _term: string }
         Returns: {
