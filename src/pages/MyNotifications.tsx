@@ -7,7 +7,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useFollowRequestActors, FollowActor } from "@/hooks/useFollowRequestActors";
+import { useFollowRequestActors, actorForNotif, isFollowActorKind, FollowActor } from "@/hooks/useFollowRequestActors";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
 import hhLogo from "@/assets/hh-logo.png";
 
@@ -163,14 +163,17 @@ export default function MyNotifications() {
     return groups;
   }, [notifs]);
 
-  const followRequestRefIds = useMemo(
+  // Includes the resolved kinds (declined / withdrawn / accepted): their
+  // follows row may be gone, but the card still shows the person, so the
+  // actor lookup has to cover them or the avatar blanks out.
+  const followActorRefs = useMemo(
     () =>
       notifs
-        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "new_follower") && n.ref_id)
-        .map((n) => n.ref_id as string),
+        .filter((n) => isFollowActorKind(n.kind) && n.ref_id)
+        .map((n) => ({ ref_id: n.ref_id, link: n.link })),
     [notifs]
   );
-  const actorMap = useFollowRequestActors(followRequestRefIds);
+  const actorMap = useFollowRequestActors(followActorRefs);
 
 
   const feedbackRefIds = useMemo(
@@ -201,7 +204,7 @@ export default function MyNotifications() {
     notifs.forEach((n) => {
       if (!n.ref_table || !n.ref_id) return;
       if (isAdminKind(n.kind)) return;
-      if (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined") return;
+      if (isFollowActorKind(n.kind)) return;
       const t = n.ref_table;
       if (t !== "listings" && t !== "events" && t !== "specials" && t !== "bush_telegraph_resources") return;
       if (!keys[t]) keys[t] = new Set();
@@ -273,7 +276,10 @@ export default function MyNotifications() {
     queryClient.invalidateQueries({ queryKey: ["follow-request-count"] });
 
     // The server trigger converts the notification into a resolved record.
-    // Mirror that locally so the card updates instantly.
+    // Mirror that locally so the card updates instantly — including the
+    // '/profile/<id>' link, which is how the card keeps showing this person's
+    // avatar once the follows row is deleted by a decline.
+    const actor = actorMap[n.ref_id];
     initialUnreadRef.current?.delete(n.id);
     setNotifs((prev) =>
       prev.map((x) =>
@@ -283,13 +289,14 @@ export default function MyNotifications() {
               kind: accept ? "follow_request_accepted" : "follow_request_declined",
               title: accept ? "You accepted this follow request" : "You declined this follow request",
               body: accept ? "They are now following you." : "Their follow request was declined.",
+              link: actor ? `/profile/${actor.id}` : x.link,
               is_read: true,
             }
           : x
       )
     );
     toast.success(accept ? "Follow request accepted" : "Follow request declined");
-  }, [queryClient]);
+  }, [queryClient, actorMap]);
 
   const deleteNotif = useCallback(async (id: string) => {
     initialUnreadRef.current?.delete(id);
@@ -504,9 +511,8 @@ function NotifCard({
     return () => window.removeEventListener("click", close);
   }, [menuOpen]);
 
-  const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined" || n.kind === "new_follower";
-  // For "they accepted your request", the person to show is the account that was followed.
-  const actorProfile = n.kind === "follow_accepted" ? (actor?.target || actor) : actor;
+  const isUserRelated = isFollowActorKind(n.kind);
+  const actorProfile = actorForNotif(n.kind, actor);
   const avatarUrl = imageOverride || (isUserRelated ? actorProfile?.avatar_url : null);
 
 
