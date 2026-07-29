@@ -1028,7 +1028,7 @@ const EventDetail = () => {
         <h1
           data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
           style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
+            margin: 0, fontFamily: HEAD, fontWeight: 600, fontSize: 28, lineHeight: 1.15,
             color: C.heading, letterSpacing: "0.01em",
           }}
         >
