@@ -683,24 +683,6 @@ const AccountInfo = () => {
                 />
               </Row>
 
-              <Row label="Phone">
-                <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
-                  <DialCodePicker
-                    value={parsed.areaCode}
-                    onChange={(newCode) => {
-                      setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
-                    }}
-                  />
-                  <input
-                    type="tel"
-                    value={parsed.number}
-                    onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
-                    style={{ ...rowInputStyle, flex: 1 }}
-                    placeholder="063 241 0296"
-                  />
-                </div>
-              </Row>
-
               <Row
                 label="Residency"
                 onClick={() => setResidencyOpen((v) => !v)}
