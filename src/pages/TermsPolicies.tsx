@@ -21,7 +21,7 @@ const POLICIES = [
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <p
     style={{
-      fontFamily: `"Bricolage Grotesque", ${FF}`,
+      fontFamily: `"Nohemi", ${FF}`,
       fontSize: 15,
       fontWeight: 700,
       letterSpacing: "0.06em",

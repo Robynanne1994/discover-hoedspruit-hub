@@ -24,7 +24,7 @@ import Seo from "@/components/Seo";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const C = {
   page: "#E6E0CC",

@@ -20,7 +20,7 @@ const LINE = "rgba(26,26,26,0.10)";
 const WHITE = "#FFFFFF";
 const PILL_BORDER = "#E8E4DF";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";

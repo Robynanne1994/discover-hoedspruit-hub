@@ -49,7 +49,7 @@ const InstagramIcon = ({ size = 20, color = C.primary, ...props }: { size?: numb
 );
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 // Design tokens

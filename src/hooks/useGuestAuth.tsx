@@ -9,7 +9,7 @@ const GUEST_KEY = "hh-guest-mode";
 // "Suggest an Edit" sheet on the listing detail page) so the sign-up
 // prompt feels like the rest of the app rather than a stock component.
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const C = {
   surface: "#ffffff",
   heading: "#1A1A1A",

@@ -21,7 +21,7 @@ import Seo from "@/components/Seo";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 // Design tokens (match ListingDetail)
 const C = {

@@ -151,7 +151,7 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
             <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px" }}>
+        <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px" }}>
           {reportedUserHandle ? `Report @${reportedUserHandle}` : "Report user"}
         </h2>
         <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: "#2b2420", margin: "0 0 20px" }}>

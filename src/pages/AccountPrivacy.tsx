@@ -141,7 +141,7 @@ const AccountPrivacy = () => {
   const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     <div
       style={{
-        fontFamily: '"Bricolage Grotesque", ' + FF,
+        fontFamily: '"Nohemi", ' + FF,
         fontWeight: 700,
         fontSize: 15,
         letterSpacing: "0.06em",
