@@ -208,16 +208,15 @@ export const useRespondToFollowRequest = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ requestId, accept }: { requestId: string; accept: boolean }) => {
-      if (accept) {
-        const { error } = await supabase
-          .from("follows")
-          .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
-          .eq("id", requestId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("follows").delete().eq("id", requestId);
-        if (error) throw error;
-      }
+      // Authoritative server-side accept/decline. Runs SECURITY DEFINER so the
+      // follows row actually changes (and the notification trigger fires),
+      // rather than relying on an RLS-gated client write that can silently
+      // affect zero rows.
+      const { error } = await supabase.rpc("respond_to_follow_request", {
+        _request_id: requestId,
+        _accept: accept,
+      });
+      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["follow-requests", user?.id] });

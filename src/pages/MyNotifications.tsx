@@ -235,10 +235,14 @@ export default function MyNotifications() {
   const respondFollowRequest = useCallback(async (n: Notif, accept: boolean) => {
     if (!n.ref_id) return;
     if (accept) {
-      await supabase
-        .from("follows")
-        .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
-        .eq("id", n.ref_id);
+      // Authoritative server-side accept. If it fails, bail before touching the
+      // UI so the card doesn't falsely show "accepted" while the follow never
+      // actually took effect.
+      const { error } = await supabase.rpc("respond_to_follow_request", {
+        _request_id: n.ref_id,
+        _accept: true,
+      });
+      if (error) return;
       // Refresh follow state everywhere: the accepter's follower count/list and
       // the requester's "Following" status all key off these queries.
       queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
@@ -264,7 +268,11 @@ export default function MyNotifications() {
         )
       );
     } else {
-      await supabase.from("follows").delete().eq("id", n.ref_id);
+      const { error } = await supabase.rpc("respond_to_follow_request", {
+        _request_id: n.ref_id,
+        _accept: false,
+      });
+      if (error) return;
       queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
       queryClient.invalidateQueries({ queryKey: ["is-following"] });
       // Server trigger converts the notification to 'follow_request_declined'.
