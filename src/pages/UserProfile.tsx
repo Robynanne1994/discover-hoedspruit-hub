@@ -29,6 +29,7 @@ import PageHeader from "@/components/PageHeader";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import SavedCard from "@/components/profile/SavedCard";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { invalidateBlockQueries } from "@/hooks/useBlockedUsers";
 
 const PAGE_BG = "#E6E0CC";
 const CREAM = "#f5f0e8";
@@ -162,13 +163,7 @@ const UserProfile = () => {
     ]);
     queryClient.setQueryData(["user-blocked", user.id, id], true);
     queryClient.setQueryData(["is-following", user.id, id], false);
-    queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
-    queryClient.invalidateQueries({ queryKey: ["followers"] });
-    queryClient.invalidateQueries({ queryKey: ["following"] });
-    queryClient.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
-    queryClient.invalidateQueries({ queryKey: ["is-following", id, user.id] });
-    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
-    queryClient.invalidateQueries({ queryKey: ["search-users"] });
+    await invalidateBlockQueries(queryClient);
     toast.success("User blocked");
   };
 
@@ -184,9 +179,11 @@ const UserProfile = () => {
       toast.error("Could not unblock user. Please try again.");
       return;
     }
+    // Unblocking only lifts the hiding: they show up in search, suggestions and
+    // follow lists again. It deliberately does not restore any follow that the
+    // block tore down — that is the other person's / this user's choice to make.
     queryClient.setQueryData(["user-blocked", user.id, id], false);
-    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
-    queryClient.invalidateQueries({ queryKey: ["search-users"] });
+    await invalidateBlockQueries(queryClient);
     toast.success("User unblocked");
   };
 

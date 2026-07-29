@@ -729,6 +729,11 @@ const PeopleResults = ({ query }: { query: string }) => {
       return applyBlocks(merged);
     },
     enabled: !currentUserId || blocks !== undefined,
+    // Who is discoverable changes as blocks, unblocks and follows happen, and
+    // the global cache would otherwise hand back a list built while a block was
+    // still in place (see App.tsx defaults).
+    staleTime: 0,
+    refetchOnMount: "always",
   });
 
   if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
