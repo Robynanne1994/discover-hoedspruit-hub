@@ -3,7 +3,11 @@ import {
   Users,
   HelpCircle,
   ArrowUpRight,
+  Store,
+  Calendar,
+  Tag,
 } from "lucide-react";
+
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 
@@ -97,6 +101,65 @@ const Card = ({
   </div>
 );
 
+const submissionsItems = [
+  { label: "Business Listing Submissions", href: "https://hellohoedspruit.co/submissions/listing", icon: Store },
+  { label: "Event Submissions", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar },
+  { label: "Promotion Submissions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag },
+];
+
+const ExternalCard = ({
+  items,
+}: {
+  items: { label: string; href: string; icon?: any }[];
+}) => (
+  <div
+    style={{
+      background: CARD,
+      borderRadius: 20,
+      margin: "0 24px",
+      padding: "4px 22px",
+    }}
+  >
+    {items.map((item, i) => (
+      <a
+        key={item.label}
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 16,
+          padding: "18px 0",
+          textDecoration: "none",
+          borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
+        }}
+      >
+        {item.icon ? (
+          <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+          </div>
+        ) : null}
+        <span
+          style={{
+            flex: 1,
+            fontFamily: SANS,
+            fontSize: 16,
+            fontWeight: 400,
+            letterSpacing: "-0.1px",
+            color: INK,
+            lineHeight: 1.25,
+          }}
+        >
+          {item.label}
+        </span>
+        <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+      </a>
+    ))}
+  </div>
+);
+
+
 const MyProfileGuest = () => {
   const navigate = useNavigate();
 
@@ -179,8 +242,14 @@ const MyProfileGuest = () => {
 
       <div style={{ height: 28 }} />
 
+      <Eyebrow>Submissions</Eyebrow>
+      <ExternalCard items={submissionsItems} />
+
+      <div style={{ height: 28 }} />
+
       <Eyebrow>Support</Eyebrow>
       <Card items={supportItems} />
+
     </div>
   );
 };
