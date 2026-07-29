@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -218,13 +219,20 @@ export const useRespondToFollowRequest = () => {
       });
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_data, { accept }) => {
       qc.invalidateQueries({ queryKey: ["follow-requests", user?.id] });
+      qc.invalidateQueries({ queryKey: ["follow-request-count", user?.id] });
       qc.invalidateQueries({ queryKey: ["follow-counts"] });
       qc.invalidateQueries({ queryKey: ["followers"] });
       qc.invalidateQueries({ queryKey: ["following"] });
       qc.invalidateQueries({ queryKey: ["my-following-ids"] });
       qc.invalidateQueries({ queryKey: ["is-following"] });
+      toast.success(accept ? "Follow request accepted" : "Follow request declined");
+    },
+    // Never fail silently: a swallowed error here is exactly what made the
+    // Accept/Decline buttons look dead.
+    onError: (err: any) => {
+      toast.error(err?.message || "Could not respond to that follow request. Please try again.");
     },
   });
 };

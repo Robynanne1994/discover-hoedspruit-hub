@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone, MoreHorizontal, MessageSquare, Send } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
@@ -87,6 +88,10 @@ export default function MyNotifications() {
   const [loaded, setLoaded] = useState(false);
   const initialUnreadRef = useRef<Set<string> | null>(null);
   const [, force] = useState(0);
+  // Follow requests currently being accepted/declined, keyed by follows.id, so a
+  // double-tap can't fire the RPC twice and the buttons show they're working.
+  const respondingRef = useRef<Set<string>>(new Set());
+  const [responding, setResponding] = useState<Set<string>>(new Set());
 
   const load = useCallback(async () => {
     if (!user) {
@@ -234,64 +239,56 @@ export default function MyNotifications() {
 
   const respondFollowRequest = useCallback(async (n: Notif, accept: boolean) => {
     if (!n.ref_id) return;
-    if (accept) {
-      // Authoritative server-side accept. If it fails, bail before touching the
-      // UI so the card doesn't falsely show "accepted" while the follow never
-      // actually took effect.
-      const { error } = await supabase.rpc("respond_to_follow_request", {
-        _request_id: n.ref_id,
-        _accept: true,
-      });
-      if (error) return;
-      // Refresh follow state everywhere: the accepter's follower count/list and
-      // the requester's "Following" status all key off these queries.
-      queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
-      queryClient.invalidateQueries({ queryKey: ["followers"] });
-      queryClient.invalidateQueries({ queryKey: ["following"] });
-      queryClient.invalidateQueries({ queryKey: ["my-following-ids"] });
-      queryClient.invalidateQueries({ queryKey: ["is-following"] });
-      queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
-      // Server trigger converts the notification to 'follow_request_accepted'.
-      // Mirror that locally so the card updates instantly.
-      setNotifs((prev) =>
-        prev.map((x) =>
-          x.id === n.id
-            ? {
-                ...x,
-                kind: "follow_request_accepted",
-                title: "You accepted this follow request",
-                body: "They are now following you.",
-                link: x.link,
-                is_read: false,
-              }
-            : x
-        )
-      );
-    } else {
-      const { error } = await supabase.rpc("respond_to_follow_request", {
-        _request_id: n.ref_id,
-        _accept: false,
-      });
-      if (error) return;
-      queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
-      queryClient.invalidateQueries({ queryKey: ["is-following"] });
-      // Server trigger converts the notification to 'follow_request_declined'.
-      // Mirror that locally so the card stays in the list as history.
-      initialUnreadRef.current?.delete(n.id);
-      setNotifs((prev) =>
-        prev.map((x) =>
-          x.id === n.id
-            ? {
-                ...x,
-                kind: "follow_request_declined",
-                title: "You declined this follow request",
-                body: "Their follow request was declined.",
-                is_read: true,
-              }
-            : x
-        )
-      );
+    if (respondingRef.current.has(n.ref_id)) return;
+    respondingRef.current.add(n.ref_id);
+    setResponding((prev) => new Set(prev).add(n.ref_id!));
+
+    // Authoritative server-side accept/decline. If it fails we must say so —
+    // silently bailing here is what made these buttons look dead.
+    const { error } = await supabase.rpc("respond_to_follow_request", {
+      _request_id: n.ref_id,
+      _accept: accept,
+    });
+
+    respondingRef.current.delete(n.ref_id);
+    setResponding((prev) => {
+      const next = new Set(prev);
+      next.delete(n.ref_id!);
+      return next;
+    });
+
+    if (error) {
+      toast.error(error.message || "Could not respond to that follow request. Please try again.");
+      return;
     }
+
+    // Refresh follow state everywhere: the accepter's follower count/list and
+    // the requester's "Following" status all key off these queries.
+    queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
+    queryClient.invalidateQueries({ queryKey: ["followers"] });
+    queryClient.invalidateQueries({ queryKey: ["following"] });
+    queryClient.invalidateQueries({ queryKey: ["my-following-ids"] });
+    queryClient.invalidateQueries({ queryKey: ["is-following"] });
+    queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
+    queryClient.invalidateQueries({ queryKey: ["follow-request-count"] });
+
+    // The server trigger converts the notification into a resolved record.
+    // Mirror that locally so the card updates instantly.
+    initialUnreadRef.current?.delete(n.id);
+    setNotifs((prev) =>
+      prev.map((x) =>
+        x.id === n.id
+          ? {
+              ...x,
+              kind: accept ? "follow_request_accepted" : "follow_request_declined",
+              title: accept ? "You accepted this follow request" : "You declined this follow request",
+              body: accept ? "They are now following you." : "Their follow request was declined.",
+              is_read: true,
+            }
+          : x
+      )
+    );
+    toast.success(accept ? "Follow request accepted" : "Follow request declined");
   }, [queryClient]);
 
   const deleteNotif = useCallback(async (id: string) => {
@@ -404,6 +401,7 @@ export default function MyNotifications() {
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
                     onClick={n.link ? () => navigate(n.link!) : undefined}
                     onRespond={respondFollowRequest}
+                    isResponding={!!n.ref_id && responding.has(n.ref_id)}
                     onDelete={deleteNotif}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
                     feedbackSubject={n.kind === "feedback_reply" && n.ref_id ? feedbackSubjects[n.ref_id] : undefined}
@@ -480,6 +478,7 @@ function NotifCard({
   isUnread,
   onClick,
   onRespond,
+  isResponding,
   onDelete,
   actor,
   feedbackSubject,
@@ -489,6 +488,7 @@ function NotifCard({
   isUnread: boolean;
   onClick?: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
+  isResponding?: boolean;
   onDelete?: (id: string) => void;
   actor?: FollowActor;
   feedbackSubject?: string;
@@ -605,22 +605,26 @@ function NotifCard({
         {n.kind === "follow_request" && n.ref_id && onRespond && (
           <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
             <button
+              disabled={isResponding}
               onClick={(e) => { e.stopPropagation(); onRespond(n, true); }}
               style={{
                 height: 32, padding: "0 16px", borderRadius: 999,
                 background: BROWN, color: "#fff", border: "none",
-                cursor: "pointer", fontFamily: SANS, fontSize: 13, fontWeight: 600,
+                cursor: isResponding ? "default" : "pointer", opacity: isResponding ? 0.6 : 1,
+                fontFamily: SANS, fontSize: 13, fontWeight: 600,
                 display: "inline-flex", alignItems: "center", gap: 6,
               }}
             >
               <Check size={14} strokeWidth={2.4} /> Accept
             </button>
             <button
+              disabled={isResponding}
               onClick={(e) => { e.stopPropagation(); onRespond(n, false); }}
               style={{
                 height: 32, padding: "0 16px", borderRadius: 999,
                 background: "transparent", color: INK,
-                border: `1px solid ${HAIRLINE}`, cursor: "pointer",
+                border: `1px solid ${HAIRLINE}`,
+                cursor: isResponding ? "default" : "pointer", opacity: isResponding ? 0.6 : 1,
                 fontFamily: SANS, fontSize: 13, fontWeight: 600,
               }}
             >
