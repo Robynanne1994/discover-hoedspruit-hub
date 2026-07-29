@@ -171,9 +171,9 @@ const Welcome = () => {
       }
       const displayName = `${firstName} ${lastName}`;
       const { error } = await signUp(email, password, {
-        displayName: fullName,
-        firstName: firstName.trim(),
-        surname: lastName.trim(),
+        displayName,
+        firstName,
+        surname: lastName,
       });
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
