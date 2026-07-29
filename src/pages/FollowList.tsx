@@ -231,7 +231,7 @@ const RowWithMutation = ({
   const isPending = followStatus === "pending";
 
   const label = isAccepted
-    ? "Following"
+    ? "Unfollow"
     : isPending
     ? "Requested"
     : isFollowersOfSelf
