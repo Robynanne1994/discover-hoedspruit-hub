@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone, MoreHorizontal, MessageSquare, Send } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
@@ -81,6 +82,7 @@ const bucketOf = (iso: string): "today" | "yesterday" | "week" | "month" | "earl
 export default function MyNotifications() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [loaded, setLoaded] = useState(false);
   const initialUnreadRef = useRef<Set<string> | null>(null);
@@ -237,6 +239,14 @@ export default function MyNotifications() {
         .from("follows")
         .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
         .eq("id", n.ref_id);
+      // Refresh follow state everywhere: the accepter's follower count/list and
+      // the requester's "Following" status all key off these queries.
+      queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
+      queryClient.invalidateQueries({ queryKey: ["followers"] });
+      queryClient.invalidateQueries({ queryKey: ["following"] });
+      queryClient.invalidateQueries({ queryKey: ["my-following-ids"] });
+      queryClient.invalidateQueries({ queryKey: ["is-following"] });
+      queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
       // Server trigger converts the notification to 'follow_request_accepted'.
       // Mirror that locally so the card updates instantly.
       setNotifs((prev) =>
@@ -255,6 +265,8 @@ export default function MyNotifications() {
       );
     } else {
       await supabase.from("follows").delete().eq("id", n.ref_id);
+      queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["is-following"] });
       // Server trigger converts the notification to 'follow_request_declined'.
       // Mirror that locally so the card stays in the list as history.
       initialUnreadRef.current?.delete(n.id);
@@ -272,7 +284,7 @@ export default function MyNotifications() {
         )
       );
     }
-  }, []);
+  }, [queryClient]);
 
   const deleteNotif = useCallback(async (id: string) => {
     initialUnreadRef.current?.delete(id);

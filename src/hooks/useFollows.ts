@@ -5,6 +5,20 @@ import { useAuth } from "@/hooks/useAuth";
 
 export type FollowStatus = "pending" | "accepted" | null;
 
+// The global QueryClient caches everything for 5 minutes and never refetches
+// on mount/focus/reconnect (see App.tsx). That is fine for mostly-static content
+// but wrong for follow state: when someone accepts a follow request, the other
+// side must see "Following" (and updated counts/lists) promptly. A stale cache
+// combined with unreliable realtime on mobile webviews left the requester stuck
+// showing "Requested". These overrides keep the social queries live: always
+// refetch when a screen mounts or regains focus, and never treat the data as
+// fresh enough to skip a refetch.
+const LIVE_QUERY_OPTS = {
+  staleTime: 0,
+  refetchOnMount: "always" as const,
+  refetchOnWindowFocus: true,
+  refetchOnReconnect: true,
+};
 
 export const useFollowCounts = (userId: string | undefined) => {
   return useQuery({
@@ -18,6 +32,7 @@ export const useFollowCounts = (userId: string | undefined) => {
       };
     },
     enabled: !!userId,
+    ...LIVE_QUERY_OPTS,
   });
 };
 
@@ -71,6 +86,11 @@ export const useIsFollowing = (targetUserId: string | undefined) => {
       return ((data as any)?.status as FollowStatus) ?? null;
     },
     enabled: !!user && !!targetUserId && user.id !== targetUserId,
+    ...LIVE_QUERY_OPTS,
+    // While a request is still pending, poll so acceptance flips the button to
+    // "Following" on its own — even if the realtime event never arrives (common
+    // on backgrounded mobile webviews). Once resolved, polling stops.
+    refetchInterval: (query) => (query.state.data === "pending" ? 15000 : false),
   });
 };
 
@@ -122,6 +142,7 @@ export const useFollowersList = (userId: string | undefined) => {
       return data || [];
     },
     enabled: !!userId,
+    ...LIVE_QUERY_OPTS,
   });
 };
 
@@ -133,6 +154,7 @@ export const useFollowingList = (userId: string | undefined) => {
       return data || [];
     },
     enabled: !!userId,
+    ...LIVE_QUERY_OPTS,
   });
 };
 
@@ -150,6 +172,7 @@ export const useMyFollowingIds = () => {
       return new Set((data || []).map((d: any) => d.following_id as string));
     },
     enabled: !!user,
+    ...LIVE_QUERY_OPTS,
   });
 };
 
@@ -176,6 +199,7 @@ export const useFollowRequests = () => {
       }));
     },
     enabled: !!user,
+    ...LIVE_QUERY_OPTS,
   });
 };
 
@@ -199,6 +223,9 @@ export const useRespondToFollowRequest = () => {
       qc.invalidateQueries({ queryKey: ["follow-requests", user?.id] });
       qc.invalidateQueries({ queryKey: ["follow-counts"] });
       qc.invalidateQueries({ queryKey: ["followers"] });
+      qc.invalidateQueries({ queryKey: ["following"] });
+      qc.invalidateQueries({ queryKey: ["my-following-ids"] });
+      qc.invalidateQueries({ queryKey: ["is-following"] });
     },
   });
 };
