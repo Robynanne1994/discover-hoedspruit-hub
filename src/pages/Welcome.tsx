@@ -169,7 +169,7 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      const displayName = `${firstName} ${lastName}`;
       const { error } = await signUp(email, password, {
         displayName: fullName,
         firstName: firstName.trim(),
