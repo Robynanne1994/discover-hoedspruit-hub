@@ -5,7 +5,7 @@ import { Bell, X, Check } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useFollowRequestActors } from "@/hooks/useFollowRequestActors";
+import { useFollowRequestActors, actorForNotif, isFollowActorKind } from "@/hooks/useFollowRequestActors";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
 
 const INK = "#2A2A24";
@@ -102,8 +102,13 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
 
   const unread = notifs.filter((n) => !n.is_read).length;
 
-  const followRequestRefIds = notifs.filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted") && n.ref_id).map((n) => n.ref_id as string);
-  const actorMap = useFollowRequestActors(followRequestRefIds);
+  // Resolved kinds (declined / withdrawn) are included on purpose: their
+  // follows row is deleted, so the actor is resolved from the notification's
+  // '/profile/<id>' link instead and the avatar stays put.
+  const followActorRefs = notifs
+    .filter((n) => isFollowActorKind(n.kind) && n.ref_id)
+    .map((n) => ({ ref_id: n.ref_id, link: n.link }));
+  const actorMap = useFollowRequestActors(followActorRefs);
 
   const feedbackRefIds = notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string);
   const [feedbackSubjects, setFeedbackSubjects] = useState<Record<string, string>>({});
@@ -180,7 +185,10 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
 
     invalidateFollowCaches();
     // The server trigger converts the notification into a resolved record.
-    // Mirror that locally so the row updates instantly.
+    // Mirror that locally so the row updates instantly — including the
+    // '/profile/<id>' link, which is how the row keeps showing this person's
+    // avatar once the follows row is deleted by a decline.
+    const actor = actorMap[n.ref_id];
     setNotifs((prev) =>
       prev.map((x) =>
         x.id === n.id
@@ -189,6 +197,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
               kind: accept ? "follow_request_accepted" : "follow_request_declined",
               title: accept ? "You accepted this follow request" : "You declined this follow request",
               body: accept ? "They are now following you." : "Their follow request was declined.",
+              link: actor ? `/profile/${actor.id}` : x.link,
               is_read: true,
             }
           : x
@@ -332,7 +341,11 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                 </div>
               )}
 
-              {notifs.map((n, i) => (
+              {notifs.map((n, i) => {
+                const rowActor = isFollowActorKind(n.kind) && n.ref_id
+                  ? actorForNotif(n.kind, actorMap[n.ref_id])
+                  : undefined;
+                return (
                 <button
                   key={n.id}
                   onClick={() => onRowClick(n)}
@@ -356,7 +369,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         }}
                       />
                     )}
-                    {(n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id && actorMap[n.ref_id] && (
+                    {rowActor && (
                       <div
                         style={{
                           width: 32, height: 32, borderRadius: 999, overflow: "hidden", flexShrink: 0,
@@ -365,14 +378,14 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                           color: "#fff", fontFamily: SANS, fontSize: 12, fontWeight: 600,
                         }}
                       >
-                        {actorMap[n.ref_id]?.avatar_url ? (
+                        {rowActor.avatar_url ? (
                           <img
-                            src={actorMap[n.ref_id]!.avatar_url!}
+                            src={rowActor.avatar_url}
                             alt=""
                             style={{ width: "100%", height: "100%", objectFit: "cover" }}
                           />
                         ) : (
-                          (actorMap[n.ref_id]?.display_name || "·")
+                          (rowActor.display_name || "·")
                             .trim()
                             .split(/\s+/)
                             .slice(0, 2)
@@ -381,7 +394,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         )}
                       </div>
                     )}
-                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !((n.kind === "follow_request" || n.kind === "follow_request_accepted") && n.ref_id && actorMap[n.ref_id]) ? 17 : 0 }}>
+                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !rowActor ? 17 : 0 }}>
                       <div
                         style={{
                           display: "flex",
@@ -519,7 +532,8 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                     </div>
                   </div>
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
 
