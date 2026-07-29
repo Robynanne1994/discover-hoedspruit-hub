@@ -485,7 +485,10 @@ function NotifCard({
   }, [menuOpen]);
 
   const isUserRelated = n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "follow_request_declined" || n.kind === "new_follower";
-  const avatarUrl = imageOverride || (isUserRelated ? actor?.avatar_url : null);
+  // For "they accepted your request", the person to show is the account that was followed.
+  const actorProfile = n.kind === "follow_accepted" ? (actor?.target || actor) : actor;
+  const avatarUrl = imageOverride || (isUserRelated ? actorProfile?.avatar_url : null);
+
 
   return (
     <div
