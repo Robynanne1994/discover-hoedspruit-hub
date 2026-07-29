@@ -11,18 +11,21 @@ import {
   useMyFollowingIds,
   useFollowCounts,
   useIsFollowing,
+  type FollowStatus,
 } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const COLOR = {
   page: "#E6E0CC",
@@ -56,7 +59,13 @@ type RowUser = {
   avatar_url: string | null;
   username?: string | null;
   location?: string | null;
+  is_private?: boolean | null;
 };
+
+const handleOf = (user: RowUser) =>
+  user.username
+    ? `@${user.username.toLowerCase()}`
+    : `@${(user.display_name || "user").toLowerCase().replace(/\s+/g, "")}`;
 
 const ActionButton = ({
   variant,
@@ -115,9 +124,7 @@ const UserRow = ({
   isSelf?: boolean;
 }) => {
   const navigate = useNavigate();
-  const handle = user.username
-    ? `@${user.username.toLowerCase()}`
-    : `@${(user.display_name || "user").toLowerCase().replace(/\s+/g, "")}`;
+  const handle = handleOf(user);
   const initials = initialsOf(user.display_name);
 
   return (
@@ -224,12 +231,22 @@ const RowWithMutation = ({
   isSelf?: boolean;
 }) => {
   const { follow, unfollow } = useFollowMutation(user.id);
-  const { data: followStatus } = useIsFollowing(user.id);
+  const { data: followStatus, isFetched } = useIsFollowing(user.id);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const isAccepted = isOwnFollowingPage ? true : followStatus === "accepted" || isFollowedInitially;
-  const isPending = followStatus === "pending";
+  // Both list RPCs only return accepted follows, so the page the row is on
+  // already tells us the answer. Use that until the per-row status query has
+  // resolved, otherwise every row flashes "Follow" on first paint — then hand
+  // over to the live status so the button keeps up with the actual relationship.
+  const assumedStatus: FollowStatus =
+    isOwnFollowingPage || isFollowedInitially ? "accepted" : null;
+  const status = isFetched ? followStatus ?? null : assumedStatus;
 
+  const isAccepted = status === "accepted";
+  const isPending = status === "pending";
+
+  // "Follow Back" only makes sense for someone following me that I don't follow;
+  // once it's mutual (or I already followed them) the action becomes "Unfollow".
   const label = isAccepted
     ? "Unfollow"
     : isPending
@@ -249,6 +266,9 @@ const RowWithMutation = ({
     }
   };
 
+  const name = user.display_name?.trim() || handleOf(user);
+  const isPrivate = !!user.is_private;
+
   return (
     <>
       <UserRow
@@ -260,51 +280,31 @@ const RowWithMutation = ({
         pending={follow.isPending || unfollow.isPending}
         isSelf={isSelf}
       />
-      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Unfollow {user.display_name || "this user"}?</DialogTitle>
-            <DialogDescription>
-              You can follow them again at any time.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <button
-              onClick={() => setConfirmOpen(false)}
-              style={{
-                padding: "10px 20px",
-                borderRadius: 999,
-                border: `1px solid ${COLOR.line}`,
-                background: "transparent",
-                color: COLOR.ink,
-                fontFamily: SANS,
-                fontSize: 13,
-                cursor: "pointer",
-              }}
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent style={{ fontFamily: SANS }}>
+          <AlertDialogHeader>
+            <AlertDialogTitle style={{ fontFamily: SANS, color: COLOR.ink }}>
+              Unfollow {name}?
+            </AlertDialogTitle>
+            <AlertDialogDescription
+              style={{ fontFamily: SANS, color: COLOR.muted, fontSize: 14, lineHeight: 1.5 }}
             >
-              Cancel
-            </button>
-            <button
-              onClick={() => {
-                unfollow.mutate();
-                setConfirmOpen(false);
-              }}
-              style={{
-                padding: "10px 20px",
-                borderRadius: 999,
-                border: "none",
-                background: COLOR.ink,
-                color: COLOR.cream,
-                fontFamily: SANS,
-                fontSize: 13,
-                cursor: "pointer",
-              }}
+              {isPrivate
+                ? `Their profile is private, so you'll have to request to follow ${name} again and wait for them to approve it.`
+                : `You can follow ${name} again at any time.`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel style={{ fontFamily: SANS }}>No, keep following</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => unfollow.mutate()}
+              style={{ fontFamily: SANS, background: COLOR.brown, color: "#FFFFFF" }}
             >
-              Unfollow
-            </button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+              Yes, unfollow
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
@@ -365,16 +365,33 @@ const FollowList = () => {
   const sisterLabel = isFollowers ? "see who you follow ↗" : "see your followers ↗";
 
   const handlePrimaryCta = async () => {
-    if (isFollowers) {
-      const url = `${window.location.origin}/profile/${id}`;
-      try {
+    if (!isFollowers) {
+      // Search reads this state and opens straight on the People tab, which
+      // shows suggested users when the query is empty.
+      navigate("/search?tab=people", { state: { fromProfile: true, profileId: id } });
+      return;
+    }
+    const url = `${window.location.origin}/profile/${id}`;
+    try {
+      if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
-        toast.success("Link copied!");
-      } catch {
-        toast.error("Could not copy link");
+      } else {
+        // The Clipboard API is unavailable in insecure contexts and some
+        // in-app webviews; fall back to the legacy selection copy.
+        const el = document.createElement("textarea");
+        el.value = url;
+        el.setAttribute("readonly", "");
+        el.style.position = "fixed";
+        el.style.opacity = "0";
+        document.body.appendChild(el);
+        el.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(el);
+        if (!ok) throw new Error("copy failed");
       }
-    } else {
-      navigate("/search", { state: { fromProfile: true, profileId: id } });
+      toast.success("Profile link copied!");
+    } catch {
+      toast.error("Could not copy link");
     }
   };
 
@@ -541,7 +558,7 @@ const FollowList = () => {
             {isFollowers ? (
               <>
                 <ShareIcon size={14} />
-                Share Your Profile
+                Share Profile
               </>
             ) : (
               <>

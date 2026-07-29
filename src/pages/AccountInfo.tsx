@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
+import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
@@ -304,6 +305,8 @@ const AccountInfo = () => {
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
+  // Object URL of the file the user just picked, held while they crop it.
+  const [cropSrc, setCropSrc] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const initialized = useRef(false);
@@ -327,21 +330,38 @@ const AccountInfo = () => {
     }
   }, [profile, user]);
 
-  const handleAvatarUpload = async (file: File) => {
-    if (!user) return;
+  // Picking a file no longer uploads straight away — it opens the cropper, and
+  // only the cropped square that comes back out of it is sent to storage.
+  const handleAvatarPicked = (file: File) => {
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be under 5MB");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image must be under 10MB");
       return;
     }
+    setCropSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+  };
+
+  const closeCropper = () => {
+    setCropSrc((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+  };
+
+  const handleAvatarUpload = async (blob: Blob) => {
+    if (!user) return;
     setUploadingAvatar(true);
     try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      const path = `${user.id}/avatar-${Date.now()}.jpg`;
+      const { error: upErr } = await supabase.storage
+        .from("avatars")
+        .upload(path, blob, { upsert: true, contentType: "image/jpeg" });
       if (upErr) throw upErr;
       const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
       const url = pub.publicUrl;
@@ -350,6 +370,7 @@ const AccountInfo = () => {
       setAvatarUrl(url);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
+      closeCropper();
       toast.success("Profile photo updated");
     } catch (err: any) {
       toast.error(err.message || "Could not upload photo");
@@ -579,7 +600,7 @@ const AccountInfo = () => {
             style={{ display: "none" }}
             onChange={(e) => {
               const f = e.target.files?.[0];
-              if (f) handleAvatarUpload(f);
+              if (f) handleAvatarPicked(f);
               e.target.value = "";
             }}
           />
@@ -591,7 +612,7 @@ const AccountInfo = () => {
             style={{ display: "none" }}
             onChange={(e) => {
               const f = e.target.files?.[0];
-              if (f) handleAvatarUpload(f);
+              if (f) handleAvatarPicked(f);
               e.target.value = "";
             }}
           />
@@ -871,6 +892,13 @@ const AccountInfo = () => {
           busy={uploadingAvatar}
         />
       )}
+
+      <AvatarCropDialog
+        imageSrc={cropSrc}
+        busy={uploadingAvatar}
+        onCancel={closeCropper}
+        onConfirm={handleAvatarUpload}
+      />
     </div>
   );
 };
