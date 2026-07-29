@@ -71,8 +71,10 @@ const Welcome = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const nameParts = fullName.trim().split(/\s+/).filter(Boolean);
+  const firstName = nameParts[0] ?? "";
+  const lastName = nameParts.slice(1).join(" ");
   const [username, setUsername] = useState("");
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
