@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { Bell, X, Check } from "lucide-react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors } from "@/hooks/useFollowRequestActors";
@@ -49,6 +50,9 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [notifs, setNotifs] = useState<Notif[]>([]);
+  // follows.id values with an accept/decline in flight, so a double-tap can't
+  // fire the RPC twice and the buttons show they're working.
+  const [responding, setResponding] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(async () => {
@@ -153,51 +157,44 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
   const respondFollowRequest = async (n: Notif, accept: boolean, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!n.ref_id) return;
-    if (accept) {
-      // Authoritative server-side accept. Bail on error so the card doesn't
-      // falsely flip to "accepted" while the follow never actually took effect.
-      const { error } = await supabase.rpc("respond_to_follow_request", {
-        _request_id: n.ref_id,
-        _accept: true,
-      });
-      if (error) return;
-      invalidateFollowCaches();
-      setNotifs((prev) =>
-        prev.map((x) =>
-          x.id === n.id
-            ? {
-                ...x,
-                kind: "follow_request_accepted",
-                title: "You accepted this follow request",
-                body: "They are now following you.",
-                is_read: false,
-              }
-            : x
-        )
-      );
-    } else {
-      const { error } = await supabase.rpc("respond_to_follow_request", {
-        _request_id: n.ref_id,
-        _accept: false,
-      });
-      if (error) return;
-      invalidateFollowCaches();
-      // Server trigger converts the notification to 'follow_request_declined'.
-      // Mirror that locally so the row stays in the list as history.
-      setNotifs((prev) =>
-        prev.map((x) =>
-          x.id === n.id
-            ? {
-                ...x,
-                kind: "follow_request_declined",
-                title: "You declined this follow request",
-                body: "Their follow request was declined.",
-                is_read: true,
-              }
-            : x
-        )
-      );
+    if (responding.has(n.ref_id)) return;
+    setResponding((prev) => new Set(prev).add(n.ref_id!));
+
+    // Authoritative server-side accept/decline. Surface failures — silently
+    // bailing here is what made these buttons look dead.
+    const { error } = await supabase.rpc("respond_to_follow_request", {
+      _request_id: n.ref_id,
+      _accept: accept,
+    });
+
+    setResponding((prev) => {
+      const next = new Set(prev);
+      next.delete(n.ref_id!);
+      return next;
+    });
+
+    if (error) {
+      toast.error(error.message || "Could not respond to that follow request. Please try again.");
+      return;
     }
+
+    invalidateFollowCaches();
+    // The server trigger converts the notification into a resolved record.
+    // Mirror that locally so the row updates instantly.
+    setNotifs((prev) =>
+      prev.map((x) =>
+        x.id === n.id
+          ? {
+              ...x,
+              kind: accept ? "follow_request_accepted" : "follow_request_declined",
+              title: accept ? "You accepted this follow request" : "You declined this follow request",
+              body: accept ? "They are now following you." : "Their follow request was declined.",
+              is_read: true,
+            }
+          : x
+      )
+    );
+    toast.success(accept ? "Follow request accepted" : "Follow request declined");
   };
 
 
@@ -452,6 +449,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                       {n.kind === "follow_request" && n.ref_id && (
                         <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
                           <button
+                            disabled={responding.has(n.ref_id)}
                             onClick={(e) => respondFollowRequest(n, true, e)}
                             style={{
                               height: 30,
@@ -460,7 +458,8 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                               background: "#423324",
                               color: "#FFFFFF",
                               border: "none",
-                              cursor: "pointer",
+                              cursor: responding.has(n.ref_id) ? "default" : "pointer",
+                              opacity: responding.has(n.ref_id) ? 0.6 : 1,
                               fontFamily: SANS,
                               fontSize: 12,
                               fontWeight: 600,
@@ -472,6 +471,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                             <Check size={13} strokeWidth={2.4} /> Accept
                           </button>
                           <button
+                            disabled={responding.has(n.ref_id)}
                             onClick={(e) => respondFollowRequest(n, false, e)}
                             style={{
                               height: 30,
@@ -480,7 +480,8 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                               background: "transparent",
                               color: INK,
                               border: `1px solid ${LINE}`,
-                              cursor: "pointer",
+                              cursor: responding.has(n.ref_id) ? "default" : "pointer",
+                              opacity: responding.has(n.ref_id) ? 0.6 : 1,
                               fontFamily: SANS,
                               fontSize: 12,
                               fontWeight: 600,

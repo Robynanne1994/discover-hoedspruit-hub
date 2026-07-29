@@ -64,6 +64,8 @@ const FollowRequests = () => {
         ) : (
           <div style={{ background: CARD, borderRadius: 18, padding: "6px 18px" }}>
             {requests!.map((u: any, i: number) => {
+              // Only the row being actioned goes disabled, not the whole list.
+              const busy = respond.isPending && respond.variables?.requestId === u.request_id;
               const handle = u.username
                 ? `@${u.username.toLowerCase()}`
                 : `@${(u.display_name || "user").toLowerCase().replace(/\s+/g, "")}`;
@@ -156,7 +158,7 @@ const FollowRequests = () => {
                     </div>
                   </button>
                   <button
-                    disabled={respond.isPending}
+                    disabled={busy}
                     onClick={() => respond.mutate({ requestId: u.request_id, accept: true })}
                     aria-label="Accept"
                     style={{
@@ -166,7 +168,8 @@ const FollowRequests = () => {
                       background: "#423324",
                       color: "#fff",
                       border: "none",
-                      cursor: "pointer",
+                      cursor: busy ? "default" : "pointer",
+                      opacity: busy ? 0.6 : 1,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -175,7 +178,7 @@ const FollowRequests = () => {
                     <Check size={16} strokeWidth={2} />
                   </button>
                   <button
-                    disabled={respond.isPending}
+                    disabled={busy}
                     onClick={() => respond.mutate({ requestId: u.request_id, accept: false })}
                     aria-label="Decline"
                     style={{
@@ -185,7 +188,8 @@ const FollowRequests = () => {
                       background: "transparent",
                       border: `1px solid ${LINE}`,
                       color: INK,
-                      cursor: "pointer",
+                      cursor: busy ? "default" : "pointer",
+                      opacity: busy ? 0.6 : 1,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
