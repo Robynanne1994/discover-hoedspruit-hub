@@ -360,6 +360,11 @@ const AdminBushTelegraph = () => {
           homepage_image_url: r.homepage_image_url?.trim() || null,
           qr_image_url: r.qr_image_url?.trim() || null,
           admin_name: r.admin_name?.trim() || null,
+          admins: (r.admin_name || "")
+            .split("|")
+            .map((n) => n.trim())
+            .filter(Boolean)
+            .map((name) => ({ name })),
           years_running: r.years_running ? parseInt(r.years_running) || null : null,
           post_frequency: r.post_frequency?.trim() || null,
           tag_1: r.tag_1?.trim() || null,
