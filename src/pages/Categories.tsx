@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X } from "lucide-react";
+import { Search, MapPin, AlertTriangle, Phone, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -427,40 +427,40 @@ const Categories = () => {
                 display: "flex",
                 alignItems: "center",
                 gap: 16,
-                background: COLORS.emergencyBg,
-                borderRadius: 999,
-                padding: "12px 18px 12px 12px",
+                background: COLORS.card,
+                borderRadius: 16,
+                padding: "14px 16px",
                 textDecoration: "none",
-                border: `1px solid ${COLORS.emergencyInk}`,
+                border: "none",
               }}
             >
               <div
                 style={{
-                  width: 48,
-                  height: 48,
+                  width: 44,
+                  height: 44,
                   borderRadius: 999,
-                  background: "#FFFFFF",
+                  background: COLORS.emergencyBg,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
                 }}
               >
-                <AlertTriangle size={22} strokeWidth={2} color={COLORS.emergencyInk} />
+                <Phone size={20} strokeWidth={2} color={COLORS.emergencyInk} />
               </div>
-              <div style={{ flex: 1, textAlign: "center" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <span
                   style={{
                     fontFamily: FONT_BODY,
                     fontWeight: 700,
                     fontSize: 17,
-                    color: COLORS.emergencyInk,
+                    color: COLORS.ink,
                   }}
                 >
                   {featured.title}
                 </span>
               </div>
-              <ChevronRight size={20} color={COLORS.emergencyInk} strokeWidth={1.6} />
+              <ChevronRight size={20} color={COLORS.muted} strokeWidth={1.8} />
             </Link>
           ))}
         </div>
