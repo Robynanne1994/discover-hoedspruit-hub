@@ -749,7 +749,7 @@ const AdminBushTelegraph = () => {
                   variant="outline"
                   size="sm"
                   className="gap-1"
-                  onClick={() => setForm({ ...form, admins: [...form.admins, { name: "", image_url: "" }] })}
+                  onClick={() => setForm({ ...form, admins: [...form.admins, { name: "" }] })}
                 >
                   <Plus className="h-3 w-3" /> Add another admin
                 </Button>
