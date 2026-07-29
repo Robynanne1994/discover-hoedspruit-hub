@@ -162,89 +162,107 @@ const EventCard = ({ event }: { event: any }) => {
   const price = formatPrice(event.price);
   const moreDates = eventMoreDatesLine(event);
   return (
-    <Link
-      to={`/events/${event.id}`}
-      style={{
-        position: "relative",
-        display: "flex",
-        alignItems: "stretch",
-        gap: 14,
-        background: C.white,
-        borderRadius: 16,
-        padding: 0,
-        textDecoration: "none",
-        overflow: "hidden",
-        height: 188,
-      }}
-    >
-      <div
+    <div>
+      <Link
+        to={`/events/${event.id}`}
         style={{
-          width: 140,
-          alignSelf: "stretch",
+          position: "relative",
+          display: "flex",
+          alignItems: "stretch",
+          gap: 0,
+          background: C.white,
+          borderRadius: 16,
+          textDecoration: "none",
           overflow: "hidden",
-          background: C.ivory,
-          flexShrink: 0,
+          minHeight: 132,
         }}
       >
-        {event.image_url && (
-          <img
-            src={event.image_url}
-            alt={event.title}
-            loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        )}
-      </div>
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "12px 12px 12px 0", overflow: "hidden" }}>
-        {event.tag && (
-          <span
-            style={{
-              alignSelf: "flex-start",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 24,
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 10,
-              lineHeight: 1,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "#fff",
-              background: "#423324",
-              borderRadius: 999,
-              padding: "0 11px",
-              marginBottom: 10,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: "100%",
-            }}
-          >
-            {event.tag}
-          </span>
-        )}
-        <h3
-          {...noTitleCaseProps(event)}
+        <div
           style={{
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 15.5,
-            lineHeight: 1.25,
-            color: C.ink,
-            margin: 0,
-            marginBottom: 10,
-            wordBreak: "break-word",
-            overflowWrap: "anywhere",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
+            width: 108,
+            alignSelf: "stretch",
+            overflow: "hidden",
+            background: C.ivory,
+            flexShrink: 0,
+          }}
+        >
+          {event.image_url && (
+            <img
+              src={event.image_url}
+              alt={event.title}
+              loading="lazy"
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            />
+          )}
+        </div>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "14px 16px",
             overflow: "hidden",
           }}
         >
-          {getDisplayTitle(event)}
-        </h3>
-        <div style={{ marginBottom: 6 }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 6 }}>
+            {event.tag && (
+              <span
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  fontFamily: SANS,
+                  fontWeight: 700,
+                  fontSize: 10.5,
+                  lineHeight: 1.2,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#715A3D",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {event.tag}
+              </span>
+            )}
+            {price && (
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontWeight: 700,
+                  fontSize: 13,
+                  lineHeight: 1.2,
+                  color: "#715A3D",
+                  whiteSpace: "nowrap",
+                  marginLeft: "auto",
+                }}
+              >
+                {price}
+              </span>
+            )}
+          </div>
+          <h3
+            {...noTitleCaseProps(event)}
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 16,
+              lineHeight: 1.22,
+              color: C.ink,
+              margin: 0,
+              marginBottom: 8,
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {getDisplayTitle(event)}
+          </h3>
           <p
             style={{
               fontFamily: SANS,
@@ -253,83 +271,69 @@ const EventCard = ({ event }: { event: any }) => {
               color: C.body,
               margin: 0,
               display: "flex",
-              alignItems: "flex-start",
-              gap: 6,
+              alignItems: "center",
+              gap: 7,
             }}
           >
-            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted, marginTop: 1 }} />
-            <span style={{
-              display: "-webkit-box",
-              WebkitLineClamp: 1,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}>{eventDateLine(event)}</span>
+            <Clock size={14} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <span
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {eventDateLine(event)}
+            </span>
           </p>
-          {moreDates && (
+          {location && (
             <p
               style={{
                 fontFamily: SANS,
-                fontSize: 12,
+                fontSize: 13,
                 lineHeight: 1.35,
-                color: C.muted,
+                color: C.body,
                 margin: 0,
-                marginTop: 2,
-                paddingLeft: 18,
+                marginTop: 4,
+                display: "flex",
+                alignItems: "center",
+                gap: 7,
               }}
             >
-              {moreDates}
+              <MapPin size={14} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+              <span
+                style={{
+                  display: "-webkit-box",
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }}
+              >
+                {location}
+              </span>
             </p>
           )}
         </div>
-        {location && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 12,
-              lineHeight: 1.35,
-              color: C.muted,
-              margin: 0,
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 6,
-              wordBreak: "break-word",
-              overflowWrap: "anywhere",
-              overflow: "hidden",
-            }}
-          >
-            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 1 }} />
-            <span style={{
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}>{location}</span>
-          </p>
-        )}
-
-      </div>
-      {price && (
-        <span
+      </Link>
+      {moreDates && (
+        <p
           style={{
-            position: "absolute",
-            bottom: 10,
-            right: 10,
             fontFamily: SANS,
             fontWeight: 700,
             fontSize: 13,
-            color: C.body,
-            background: C.tag,
-            borderRadius: 999,
-            padding: "5px 14px",
-            whiteSpace: "nowrap",
+            lineHeight: 1.2,
+            color: C.ink,
+            margin: "8px 0 0 2px",
           }}
         >
-          {price}
-        </span>
+          {moreDates}
+        </p>
       )}
-    </Link>
+    </div>
   );
 };
+
 
 // Page --------------------------------------------------------------
 const Events = () => {
