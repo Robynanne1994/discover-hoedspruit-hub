@@ -27,7 +27,7 @@ const COLORS = {
   chipBorder: "rgba(26,26,26,0.10)",
 };
 
-const QUICK_FILTERS = ["Open Now", "Saved", "Kid Friendly", "Pet Friendly"];
+const QUICK_FILTERS = ["Open Now", "Saved", "Child Friendly", "Pet Friendly"];
 
 type ViewMode = "grid" | "list";
 type SortMode = "count" | "az";
