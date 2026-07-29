@@ -62,6 +62,13 @@ const CREATE_LABEL_STYLE: React.CSSProperties = {
   marginBottom: 4,
 };
 
+// Capitalise the first letter of each word as the user types, so "john smith"
+// becomes "John Smith" without fighting the caret.
+const capitaliseName = (value: string) =>
+  value.replace(/(^|[\s'-])([a-z])/g, (_m, sep, ch) => sep + ch.toUpperCase());
+
+
+
 const Welcome = () => {
   const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
   const initialMode = location.state?.mode ?? "welcome";
@@ -71,8 +78,10 @@ const Welcome = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const nameParts = fullName.trim().split(/\s+/).filter(Boolean);
+  const firstName = nameParts[0] ?? "";
+  const lastName = nameParts.slice(1).join(" ");
   const [username, setUsername] = useState("");
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
@@ -128,13 +137,8 @@ const Welcome = () => {
     setAuthError(null);
     setLoading(true);
     if (mode === "signup") {
-      if (!firstName.trim()) {
-        toast.error("Please enter your first name");
-        setLoading(false);
-        return;
-      }
-      if (!lastName.trim()) {
-        toast.error("Please enter your surname");
+      if (!firstName || !lastName) {
+        toast.error("Please enter both your first and last name");
         setLoading(false);
         return;
       }
@@ -172,11 +176,11 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      const displayName = `${firstName} ${lastName}`;
       const { error } = await signUp(email, password, {
-        displayName: fullName,
-        firstName: firstName.trim(),
-        surname: lastName.trim(),
+        displayName,
+        firstName,
+        surname: lastName,
       });
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
@@ -473,35 +477,22 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div>
-                <Label htmlFor="firstName" style={CREATE_LABEL_STYLE}>
-                  First Name
+                <Label htmlFor="fullName" style={CREATE_LABEL_STYLE}>
+                  First &amp; Last Name
                 </Label>
                 <Input
-                  id="firstName"
+                  id="fullName"
                   type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(capitaliseName(e.target.value))}
                   required
-                  placeholder="Your first name"
+                  autoCapitalize="words"
+                  placeholder="Your first and last name"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
                   style={fieldStyle}
                 />
               </div>
-              <div>
-                <Label htmlFor="lastName" style={CREATE_LABEL_STYLE}>
-                  Surname
-                </Label>
-                <Input
-                  id="lastName"
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                  placeholder="Your surname"
-                  className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={fieldStyle}
-                />
-              </div>
+
               <div>
                 <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
