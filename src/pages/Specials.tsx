@@ -221,7 +221,12 @@ const Specials = () => {
     }
     // "default" keeps the query order (created_at desc)
 
-    return result;
+    // Featured specials always pin to the top, keeping the chosen sort within groups
+    return [
+      ...result.filter((s: any) => s.is_featured),
+      ...result.filter((s: any) => !s.is_featured),
+    ];
+
   }, [specials, activeTab, filterType, search, sortBy]);
 
 

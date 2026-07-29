@@ -532,7 +532,12 @@ const Events = () => {
       sorted.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
     }
     // date-asc is already the default order from sortedEvents
-    return sorted;
+    // Featured events always pin to the top, keeping the chosen sort within groups
+    return [
+      ...sorted.filter((e: any) => e.is_featured),
+      ...sorted.filter((e: any) => !e.is_featured),
+    ];
+
   }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
 
