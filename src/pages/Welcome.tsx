@@ -62,6 +62,13 @@ const CREATE_LABEL_STYLE: React.CSSProperties = {
   marginBottom: 4,
 };
 
+// Capitalise the first letter of each word as the user types, so "john smith"
+// becomes "John Smith" without fighting the caret.
+const capitaliseName = (value: string) =>
+  value.replace(/(^|[\s'-])([a-z])/g, (_m, sep, ch) => sep + ch.toUpperCase());
+
+
+
 const Welcome = () => {
   const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
   const initialMode = location.state?.mode ?? "welcome";
