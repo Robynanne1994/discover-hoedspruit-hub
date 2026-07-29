@@ -194,7 +194,7 @@ const AdminBushTelegraph = () => {
         saved_image_url: rest.saved_image_url || null,
         qr_image_url: rest.qr_image_url || null,
         admins: cleanAdmins,
-        admin_name: cleanAdmins[0]?.name || null,
+        admin_name: cleanAdmins.map((a) => a.name).join("|") || null,
         years_running: years_mode === "years" && years_running !== "" ? Number(years_running) || null : null,
         since_year: years_mode === "since" && since_year !== "" ? Number(since_year) || null : null,
         post_frequency: rest.post_frequency?.trim() || null,
