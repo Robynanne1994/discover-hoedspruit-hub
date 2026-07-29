@@ -420,10 +420,13 @@ const AdminBushTelegraph = () => {
   const downloadExport = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
-      r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
+      r.title, r.title_override ?? "", r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
       r.image_url ?? "", r.detail_image_url ?? "", r.homepage_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
-      r.admin_name ?? "", r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
-      r.tag_1 ?? "", r.tag_2 ?? "", r.title_override ?? "",
+      (Array.isArray(r.admins) && r.admins.length
+        ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
+        : (r.admin_name ?? "")),
+      r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
+      r.tag_1 ?? "", r.tag_2 ?? "",
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
     ].map(escapeCSV).join(","));
     downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
