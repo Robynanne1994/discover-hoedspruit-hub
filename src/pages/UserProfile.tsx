@@ -891,32 +891,69 @@ const UserProfile = () => {
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetContent
           side="bottom"
+          className="[&>button]:hidden"
           style={{
-            background: CREAM,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
+            background: "#ffffff",
+            borderRadius: 28,
             border: "none",
+            left: 12,
+            right: 12,
+            bottom: 12,
+            width: "auto",
+            padding: "10px 0 8px",
+            boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
           }}
         >
-          <SheetHeader>
-            <SheetTitle
-              style={{
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 16,
-                letterSpacing: "0.01em",
-                textTransform: "uppercase",
-                color: INK,
-              }}
-            >
-              Options
-            </SheetTitle>
+          <div
+            style={{
+              width: 40,
+              height: 5,
+              borderRadius: 999,
+              background: "#E6E0CC",
+              margin: "0 auto 14px",
+            }}
+          />
+          <SheetHeader style={{ padding: "0 22px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <SheetTitle
+                style={{
+                  fontFamily: HEAD,
+                  fontWeight: 700,
+                  fontSize: 22,
+                  letterSpacing: "-0.2px",
+                  color: INK,
+                  textTransform: "none",
+                }}
+              >
+                Options
+              </SheetTitle>
+              <button
+                onClick={() => setMenuOpen(false)}
+                aria-label="Close"
+                style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 999,
+                  background: "#EFEADD",
+                  border: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
+              >
+                <X size={18} strokeWidth={2} color={INK} />
+              </button>
+            </div>
           </SheetHeader>
-          <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", marginTop: 10, padding: "0 22px" }}>
             {[
-              { label: "Share This Profile", onClick: handleShare },
+              { label: "Share This Profile", icon: Share2, danger: false, onClick: handleShare },
               {
                 label: "Report User",
+                icon: Flag,
+                danger: false,
                 onClick: () => {
                   setMenuOpen(false);
                   if (!requireAuth("report users")) return;
@@ -925,6 +962,8 @@ const UserProfile = () => {
               },
               {
                 label: isBlocked ? "Unblock User" : "Block User",
+                icon: Ban,
+                danger: true,
                 onClick: () => {
                   setMenuOpen(false);
                   if (!requireAuth(isBlocked ? "unblock users" : "block users")) return;
@@ -935,31 +974,39 @@ const UserProfile = () => {
                   }
                 },
               },
-            ].map((o) => (
+            ].map((o, i) => (
               <button
                 key={o.label}
                 onClick={o.onClick}
                 style={{
                   textAlign: "left",
                   padding: "16px 0",
-                  borderTop: `1px solid ${LINE}`,
+                  borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
                   background: "transparent",
                   border: "none",
-                  borderBottom: 0,
-                  borderLeft: 0,
-                  borderRight: 0,
-                  fontFamily: SANS,
-                  fontSize: 15,
-                  color: INK,
+                  borderTopWidth: i === 0 ? 0 : 1,
+                  borderTopStyle: "solid",
+                  borderTopColor: i === 0 ? "transparent" : LINE,
+                  fontFamily: HEAD,
+                  fontSize: 17,
+                  fontWeight: 700,
+                  color: o.danger ? "#B4321F" : INK,
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  width: "100%",
                 }}
               >
-                {o.label}
+                <o.icon size={20} strokeWidth={2} color={o.danger ? "#B4321F" : "#423324"} />
+                <span style={{ flex: 1 }}>{o.label}</span>
+                <ChevronRight size={18} strokeWidth={2} color="#8A8578" />
               </button>
             ))}
           </div>
         </SheetContent>
       </Sheet>
+
 
       {/* Unfollow confirmation */}
       <Dialog open={unfollowOpen} onOpenChange={setUnfollowOpen}>
