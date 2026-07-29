@@ -471,7 +471,7 @@ const FollowList = () => {
               {isOwnPage
                 ? isFollowers
                   ? "No followers yet."
-                  : "No one to follow yet."
+                  : "You're not following anyone yet."
                 : isFollowers
                 ? `${viewedName} does not have any followers yet.`
                 : `${viewedName} is not following anyone yet.`}
