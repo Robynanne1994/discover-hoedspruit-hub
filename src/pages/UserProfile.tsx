@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { MoreVertical, X } from "lucide-react";
+import { MoreVertical, X, Share2, Flag, Ban, ChevronRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
