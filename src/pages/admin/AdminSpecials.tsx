@@ -27,6 +27,7 @@ interface Special {
   valid_until: string | null;
   valid_from: string | null;
   is_active: boolean;
+  is_featured: boolean;
   price: string | null;
   price_label: string | null;
   original_price: string | null;
@@ -57,6 +58,7 @@ const emptyForm: Omit<Special, "id"> = {
   valid_until: null,
   valid_from: null,
   is_active: true,
+  is_featured: false,
   price: null,
   price_label: null,
   original_price: null,
@@ -181,6 +183,7 @@ const AdminSpecials = () => {
       valid_until: s.valid_until,
       valid_from: s.valid_from,
       is_active: s.is_active,
+      is_featured: !!(s as any).is_featured,
       price: s.price,
       price_label: s.price_label ?? null,
       original_price: s.original_price,
@@ -286,6 +289,12 @@ const AdminSpecials = () => {
           <div><Label>Deal Price (e.g. R145, R450pp)</Label><Input placeholder="R" value={form.price || ""} onChange={(e) => setForm({ ...form, price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, price: stripTrailingZeros(e.target.value) || null })} /></div>
           <div><Label>Price Notes (shown next to price, optional)</Label><Input placeholder="e.g. per person" value={form.price_label || ""} onChange={(e) => setForm({ ...form, price_label: e.target.value || null })} /></div>
           <div><Label>Original Price (optional, for showing savings)</Label><Input placeholder="R" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} /></div>
+
+          <GroupLabel>Visibility</GroupLabel>
+          <div className="flex items-center gap-3">
+            <Switch checked={!!form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
+            <Label>Featured</Label>
+          </div>
 
           <GroupLabel>Booking</GroupLabel>
           <div className="flex items-center gap-3">
