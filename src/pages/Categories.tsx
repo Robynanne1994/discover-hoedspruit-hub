@@ -908,7 +908,7 @@ const Categories = () => {
                       {cat.title}
                     </p>
                     <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 14, color: COLORS.muted }}>
-                      {count} {count === 1 ? "listing" : "listings"}
+                      {count}&nbsp;{count === 1 ? "Listing" : "Listings"}
                     </p>
                   </div>
                   <ArrowUpRight size={20} color="#715A3D" strokeWidth={1.8} style={{ flexShrink: 0 }} />
