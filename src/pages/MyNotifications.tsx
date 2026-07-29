@@ -159,7 +159,7 @@ export default function MyNotifications() {
   const followRequestRefIds = useMemo(
     () =>
       notifs
-        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "new_follower") && n.ref_id)
+        .filter((n) => (n.kind === "follow_request" || n.kind === "follow_request_accepted" || n.kind === "follow_accepted" || n.kind === "new_follower") && n.ref_id)
         .map((n) => n.ref_id as string),
     [notifs]
   );
