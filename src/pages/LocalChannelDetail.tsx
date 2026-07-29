@@ -13,7 +13,7 @@ import Seo from "@/components/Seo";
 
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
 const CARD = "#ffffff";
 const IVORY = "#f5f0e8";

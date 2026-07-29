@@ -4,7 +4,7 @@ import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const DISPLAY = '"Bricolage Grotesque", ' + SANS;
+const DISPLAY = '"Nohemi", ' + SANS;
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";

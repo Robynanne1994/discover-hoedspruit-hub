@@ -214,7 +214,7 @@ const Feedback = () => {
 
   const labelStyle: CSSProperties = {
     display: "block",
-    fontFamily: '"Bricolage Grotesque", ' + FF,
+    fontFamily: '"Nohemi", ' + FF,
     fontSize: 15,
     fontWeight: 700,
     letterSpacing: "0.08em",

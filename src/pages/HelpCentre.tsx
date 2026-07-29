@@ -68,7 +68,7 @@ const HelpCentre = () => {
       <div style={{ padding: "24px 0 0" }}>
         <p
           style={{
-            fontFamily: '"Bricolage Grotesque", ' + SANS,
+            fontFamily: '"Nohemi", ' + SANS,
             fontSize: 15,
             fontWeight: 700,
             letterSpacing: "0.06em",

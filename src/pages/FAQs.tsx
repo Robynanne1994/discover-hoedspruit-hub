@@ -219,7 +219,7 @@ const FAQs = () => {
               style={{
                 padding: "0 24px",
                 marginBottom: 10,
-                fontFamily: '"Bricolage Grotesque", ' + FF,
+                fontFamily: '"Nohemi", ' + FF,
                 fontSize: 15,
                 fontWeight: 700,
                 letterSpacing: "0.06em",

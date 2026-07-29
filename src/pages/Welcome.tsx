@@ -346,7 +346,7 @@ const Welcome = () => {
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
           <h1
             style={{
-              fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+              fontFamily: "'Nohemi', 'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
               color: "#423324",
               fontSize: 22,
               lineHeight: 1.2,
@@ -422,7 +422,7 @@ const Welcome = () => {
   }
 
   const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
   const fieldStyle: React.CSSProperties = {
     background: "#ffffff",

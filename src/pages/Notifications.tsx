@@ -461,7 +461,7 @@ const Notifications = () => {
           <div key={section.label}>
             <div
               style={{
-                fontFamily: '"Bricolage Grotesque", ' + SANS,
+                fontFamily: '"Nohemi", ' + SANS,
                 fontSize: 15,
                 fontWeight: 700,
                 color: C.ink,

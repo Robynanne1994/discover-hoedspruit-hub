@@ -5,7 +5,7 @@ import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 import hhLogo from "@/assets/hh-logo.png";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const NOHEMI = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const HomeMasthead = () => {

@@ -28,7 +28,7 @@ const supportItems = [
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p
     style={{
-      fontFamily: '"Bricolage Grotesque", ' + SANS,
+      fontFamily: '"Nohemi", ' + SANS,
       fontSize: 15,
       fontWeight: 700,
       letterSpacing: "0.06em",
@@ -187,7 +187,7 @@ const MyProfileGuest = () => {
       <div style={{ margin: "0 24px", background: CARD, borderRadius: 20, padding: 24 }}>
         <h2
           style={{
-            fontFamily: '"Bricolage Grotesque", ' + SANS,
+            fontFamily: '"Nohemi", ' + SANS,
             fontWeight: 400,
             fontSize: 24,
             lineHeight: 1.1,

@@ -37,7 +37,7 @@ const BODY = "#2b2420";
 const MUTED = "#6b5d4a";
 const LINE = "rgba(0,0,0,0.08)";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>

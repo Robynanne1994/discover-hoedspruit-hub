@@ -511,7 +511,7 @@ const AccountInfo = () => {
           paddingRight: 20,
           marginTop: 24,
           marginBottom: 10,
-          fontFamily: '"Bricolage Grotesque", ' + FF,
+          fontFamily: '"Nohemi", ' + FF,
           fontSize: 15,
           fontWeight: 700,
           letterSpacing: "0.06em",
@@ -623,7 +623,7 @@ const AccountInfo = () => {
           paddingLeft: 20,
           paddingRight: 20,
           marginBottom: 10,
-          fontFamily: '"Bricolage Grotesque", ' + FF,
+          fontFamily: '"Nohemi", ' + FF,
           fontSize: 15,
           fontWeight: 700,
           letterSpacing: "0.06em",
@@ -1054,7 +1054,7 @@ const PhotoPickerSheet = ({
         </div>
         <h2
           style={{
-            fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
             fontSize: 22,
             color: INK,
@@ -1206,7 +1206,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   };
 
   const sheetHeadingStyle: React.CSSProperties = {
-    fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+    fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
     fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px",
   };
   const sheetCopyStyle: React.CSSProperties = {
