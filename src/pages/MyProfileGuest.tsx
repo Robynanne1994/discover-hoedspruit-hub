@@ -3,7 +3,11 @@ import {
   Users,
   HelpCircle,
   ArrowUpRight,
+  Store,
+  Calendar,
+  Tag,
 } from "lucide-react";
+
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 
