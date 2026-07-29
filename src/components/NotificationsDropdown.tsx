@@ -154,11 +154,13 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     e.stopPropagation();
     if (!n.ref_id) return;
     if (accept) {
-
-      await supabase
-        .from("follows")
-        .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
-        .eq("id", n.ref_id);
+      // Authoritative server-side accept. Bail on error so the card doesn't
+      // falsely flip to "accepted" while the follow never actually took effect.
+      const { error } = await supabase.rpc("respond_to_follow_request", {
+        _request_id: n.ref_id,
+        _accept: true,
+      });
+      if (error) return;
       invalidateFollowCaches();
       setNotifs((prev) =>
         prev.map((x) =>
@@ -174,7 +176,11 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
         )
       );
     } else {
-      await supabase.from("follows").delete().eq("id", n.ref_id);
+      const { error } = await supabase.rpc("respond_to_follow_request", {
+        _request_id: n.ref_id,
+        _accept: false,
+      });
+      if (error) return;
       invalidateFollowCaches();
       // Server trigger converts the notification to 'follow_request_declined'.
       // Mirror that locally so the row stays in the list as history.
