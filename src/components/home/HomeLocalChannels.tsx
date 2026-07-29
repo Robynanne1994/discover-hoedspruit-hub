@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Heart } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import HomeSectionHead from "./HomeSectionHead";
 
@@ -120,22 +120,19 @@ const HomeLocalChannels = () => {
         actionLabel="View All"
         actionHref="/local-channels"
       />
-      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
+      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
         {resources.map((r: any) => {
-          const isSaved = !!(savedResourceIds && savedResourceIds.has(r.id));
+          const sub = [r.meta || r.platform, r.meta_2].filter(Boolean).join(" · ");
           return (
             <div
               key={r.id}
+              onClick={() => openResource(r)}
               style={{
                 background: "#ffffff",
                 borderRadius: 16,
-                padding: 0,
-                paddingRight: 10,
                 display: "flex",
                 alignItems: "stretch",
-                gap: 12,
                 textDecoration: "none",
-                transition: "transform 150ms ease-out",
                 border: "none",
                 textAlign: "left",
                 cursor: "pointer",
@@ -145,11 +142,9 @@ const HomeLocalChannels = () => {
               }}
             >
               <div
-                onClick={() => openResource(r)}
-                onPointerDown={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 style={{
-                  width: 90,
-                  minHeight: 90,
+                  width: 96,
+                  minHeight: 96,
                   alignSelf: "stretch",
                   background: "#F4EFE3",
                   flexShrink: 0,
@@ -171,41 +166,61 @@ const HomeLocalChannels = () => {
                   <span>{PLATFORM_INITIAL[r.platform] || "•"}</span>
                 )}
               </div>
-              <div onClick={() => openResource(r)} style={{ flex: 1, minWidth: 1, cursor: "pointer", alignSelf: "center", paddingTop: 10, paddingBottom: 10 }}>
-                <div
-                  style={{
-                    fontFamily: HN,
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: "#6B6A5E",
-                    marginBottom: 4,
-                  }}
-                >
-                  {r.meta || r.platform || "Channel"}
-                </div>
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 1,
+                  alignSelf: "center",
+                  padding: "12px 8px 12px 14px",
+                }}
+              >
                 <div
                   style={{
                     fontFamily: HN,
                     fontSize: 15,
-                    fontWeight: 500,
+                    fontWeight: 700,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    marginBottom: 6,
-                    wordBreak: "break-word",
+                    marginBottom: 4,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
                   }}
                 >
                   {r.title_override?.trim() || r.title}
                 </div>
-                {r.meta_2 && (
-                  <div style={{ fontFamily: HN, fontSize: 12, fontWeight: 500, color: "#6B6A5E" }}>
-                    {r.meta_2}
+                {sub && (
+                  <div
+                    style={{
+                      fontFamily: HN,
+                      fontSize: 13,
+                      fontWeight: 400,
+                      color: "#6B6A5E",
+                      lineHeight: 1.2,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {sub}
                   </div>
                 )}
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  paddingRight: 14,
+                  flexShrink: 0,
+                }}
+              >
+                <ArrowUpRight size={20} strokeWidth={2} color="#715A3D" />
               </div>
             </div>
           );
         })}
       </div>
+
     </section>
   );
 };
