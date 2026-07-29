@@ -318,9 +318,9 @@ const LocalChannelDetail = () => {
                 </h2>
                 {(() => {
 
-                  const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
-                    ? resource.admins.filter((a: any) => a?.name || a?.image_url)
-                    : (resource.admin_name ? [{ name: resource.admin_name }] : []);
+                  const admins: { name: string }[] = Array.isArray(resource.admins) && resource.admins.length
+                    ? resource.admins.filter((a: any) => a?.name).map((a: any) => ({ name: a.name }))
+                    : (resource.admin_name ? resource.admin_name.split("|").map((n: string) => n.trim()).filter(Boolean).map((name: string) => ({ name })) : []);
                   const yearsValue = resource.since_year
                     ? `Since ${resource.since_year}`
                     : (resource.years_running != null
