@@ -310,7 +310,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
           style={{
             fontFamily: SERIF,
             fontStyle: "italic",
-            fontWeight: 300,
+            fontWeight: 600,
             fontSize: 72,
             lineHeight: 0.92,
             letterSpacing: "-2.5px",

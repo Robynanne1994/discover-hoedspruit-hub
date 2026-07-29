@@ -532,7 +532,7 @@ const UserProfile = () => {
                   <h1
                     style={{
                       fontFamily: HEAD,
-                      fontWeight: 700,
+                      fontWeight: 600,
                       fontSize: 15,
                       lineHeight: 1.2,
                       letterSpacing: "-0.3px",

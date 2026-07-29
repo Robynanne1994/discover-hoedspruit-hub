@@ -350,7 +350,7 @@ const Welcome = () => {
               color: "#423324",
               fontSize: 22,
               lineHeight: 1.2,
-              fontWeight: 500,
+              fontWeight: 600,
               letterSpacing: "0.01em",
               marginTop: 16,
               textAlign: "center",
@@ -464,7 +464,7 @@ const Welcome = () => {
         </p>
         <h1
           style={{
-            fontFamily: HEAD, fontSize: 38, fontWeight: 700, letterSpacing: "-0.02em",
+            fontFamily: HEAD, fontSize: 38, fontWeight: 600, letterSpacing: "-0.02em",
             color: "#1A1A1A", lineHeight: 1.05, margin: "0 0 10px",
           }}
         >
