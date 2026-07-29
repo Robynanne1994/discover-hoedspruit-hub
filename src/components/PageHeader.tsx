@@ -23,7 +23,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
  */
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
 const LINE = "rgba(26,26,26,0.10)";
 const CARD = "#FFFFFF";
