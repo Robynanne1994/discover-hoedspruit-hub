@@ -172,7 +172,7 @@ const PageHeader = ({
               margin: 0,
               fontFamily: HEAD,
               fontSize: titleFont,
-              fontWeight: 700,
+              fontWeight: 550,
               color: INK,
               letterSpacing: "-0.2px",
               lineHeight: 1,
