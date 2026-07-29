@@ -130,13 +130,8 @@ const Welcome = () => {
     setAuthError(null);
     setLoading(true);
     if (mode === "signup") {
-      if (!firstName.trim()) {
-        toast.error("Please enter your first name");
-        setLoading(false);
-        return;
-      }
-      if (!lastName.trim()) {
-        toast.error("Please enter your surname");
+      if (!firstName || !lastName) {
+        toast.error("Please enter both your first and last name");
         setLoading(false);
         return;
       }
