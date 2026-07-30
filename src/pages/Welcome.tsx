@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useGuestAuth } from "@/hooks/useGuestAuth";
@@ -20,6 +20,7 @@ import PageHeader from "@/components/PageHeader";
 import { lovable } from "@/integrations/lovable/index";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
+import { explainSignInFailure, NO_ACCOUNT_HINT, type SignInFailure } from "@/lib/signIn";
 import { useResendCooldown } from "@/hooks/useResendCooldown";
 
 const GoogleIcon = () => (
@@ -87,7 +88,8 @@ const Welcome = () => {
   const [username, setUsername] = useState("");
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
-  const [authError, setAuthError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<SignInFailure | null>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
   const { signIn, signUp } = useAuth();
@@ -188,7 +190,13 @@ const Welcome = () => {
         surname: lastName,
       });
       if (error) {
-        if (/duplicate|unique/i.test(error.message)) {
+        if (/already registered|already exists|already in use/i.test(error.message)) {
+          // The mirror image of the "no account for this email" message on the
+          // log-in side: this address is taken, so point them at logging in.
+          toast.error(
+            `${email.trim() || "That email"} already has an account. Log in instead, or use a different email.`
+          );
+        } else if (/duplicate|unique/i.test(error.message)) {
           toast.error("That username is already taken. Please choose a different one.");
         } else {
           toast.error(error.message);
@@ -227,11 +235,14 @@ const Welcome = () => {
       const { error } = await signIn(email, password);
 
       if (error) {
-        const msg = /invalid login credentials|invalid.*password|invalid.*email/i.test(error.message)
-          ? "Incorrect email or password. Please try again."
-          : error.message;
-        setAuthError(msg);
-        toast.error(msg);
+        // Supabase gives the same error for a wrong password and an email with
+        // no account behind it, so this asks the server which one it was before
+        // deciding what to say. See src/lib/signIn.ts.
+        const failure = await explainSignInFailure(error.message, email);
+        setAuthError(failure);
+        toast.error(
+          failure.kind === "noAccount" ? `${failure.message} ${NO_ACCOUNT_HINT}` : failure.message
+        );
       } else {
         navigate("/", { replace: true });
       }
@@ -561,7 +572,50 @@ const Welcome = () => {
               }}
             >
               <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
-              <span>{authError}</span>
+              {authError.kind === "noAccount" ? (
+                /* Nothing to retype here — the address simply has no account,
+                   so the message hands over the two things worth doing next. */
+                <div>
+                  <span>
+                    {authError.message} {NO_ACCOUNT_HINT}
+                  </span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 8 }}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthError(null);
+                        setPassword("");
+                        setMode("signup");
+                      }}
+                      style={{
+                        fontFamily: FF, fontWeight: 600, fontSize: 13, color: "#b42318",
+                        textDecoration: "underline", textUnderlineOffset: 3, background: "none",
+                        border: "none", padding: 0, cursor: "pointer",
+                      }}
+                    >
+                      Create an account
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthError(null);
+                        setEmail("");
+                        setPassword("");
+                        emailInputRef.current?.focus();
+                      }}
+                      style={{
+                        fontFamily: FF, fontWeight: 600, fontSize: 13, color: "#b42318",
+                        textDecoration: "underline", textUnderlineOffset: 3, background: "none",
+                        border: "none", padding: 0, cursor: "pointer",
+                      }}
+                    >
+                      Use a different email
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <span>{authError.message}</span>
+              )}
             </div>
           )}
           <div>
@@ -570,6 +624,7 @@ const Welcome = () => {
             </Label>
             <Input
               id="email"
+              ref={emailInputRef}
               type="email"
               value={email}
               onChange={(e) => { setEmail(e.target.value); if (authError) setAuthError(null); }}
@@ -598,7 +653,11 @@ const Welcome = () => {
                 className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
                 style={{
                   ...fieldStyle,
-                  ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
+                  // A missing account is an email problem, not a password one —
+                  // don't flag a field the person got right.
+                  ...(authError && mode === "signin" && authError.kind !== "noAccount"
+                    ? { border: "1.5px solid #e5484d" }
+                    : {}),
                 }}
               />
               <button
@@ -707,7 +766,10 @@ const Welcome = () => {
         <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account yet?"}{" "}
           <button
-            onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
+            onClick={() => {
+              setAuthError(null);
+              setMode(mode === "signup" ? "signin" : "signup");
+            }}
             className="font-medium"
             style={{ fontFamily: FF, color: "#715a3d" }}
           >
