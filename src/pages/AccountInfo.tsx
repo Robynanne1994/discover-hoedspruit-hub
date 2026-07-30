@@ -319,7 +319,7 @@ const AccountInfo = () => {
   // address has been requested, "confirm" for an account created before
   // verification existed and still sitting on an unconfirmed address.
   const [verifyTarget, setVerifyTarget] = useState<
-    { email: string; reason: "change" | "confirm" } | null
+    { email: string; reason: "change" | "confirm"; issuedAt: number } | null
   >(null);
   // Dismissing the sheet keeps the pending target so the Email row can say
   // what it's waiting for and offer the code entry again.
@@ -436,8 +436,29 @@ const AccountInfo = () => {
   useEffect(() => {
     const pending = (user as { new_email?: string } | null)?.new_email;
     if (!pending || pending.toLowerCase() === (user?.email || "").toLowerCase()) return;
-    setVerifyTarget((prev) => prev ?? { email: pending, reason: "change" });
+    setVerifyTarget((prev) => prev ?? { email: pending, reason: "change", issuedAt: Date.now() });
   }, [user]);
+
+  // The code only works for VERIFICATION_CODE_TTL_MINUTES. Once that window
+  // passes with nothing entered, drop the pending change entirely and put the
+  // field back to the address the account actually holds — leaving a dead
+  // "waiting on the code" note on screen just confuses things.
+  useEffect(() => {
+    if (!verifyTarget) return;
+    const expiresAt = verifyTarget.issuedAt + VERIFICATION_CODE_TTL_MINUTES * 60 * 1000;
+    const ms = expiresAt - Date.now();
+    const expire = () => {
+      setVerifyTarget(null);
+      setVerifySheetOpen(false);
+      setEmail(user?.email || (profile as any)?.email || "");
+    };
+    if (ms <= 0) {
+      expire();
+      return;
+    }
+    const t = window.setTimeout(expire, ms);
+    return () => window.clearTimeout(t);
+  }, [verifyTarget, user, profile]);
 
   // Arrived here by tapping the link in the confirmation email rather than by
   // typing the code. Redeem it and say what happened — the alternative is a
@@ -681,7 +702,7 @@ const AccountInfo = () => {
           return;
         }
         emailCooldown.start();
-        setVerifyTarget({ email: trimmedEmail, reason: "change" });
+        setVerifyTarget({ email: trimmedEmail, reason: "change", issuedAt: Date.now() });
         setVerifySheetOpen(true);
         queryClient.invalidateQueries({ queryKey: ["profile"] });
         queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
@@ -716,7 +737,7 @@ const AccountInfo = () => {
       return;
     }
     emailCooldown.start();
-    setVerifyTarget({ email: current, reason: "confirm" });
+    setVerifyTarget({ email: current, reason: "confirm", issuedAt: Date.now() });
     setVerifySheetOpen(true);
   };
 
@@ -734,6 +755,8 @@ const AccountInfo = () => {
       return { error };
     }
     emailCooldown.start();
+    // Fresh code, fresh expiry window.
+    setVerifyTarget((prev) => (prev ? { ...prev, issuedAt: Date.now() } : prev));
     return { error: null };
   };
 
