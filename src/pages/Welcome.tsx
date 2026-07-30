@@ -519,17 +519,48 @@ const Welcome = () => {
                 <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
                 </Label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  placeholder="Choose a unique username"
-                  className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={fieldStyle}
-                />
+                <div className="relative">
+                  <span
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px]"
+                    style={{ ...fieldStyle, color: "#6B6A5E" }}
+                  >
+                    @
+                  </span>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(sanitiseUsername(e.target.value))}
+                    required
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    maxLength={USERNAME_MAX}
+                    placeholder="yourname"
+                    className="h-12 rounded-xl bg-card border-border text-[15px] pl-8"
+                    style={fieldStyle}
+                  />
+                </div>
+                <p
+                  className="mt-1.5 text-[12px]"
+                  style={{
+                    color:
+                      usernameStatus === "taken"
+                        ? "#B42318"
+                        : usernameStatus === "available"
+                          ? "#3F6B3F"
+                          : "#6B6A5E",
+                  }}
+                >
+                  {usernameStatus === "checking"
+                    ? "Checking availability..."
+                    : usernameStatus === "taken"
+                      ? "That username is already taken."
+                      : usernameStatus === "available"
+                        ? `@${username} is available.`
+                        : USERNAME_HINT}
+                </p>
               </div>
+
               <div>
                 <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?
