@@ -174,7 +174,7 @@ const MyProfileGuest = () => {
     >
       <Seo
         title="Profile — Hello Hoedspruit"
-        description="Sign in to save places, follow local channels and keep up with what's on around Hoedspruit."
+        description="Save places, events and specials. Follow locals. Never miss what's on."
         path="/my-profile-guest"
         noIndex
       />
@@ -199,7 +199,7 @@ const MyProfileGuest = () => {
           Join Hello Hoedspruit
         </h2>
         <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.5, color: MUTED_INK, margin: "0 0 20px" }}>
-          Save your favourite places, follow local channels and keep up with what's on around town.
+          Save places, events and specials. Follow locals. Never miss what's on.
         </p>
         <button
           onClick={() => navigate("/welcome", { state: { mode: "signup" } })}
