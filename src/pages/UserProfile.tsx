@@ -30,6 +30,15 @@ import ReportUserDialog from "@/components/ReportUserDialog";
 import SavedCard from "@/components/profile/SavedCard";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { invalidateBlockQueries } from "@/hooks/useBlockedUsers";
+import { useBlockCooldown, fetchBlockCooldown } from "@/hooks/useBlockCooldown";
+import BlockActionSheet from "@/components/BlockActionSheet";
+import {
+  blockCooldownBlockedMessage,
+  blockCooldownNotice,
+  isBlockCooldownError,
+  unblockCooldownWarning,
+  unblockedCooldownToast,
+} from "@/lib/blockCooldown";
 
 const PAGE_BG = "#E6E0CC";
 const CREAM = "#f5f0e8";
@@ -109,6 +118,8 @@ const UserProfile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
   const [blockOpen, setBlockOpen] = useState(false);
+  const [unblockOpen, setUnblockOpen] = useState(false);
+  const [cooldownOpen, setCooldownOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("listings");
   const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
@@ -147,12 +158,25 @@ const UserProfile = () => {
     },
   });
 
+  // Blocking again is barred for a while after an unblock — see
+  // src/lib/blockCooldown.ts. Read it up front so the menu can explain the wait
+  // instead of letting the insert fail. While they are still blocked there is
+  // nothing to check, so skip the lookup.
+  const { data: blockCooldown } = useBlockCooldown(id, !isBlocked);
+
   const handleBlock = async () => {
     if (!user || !id) return;
     const { error } = await supabase
       .from("user_blocks" as any)
       .insert({ blocker_id: user.id, blocked_id: id } as any);
     if (error) {
+      if (isBlockCooldownError(error)) {
+        // Refused by the cooldown trigger: fetch the exact dates and explain,
+        // rather than telling them to try again on something that cannot work.
+        await fetchBlockCooldown(queryClient, user.id, id);
+        setCooldownOpen(true);
+        return;
+      }
       toast.error("Could not block user. Please try again.");
       return;
     }
@@ -184,7 +208,7 @@ const UserProfile = () => {
     // block tore down — that is the other person's / this user's choice to make.
     queryClient.setQueryData(["user-blocked", user.id, id], false);
     await invalidateBlockQueries(queryClient);
-    toast.success("User unblocked");
+    toast.success(`User unblocked. ${unblockedCooldownToast()}`);
   };
 
   const { data: profile, isLoading } = useQuery({
@@ -195,6 +219,11 @@ const UserProfile = () => {
     },
     enabled: !!id,
   });
+
+  // How this person is referred to in the block / unblock copy.
+  const personName =
+    titleCase(profile?.display_name) ||
+    (profile?.username ? `@${profile.username}` : "this user");
 
   const { data: counts } = useFollowCounts(id);
   const { data: isFollowing } = useIsFollowing(id);
@@ -468,7 +497,7 @@ const UserProfile = () => {
               .
             </span>
             <button
-              onClick={handleUnblock}
+              onClick={() => setUnblockOpen(true)}
               style={{
                 flexShrink: 0,
                 height: 32,
@@ -958,7 +987,11 @@ const UserProfile = () => {
                   setMenuOpen(false);
                   if (!requireAuth(isBlocked ? "unblock users" : "block users")) return;
                   if (isBlocked) {
-                    handleUnblock();
+                    setUnblockOpen(true);
+                  } else if (blockCooldown?.isActive) {
+                    // Still inside the wait from the last unblock — say so up
+                    // front rather than letting the insert be refused.
+                    setCooldownOpen(true);
                   } else {
                     setBlockOpen(true);
                   }
@@ -1055,83 +1088,44 @@ const UserProfile = () => {
       </Dialog>
 
       {/* Block confirmation — bottom sheet matching the app's other modals */}
-      {blockOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
-          onClick={() => setBlockOpen(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              fontFamily: SANS,
-              width: "100%",
-              background: "#ffffff",
-              borderRadius: "20px 20px 0 0",
-              padding: "20px 20px 32px",
-              animation: "bu-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-            }}
-          >
-            <style>{`@keyframes bu-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.08em", color: "#8A8480", textTransform: "uppercase" }}>{"\n"}</div>
-              <button
-                onClick={() => setBlockOpen(false)}
-                aria-label="Close"
-                style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}
-              >
-                <X size={20} color={INK} strokeWidth={1.75} />
-              </button>
-            </div>
-            <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px" }}>
-              Block {titleCase(profile?.display_name) || (profile?.username ? `@${profile.username}` : "this user")}?
-            </h2>
-            <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.55, color: "#2b2420", margin: "0 0 20px" }}>
-              You will unfollow each other, and they won't be able to follow you or see your profile. You can unblock them at a later stage through your account privacy settings.
-            </p>
-            <div style={{ display: "flex", gap: 10 }}>
-              <button
-                onClick={() => setBlockOpen(false)}
-                style={{
-                  flex: 1,
-                  height: 48,
-                  borderRadius: 9999,
-                  background: "transparent",
-                  border: "1px solid #C5C0BA",
-                  color: INK,
-                  fontFamily: SANS,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  handleBlock();
-                  setBlockOpen(false);
-                }}
-                style={{
-                  flex: 1,
-                  height: 48,
-                  borderRadius: 9999,
-                  background: "#423324",
-                  color: "#FFFFFF",
-                  border: "none",
-                  fontFamily: SANS,
-                  fontSize: 14,
-                  fontWeight: 500,
-                  cursor: "pointer",
-                }}
-              >
-                Block User
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <BlockActionSheet
+        open={blockOpen}
+        onClose={() => setBlockOpen(false)}
+        title={`Block ${personName}?`}
+        body="You will unfollow each other, and they won't be able to follow you or see your profile. You can unblock them at a later stage through your account privacy settings."
+        note={blockCooldownNotice()}
+        confirmLabel="Block User"
+        onConfirm={() => {
+          setBlockOpen(false);
+          handleBlock();
+        }}
+      />
+
+      {/* Unblock confirmation — this is where the cooldown starts, so say so */}
+      <BlockActionSheet
+        open={unblockOpen}
+        onClose={() => setUnblockOpen(false)}
+        title={`Unblock ${personName}?`}
+        body="They'll be able to find your profile and follow you again. Any follows the block removed are not restored."
+        note={unblockCooldownWarning(personName)}
+        confirmLabel="Unblock"
+        onConfirm={() => {
+          setUnblockOpen(false);
+          handleUnblock();
+        }}
+      />
+
+      {/* Cooldown explainer — shown instead of a block they cannot make yet */}
+      <BlockActionSheet
+        open={cooldownOpen}
+        onClose={() => setCooldownOpen(false)}
+        title="You can't block them just yet"
+        body={
+          blockCooldown
+            ? blockCooldownBlockedMessage(personName, blockCooldown)
+            : `There's a wait before you can block ${personName} again after unblocking them. Please try again later.`
+        }
+      />
 
 
       {id && (

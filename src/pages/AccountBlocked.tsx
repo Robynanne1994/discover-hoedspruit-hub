@@ -1,10 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { invalidateBlockQueries } from "@/hooks/useBlockedUsers";
 import PageHeader from "@/components/PageHeader";
+import BlockActionSheet from "@/components/BlockActionSheet";
+import {
+  unblockCooldownWarning,
+  unblockedCooldownToast,
+} from "@/lib/blockCooldown";
 import { toast } from "sonner";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -45,6 +50,12 @@ const AccountBlocked = () => {
     refetchOnMount: "always",
   });
 
+  // Unblocking starts a cooldown on re-blocking that person, so it goes through
+  // a confirmation that spells the wait out first.
+  const [pending, setPending] = useState<
+    { id: string; blockedId: string; name: string } | null
+  >(null);
+
   const unblock = async (id: string, blockedId: string) => {
     const { error } = await supabase.from("user_blocks").delete().eq("id", id);
     if (error) {
@@ -55,7 +66,7 @@ const AccountBlocked = () => {
     // suggestions and follow lists. No follow is restored in either direction.
     queryClient.setQueryData(["user-blocked", user?.id, blockedId], false);
     await invalidateBlockQueries(queryClient);
-    toast.success("Unblocked.");
+    toast.success(`Unblocked. ${unblockedCooldownToast()}`);
   };
 
   return (
@@ -97,7 +108,15 @@ const AccountBlocked = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => unblock(b.id, b.blocked_id)}
+                  onClick={() =>
+                    setPending({
+                      id: b.id,
+                      blockedId: b.blocked_id,
+                      name:
+                        b.profile?.display_name ||
+                        (b.profile?.username ? `@${b.profile.username}` : "this user"),
+                    })
+                  }
                   style={{
                     fontFamily: FF, fontSize: 13, color: "#715a3d",
                     background: "transparent", border: `1px solid #715a3d`,
@@ -111,6 +130,20 @@ const AccountBlocked = () => {
           </div>
         )}
       </div>
+
+      <BlockActionSheet
+        open={!!pending}
+        onClose={() => setPending(null)}
+        title={`Unblock ${pending?.name ?? "this user"}?`}
+        body="They'll be able to find your profile and follow you again. Any follows the block removed are not restored."
+        note={unblockCooldownWarning(pending?.name ?? "this user")}
+        confirmLabel="Unblock"
+        onConfirm={() => {
+          const target = pending;
+          setPending(null);
+          if (target) unblock(target.id, target.blockedId);
+        }}
+      />
     </div>
   );
 };
