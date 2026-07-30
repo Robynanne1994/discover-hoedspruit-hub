@@ -463,7 +463,7 @@ const Notifications = () => {
               style={{
                 fontFamily: '"Nohemi", ' + SANS,
                 fontSize: 15,
-                fontWeight: 700,
+                fontWeight: 550,
                 color: C.ink,
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
