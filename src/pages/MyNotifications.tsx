@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone, MoreHorizontal, MessageSquare, Send } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus, Megaphone, MoreHorizontal, Send } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -635,21 +635,6 @@ function NotifCard({
               }}
             >
               Decline
-            </button>
-          </div>
-        )}
-        {n.kind === "follow_request_accepted" && n.link && (
-          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button
-              onClick={(e) => { e.stopPropagation(); onClick(); }}
-              style={{
-                height: 32, padding: "0 16px", borderRadius: 999,
-                background: BROWN, color: "#fff", border: "none",
-                cursor: "pointer", fontFamily: SANS, fontSize: 13, fontWeight: 600,
-                display: "inline-flex", alignItems: "center", gap: 6,
-              }}
-            >
-              Message
             </button>
           </div>
         )}
