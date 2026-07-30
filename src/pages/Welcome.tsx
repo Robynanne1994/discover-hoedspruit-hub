@@ -147,11 +147,13 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      if (!username.trim()) {
-        toast.error("Please choose a username");
+      const usernameError = validateUsername(username);
+      if (usernameError) {
+        toast.error(usernameError);
         setLoading(false);
         return;
       }
+
       if (!residency) {
         toast.error("Please let us know if you live in or are visiting Hoedspruit");
         setLoading(false);
