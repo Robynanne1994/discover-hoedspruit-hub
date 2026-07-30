@@ -19,6 +19,8 @@ import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
 import { lovable } from "@/integrations/lovable/index";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
+import { sanitiseUsername, validateUsername, USERNAME_MAX, USERNAME_HINT } from "@/lib/username";
+
 import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
 import { useResendCooldown } from "@/hooks/useResendCooldown";
 
@@ -85,6 +87,35 @@ const Welcome = () => {
   const firstName = nameParts[0] ?? "";
   const lastName = nameParts.slice(1).join(" ");
   const [username, setUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<
+    "idle" | "checking" | "available" | "taken"
+  >("idle");
+
+  // Debounced live availability check so the user finds out before submitting.
+  useEffect(() => {
+    const handle = sanitiseUsername(username);
+    if (validateUsername(handle)) {
+      setUsernameStatus("idle");
+      return;
+    }
+    setUsernameStatus("checking");
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data, error } = await supabase.rpc(
+        "is_username_available" as any,
+        { _username: handle } as any
+      );
+      if (cancelled) return;
+      if (error) setUsernameStatus("idle");
+      else setUsernameStatus(data ? "available" : "taken");
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [username]);
+
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -147,11 +178,13 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      if (!username.trim()) {
-        toast.error("Please choose a username");
+      const usernameError = validateUsername(username);
+      if (usernameError) {
+        toast.error(usernameError);
         setLoading(false);
         return;
       }
+
       if (!residency) {
         toast.error("Please let us know if you live in or are visiting Hoedspruit");
         setLoading(false);
@@ -165,7 +198,7 @@ const Welcome = () => {
       }
       // Check username availability (case-insensitive). A SECURITY DEFINER RPC
       // is used because RLS blocks reading other users' profile rows directly.
-      const trimmedUsername = username.trim();
+      const trimmedUsername = sanitiseUsername(username);
       const { supabase } = await import("@/integrations/supabase/client");
       const { data: available, error: checkError } = await supabase.rpc(
         "is_username_available" as any,
@@ -515,17 +548,48 @@ const Welcome = () => {
                 <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
                 </Label>
-                <Input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  placeholder="Choose a unique username"
-                  className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={fieldStyle}
-                />
+                <div className="relative">
+                  <span
+                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px]"
+                    style={{ ...fieldStyle, color: "#6B6A5E" }}
+                  >
+                    @
+                  </span>
+                  <Input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(sanitiseUsername(e.target.value))}
+                    required
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    maxLength={USERNAME_MAX}
+                    placeholder="yourname"
+                    className="h-12 rounded-xl bg-card border-border text-[15px] pl-8"
+                    style={fieldStyle}
+                  />
+                </div>
+                <p
+                  className="mt-1.5 text-[12px]"
+                  style={{
+                    color:
+                      usernameStatus === "taken"
+                        ? "#B42318"
+                        : usernameStatus === "available"
+                          ? "#3F6B3F"
+                          : "#6B6A5E",
+                  }}
+                >
+                  {usernameStatus === "checking"
+                    ? "Checking availability..."
+                    : usernameStatus === "taken"
+                      ? "That username is already taken."
+                      : usernameStatus === "available"
+                        ? `@${username} is available.`
+                        : USERNAME_HINT}
+                </p>
               </div>
+
               <div>
                 <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?

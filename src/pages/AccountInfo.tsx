@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
+import { sanitiseUsername, validateUsername, USERNAME_MAX } from "@/lib/username";
+
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
@@ -407,7 +409,7 @@ const AccountInfo = () => {
     const nameParts = trimmedFullName.split(/\s+/).filter(Boolean);
     const trimmedFirstName = nameParts[0] || "";
     const trimmedSurname = nameParts.slice(1).join(" ") || "";
-    const trimmedUsername = username.trim();
+    const trimmedUsername = sanitiseUsername(username);
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
 
@@ -415,6 +417,13 @@ const AccountInfo = () => {
       toast.error("Please add your first name and last name.");
       return;
     }
+
+    const usernameError = validateUsername(trimmedUsername);
+    if (usernameError) {
+      toast.error(usernameError);
+      return;
+    }
+
 
     setSavingProfile(true);
     try {
@@ -686,16 +695,21 @@ const AccountInfo = () => {
               </Row>
 
               <Row label="Username">
-                <input
-                  value={username}
-                  onChange={(e) =>
-                    setUsername(e.target.value.replace(/\s+/g, "").toLowerCase().replace(/^@+/, ""))
-                  }
-                  style={rowInputStyle}
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                />
+                <div style={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+                  <span style={{ ...rowInputStyle, width: "auto", flex: "0 0 auto", color: "#6B6A5E" }}>
+                    @
+                  </span>
+                  <input
+                    value={username}
+                    onChange={(e) => setUsername(sanitiseUsername(e.target.value))}
+                    style={{ ...rowInputStyle, flex: 1 }}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    maxLength={USERNAME_MAX}
+                  />
+                </div>
               </Row>
+
 
               <Row label="Email">
                 <input
