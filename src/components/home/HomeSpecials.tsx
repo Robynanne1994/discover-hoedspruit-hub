@@ -145,6 +145,7 @@ const HomeSpecials = () => {
                     )}
                   </div>
                   <span
+                    className="line-clamp-2"
                     style={{
                       flex: 1,
                       minWidth: 0,
@@ -152,9 +153,7 @@ const HomeSpecials = () => {
                       fontSize: 14,
                       fontWeight: 700,
                       color: "#1A1A1A",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      lineHeight: 1.25,
                     }}
                   >
                     {s.business_name}
