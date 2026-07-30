@@ -702,7 +702,7 @@ const AccountInfo = () => {
           return;
         }
         emailCooldown.start();
-        setVerifyTarget({ email: trimmedEmail, reason: "change" });
+        setVerifyTarget({ email: trimmedEmail, reason: "change", issuedAt: Date.now() });
         setVerifySheetOpen(true);
         queryClient.invalidateQueries({ queryKey: ["profile"] });
         queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
