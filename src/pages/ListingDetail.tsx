@@ -23,6 +23,8 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import LocationMap from "@/components/LocationMap";
+import { geocode, parseCoordsFromMapLink, HOEDSPRUIT_CENTRE, type LatLon } from "@/lib/tileMap";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { getCustomIcon } from "@/lib/customIcons";
@@ -120,7 +122,7 @@ const ListingDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
-  const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [mapCoords, setMapCoords] = useState<LatLon | null>(null);
   const [heroImgError, setHeroImgError] = useState(false);
 
   const { data: listing, isLoading, isError, refetch, isFetching } = useQuery({
@@ -138,30 +140,15 @@ const ListingDetail = () => {
     setMapCoords(null);
     const link: string | null = (listing as any).google_maps_link || null;
     const loc: string | null = listing.location || null;
-    const tryParse = (url: string): { lat: number; lon: number } | null => {
-      const at = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (at) return { lat: parseFloat(at[1]), lon: parseFloat(at[2]) };
-      const d = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
-      if (d) return { lat: parseFloat(d[1]), lon: parseFloat(d[2]) };
-      const q = url.match(/[?&](?:query|q)=(-?\d+\.\d+),(-?\d+\.\d+)/);
-      if (q) return { lat: parseFloat(q[1]), lon: parseFloat(q[2]) };
-      return null;
-    };
     if (link) {
-      const parsed = tryParse(link);
+      const parsed = parseCoordsFromMapLink(link);
       if (parsed) { setMapCoords(parsed); return; }
     }
     const query = loc ? `${loc}, Hoedspruit, South Africa` : `${listing.title}, Hoedspruit, South Africa`;
     let cancelled = false;
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`)
-      .then((r) => r.json())
-      .then((arr) => {
-        if (cancelled) return;
-        if (Array.isArray(arr) && arr[0]) {
-          setMapCoords({ lat: parseFloat(arr[0].lat), lon: parseFloat(arr[0].lon) });
-        } else setMapCoords({ lat: -24.3567, lon: 31.0 });
-      })
-      .catch(() => { if (!cancelled) setMapCoords({ lat: -24.3567, lon: 31.0 }); });
+    geocode(query)
+      .then((coords) => { if (!cancelled) setMapCoords(coords ?? HOEDSPRUIT_CENTRE); })
+      .catch(() => { if (!cancelled) setMapCoords(HOEDSPRUIT_CENTRE); });
     return () => { cancelled = true; };
   }, [listing]);
 
@@ -1227,24 +1214,12 @@ const ListingDetail = () => {
             </div>
           ) : (
             <>
-              <div style={{ position: "relative", height: 200, background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)" }}>
-                {mapCoords && (() => {
-                  const d = 0.006;
-                  const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
-                  return (
-                    <iframe
-                      title="Map"
-                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
-                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                    />
-                  );
-                })()}
-                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)", pointerEvents: "none" }}>
-                  <div style={{ width: 16, height: 16, background: C.primary, borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)", boxShadow: "0 4px 8px rgba(0,0,0,0.25)" }} />
-                </div>
-              </div>
+              <LocationMap
+                coords={mapCoords}
+                href={directionsHref}
+                label={listing.title}
+                pinColor={C.primary}
+              />
               {listing.location && (
                 <div style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
                   <MapPin size={18} color={C.primary} style={{ flexShrink: 0, marginTop: 2 }} />
