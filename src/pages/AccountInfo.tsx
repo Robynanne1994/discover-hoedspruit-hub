@@ -755,6 +755,8 @@ const AccountInfo = () => {
       return { error };
     }
     emailCooldown.start();
+    // Fresh code, fresh expiry window.
+    setVerifyTarget((prev) => (prev ? { ...prev, issuedAt: Date.now() } : prev));
     return { error: null };
   };
 
