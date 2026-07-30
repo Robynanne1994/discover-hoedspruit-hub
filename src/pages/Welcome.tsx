@@ -482,7 +482,7 @@ const Welcome = () => {
         </p>
         <h1
           style={{
-            fontFamily: HEAD, fontSize: 38, fontWeight: 600, letterSpacing: "-0.02em",
+            fontFamily: HEAD, fontSize: 38, fontWeight: 550, letterSpacing: "-0.02em",
             color: "#1A1A1A", lineHeight: 1.05, margin: "0 0 10px",
           }}
         >
