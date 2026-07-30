@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2, ChevronRight, Image as ImageIcon } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { sanitiseUsername, validateUsername, USERNAME_MAX } from "@/lib/username";
 
