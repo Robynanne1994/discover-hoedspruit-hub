@@ -14,6 +14,7 @@
 // The address is the only channel we have for a password reset or for reaching
 // someone about their account, so an unverified one is worth very little.
 import { supabase } from "@/integrations/supabase/client";
+import { buildEmailChangeRedirectUrl } from "@/lib/emailChangeLink";
 
 /** How many digits are in a verification code. Mirrors `otp_length`. */
 export const VERIFICATION_CODE_LENGTH = 6;
@@ -122,6 +123,11 @@ export async function verifySignupCode(email: string, code: string): Promise<Res
  * updateUser() writes the new address there and then, sends nothing, and
  * returns no error. Without this flag the caller would sit on a code-entry
  * screen waiting for an email that is never sent.
+ *
+ * `emailRedirectTo` only matters for the one-tap link the same email carries:
+ * it aims that link at Account Info, which knows how to redeem it, instead of
+ * the project's Site URL — where it would land on the homepage and appear to
+ * do nothing. See src/lib/emailChangeLink.ts.
  */
 export async function sendEmailChangeCode(
   newEmail: string,
@@ -130,7 +136,10 @@ export async function sendEmailChangeCode(
   if (!isValidEmail(trimmed)) {
     return { error: "Please enter a valid email address.", applied: false };
   }
-  const { data, error } = await supabase.auth.updateUser({ email: trimmed });
+  const { data, error } = await supabase.auth.updateUser(
+    { email: trimmed },
+    { emailRedirectTo: buildEmailChangeRedirectUrl() },
+  );
   if (error) return { error: friendlySendError(error.message), applied: false };
   return {
     error: null,

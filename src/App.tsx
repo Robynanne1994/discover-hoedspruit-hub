@@ -80,6 +80,7 @@ import AdminModeratedUsers from "./pages/admin/AdminModeratedUsers.tsx";
 import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
 import { RESET_PASSWORD_PATH, hasRecoveryLink } from "@/lib/passwordReset";
+import { EMAIL_CHANGE_PATH, hasEmailChangeLink } from "@/lib/emailChangeLink";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -127,6 +128,31 @@ const RecoveryLinkRedirect = () => {
   return null;
 };
 
+/**
+ * Same idea for the "confirm your new email" link.
+ *
+ * The change is normally confirmed with the six-digit code, but the email
+ * carries a one-tap link too, and Supabase sends it to the project's Site URL
+ * whenever the template predates `emailRedirectTo`. That drops the user on the
+ * homepage with the confirmation sitting unused in the URL — the link looks
+ * broken. Send them to Account Info, which redeems it and says what happened.
+ */
+const EmailChangeLinkRedirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handled = React.useRef(false);
+
+  React.useEffect(() => {
+    if (handled.current) return;
+    handled.current = true;
+    if (!hasEmailChangeLink()) return;
+    if (location.pathname === EMAIL_CHANGE_PATH) return;
+    navigate(EMAIL_CHANGE_PATH, { replace: true });
+  }, [location.pathname, navigate]);
+
+  return null;
+};
+
 const ConditionalMain = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
@@ -155,6 +181,7 @@ const App = () => (
             <ShareProvider>
               <NativePush />
               <RecoveryLinkRedirect />
+              <EmailChangeLinkRedirect />
               <ConditionalMain>
               <Routes>
                 <Route path="/" element={<Index />} />
