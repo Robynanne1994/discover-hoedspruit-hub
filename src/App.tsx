@@ -1,6 +1,6 @@
 import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import BottomNav from "@/components/BottomNav";
 import NativePush from "@/components/NativePush";
@@ -82,6 +82,7 @@ import AdminUserReports from "./pages/admin/AdminUserReports.tsx";
 import AdminModeratedUsers from "./pages/admin/AdminModeratedUsers.tsx";
 import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
+import { RESET_PASSWORD_PATH, hasRecoveryLink } from "@/lib/passwordReset";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -102,6 +103,31 @@ const ConditionalBottomNav = () => {
   const path = location.pathname;
   if (path.startsWith("/admin") || path === "/welcome" || path === "/reset-password") return null;
   return <BottomNav />;
+};
+
+/**
+ * Makes sure a password reset link always lands on the reset screen.
+ *
+ * Supabase only redirects to URLs on its allow list; when the emailed link's
+ * target isn't listed it falls back to the project's Site URL, which drops the
+ * user on the homepage with the recovery tokens attached and nothing to do with
+ * them. The link is read from the snapshot taken at start-up, so the reset
+ * screen still sees it after this redirect.
+ */
+const RecoveryLinkRedirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const handled = React.useRef(false);
+
+  React.useEffect(() => {
+    if (handled.current) return;
+    handled.current = true;
+    if (!hasRecoveryLink()) return;
+    if (location.pathname === RESET_PASSWORD_PATH) return;
+    navigate(RESET_PASSWORD_PATH, { replace: true });
+  }, [location.pathname, navigate]);
+
+  return null;
 };
 
 const ConditionalMain = ({ children }: { children: React.ReactNode }) => {
@@ -130,6 +156,7 @@ const App = () => (
         <BrowserRouter>
           <GuestAuthProvider>
               <NativePush />
+              <RecoveryLinkRedirect />
               <ConditionalMain>
               <Routes>
                 <Route path="/" element={<Index />} />

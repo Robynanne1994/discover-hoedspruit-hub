@@ -19,6 +19,8 @@ import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
 import { lovable } from "@/integrations/lovable/index";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
+import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
+import { useResendCooldown } from "@/hooks/useResendCooldown";
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -89,6 +91,9 @@ const Welcome = () => {
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
   const { signIn, signUp } = useAuth();
+  // Supabase rate-limits auth emails, so the resend link counts down instead of
+  // failing the request.
+  const resetCooldown = useResendCooldown();
 
   const handleOAuth = async (provider: "google" | "apple") => {
     setOauthLoading(provider);
@@ -236,25 +241,15 @@ const Welcome = () => {
 
   const handleSendReset = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    const trimmedEmail = email.trim();
-    if (!trimmedEmail) {
-      toast.error("Please enter your email address.");
-      return;
-    }
+    if (loading || resetCooldown.waiting) return;
     setLoading(true);
-    const { supabase } = await import("@/integrations/supabase/client");
-    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+    const { error } = await sendPasswordResetEmail(email);
     setLoading(false);
     if (error) {
-      toast.error(
-        /rate|seconds|too many/i.test(error.message)
-          ? "Please wait a moment before requesting another link."
-          : error.message || "Could not send the reset link. Please try again."
-      );
+      toast.error(error);
       return;
     }
+    resetCooldown.start();
     setMode("forgotSent");
   };
 
@@ -268,7 +263,8 @@ const Welcome = () => {
             <>
               <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 20px" }}>
                 Enter the email address for your account and we'll send you a secure
-                link to choose a new password.
+                link to choose a new password. The link works for {RESET_LINK_TTL_MINUTES}{" "}
+                minutes.
               </p>
               <form onSubmit={handleSendReset} className="flex flex-col">
                 <div>
@@ -281,6 +277,7 @@ const Welcome = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    autoComplete="email"
                     placeholder="you@example.com"
                     className="h-12 rounded-xl bg-card border-border text-[15px]"
                     style={{ background: "#ffffff", color: "#1A1A1A" }}
@@ -290,9 +287,13 @@ const Welcome = () => {
                   type="submit"
                   className="w-full h-12 font-medium rounded-full mt-6"
                   style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
-                  disabled={loading}
+                  disabled={loading || resetCooldown.waiting}
                 >
-                  {loading ? "Sending..." : "Email Reset Link"}
+                  {loading
+                    ? "Sending..."
+                    : resetCooldown.waiting
+                    ? `Try again in ${resetCooldown.remaining}s`
+                    : "Email Reset Link"}
                 </Button>
               </form>
               <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
@@ -312,9 +313,9 @@ const Welcome = () => {
               <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 20px" }}>
                 If an account exists for{" "}
                 <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{email.trim()}</span>
-                , we've sent it a password reset link. Open the link to choose a new
-                password — and check your spam folder if it doesn't arrive within a few
-                minutes.
+                , we've sent it a password reset link. Open it within{" "}
+                {RESET_LINK_TTL_MINUTES} minutes to choose a new password — and check your
+                spam folder if it doesn't arrive in a minute or two.
               </p>
               <Button
                 onClick={() => setMode("signin")}
@@ -328,11 +329,19 @@ const Welcome = () => {
                 <button
                   type="button"
                   onClick={() => handleSendReset()}
-                  disabled={loading}
+                  disabled={loading || resetCooldown.waiting}
                   className="font-medium"
-                  style={{ fontFamily: FF, color: "#715a3d", opacity: loading ? 0.6 : 1 }}
+                  style={{
+                    fontFamily: FF,
+                    color: "#715a3d",
+                    opacity: loading || resetCooldown.waiting ? 0.6 : 1,
+                  }}
                 >
-                  {loading ? "Sending..." : "Resend link"}
+                  {loading
+                    ? "Sending..."
+                    : resetCooldown.waiting
+                    ? `Resend in ${resetCooldown.remaining}s`
+                    : "Resend link"}
                 </button>
               </p>
             </>
