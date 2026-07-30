@@ -169,7 +169,7 @@ const Welcome = () => {
       }
       // Check username availability (case-insensitive). A SECURITY DEFINER RPC
       // is used because RLS blocks reading other users' profile rows directly.
-      const trimmedUsername = username.trim();
+      const trimmedUsername = sanitiseUsername(username);
       const { supabase } = await import("@/integrations/supabase/client");
       const { data: available, error: checkError } = await supabase.rpc(
         "is_username_available" as any,
