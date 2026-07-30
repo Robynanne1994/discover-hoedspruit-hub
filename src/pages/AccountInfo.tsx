@@ -20,6 +20,8 @@ import PageHeader from "@/components/PageHeader";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
+import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
+import { useResendCooldown } from "@/hooks/useResendCooldown";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -1156,6 +1158,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   // "sent" = the reset email has gone out.
   const [view, setView] = useState<"change" | "forgot" | "sent">("change");
   const [sendingReset, setSendingReset] = useState(false);
+  const resetCooldown = useResendCooldown();
   const accountEmail = user?.email || "";
 
   useEffect(() => {
@@ -1221,24 +1224,19 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleSendResetLink = async () => {
-    if (sendingReset) return;
+    if (sendingReset || resetCooldown.waiting) return;
     if (!accountEmail) {
       toast.error("We couldn't find the email address for your account.");
       return;
     }
     setSendingReset(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(accountEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+    const { error } = await sendPasswordResetEmail(accountEmail);
     setSendingReset(false);
     if (error) {
-      toast.error(
-        /rate|seconds|too many/i.test(error.message)
-          ? "Please wait a moment before requesting another link."
-          : error.message || "Could not send the reset link. Please try again."
-      );
+      toast.error(error);
       return;
     }
+    resetCooldown.start();
     setView("sent");
   };
 
@@ -1352,17 +1350,23 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             <p style={sheetCopyStyle}>
               No problem. We'll email a secure link to{" "}
               <span style={{ color: INK, fontWeight: 600 }}>{accountEmail || "your account email"}</span>
-              . Open it and you can choose a brand-new password — no current password needed.
+              . Open it within {RESET_LINK_TTL_MINUTES} minutes and you can choose a
+              brand-new password — no current password needed.
             </p>
             <button
               onClick={handleSendResetLink}
-              disabled={sendingReset}
+              disabled={sendingReset || resetCooldown.waiting}
               style={{
                 ...primaryBtnStyle, marginTop: 4,
-                cursor: sendingReset ? "default" : "pointer", opacity: sendingReset ? 0.6 : 1,
+                cursor: sendingReset || resetCooldown.waiting ? "default" : "pointer",
+                opacity: sendingReset || resetCooldown.waiting ? 0.6 : 1,
               }}
             >
-              {sendingReset ? "Sending…" : "Email Me a Reset Link"}
+              {sendingReset
+                ? "Sending…"
+                : resetCooldown.waiting
+                ? `Try again in ${resetCooldown.remaining}s`
+                : "Email Me a Reset Link"}
             </button>
             <button type="button" onClick={() => setView("change")} style={textLinkStyle}>
               Back to Change Password
@@ -1376,8 +1380,8 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             <p style={sheetCopyStyle}>
               We've sent a password reset link to{" "}
               <span style={{ color: INK, fontWeight: 600 }}>{accountEmail}</span>
-              . The link expires after about an hour. If it doesn't arrive within a few
-              minutes, check your spam folder.
+              . The link expires in {RESET_LINK_TTL_MINUTES} minutes. If it doesn't arrive
+              in a minute or two, check your spam folder.
             </p>
             <button
               onClick={onClose}
@@ -1388,10 +1392,17 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             <button
               type="button"
               onClick={handleSendResetLink}
-              disabled={sendingReset}
-              style={{ ...textLinkStyle, opacity: sendingReset ? 0.6 : 1 }}
+              disabled={sendingReset || resetCooldown.waiting}
+              style={{
+                ...textLinkStyle,
+                opacity: sendingReset || resetCooldown.waiting ? 0.6 : 1,
+              }}
             >
-              {sendingReset ? "Sending…" : "Resend Link"}
+              {sendingReset
+                ? "Sending…"
+                : resetCooldown.waiting
+                ? `Resend in ${resetCooldown.remaining}s`
+                : "Resend Link"}
             </button>
           </>
         )}

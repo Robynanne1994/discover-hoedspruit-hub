@@ -36,3 +36,20 @@ verify_jwt = false
 
 [functions.special-reminders]
 verify_jwt = false
+
+# Auth email configuration.
+#
+# Applied when the Supabase config is pushed. The same values must be set in the
+# dashboard (Authentication -> Emails) for a project whose auth settings are
+# managed there -- see PASSWORD_RESET_SETUP.md. The app enforces the 15-minute
+# window itself as well, so the reset screen behaves correctly either way.
+[auth.email]
+# Emailed links (password recovery, confirmations) expire after 15 minutes.
+otp_expiry = 900
+# At most one auth email per address per minute; the resend buttons in the app
+# count this down instead of letting the request fail.
+max_frequency = "60s"
+
+[auth.email.template.recovery]
+subject = "Reset your Hello Hoedspruit password"
+content_path = "./supabase/templates/recovery.html"
