@@ -145,7 +145,7 @@ const ShareSheet = ({ open, content, onClose }: ShareSheetProps) => {
         <style>{`@keyframes sh-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 20, color: C.heading, margin: 0 }}>
+          <h2 style={{ fontFamily: HEAD, fontWeight: 550, fontSize: 20, color: C.heading, margin: 0 }}>
             Share
           </h2>
           <button

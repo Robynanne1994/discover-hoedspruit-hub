@@ -67,7 +67,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
-    setAllNotifs((data ?? []) as Notif[]);
+    setAllNotifs((data ?? []) as unknown as Notif[]);
     setLoaded(true);
   }, [user]);
 

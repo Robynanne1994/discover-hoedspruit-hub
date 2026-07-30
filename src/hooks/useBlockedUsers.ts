@@ -73,8 +73,8 @@ export const useBlockedUsers = () => {
     queryKey: ["blocked-users", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { data } = await supabase.rpc("get_block_state");
-      const row = (Array.isArray(data) ? data[0] : data) as
+      const { data } = await supabase.rpc("get_block_state" as any);
+      const row = (Array.isArray(data) ? data[0] : data) as unknown as
         | { i_blocked: string[] | null; blocked_me: string[] | null }
         | undefined;
       return {
