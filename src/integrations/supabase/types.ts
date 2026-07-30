@@ -2058,24 +2058,6 @@ export type Database = {
           },
         ]
       }
-      user_block_cooldowns: {
-        Row: {
-          blocked_id: string
-          blocker_id: string
-          unblocked_at: string
-        }
-        Insert: {
-          blocked_id: string
-          blocker_id: string
-          unblocked_at?: string
-        }
-        Update: {
-          blocked_id?: string
-          blocker_id?: string
-          unblocked_at?: string
-        }
-        Relationships: []
-      }
       user_blocks: {
         Row: {
           blocked_id: string
@@ -2184,18 +2166,9 @@ export type Database = {
         Returns: undefined
       }
       assert_account_active: { Args: { _user_id: string }; Returns: undefined }
-      block_cooldown_days: { Args: never; Returns: number }
       claim_business_owner_role: { Args: never; Returns: undefined }
       clear_expired_suspensions: { Args: never; Returns: number }
       get_been_here_count: { Args: { _listing_id: string }; Returns: number }
-      get_block_cooldown: {
-        Args: { _blocked_id: string }
-        Returns: {
-          available_at: string
-          is_active: boolean
-          unblocked_at: string
-        }[]
-      }
       get_follow_counts: {
         Args: { _user_id: string }
         Returns: {
