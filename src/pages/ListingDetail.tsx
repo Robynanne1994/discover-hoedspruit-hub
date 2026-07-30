@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useShare } from "@/hooks/useShare";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
@@ -236,6 +237,7 @@ const ListingDetail = () => {
   });
 
   const requireAuth = useRequireAuth();
+  const share = useShare();
 
   const handleToggleFavourite = () => {
     // Guests get a dismissable bottom sheet, not a full-screen redirect.
@@ -244,17 +246,14 @@ const ListingDetail = () => {
     toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };
 
-  const handleShare = async () => {
-    const shareUrl = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: listing?.title || "", url: shareUrl }); } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-        }
-      }
-    } else {
-      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-    }
+  // Opens the phone's own share sheet (copy link + the user's apps); falls back
+  // to the in-app sheet on desktop browsers that have none.
+  const handleShare = () => {
+    share({
+      title: listing?.title || "Hello Hoedspruit",
+      text: listing?.description || undefined,
+      url: `/listing/${id}`,
+    });
   };
 
   useEffect(() => {

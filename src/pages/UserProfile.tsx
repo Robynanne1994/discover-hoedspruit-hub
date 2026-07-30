@@ -29,6 +29,7 @@ import PageHeader from "@/components/PageHeader";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import SavedCard from "@/components/profile/SavedCard";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useShare } from "@/hooks/useShare";
 import { invalidateBlockQueries } from "@/hooks/useBlockedUsers";
 import { useBlockCooldown, fetchBlockCooldown } from "@/hooks/useBlockCooldown";
 import BlockActionSheet from "@/components/BlockActionSheet";
@@ -225,6 +226,8 @@ const UserProfile = () => {
     titleCase(profile?.display_name) ||
     (profile?.username ? `@${profile.username}` : "this user");
 
+  const share = useShare();
+
   const { data: counts } = useFollowCounts(id);
   const { data: isFollowing } = useIsFollowing(id);
   const { follow, unfollow } = useFollowMutation(id!);
@@ -344,15 +347,18 @@ const UserProfile = () => {
     }
   };
 
-  const handleShare = async () => {
+  // Opens the phone's own share sheet (copy link + the user's apps); falls back
+  // to the in-app sheet on desktop browsers that have none.
+  const handleShare = () => {
     setMenuOpen(false);
-    const url = window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success("Link copied to clipboard!");
-    } catch {
-      toast.error("Could not copy link");
-    }
+    const named = personName !== "this user";
+    share({
+      title: named ? personName : "A profile on Hello Hoedspruit",
+      text: named
+        ? `${personName} on Hello Hoedspruit — see their saved finds.`
+        : "See their saved finds on Hello Hoedspruit.",
+      url: `/profile/${id}`,
+    });
   };
 
   const renderCard = (

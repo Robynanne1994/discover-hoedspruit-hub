@@ -1,40 +1,22 @@
 import { Share2 } from "lucide-react";
-import { toast } from "sonner";
+import { useShare } from "@/hooks/useShare";
 
 interface ShareButtonProps {
   title: string;
   text?: string;
+  /** Absolute URL or app path (e.g. "/events/123"). Defaults to the current page. */
   url?: string;
 }
 
+/** The small floating share pill on cards. Opens the phone's own share sheet. */
 const ShareButton = ({ title, text, url }: ShareButtonProps) => {
-  const handleShare = async (e: React.MouseEvent) => {
+  const share = useShare();
+
+  const handleShare = (e: React.MouseEvent) => {
+    // Cards sit inside a link — don't navigate on the way to the share sheet.
     e.stopPropagation();
     e.preventDefault();
-
-    const shareUrl = url || window.location.href;
-    const shareData = { title, text: text || title, url: shareUrl };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          await fallbackCopy(shareUrl);
-        }
-      }
-    } else {
-      await fallbackCopy(shareUrl);
-    }
-  };
-
-  const fallbackCopy = async (link: string) => {
-    try {
-      await navigator.clipboard.writeText(link);
-      toast.success("Link copied to clipboard!");
-    } catch {
-      toast.error("Could not copy link");
-    }
+    share({ title, text, url });
   };
 
   return (

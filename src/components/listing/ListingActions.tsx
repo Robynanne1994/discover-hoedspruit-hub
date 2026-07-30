@@ -2,18 +2,22 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useShare } from "@/hooks/useShare";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { Heart, MapPinCheck, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface ListingActionsProps {
   listingId: string;
+  /** Used as the headline of the share sheet. */
+  title?: string;
   onWhatToKnow?: () => void;
 }
 
-const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
+const ListingActions = ({ listingId, title, onWhatToKnow }: ListingActionsProps) => {
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
+  const share = useShare();
   const queryClient = useQueryClient();
 
   const isFavourited = useIsFavourited(listingId, "listing");
@@ -63,18 +67,10 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
   });
 
 
-  const handleShare = async () => {
-    const shareUrl = window.location.href;
-    const shareData = { title: "Check this out!", url: shareUrl };
-    if (navigator.share) {
-      try { await navigator.share(shareData); } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-        }
-      }
-    } else {
-      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-    }
+  // Opens the phone's own share sheet (copy link + the user's apps); falls back
+  // to the in-app sheet on desktop browsers that have none.
+  const handleShare = () => {
+    share({ title: title || "Hello Hoedspruit", url: `/listing/${listingId}` });
   };
 
   const btnBase = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors active:scale-95";
