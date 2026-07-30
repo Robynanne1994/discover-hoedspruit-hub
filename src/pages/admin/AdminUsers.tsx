@@ -39,6 +39,7 @@ interface AdminUser {
     location?: string | null;
     phone?: string | null;
     email?: string | null;
+    is_private?: boolean | null;
   } | null;
   favourites_count: number;
   feedback_count: number;
@@ -287,8 +288,7 @@ const AdminUsers = () => {
                 <Row label="Reports received">{selected.reports_received_count}</Row>
                 <Row label="Users blocked">{selected.blocks_count}</Row>
                 <Row label="Listing edit suggestions">{selected.listing_edits_count}</Row>
-                <Row label="Events submitted">{selected.events_pending_count}</Row>
-                <Row label="Specials submitted">{selected.specials_pending_count}</Row>
+                <Row label="Profile visibility">{selected.profile?.is_private ? "Private" : "Public"}</Row>
               </div>
 
               <div className="pt-3 mt-3 border-t border-border">
