@@ -31,7 +31,6 @@ export const FILTER_TYPE_META: Record<
   {
     eyebrow: string;
     title: string;
-    subline: string;
     source: NotificationSource;
     column:
       | "events_new_categories"
@@ -44,7 +43,6 @@ export const FILTER_TYPE_META: Record<
   events_new: {
     eyebrow: "NEW EVENTS",
     title: "pick your kind of fun.",
-    subline: "Choose which event categories you want to be notified about.",
     source: "event_tag",
     column: "events_new_categories",
     itemNoun: { one: "Category", many: "Categories" },
@@ -52,8 +50,6 @@ export const FILTER_TYPE_META: Record<
   listings_new: {
     eyebrow: "NEW LISTINGS",
     title: "tell us what to send.",
-    subline:
-      "Choose which categories you want to be notified about when a new business listing is added.",
     source: "category",
     column: "listings_new_categories",
     itemNoun: { one: "Category", many: "Categories" },
@@ -61,8 +57,6 @@ export const FILTER_TYPE_META: Record<
   listings_updates: {
     eyebrow: "LISTING UPDATES",
     title: "narrow it down.",
-    subline:
-      "Choose which categories you want updates from when a business changes its details.",
     source: "category",
     column: "listings_updates_categories",
     itemNoun: { one: "Category", many: "Categories" },
@@ -70,7 +64,6 @@ export const FILTER_TYPE_META: Record<
   specials_new: {
     eyebrow: "NEW SPECIALS",
     title: "pick your kind of deal.",
-    subline: "Choose which special categories you want to be notified about.",
     source: "special_tag",
     column: "specials_new_categories",
     itemNoun: { one: "Category", many: "Categories" },
