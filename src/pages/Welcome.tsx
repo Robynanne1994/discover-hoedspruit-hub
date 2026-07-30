@@ -19,6 +19,8 @@ import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
 import { lovable } from "@/integrations/lovable/index";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
+import { sanitiseUsername, validateUsername, USERNAME_MAX, USERNAME_HINT } from "@/lib/username";
+
 import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
 import { useResendCooldown } from "@/hooks/useResendCooldown";
 
