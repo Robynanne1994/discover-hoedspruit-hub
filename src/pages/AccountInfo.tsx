@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2, ChevronRight, Image as ImageIcon } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { sanitiseUsername, validateUsername, USERNAME_MAX } from "@/lib/username";
 
@@ -1108,6 +1108,16 @@ const AccountInfo = () => {
       {photoSheetOpen && (
         <PhotoPickerSheet
           hasPhoto={!!avatarUrl}
+          avatarUrl={avatarUrl}
+          initials={
+            fullName
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((p) => p[0]?.toUpperCase() ?? "")
+              .join("") || "?"
+          }
           onClose={() => setPhotoSheetOpen(false)}
           onTakePhoto={() => {
             setPhotoSheetOpen(false);
@@ -1218,6 +1228,8 @@ const PwField = ({
 
 const PhotoPickerSheet = ({
   hasPhoto,
+  avatarUrl,
+  initials,
   busy,
   onClose,
   onTakePhoto,
@@ -1225,6 +1237,8 @@ const PhotoPickerSheet = ({
   onRemove,
 }: {
   hasPhoto: boolean;
+  avatarUrl: string;
+  initials: string;
   busy: boolean;
   onClose: () => void;
   onTakePhoto: () => void;
@@ -1244,13 +1258,14 @@ const PhotoPickerSheet = ({
     display: "flex",
     alignItems: "center",
     gap: 14,
-    padding: "16px 4px",
+    padding: "16px 20px",
     background: "transparent",
     border: "none",
     cursor: busy ? "not-allowed" : "pointer",
     textAlign: "left",
     fontFamily: FF,
     fontSize: 16,
+    fontWeight: 500,
     color: INK,
     opacity: busy ? 0.5 : 1,
   };
@@ -1265,6 +1280,8 @@ const PhotoPickerSheet = ({
     justifyContent: "center",
     flexShrink: 0,
   };
+
+  const divider = <div style={{ height: 1, background: "#EAE4D5" }} />;
 
   return (
     <div
@@ -1287,82 +1304,132 @@ const PhotoPickerSheet = ({
           width: "100%",
           background: "#ffffff",
           borderRadius: "20px 20px 0 0",
-          padding: "20px 20px 32px",
+          padding: "10px 0 calc(20px + env(safe-area-inset-bottom))",
           animation: "pp-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+          position: "relative",
         }}
       >
         <style>{`@keyframes pp-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+
+        {/* grab handle */}
         <div
           style={{
+            width: 56,
+            height: 5,
+            borderRadius: 999,
+            background: "#E2DED6",
+            margin: "0 auto",
+          }}
+        />
+
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 16,
+            width: 38,
+            height: 38,
+            borderRadius: "50%",
+            border: "none",
+            background: "#F2EBDC",
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: 8,
+            justifyContent: "center",
+            cursor: "pointer",
           }}
         >
+          <X size={20} color={INK} strokeWidth={2} />
+        </button>
+
+        <div style={{ padding: "18px 20px 22px", textAlign: "center" }}>
           <div
             style={{
-              fontSize: 11,
-              letterSpacing: "0.08em",
-              color: "#9C9387",
-              textTransform: "uppercase",
+              width: 96,
+              height: 96,
+              borderRadius: "50%",
+              margin: "0 auto 14px",
+              overflow: "hidden",
+              background: "#F2EBDC",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            Profile photo
+            {hasPhoto && avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Profile"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              />
+            ) : (
+              <span
+                style={{
+                  fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 34,
+                  fontWeight: 600,
+                  color: "#715A3D",
+                  letterSpacing: "0.02em",
+                }}
+              >
+                {initials}
+              </span>
+            )}
           </div>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}
+          <h2
+            style={{
+              fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontWeight: 600,
+              fontSize: 22,
+              color: INK,
+              margin: "0 0 4px",
+            }}
           >
-            <X size={20} color={INK} strokeWidth={1.75} />
-          </button>
+            {hasPhoto ? "Profile Photo" : "Add a Profile Photo"}
+          </h2>
+          <div style={{ fontFamily: FF, fontSize: 15, color: MUTED }}>
+            JPG or PNG, up to 5MB
+          </div>
         </div>
-        <h2
-          style={{
-            fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 400,
-            fontSize: 22,
-            color: INK,
-            margin: "0 0 12px",
-          }}
-        >
-          {hasPhoto ? "Change profile photo" : "Add profile photo"}
-        </h2>
+
+        {divider}
 
         <button type="button" style={rowBase} disabled={busy} onClick={onTakePhoto}>
           <span style={iconWrap}>
-            <Camera size={20} color={INK} strokeWidth={1.6} />
+            <Camera size={20} color="#715A3D" strokeWidth={1.6} />
           </span>
-          Take new photo
+          <span style={{ flex: 1 }}>Take a Photo</span>
+          <ChevronRight size={20} color={MUTED} strokeWidth={1.6} />
         </button>
 
-        <div style={{ height: 1, background: "#EAE4D5" }} />
+        {divider}
 
         <button type="button" style={rowBase} disabled={busy} onClick={onUpload}>
           <span style={iconWrap}>
-            <Upload size={20} color={INK} strokeWidth={1.6} />
+            <ImageIcon size={20} color="#715A3D" strokeWidth={1.6} />
           </span>
-          Upload from device
+          <span style={{ flex: 1 }}>Choose from Library</span>
+          <ChevronRight size={20} color={MUTED} strokeWidth={1.6} />
         </button>
 
         {hasPhoto && (
           <>
-            <div style={{ height: 1, background: "#EAE4D5" }} />
+            {divider}
             <button
               type="button"
-              style={{ ...rowBase, color: "#B00020" }}
+              style={{ ...rowBase, color: "#B42318" }}
               disabled={busy}
               onClick={onRemove}
             >
               <span style={{ ...iconWrap, background: "#FDECEC" }}>
                 {busy ? (
-                  <Loader2 size={18} className="animate-spin" color="#B00020" />
+                  <Loader2 size={18} className="animate-spin" color="#B42318" />
                 ) : (
-                  <Trash2 size={20} color="#B00020" strokeWidth={1.6} />
+                  <Trash2 size={20} color="#B42318" strokeWidth={1.6} />
                 )}
               </span>
-              Remove profile photo
+              <span style={{ flex: 1 }}>Remove Photo</span>
             </button>
           </>
         )}
