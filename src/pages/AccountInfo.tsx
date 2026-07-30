@@ -24,6 +24,18 @@ import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
 import { useResendCooldown } from "@/hooks/useResendCooldown";
+import VerificationCodeInput from "@/components/auth/VerificationCodeInput";
+import {
+  VERIFICATION_CODE_LENGTH,
+  VERIFICATION_CODE_TTL_MINUTES,
+  isCompleteCode,
+  isEmailVerified,
+  isValidEmail,
+  resendSignupCode,
+  sendEmailChangeCode,
+  verifyEmailChangeCode,
+  verifySignupCode,
+} from "@/lib/emailVerification";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -136,6 +148,46 @@ const rowInputStyle: React.CSSProperties = {
 };
 
 
+const emailStatusLinkStyle: React.CSSProperties = {
+  fontFamily: FF,
+  fontSize: "inherit",
+  fontWeight: 700,
+  color: "#715a3d",
+  background: "transparent",
+  border: "none",
+  padding: 0,
+  cursor: "pointer",
+  textDecoration: "underline",
+  textUnderlineOffset: 2,
+};
+
+const EMAIL_STATUS_TONES = {
+  ok: { color: "#3F6B3F" },
+  warn: { color: "#B4630F" },
+  pending: { color: "#715a3d" },
+} as const;
+
+/** The one-line "Verified" / "Not verified yet" note under the email field. */
+const EmailStatusNote = ({
+  tone,
+  children,
+}: {
+  tone: keyof typeof EMAIL_STATUS_TONES;
+  children: React.ReactNode;
+}) => (
+  <div
+    style={{
+      fontFamily: FF,
+      fontSize: 12.5,
+      lineHeight: 1.45,
+      marginTop: 6,
+      ...EMAIL_STATUS_TONES[tone],
+    }}
+  >
+    {children}
+  </div>
+);
+
 // Split a combined name on the first space so older accounts (which only have
 // a display_name) still populate the separate fields sensibly.
 function splitDisplayName(full: string | null | undefined) {
@@ -247,6 +299,20 @@ const AccountInfo = () => {
   const [activityPrivate, setActivityPrivate] = useState(false);
   const [savingPrivacy, setSavingPrivacy] = useState(false);
   const [residencyOpen, setResidencyOpen] = useState(false);
+  // Set while an email address is waiting on its six-digit code. Holds the
+  // address the code went to and why we asked for it: "change" once a new
+  // address has been requested, "confirm" for an account created before
+  // verification existed and still sitting on an unconfirmed address.
+  const [verifyTarget, setVerifyTarget] = useState<
+    { email: string; reason: "change" | "confirm" } | null
+  >(null);
+  // Dismissing the sheet keeps the pending target so the Email row can say
+  // what it's waiting for and offer the code entry again.
+  const [verifySheetOpen, setVerifySheetOpen] = useState(false);
+  const [sendingEmailCode, setSendingEmailCode] = useState(false);
+  const emailCooldown = useResendCooldown();
+
+  const emailVerified = isEmailVerified(user);
 
   const { data: pendingRequestCount } = useQuery({
     queryKey: ["follow-request-count", user?.id],
@@ -333,6 +399,16 @@ const AccountInfo = () => {
       setEmail(user.email || "");
     }
   }, [profile, user]);
+
+  // An email change requested in an earlier visit is still open server-side —
+  // Supabase parks the address on `new_email` until its code is redeemed. Pick
+  // it back up so the row explains itself instead of looking like nothing
+  // happened.
+  useEffect(() => {
+    const pending = (user as { new_email?: string } | null)?.new_email;
+    if (!pending || pending.toLowerCase() === (user?.email || "").toLowerCase()) return;
+    setVerifyTarget((prev) => prev ?? { email: pending, reason: "change" });
+  }, [user]);
 
   // Picking a file no longer uploads straight away — it opens the cropper, and
   // only the cropped square that comes back out of it is sent to storage.
@@ -424,6 +500,12 @@ const AccountInfo = () => {
       return;
     }
 
+    const emailChanged =
+      !!trimmedEmail && trimmedEmail.toLowerCase() !== (user.email || "").toLowerCase();
+    if (emailChanged && !isValidEmail(trimmedEmail)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
 
     setSavingProfile(true);
     try {
@@ -471,23 +553,17 @@ const AccountInfo = () => {
         }
       }
 
-      // If changing auth email, attempt update first so a duplicate is caught before saving profile
-      if (trimmedEmail && trimmedEmail !== user.email) {
-        const { error: authErr } = await supabase.auth.updateUser({ email: trimmedEmail });
-        if (authErr) {
-          toast.error(authErr.message || "That email is already in use.");
-          setSavingProfile(false);
-          return;
-        }
-      }
-
+      // Everything except the email saves immediately. The email is owned by
+      // Supabase Auth and only moves once the new address has proved itself
+      // with a code, so it is left alone here — the on_auth_user_email_changed
+      // trigger copies it onto the profile at that point.
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
         first_name: trimmedFirstName,
         surname: trimmedSurname,
         display_name: `${trimmedFirstName} ${trimmedSurname}`,
         username: trimmedUsername || null,
-        email: trimmedEmail || null,
+        ...(emailChanged ? {} : { email: trimmedEmail || null }),
         phone: trimmedPhone || null,
         location: location.trim() || null,
       } as any);
@@ -500,6 +576,25 @@ const AccountInfo = () => {
         throw error;
       }
 
+      if (emailChanged) {
+        // Sends a six-digit code to the NEW address. The account keeps its
+        // current email until that code comes back, so a typo can never strand
+        // an account on an inbox nobody can open.
+        const { error: sendErr } = await sendEmailChangeCode(trimmedEmail);
+        if (sendErr) {
+          toast.error(sendErr);
+          setSavingProfile(false);
+          return;
+        }
+        emailCooldown.start();
+        setVerifyTarget({ email: trimmedEmail, reason: "change" });
+        setVerifySheetOpen(true);
+        queryClient.invalidateQueries({ queryKey: ["profile"] });
+        queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
+        setSavingProfile(false);
+        return;
+      }
+
       toast.success("Saved.", {
         style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
       });
@@ -510,6 +605,74 @@ const AccountInfo = () => {
     } finally {
       setSavingProfile(false);
     }
+  };
+
+  /**
+   * Send a code to an account that was created before verification existed and
+   * still has an unconfirmed address, so it can be proved without changing it.
+   */
+  const handleConfirmCurrentEmail = async () => {
+    const current = user?.email;
+    if (!current || sendingEmailCode || emailCooldown.waiting) return;
+    setSendingEmailCode(true);
+    const { error } = await resendSignupCode(current);
+    setSendingEmailCode(false);
+    if (error) {
+      toast.error(error);
+      return;
+    }
+    emailCooldown.start();
+    setVerifyTarget({ email: current, reason: "confirm" });
+    setVerifySheetOpen(true);
+  };
+
+  /** Email another copy of the code the verification sheet is waiting on. */
+  const handleResendEmailCode = async () => {
+    if (!verifyTarget || sendingEmailCode || emailCooldown.waiting) return;
+    setSendingEmailCode(true);
+    const { error } =
+      verifyTarget.reason === "change"
+        ? await sendEmailChangeCode(verifyTarget.email)
+        : await resendSignupCode(verifyTarget.email);
+    setSendingEmailCode(false);
+    if (error) {
+      toast.error(error);
+      return { error };
+    }
+    emailCooldown.start();
+    return { error: null };
+  };
+
+  /**
+   * Redeem the code. For a change this is the moment the account actually moves
+   * to the new address; the on_auth_user_email_changed trigger mirrors it onto
+   * the profile, and USER_UPDATED refreshes `user` here.
+   */
+  const handleVerifyEmailCode = async (entered: string) => {
+    if (!verifyTarget) return { error: "Nothing to verify." };
+    const { error } =
+      verifyTarget.reason === "change"
+        ? await verifyEmailChangeCode(verifyTarget.email, entered)
+        : await verifySignupCode(verifyTarget.email, entered);
+    if (error) return { error };
+    setEmail(verifyTarget.email);
+    setVerifyTarget(null);
+    setVerifySheetOpen(false);
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
+    queryClient.invalidateQueries({ queryKey: ["my-profile", user!.id] });
+    queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+    toast.success(
+      verifyTarget.reason === "change" ? "Email updated and verified." : "Email verified.",
+      { style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" } },
+    );
+    return { error: null };
+  };
+
+  /** Abandon a pending change and put the field back to the live address. */
+  const handleCancelVerification = () => {
+    setVerifyTarget(null);
+    setVerifySheetOpen(false);
+    setEmail(user?.email || (profile as any)?.email || "");
   };
 
 
@@ -716,8 +879,45 @@ const AccountInfo = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  autoCapitalize="none"
+                  autoCorrect="off"
                   style={rowInputStyle}
                 />
+                {verifyTarget?.reason === "change" ? (
+                  <EmailStatusNote tone="pending">
+                    Waiting on the code we sent to {verifyTarget.email}. Your account stays
+                    on {user?.email} until it's confirmed.{" "}
+                    <button
+                      type="button"
+                      onClick={() => setVerifySheetOpen(true)}
+                      style={emailStatusLinkStyle}
+                    >
+                      Enter code
+                    </button>
+                  </EmailStatusNote>
+                ) : emailVerified ? (
+                  <EmailStatusNote tone="ok">Verified</EmailStatusNote>
+                ) : (
+                  <EmailStatusNote tone="warn">
+                    Not verified yet — we can't reset your password or reach you here until
+                    it is.{" "}
+                    <button
+                      type="button"
+                      onClick={handleConfirmCurrentEmail}
+                      disabled={sendingEmailCode || emailCooldown.waiting}
+                      style={{
+                        ...emailStatusLinkStyle,
+                        opacity: sendingEmailCode || emailCooldown.waiting ? 0.6 : 1,
+                      }}
+                    >
+                      {sendingEmailCode
+                        ? "Sending…"
+                        : emailCooldown.waiting
+                        ? `Try again in ${emailCooldown.remaining}s`
+                        : "Send me a code"}
+                    </button>
+                  </EmailStatusNote>
+                )}
               </Row>
 
               <Row
@@ -891,6 +1091,19 @@ const AccountInfo = () => {
       </AlertDialog>
 
       {pwOpen && <ChangePasswordSheet onClose={() => setPwOpen(false)} />}
+
+      {verifySheetOpen && verifyTarget && (
+        <VerifyEmailSheet
+          target={verifyTarget}
+          currentEmail={user?.email || ""}
+          cooldown={emailCooldown}
+          sending={sendingEmailCode}
+          onVerify={handleVerifyEmailCode}
+          onResend={handleResendEmailCode}
+          onDismiss={() => setVerifySheetOpen(false)}
+          onCancel={handleCancelVerification}
+        />
+      )}
 
       {photoSheetOpen && (
         <PhotoPickerSheet
@@ -1152,6 +1365,187 @@ const PhotoPickerSheet = ({
               Remove profile photo
             </button>
           </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * "Check your email" for a signed-in user: the six-digit code that either moves
+ * the account to a new address or confirms the one it already has.
+ *
+ * Dismissing it (the X, or tapping outside) leaves the request standing — the
+ * Email row keeps offering the code entry. Only *Cancel* abandons the change
+ * and puts the field back.
+ */
+const VerifyEmailSheet = ({
+  target,
+  currentEmail,
+  cooldown,
+  sending,
+  onVerify,
+  onResend,
+  onDismiss,
+  onCancel,
+}: {
+  target: { email: string; reason: "change" | "confirm" };
+  currentEmail: string;
+  cooldown: { remaining: number; waiting: boolean };
+  sending: boolean;
+  onVerify: (code: string) => Promise<{ error: string | null }>;
+  onResend: () => Promise<{ error: string | null } | undefined>;
+  onDismiss: () => void;
+  onCancel: () => void;
+}) => {
+  const [code, setCode] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onDismiss();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onDismiss]);
+
+  const submit = async (entered?: string) => {
+    const value = entered ?? code;
+    if (submitting || !isCompleteCode(value)) return;
+    setSubmitting(true);
+    setError(null);
+    const { error: err } = await onVerify(value);
+    setSubmitting(false);
+    if (err) setError(err);
+  };
+
+  const resend = async () => {
+    setError(null);
+    setCode("");
+    const result = await onResend();
+    if (result?.error) setError(result.error);
+  };
+
+  const ready = isCompleteCode(code) && !submitting;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      onClick={onDismiss}
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          fontFamily: FF, width: "100%", background: "#ffffff",
+          borderRadius: "20px 20px 0 0", padding: "20px 20px 32px",
+          animation: "ve-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+          maxHeight: "90vh", overflowY: "auto",
+        }}
+      >
+        <style>{`@keyframes ve-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+        <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: 8 }}>
+          <button onClick={onDismiss} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
+            <X size={20} color={INK} strokeWidth={1.75} />
+          </button>
+        </div>
+
+        <h2
+          style={{
+            fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px",
+          }}
+        >
+          {target.reason === "change" ? "Confirm your new email" : "Verify your email"}
+        </h2>
+        <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
+          We've sent a {VERIFICATION_CODE_LENGTH}-digit code to{" "}
+          <span style={{ color: INK, fontWeight: 600 }}>{target.email}</span>.{" "}
+          {target.reason === "change" ? (
+            <>
+              Your account stays on{" "}
+              <span style={{ color: INK, fontWeight: 600 }}>{currentEmail}</span> until the
+              code is entered, so a typo can't lock you out.
+            </>
+          ) : (
+            <>
+              Entering it proves the address is yours, so we can reset your password and
+              reach you if there's ever a problem with your account.
+            </>
+          )}
+        </p>
+
+        <VerificationCodeInput
+          value={code}
+          onChange={(next) => {
+            setCode(next);
+            if (error) setError(null);
+          }}
+          onComplete={(full) => submit(full)}
+          disabled={submitting}
+          invalid={!!error}
+          autoFocus
+        />
+
+        {error && (
+          <div
+            role="alert"
+            style={{
+              fontFamily: FF, fontSize: 13, lineHeight: 1.45,
+              color: "#C0392B", marginTop: 10,
+            }}
+          >
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={() => submit()}
+          disabled={!ready}
+          style={{
+            fontFamily: FF, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
+            background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
+            letterSpacing: "0.04em", display: "flex", alignItems: "center",
+            justifyContent: "center", gap: 8,
+            cursor: ready ? "pointer" : "default", opacity: ready ? 1 : 0.6,
+          }}
+        >
+          {submitting ? "Verifying…" : target.reason === "change" ? "Confirm Email" : "Verify Email"}
+          {!submitting && <Check size={14} strokeWidth={1.8} />}
+        </button>
+
+        <p style={{ fontFamily: FF, fontSize: 12.5, lineHeight: 1.5, color: MUTED, margin: "14px 0 0", textAlign: "center" }}>
+          The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes. Check your spam folder
+          if it doesn't arrive.
+        </p>
+
+        <button
+          type="button"
+          onClick={resend}
+          disabled={sending || cooldown.waiting}
+          style={{
+            marginTop: 12, width: "100%", background: "transparent", border: "none",
+            fontFamily: FF, fontSize: 14, fontWeight: 600, color: "#715a3d",
+            cursor: sending || cooldown.waiting ? "default" : "pointer", padding: 4,
+            opacity: sending || cooldown.waiting ? 0.6 : 1,
+          }}
+        >
+          {sending ? "Sending…" : cooldown.waiting ? `Resend in ${cooldown.remaining}s` : "Send a new code"}
+        </button>
+
+        {target.reason === "change" && (
+          <button
+            type="button"
+            onClick={onCancel}
+            style={{
+              marginTop: 4, width: "100%", background: "transparent", border: "none",
+              fontFamily: FF, fontSize: 14, color: MUTED, cursor: "pointer", padding: 4,
+            }}
+          >
+            Cancel and keep {currentEmail}
+          </button>
         )}
       </div>
     </div>

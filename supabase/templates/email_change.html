@@ -1,0 +1,67 @@
+<!--
+  Email-change verification for Hello Hoedspruit.
+
+  Sent to the NEW address when someone edits their email in Account Info. The
+  address only moves across once this code has been typed back into the app, so
+  a typo can never leave an account pointing at an inbox nobody owns.
+
+  {{ .Token }} is the six-digit code. {{ .ConfirmationURL }} is the equivalent
+  one-tap link. Wired up in supabase/config.toml under
+  [auth.email.template.email_change]; if the project's templates are managed
+  from the Supabase dashboard instead, paste this file into
+  Authentication → Emails → Change Email Address.
+-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#E6E0CC;margin:0;padding:32px 12px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;">
+        <tr>
+          <td align="center" style="padding:0 8px 20px;font-family:'Nohemi','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:20px;font-weight:600;letter-spacing:0.01em;color:#423324;">
+            Hello Hoedspruit
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#FFFFFF;border-radius:20px;padding:32px 28px;">
+            <h1 style="margin:0 0 12px;font-family:'Nohemi','Helvetica Neue',Helvetica,Arial,sans-serif;font-size:22px;font-weight:600;line-height:1.25;letter-spacing:-0.2px;color:#1A1A1A;">
+              Confirm your new email
+            </h1>
+            <p style="margin:0 0 20px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55;color:#6B6255;">
+              Someone asked to move a Hello Hoedspruit account over to this address.
+              Enter this code in the app to confirm it.
+            </p>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td align="center" style="padding:4px 0 20px;">
+                  <div style="background:#F6F1E4;border-radius:16px;padding:18px 12px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:32px;font-weight:700;letter-spacing:0.28em;text-indent:0.28em;color:#1A1A1A;">
+                    {{ .Token }}
+                  </div>
+                </td>
+              </tr>
+            </table>
+            <p style="margin:0 0 16px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.55;color:#6B6255;">
+              The code works for <strong style="color:#1A1A1A;font-weight:600;">15 minutes</strong>
+              and can only be used once. Until it is used, the account keeps its
+              previous email address.
+            </p>
+            <p style="margin:0 0 8px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:13px;line-height:1.55;color:#6B6255;">
+              Weren't expecting this? Ignore this email and nothing changes. If it
+              keeps happening, tell us at
+              <a href="mailto:hello@hellohoedspruit.com" style="color:#715a3d;text-decoration:underline;">hello@hellohoedspruit.com</a>.
+            </p>
+            <hr style="border:none;border-top:1px solid rgba(26,26,26,0.10);margin:24px 0 16px;" />
+            <p style="margin:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.55;color:#9C9387;">
+              Reading this on the same device? You can confirm in one tap instead:
+              <br />
+              <a href="{{ .ConfirmationURL }}" style="color:#715a3d;text-decoration:underline;word-break:break-all;">{{ .ConfirmationURL }}</a>
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding:20px 8px 0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:12px;line-height:1.55;color:#6B6255;">
+            Your Lowveld local · <a href="{{ .SiteURL }}" style="color:#715a3d;text-decoration:none;">hellohoedspruit.com</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -19,7 +19,11 @@ export type SignInFailureKind =
   | "noAccount"
   /** The email has an account; the password (or the email) was mistyped. */
   | "badCredentials"
-  /** The account exists but the address hasn't been confirmed yet. */
+  /**
+   * The account exists but the address hasn't been confirmed yet. The log in
+   * screen emails a fresh code and shows the verify step rather than this
+   * message; the wording is the fallback for anywhere that can't.
+   */
   | "unconfirmed"
   /** Too many attempts — Supabase is throttling. */
   | "rateLimited"
@@ -65,7 +69,7 @@ export function interpretSignInError(
     return {
       kind: "unconfirmed",
       message:
-        "This account still needs to be confirmed. Please open the confirmation link we emailed you, then log in again.",
+        "This account still needs to confirm its email address. Enter the code we've emailed you to finish logging in.",
     };
   }
 

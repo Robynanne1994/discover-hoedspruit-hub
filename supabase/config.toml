@@ -44,12 +44,31 @@ verify_jwt = false
 # managed there -- see PASSWORD_RESET_SETUP.md. The app enforces the 15-minute
 # window itself as well, so the reset screen behaves correctly either way.
 [auth.email]
-# Emailed links (password recovery, confirmations) expire after 15 minutes.
+# Emailed codes and links (password recovery, confirmations) expire after 15
+# minutes.
 otp_expiry = 900
 # At most one auth email per address per minute; the resend buttons in the app
 # count this down instead of letting the request fail.
 max_frequency = "60s"
+# A new account is not usable until the six-digit code we email has been typed
+# back into the app. The address is the only way we can reset a password or
+# reach someone about their account, so it has to be a real inbox they own.
+enable_confirmations = true
+otp_length = 6
+# Changing your email confirms at the NEW address only. Double confirmation
+# would email the old address too -- which is exactly the address someone is
+# trying to escape when they mistyped it at signup, and would lock them out of
+# ever correcting it.
+double_confirm_changes = false
 
 [auth.email.template.recovery]
 subject = "Reset your Hello Hoedspruit password"
 content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.confirmation]
+subject = "Your Hello Hoedspruit verification code"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your new Hello Hoedspruit email"
+content_path = "./supabase/templates/email_change.html"
