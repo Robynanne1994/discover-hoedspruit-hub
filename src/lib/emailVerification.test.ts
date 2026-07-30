@@ -9,7 +9,6 @@ const {
   friendlySendError,
   friendlyVerificationError,
   isCompleteCode,
-  isEmailNotConfirmedError,
   isEmailVerified,
   isValidEmail,
   normaliseCode,
@@ -54,18 +53,6 @@ describe("isValidEmail", () => {
     expect(isValidEmail("robyn@example")).toBe(false);
     expect(isValidEmail("robyn.example.com")).toBe(false);
     expect(isValidEmail("")).toBe(false);
-  });
-});
-
-describe("isEmailNotConfirmedError", () => {
-  it("recognises the message Supabase sends for an unconfirmed account", () => {
-    expect(isEmailNotConfirmedError("Email not confirmed")).toBe(true);
-    expect(isEmailNotConfirmedError("email_not_confirmed")).toBe(true);
-  });
-
-  it("leaves a wrong password alone", () => {
-    expect(isEmailNotConfirmedError("Invalid login credentials")).toBe(false);
-    expect(isEmailNotConfirmedError(null)).toBe(false);
   });
 });
 

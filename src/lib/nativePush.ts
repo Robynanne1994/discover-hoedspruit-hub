@@ -11,25 +11,9 @@
 //      in Supabase via the register_push_device RPC,
 //   3. deep-links to the tapped notification's target screen.
 import { supabase } from "@/integrations/supabase/client";
+import { isNativeApp, nativePlatform as currentPlatform } from "@/lib/nativeBridge";
 
 type NavigateFn = (path: string) => void;
-
-// The Capacitor runtime injects window.Capacitor inside the native webview.
-// Checking it this way means we do NOT need @capacitor/core in the web bundle.
-function getCapacitor(): any | null {
-  const cap = typeof window !== "undefined" ? (window as any).Capacitor : null;
-  return cap && typeof cap.isNativePlatform === "function" ? cap : null;
-}
-
-export function isNativeApp(): boolean {
-  const cap = getCapacitor();
-  return !!cap && cap.isNativePlatform();
-}
-
-function currentPlatform(): string {
-  const cap = getCapacitor();
-  return cap && typeof cap.getPlatform === "function" ? cap.getPlatform() : "unknown";
-}
 
 let initialised = false;
 

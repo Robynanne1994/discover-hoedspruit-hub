@@ -9,6 +9,8 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useShare } from "@/hooks/useShare";
+import { copyToClipboard } from "@/lib/share";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useState } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
@@ -102,6 +104,7 @@ const SpecialDetail = () => {
   const toggleFavourite = useToggleFavourite();
 
   const requireAuth = useRequireAuth();
+  const share = useShare();
 
   const handleToggleFavourite = () => {
     // Guests get a dismissable bottom sheet, not a full-screen redirect.
@@ -109,17 +112,14 @@ const SpecialDetail = () => {
     toggleFavourite.mutate({ itemId: id!, itemType: "special", currentlyFavourited: isFavourited });
   };
 
-  const handleShare = async () => {
-    const shareUrl = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: special?.title, url: shareUrl }); } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-        }
-      }
-    } else {
-      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-    }
+  // Opens the phone's own share sheet (copy link + the user's apps); falls back
+  // to the in-app sheet on desktop browsers that have none.
+  const handleShare = () => {
+    share({
+      title: special?.title || "Hello Hoedspruit",
+      text: (special as any)?.description || undefined,
+      url: `/specials/${id}`,
+    });
   };
 
   if (isLoading || !special) {
@@ -347,8 +347,11 @@ const SpecialDetail = () => {
             <h2 style={headStyle}>Promo Code</h2>
             <button
               onClick={async () => {
-                try { await navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }
-                catch { toast.error("Could not copy code"); }
+                // copyToClipboard falls back to a selection copy, which is what
+                // makes this work inside the app's webview too.
+                const ok = await copyToClipboard(special.promo_code!);
+                if (ok) toast.success("Promo code copied!");
+                else toast.error("Could not copy code");
               }}
               style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",

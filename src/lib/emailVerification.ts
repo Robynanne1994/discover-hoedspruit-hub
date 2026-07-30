@@ -7,8 +7,9 @@
 //   * Changing your email in Account Info — the new address gets the code, and
 //     the account only moves across once it is confirmed.
 //   * Signing in to an account created before confirmation was switched on —
-//     Supabase refuses the password with "Email not confirmed", and the log in
-//     screen sends a code instead of dead-ending.
+//     Supabase refuses the password with "Email not confirmed" (classified as
+//     `unconfirmed` by src/lib/signIn.ts), and the log in screen sends a code
+//     instead of dead-ending.
 //
 // The address is the only channel we have for a password reset or for reaching
 // someone about their account, so an unverified one is worth very little.
@@ -40,15 +41,6 @@ export function normaliseCode(raw: string): string {
 /** Is this a complete code, ready to submit? */
 export function isCompleteCode(raw: string): boolean {
   return normaliseCode(raw).length === VERIFICATION_CODE_LENGTH;
-}
-
-/**
- * True when Supabase is refusing a password sign-in purely because the address
- * was never confirmed — an account made before verification was switched on.
- * The log in screen treats it as "you still need to verify", not as a failure.
- */
-export function isEmailNotConfirmedError(message?: string | null): boolean {
-  return /email not confirmed|email_not_confirmed/i.test(message ?? "");
 }
 
 /** Turn a Supabase auth error into something worth showing a person. */

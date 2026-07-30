@@ -1,7 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
-import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -14,6 +13,7 @@ import {
   type FollowStatus,
 } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
+import { useShare } from "@/hooks/useShare";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import {
@@ -334,6 +334,7 @@ const FollowList = () => {
   );
   const { data: myFollowingIds } = useMyFollowingIds();
   const { data: counts } = useFollowCounts(id);
+  const share = useShare();
 
   // Fetch viewed user's display name/username so empty states can address them by name
   const { data: viewedProfile } = useQuery({
@@ -364,35 +365,20 @@ const FollowList = () => {
   const sisterPath = `/profile/${id}/${isFollowers ? "following" : "followers"}`;
   const sisterLabel = isFollowers ? "see who you follow ↗" : "see your followers ↗";
 
-  const handlePrimaryCta = async () => {
+  const handlePrimaryCta = () => {
     if (!isFollowers) {
       // Search reads this state and opens straight on the People tab, which
       // shows suggested users when the query is empty.
       navigate("/search?tab=people", { state: { fromProfile: true, profileId: id } });
       return;
     }
-    const url = `${window.location.origin}/profile/${id}`;
-    try {
-      if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(url);
-      } else {
-        // The Clipboard API is unavailable in insecure contexts and some
-        // in-app webviews; fall back to the legacy selection copy.
-        const el = document.createElement("textarea");
-        el.value = url;
-        el.setAttribute("readonly", "");
-        el.style.position = "fixed";
-        el.style.opacity = "0";
-        document.body.appendChild(el);
-        el.select();
-        const ok = document.execCommand("copy");
-        document.body.removeChild(el);
-        if (!ok) throw new Error("copy failed");
-      }
-      toast.success("Profile link copied!");
-    } catch {
-      toast.error("Could not copy link");
-    }
+    // "Share Profile" opens the phone's own share sheet — copy link plus the
+    // user's messaging apps — falling back to the in-app sheet on desktop.
+    share({
+      title: "My profile on Hello Hoedspruit",
+      text: "Follow my finds around Hoedspruit.",
+      url: `/profile/${id}`,
+    });
   };
 
   return (
