@@ -64,7 +64,7 @@ const PageHeader = ({
   left,
   right,
   backBackground = CARD,
-  topPad = "calc(env(safe-area-inset-top) + 56px)",
+  topPad = "calc(env(safe-area-inset-top) + 44px)",
   style,
 }: PageHeaderProps) => {
   const navigate = useNavigate();
