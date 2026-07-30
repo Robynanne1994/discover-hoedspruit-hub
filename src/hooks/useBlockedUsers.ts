@@ -36,6 +36,7 @@ export const invalidateBlockQueries = (qc: QueryClient) => {
     ["user-blocks"], // Blocked screen list
     ["user-blocked"], // "am I blocking this profile?"
     ["blocked-by"], // "has this profile blocked me?"
+    ["block-cooldown"], // "may I block this profile again yet?" — starts on unblock
     ["user-profile"],
     ["followers"],
     ["following"],
