@@ -409,7 +409,7 @@ const AccountInfo = () => {
     const nameParts = trimmedFullName.split(/\s+/).filter(Boolean);
     const trimmedFirstName = nameParts[0] || "";
     const trimmedSurname = nameParts.slice(1).join(" ") || "";
-    const trimmedUsername = username.trim();
+    const trimmedUsername = sanitiseUsername(username);
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
 
@@ -417,6 +417,13 @@ const AccountInfo = () => {
       toast.error("Please add your first name and last name.");
       return;
     }
+
+    const usernameError = validateUsername(trimmedUsername);
+    if (usernameError) {
+      toast.error(usernameError);
+      return;
+    }
+
 
     setSavingProfile(true);
     try {
