@@ -8,6 +8,8 @@ import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, actorForNotif, isFollowActorKind, FollowActor } from "@/hooks/useFollowRequestActors";
+import { useBlockedUsers } from "@/hooks/useBlockedUsers";
+import { visibleNotifications } from "@/lib/notificationVisibility";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
 import hhLogo from "@/assets/hh-logo.png";
 
@@ -38,6 +40,7 @@ type Notif = {
   kind: string;
   ref_table: string | null;
   ref_id: string | null;
+  actor_id: string | null;
 };
 
 const iconFor = (kind: string) => {
@@ -84,7 +87,7 @@ export default function MyNotifications() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [notifs, setNotifs] = useState<Notif[]>([]);
+  const [allNotifs, setAllNotifs] = useState<Notif[]>([]);
   const [loaded, setLoaded] = useState(false);
   const initialUnreadRef = useRef<Set<string> | null>(null);
   const [, force] = useState(0);
@@ -93,15 +96,20 @@ export default function MyNotifications() {
   const respondingRef = useRef<Set<string>>(new Set());
   const [responding, setResponding] = useState<Set<string>>(new Set());
 
+  // Blocking clears the notifications between two people server-side, so this
+  // normally has nothing to do. It is the fallback for cards written before
+  // that rule existed, and for a list already on screen when a block lands.
+  const { data: blocks } = useBlockedUsers();
+
   const load = useCallback(async () => {
     if (!user) {
-      setNotifs([]);
+      setAllNotifs([]);
       setLoaded(true);
       return;
     }
     const { data, error } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id,actor_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(200);
@@ -114,11 +122,16 @@ export default function MyNotifications() {
           if (!n.is_read) initialUnreadRef.current!.add(n.id);
         });
       }
-      setNotifs(rows);
+      setAllNotifs(rows);
       force((x) => x + 1);
     }
     setLoaded(true);
   }, [user]);
+
+  // Anything about someone on either side of a block never reaches the list,
+  // so a card that outlived its block cannot show that person's name or avatar
+  // and cannot be tapped through to their profile.
+  const notifs = useMemo(() => visibleNotifications(allNotifs, blocks), [allNotifs, blocks]);
 
   useEffect(() => {
     load();
@@ -152,10 +165,13 @@ export default function MyNotifications() {
     return () => clearTimeout(t);
   }, [loaded, notifs, user]);
 
-  const unreadCount = useMemo(
-    () => (initialUnreadRef.current ? initialUnreadRef.current.size : 0),
-    [notifs]
-  );
+  // Counts what is still on screen: a notification that has since been hidden
+  // or deleted must not keep inflating the "N Unread" line.
+  const unreadCount = useMemo(() => {
+    const initial = initialUnreadRef.current;
+    if (!initial) return 0;
+    return notifs.filter((n) => initial.has(n.id)).length;
+  }, [notifs]);
 
   const buckets = useMemo(() => {
     const groups: Record<string, Notif[]> = { today: [], yesterday: [], week: [], month: [], earlier: [] };
@@ -281,7 +297,7 @@ export default function MyNotifications() {
     // avatar once the follows row is deleted by a decline.
     const actor = actorMap[n.ref_id];
     initialUnreadRef.current?.delete(n.id);
-    setNotifs((prev) =>
+    setAllNotifs((prev) =>
       prev.map((x) =>
         x.id === n.id
           ? {
@@ -300,7 +316,7 @@ export default function MyNotifications() {
 
   const deleteNotif = useCallback(async (id: string) => {
     initialUnreadRef.current?.delete(id);
-    setNotifs((prev) => prev.filter((n) => n.id !== id));
+    setAllNotifs((prev) => prev.filter((n) => n.id !== id));
     await supabase.from("business_notifications").delete().eq("id", id);
   }, []);
 

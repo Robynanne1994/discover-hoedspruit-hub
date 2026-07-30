@@ -30,7 +30,7 @@ import ReportUserDialog from "@/components/ReportUserDialog";
 import SavedCard from "@/components/profile/SavedCard";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useShare } from "@/hooks/useShare";
-import { invalidateBlockQueries } from "@/hooks/useBlockedUsers";
+import { invalidateBlockQueries, useBlockedUsers } from "@/hooks/useBlockedUsers";
 import { useBlockCooldown, fetchBlockCooldown } from "@/hooks/useBlockCooldown";
 import BlockActionSheet from "@/components/BlockActionSheet";
 import {
@@ -142,22 +142,13 @@ const UserProfile = () => {
     },
   });
 
-  // Has this profile blocked the signed-in viewer? If so we hide the
-  // viewed user from search/suggestions AND prevent the viewer from
-  // seeing their profile content here.
-  const { data: blockedByThem } = useQuery({
-    queryKey: ["blocked-by", user?.id, id],
-    enabled: !!user?.id && !!id && user!.id !== id,
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("user_blocks" as any)
-        .select("id")
-        .eq("blocker_id", id!)
-        .eq("blocked_id", user!.id)
-        .maybeSingle();
-      return !!data;
-    },
-  });
+  // Has this profile blocked the signed-in viewer? Reading user_blocks
+  // directly cannot answer that — its RLS policy only exposes the blocks you
+  // created yourself, so the old query here always came back false and the
+  // viewer saw the full profile of someone who had blocked them. get_block_state()
+  // is the supported way to ask.
+  const { data: blocks } = useBlockedUsers();
+  const blockedByThem = !!id && !!blocks?.blockedMe.has(id);
 
   // Blocking again is barred for a while after an unblock — see
   // src/lib/blockCooldown.ts. Read it up front so the menu can explain the wait
@@ -181,7 +172,11 @@ const UserProfile = () => {
       toast.error("Could not block user. Please try again.");
       return;
     }
-    // Blocking implies unfollowing in both directions
+    // Blocking implies unfollowing in both directions, and clears the
+    // notifications the two of them have about each other. A database trigger
+    // now does both the moment the block row lands (so it also holds for
+    // admin tooling and any other caller); these deletes are kept as a
+    // no-op belt for a client running against an older database.
     await Promise.all([
       supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id),
       supabase.from("follows").delete().eq("follower_id", id).eq("following_id", user.id),
@@ -385,7 +380,14 @@ const UserProfile = () => {
     </div>
   );
 
-  if (blockedByThem) {
+  // Somebody who has been blocked must not be able to tell that they were:
+  // this is the same dead end an account that no longer exists gives, worded
+  // so it could be either. get_public_profiles() also refuses to return the
+  // blocker to them, so `profile` is empty here too — nothing to leak even if
+  // this screen were reached some other way.
+  const profileUnavailable = blockedByThem || (!isLoading && !profile);
+
+  if (profileUnavailable) {
     return (
       <div
         style={{
@@ -428,7 +430,7 @@ const UserProfile = () => {
                 margin: 0,
               }}
             >
-              This profile is not available to view.
+              This account is no longer available.
             </p>
           </div>
         </div>

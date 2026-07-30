@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, actorForNotif, isFollowActorKind } from "@/hooks/useFollowRequestActors";
+import { useBlockedUsers } from "@/hooks/useBlockedUsers";
+import { visibleNotifications } from "@/lib/notificationVisibility";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
 
 const INK = "#2A2A24";
@@ -26,6 +28,7 @@ type Notif = {
   kind: string;
   ref_table: string | null;
   ref_id: string | null;
+  actor_id: string | null;
 };
 
 const timeAgo = (iso: string) => {
@@ -49,21 +52,22 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
   const { user } = useAuth();
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
-  const [notifs, setNotifs] = useState<Notif[]>([]);
+  const { data: blocks } = useBlockedUsers();
+  const [allNotifs, setAllNotifs] = useState<Notif[]>([]);
   // follows.id values with an accept/decline in flight, so a double-tap can't
   // fire the RPC twice and the buttons show they're working.
   const [responding, setResponding] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(false);
 
   const load = useCallback(async () => {
-    if (!user) { setNotifs([]); setLoaded(true); return; }
+    if (!user) { setAllNotifs([]); setLoaded(true); return; }
     const { data } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id,actor_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
-    setNotifs((data ?? []) as Notif[]);
+    setAllNotifs((data ?? []) as Notif[]);
     setLoaded(true);
   }, [user]);
 
@@ -100,6 +104,11 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     };
   }, [open]);
 
+  // Blocking deletes the notifications between two people server-side. This
+  // keeps a card that outlived its block — old history, or a panel that was
+  // already open — from showing that person's name or avatar in the bell.
+  const notifs = visibleNotifications(allNotifs, blocks);
+
   const unread = notifs.filter((n) => !n.is_read).length;
 
   // Resolved kinds (declined / withdrawn) are included on purpose: their
@@ -131,7 +140,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     setOpen(false);
     if (!n.is_read) {
       await supabase.from("business_notifications").update({ is_read: true }).eq("id", n.id);
-      setNotifs((prev) => prev.map((x) => (x.id === n.id ? { ...x, is_read: true } : x)));
+      setAllNotifs((prev) => prev.map((x) => (x.id === n.id ? { ...x, is_read: true } : x)));
     }
     if (n.link) navigate(n.link);
   };
@@ -141,7 +150,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     const ids = notifs.filter((n) => !n.is_read).map((n) => n.id);
     if (ids.length === 0) return;
     await supabase.from("business_notifications").update({ is_read: true }).in("id", ids);
-    setNotifs((prev) => prev.map((n) => ({ ...n, is_read: true })));
+    setAllNotifs((prev) => prev.map((n) => ({ ...n, is_read: true })));
   };
 
   // The follower count, "pending requests" line, followers list and the
@@ -189,7 +198,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     // '/profile/<id>' link, which is how the row keeps showing this person's
     // avatar once the follows row is deleted by a decline.
     const actor = actorMap[n.ref_id];
-    setNotifs((prev) =>
+    setAllNotifs((prev) =>
       prev.map((x) =>
         x.id === n.id
           ? {
