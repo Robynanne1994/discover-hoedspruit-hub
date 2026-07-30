@@ -116,12 +116,26 @@ export async function verifySignupCode(email: string, code: string): Promise<Res
  * Start an email change: Supabase emails a code to the NEW address. The
  * account keeps its old address until that code is redeemed, so an address
  * nobody can open is never left on the account.
+ *
+ * `applied` reports that the address moved immediately and no code is coming.
+ * That happens when "Confirm email" is switched off on the Supabase project:
+ * updateUser() writes the new address there and then, sends nothing, and
+ * returns no error. Without this flag the caller would sit on a code-entry
+ * screen waiting for an email that is never sent.
  */
-export async function sendEmailChangeCode(newEmail: string): Promise<Result> {
+export async function sendEmailChangeCode(
+  newEmail: string,
+): Promise<Result & { applied: boolean }> {
   const trimmed = newEmail.trim();
-  if (!isValidEmail(trimmed)) return { error: "Please enter a valid email address." };
-  const { error } = await supabase.auth.updateUser({ email: trimmed });
-  return { error: error ? friendlySendError(error.message) : null };
+  if (!isValidEmail(trimmed)) {
+    return { error: "Please enter a valid email address.", applied: false };
+  }
+  const { data, error } = await supabase.auth.updateUser({ email: trimmed });
+  if (error) return { error: friendlySendError(error.message), applied: false };
+  return {
+    error: null,
+    applied: (data?.user?.email || "").toLowerCase() === trimmed.toLowerCase(),
+  };
 }
 
 /** Redeem the code sent to the new address, completing the change. */

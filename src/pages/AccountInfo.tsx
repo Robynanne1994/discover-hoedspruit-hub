@@ -312,7 +312,14 @@ const AccountInfo = () => {
   const [sendingEmailCode, setSendingEmailCode] = useState(false);
   const emailCooldown = useResendCooldown();
 
+  // "Verified" describes the address the ACCOUNT holds, not whatever is
+  // currently typed into the box. Once the two differ the note has to say so —
+  // otherwise a freshly typed, unsaved, unproven address sits under a green
+  // "Verified", which is the opposite of the truth.
+  const accountEmail = (user?.email || "").trim();
   const emailVerified = isEmailVerified(user);
+  const emailEdited =
+    email.trim().toLowerCase() !== accountEmail.toLowerCase() && email.trim() !== "";
 
   const { data: pendingRequestCount } = useQuery({
     queryKey: ["follow-request-count", user?.id],
@@ -580,9 +587,23 @@ const AccountInfo = () => {
         // Sends a six-digit code to the NEW address. The account keeps its
         // current email until that code comes back, so a typo can never strand
         // an account on an inbox nobody can open.
-        const { error: sendErr } = await sendEmailChangeCode(trimmedEmail);
+        const { error: sendErr, applied } = await sendEmailChangeCode(trimmedEmail);
         if (sendErr) {
           toast.error(sendErr);
+          setSavingProfile(false);
+          return;
+        }
+        if (applied) {
+          // "Confirm email" is off on the project, so Supabase moved the address
+          // across immediately and sent no code. Don't open a code sheet that
+          // would wait forever on an email nobody is going to receive.
+          setEmail(trimmedEmail);
+          setVerifyTarget(null);
+          toast.success("Email updated.", {
+            style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
+          });
+          queryClient.invalidateQueries({ queryKey: ["profile"] });
+          queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
           setSavingProfile(false);
           return;
         }
@@ -894,6 +915,12 @@ const AccountInfo = () => {
                     >
                       Enter code
                     </button>
+                  </EmailStatusNote>
+                ) : emailEdited ? (
+                  <EmailStatusNote tone="warn">
+                    Not saved yet. Save Changes sends a code to this address, and your
+                    account stays on {accountEmail || "its current address"} until you
+                    enter it.
                   </EmailStatusNote>
                 ) : emailVerified ? (
                   <EmailStatusNote tone="ok">Verified</EmailStatusNote>
