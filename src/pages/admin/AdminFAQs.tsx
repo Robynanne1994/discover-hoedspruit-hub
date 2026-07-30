@@ -63,10 +63,6 @@ const APP_LINK_OPTIONS: { group: string; items: { label: string; path: string }[
       { label: "Contact Us", path: "/contact" },
       { label: "Feedback", path: "/feedback" },
       { label: "Terms & Policies", path: "/terms" },
-      { label: "Terms of Use", path: "/terms-of-use" },
-      { label: "Privacy Policy", path: "/privacy-policy" },
-      { label: "Cookie Policy", path: "/cookie-policy" },
-      { label: "Content Guidelines", path: "/content-guidelines" },
     ],
   },
 ];

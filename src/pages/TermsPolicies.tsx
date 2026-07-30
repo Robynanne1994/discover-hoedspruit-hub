@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { FileText, Shield, Cookie, Users, ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
@@ -12,10 +11,10 @@ const MUTED_INK = "#6B6A5E";
 const LINE = "#E2DAC6";
 
 const POLICIES = [
-  { title: "Terms of Service", to: "/terms-of-use", Icon: FileText },
-  { title: "Privacy Policy", to: "/privacy-policy", Icon: Shield },
-  { title: "Cookie Policy", to: "/cookie-policy", Icon: Cookie },
-  { title: "Community Guidelines", to: "/content-guidelines", Icon: Users },
+  { title: "Terms of Service", href: "https://hellohoedspruit.co/legal/terms-of-use", Icon: FileText },
+  { title: "Privacy Policy", href: "https://hellohoedspruit.co/legal/privacy-policy", Icon: Shield },
+  { title: "Cookie Policy", href: "https://hellohoedspruit.co/legal/cookie-policy", Icon: Cookie },
+  { title: "Community Guidelines", href: "https://hellohoedspruit.co/legal/community-guidelines", Icon: Users },
 ];
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
@@ -51,9 +50,11 @@ const TermsPolicies = () => {
           {POLICIES.map((p, idx) => {
             const { Icon } = p;
             return (
-              <Link
+              <a
                 key={p.title}
-                to={p.to}
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -80,7 +81,7 @@ const TermsPolicies = () => {
                   {p.title}
                 </span>
                 <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-              </Link>
+              </a>
             );
           })}
         </div>

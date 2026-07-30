@@ -19,8 +19,8 @@ Hello Hoedspruit is a mobile-first community guide for the town of Hoedspruit in
 
 ## Optional
 
-- [Terms & Policies](/terms): Index of all legal policies.
-- [Terms of Use](/terms-of-use): Terms governing use of the platform.
-- [Privacy Policy](/privacy-policy): How user data is collected and handled (POPIA compliant).
-- [Cookie Policy](/cookie-policy): Cookies and tracking technologies used.
-- [Content Guidelines](/content-guidelines): Rules for user submissions and reviews.
+- [Terms & Policies](/terms): Index of all legal policies, linking out to hellohoedspruit.co.
+- [Terms of Use](https://hellohoedspruit.co/legal/terms-of-use): Terms governing use of the platform.
+- [Privacy Policy](https://hellohoedspruit.co/legal/privacy-policy): How user data is collected and handled (POPIA compliant).
+- [Cookie Policy](https://hellohoedspruit.co/legal/cookie-policy): Cookies and tracking technologies used.
+- [Community Guidelines](https://hellohoedspruit.co/legal/community-guidelines): Rules for user submissions and reviews.

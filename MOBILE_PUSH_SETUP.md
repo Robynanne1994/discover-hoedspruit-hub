@@ -184,7 +184,7 @@ the `send-push` function logs for delivery results.
 - **Android:** `Build → Generate Signed Bundle (.aab)` → upload to Play Console.
 
 Both stores need the usual listing assets (icon, screenshots, privacy policy —
-you already have `/privacy-policy` in the app).
+it lives at https://hellohoedspruit.co/legal/privacy-policy).
 
 ---
 
