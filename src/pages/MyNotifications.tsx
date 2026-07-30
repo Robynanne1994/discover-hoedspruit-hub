@@ -114,7 +114,7 @@ export default function MyNotifications() {
       .order("created_at", { ascending: false })
       .limit(200);
     if (!error) {
-      const rows = (data ?? []) as Notif[];
+      const rows = (data ?? []) as unknown as Notif[];
       if (initialUnreadRef.current === null) {
         initialUnreadRef.current = new Set(rows.filter((n) => !n.is_read).map((n) => n.id));
       } else {

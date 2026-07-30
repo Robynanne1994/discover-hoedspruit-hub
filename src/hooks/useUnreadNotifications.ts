@@ -24,7 +24,7 @@ export const useUnreadNotifications = () => {
       .eq("user_id", user.id)
       .eq("is_read", false)
       .limit(200);
-    setRows((data ?? []) as { kind: string; actor_id: string | null; link: string | null }[]);
+    setRows((data ?? []) as unknown as { kind: string; actor_id: string | null; link: string | null }[]);
   }, [user]);
 
   useEffect(() => {
