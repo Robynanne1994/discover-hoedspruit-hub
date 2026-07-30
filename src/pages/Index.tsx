@@ -6,7 +6,7 @@ import HomeListings from "@/components/home/HomeListings";
 import HomeLocalChannels from "@/components/home/HomeLocalChannels";
 import Seo from "@/components/Seo";
 
-const SECTION_GAP = 32;
+const SECTION_GAP = 44;
 
 const Index = () => {
   return (
