@@ -59,10 +59,6 @@ import AccountReported from "./pages/AccountReported.tsx";
 import AccountNotices from "./pages/AccountNotices.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 
-import TermsOfUse from "./pages/TermsOfUse.tsx";
-import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
-import CookiePolicy from "./pages/CookiePolicy.tsx";
-import ContentGuidelines from "./pages/ContentGuidelines.tsx";
 import FAQs from "./pages/FAQs.tsx";
 import HelpCentre from "./pages/HelpCentre.tsx";
 
@@ -188,11 +184,7 @@ const App = () => (
               <Route path="/account-settings/reported" element={<AccountReported />} />
               <Route path="/account-notices" element={<AccountNotices />} />
               <Route path="/terms" element={<TermsPolicies />} />
-              
-              <Route path="/terms-of-use" element={<TermsOfUse />} />
-              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-              <Route path="/cookie-policy" element={<CookiePolicy />} />
-              <Route path="/content-guidelines" element={<ContentGuidelines />} />
+
               <Route path="/faqs" element={<FAQs />} />
               <Route path="/help-centre" element={<HelpCentre />} />
               

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { UtensilsCrossed, ShoppingBag, BedDouble, Mountain, Siren, PartyPopper, GraduationCap, Leaf, Sparkles, Stethoscope, Hammer } from "lucide-react";
+import { UtensilsCrossed, ShoppingBag, BedDouble, Mountain, Siren, PartyPopper, Sparkles, Stethoscope } from "lucide-react";
 
 export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials";
 
@@ -12,11 +12,8 @@ const TILES = [
   { label: "Stay", icon: BedDouble, href: "/category/cef1c5ad-b199-41c9-bc8a-5834703a953a" },
   { label: "Do", icon: Mountain, href: "/category/4dc26115-569e-4af7-868a-9f783f8a38eb" },
   { label: "Party", icon: PartyPopper, href: "/category/2e2fe36b-a259-4487-837c-25b1ae84fef1" },
-  { label: "Learn", icon: GraduationCap, href: "/category/1383f76a-9f87-45e0-9a04-341da135bd72" },
-  { label: "Unwind", icon: Leaf, href: "/category/7d504654-a8d8-49c1-8cb7-75d2939bc7b1" },
   { label: "Pamper", icon: Sparkles, href: "/category/7d504654-a8d8-49c1-8cb7-75d2939bc7b1" },
   { label: "Medical", icon: Stethoscope, href: "/category/21a5617a-1ef6-4697-8853-774d00f17e96" },
-  { label: "Build", icon: Hammer, href: "/category/74812403-50f4-453c-b0d9-f66fdc54bb4c" },
 ];
 
 interface Props {
