@@ -196,7 +196,7 @@ const MyProfileGuest = () => {
             margin: "0 0 8px",
           }}
         >
-          Join Hello Hoedspruit
+          Create Your Free Account
         </h2>
         <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.5, color: MUTED_INK, margin: "0 0 20px" }}>
           Save places, events and specials. Follow locals. Never miss what's on.
