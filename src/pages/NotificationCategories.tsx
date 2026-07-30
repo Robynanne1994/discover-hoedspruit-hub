@@ -217,23 +217,6 @@ const NotificationCategories = () => {
         </span>
       </div>
 
-      {/* Subline */}
-      <div
-        style={{
-          ...baseText,
-          padding: "0 24px",
-          marginTop: -8,
-          marginBottom: 20,
-          fontFamily: SANS,
-          fontWeight: 400,
-          fontSize: 14,
-          color: COLORS.muted,
-          lineHeight: 1.5,
-        }}
-      >
-        {meta.subline}
-      </div>
-
       {/* Live options — the app's real categories / tags */}
       <div style={{ padding: "0 24px" }}>
         {optionsLoading ? (
