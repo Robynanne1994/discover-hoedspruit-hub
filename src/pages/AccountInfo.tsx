@@ -319,7 +319,7 @@ const AccountInfo = () => {
   // address has been requested, "confirm" for an account created before
   // verification existed and still sitting on an unconfirmed address.
   const [verifyTarget, setVerifyTarget] = useState<
-    { email: string; reason: "change" | "confirm" } | null
+    { email: string; reason: "change" | "confirm"; issuedAt: number } | null
   >(null);
   // Dismissing the sheet keeps the pending target so the Email row can say
   // what it's waiting for and offer the code entry again.
