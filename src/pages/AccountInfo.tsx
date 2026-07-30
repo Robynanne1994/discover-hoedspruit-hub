@@ -36,6 +36,12 @@ import {
   verifyEmailChangeCode,
   verifySignupCode,
 } from "@/lib/emailVerification";
+import {
+  clearEmailChangeParams,
+  forgetEmailChangeLink,
+  readEmailChangeLink,
+  redeemEmailChangeLink,
+} from "@/lib/emailChangeLink";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -273,9 +279,18 @@ const AccountInfo = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // True for the whole of a page load that arrived on a confirmation link from
+  // the change-of-address email. The token in that link IS the credential, and
+  // redeeming it is what creates the session — so the "not signed in, go away"
+  // guard below has to hold off until it has been spent, or it bounces the
+  // visitor off the one screen that could have completed the change.
+  const [redeemingEmailLink, setRedeemingEmailLink] = useState(
+    () => readEmailChangeLink().kind !== "none",
+  );
+
   useEffect(() => {
-    if (!loading && !user) navigate("/my-profile-guest", { replace: true });
-  }, [user, loading, navigate]);
+    if (!loading && !user && !redeemingEmailLink) navigate("/my-profile-guest", { replace: true });
+  }, [user, loading, navigate, redeemingEmailLink]);
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ["profile", user?.id],
@@ -311,6 +326,10 @@ const AccountInfo = () => {
   const [verifySheetOpen, setVerifySheetOpen] = useState(false);
   const [sendingEmailCode, setSendingEmailCode] = useState(false);
   const emailCooldown = useResendCooldown();
+  // The address a confirmation link moved the account to on this page load, if
+  // any. Held in a ref so the profile-initialising effect can defer to it
+  // whichever order the two finish in.
+  const linkConfirmedEmail = useRef("");
 
   // "Verified" describes the address the ACCOUNT holds, not whatever is
   // currently typed into the box. Once the two differ the note has to say so —
@@ -395,7 +414,10 @@ const AccountInfo = () => {
       const last = ((profile as any).surname ?? fallbackName.surname ?? "").trim();
       setFullName(first && last ? `${first} ${last}` : first || last);
       setUsername((profile as any).username || "");
-      setEmail(profile.email || user?.email || "");
+      // `linkConfirmedEmail` wins: when this page load redeemed a confirmation
+      // link, the address it moved to is newer than anything the profile query
+      // fetched, and the `profiles` row may not have caught up yet.
+      setEmail(linkConfirmedEmail.current || profile.email || user?.email || "");
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
       setAvatarUrl((profile as any).avatar_url || "");
@@ -403,7 +425,7 @@ const AccountInfo = () => {
       setActivityPrivate(!!(profile as any).activity_private);
       initialized.current = true;
     } else if (!profile && user && !initialized.current) {
-      setEmail(user.email || "");
+      setEmail(linkConfirmedEmail.current || user.email || "");
     }
   }, [profile, user]);
 
@@ -416,6 +438,57 @@ const AccountInfo = () => {
     if (!pending || pending.toLowerCase() === (user?.email || "").toLowerCase()) return;
     setVerifyTarget((prev) => prev ?? { email: pending, reason: "change" });
   }, [user]);
+
+  // Arrived here by tapping the link in the confirmation email rather than by
+  // typing the code. Redeem it and say what happened — the alternative is a
+  // page that looks identical to not having tapped anything, which is exactly
+  // how "the button does nothing" is reported.
+  useEffect(() => {
+    const link = readEmailChangeLink();
+    if (link.kind === "none") return;
+    forgetEmailChangeLink();
+    let cancelled = false;
+    (async () => {
+      const error = await redeemEmailChangeLink(link);
+      clearEmailChangeParams();
+      if (cancelled) return;
+      setRedeemingEmailLink(false);
+      if (error) {
+        toast.error(error);
+        return;
+      }
+      // `auth.users.email` is the source of truth for what the address is now —
+      // never the link, and never the `profiles` mirror, which the trigger may
+      // not have caught up with yet.
+      const { data } = await supabase.auth.getUser();
+      const confirmed = data?.user?.email || "";
+      if (cancelled) return;
+      if (!confirmed) {
+        // Redeemed without leaving us a session to read the address off. Say so
+        // rather than claiming a success we can't see.
+        toast.error(
+          "We couldn't confirm your new email from that link here. Enter the code from the email instead.",
+        );
+        return;
+      }
+      linkConfirmedEmail.current = confirmed;
+      setEmail(confirmed);
+      setVerifyTarget(null);
+      setVerifySheetOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+      toast.success("Email updated and verified.", {
+        style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // Runs once per page load: the link is a property of how the app was
+    // opened, not of any value that changes while it is open.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Picking a file no longer uploads straight away — it opens the cropper, and
   // only the cropped square that comes back out of it is sent to storage.

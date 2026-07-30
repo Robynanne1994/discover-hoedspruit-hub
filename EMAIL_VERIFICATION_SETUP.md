@@ -40,6 +40,12 @@ nobody owns is worse than no address at all.
 4. **Interrupted.** Supabase parks the requested address on `user.new_email`
    until it is confirmed, so re-opening Account Info picks the request back up
    rather than losing it.
+5. **Or they tap the link instead.** The same email carries a one-tap
+   confirmation link. `emailChangeLink.ts` reads it off the URL the app was
+   opened with, `App.tsx` sends that visit to Account Info, and Account Info
+   redeems it and reports the result — so the link finishes the change too
+   rather than dropping someone on the homepage. See *"The button in the email
+   doesn't do anything"* below.
 
 ### 3. Accounts made before any of this
 
@@ -77,6 +83,7 @@ them there — none of the flows above work until confirmations are on.**
 | Authentication → Emails | Email OTP length | `6` |
 | Authentication → Emails → Confirm signup | Template | contents of `supabase/templates/confirmation.html` |
 | Authentication → Emails → Change Email Address | Template | contents of `supabase/templates/email_change.html` |
+| Authentication → URL Configuration → Redirect URLs | Allow list | must include `<site>/account-settings/info` and `<site>/reset-password` |
 
 **Secure email change must be off.** With it on, Supabase emails *both* the old
 and the new address and needs both codes — which is exactly the old, mistyped,
@@ -92,11 +99,47 @@ every new account depends on it. Supabase's built-in sender is limited to a
 handful of emails an hour on free projects, which looks exactly like "the code
 never came".
 
+## "The button in the email doesn't do anything"
+
+The stock provider template for a change of address is link-only: a **Confirm
+Email Change** button and nothing else. Two separate things go wrong with it,
+and they look identical from the inbox.
+
+**1. The mail client disabled the link.** When Gmail puts a red *"This message
+might be dangerous — it contains a suspicious link"* banner on a message, it
+neutralises every link in the body. The button still renders; tapping it does
+nothing at all. Nothing in the HTML can undo that. It happens because the link
+is a `verify?token=…&redirect_to=…` redirector on shared provider
+infrastructure (`no-reply@auth.lovable.cloud`), which is the same shape a
+phishing redirect has.
+
+The fix is not to depend on the link:
+
+- **Paste `supabase/templates/email_change.html` into Authentication → Emails →
+  Change Email Address.** It leads with `{{ .Token }}` — six digits of plain
+  text, which no spam filter can disable — and keeps the link only as a
+  secondary "same device?" option. The app's confirmation sheet is already
+  waiting for exactly that code. Same for
+  `supabase/templates/confirmation.html` under Confirm signup.
+- **Send from the app's own domain** (Authentication → SMTP Settings, a real
+  provider on `hellohoedspruit.com` with SPF/DKIM). That is what stops the
+  banner appearing in the first place, for every auth email.
+
+**2. The link worked, but landed nowhere useful.** Supabase only redirects to
+URLs on its allow list, so a template written before `emailRedirectTo` sends
+the confirmation to the project's Site URL — the homepage — with the
+credentials sitting unread in the address bar. `src/lib/emailChangeLink.ts`
+handles this: it snapshots those credentials at start-up, `App.tsx` routes the
+visit to Account Info, and Account Info redeems them and confirms the change.
+For that to work, **Authentication → URL Configuration → Redirect URLs** must
+include `<site>/account-settings/info`.
+
 ## Files
 
 | File | Role |
 | --- | --- |
 | `src/lib/emailVerification.ts` | Sending, verifying, code normalising, friendly errors |
+| `src/lib/emailChangeLink.ts` | Reading and redeeming the one-tap link in the change-of-address email |
 | `src/components/auth/VerificationCodeInput.tsx` | The six-box code field |
 | `src/pages/Welcome.tsx` | Signup verification, and unconfirmed log in |
 | `src/pages/AccountInfo.tsx` | Email change and *Not verified yet* |
