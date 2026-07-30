@@ -221,7 +221,7 @@ const AccountPrivacy = () => {
         <p style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, lineHeight: 1.5, margin: "16px 4px 0" }}>
           When your account is public, your profile and saved content can be seen by anyone on the Hello Hoedspruit app. When your account is private, only the followers that you approve can see what you save, who you follow and your followers. Certain info on your profile, such as your profile picture, name, surname and username, is visible to everyone on the Hello Hoedspruit.{" "}
           <span
-            onClick={() => window.open("https://hellohoedspruit.co/legal/privacy-policy", "_blank", "noopener,noreferrer")}
+            onClick={() => navigate("/privacy-policy")}
             style={{ color: "#715a3d", fontWeight: 700, cursor: "pointer" }}
           >
             Learn More

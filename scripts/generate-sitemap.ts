@@ -28,6 +28,10 @@ const staticEntries: SitemapEntry[] = [
   { path: "/help-centre", changefreq: "monthly", priority: "0.4" },
   { path: "/for-business", changefreq: "monthly", priority: "0.6" },
   { path: "/terms", changefreq: "yearly", priority: "0.3" },
+  { path: "/terms-of-use", changefreq: "yearly", priority: "0.3" },
+  { path: "/privacy-policy", changefreq: "yearly", priority: "0.3" },
+  { path: "/cookie-policy", changefreq: "yearly", priority: "0.3" },
+  { path: "/content-guidelines", changefreq: "yearly", priority: "0.3" },
 ];
 
 async function fetchDynamicEntries(): Promise<SitemapEntry[]> {
