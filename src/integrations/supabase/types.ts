@@ -282,6 +282,7 @@ export type Database = {
       }
       business_notifications: {
         Row: {
+          actor_id: string | null
           body: string | null
           created_at: string
           id: string
@@ -296,6 +297,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          actor_id?: string | null
           body?: string | null
           created_at?: string
           id?: string
@@ -310,6 +312,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          actor_id?: string | null
           body?: string | null
           created_at?: string
           id?: string
@@ -2194,6 +2197,13 @@ export type Database = {
           available_at: string
           is_active: boolean
           unblocked_at: string
+        }[]
+      }
+      get_block_state: {
+        Args: never
+        Returns: {
+          blocked_me: string[]
+          i_blocked: string[]
         }[]
       }
       get_follow_counts: {

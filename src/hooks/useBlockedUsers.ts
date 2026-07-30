@@ -35,7 +35,7 @@ export const invalidateBlockQueries = (qc: QueryClient) => {
     ["blocked-users"], // useBlockedUsers — the filter itself
     ["user-blocks"], // Blocked screen list
     ["user-blocked"], // "am I blocking this profile?"
-    ["blocked-by"], // "has this profile blocked me?"
+    ["blocked-by"], // legacy "has this profile blocked me?" — now part of blocked-users
     ["block-cooldown"], // "may I block this profile again yet?" — starts on unblock
     ["user-profile"],
     ["followers"],
@@ -56,11 +56,16 @@ export const invalidateBlockQueries = (qc: QueryClient) => {
  *  - `iBlocked`: ids of users I have blocked
  *  - `blockedMe`: ids of users who have blocked me
  *
- * Used to filter people out of suggestions, search results, and
- * follower/following lists so that blocked relationships disappear
- * from passive discovery. Unblocking removes the row, so the person
- * simply reappears here — nothing about the follow relationship is
- * restored.
+ * Used to filter people out of suggestions, search results, notifications and
+ * follower/following lists so that blocked relationships disappear from passive
+ * discovery. Unblocking removes the row, so the person simply reappears here —
+ * nothing about the follow relationship or the notification history the block
+ * deleted is restored.
+ *
+ * Both halves come from the get_block_state() RPC. Reading user_blocks directly
+ * cannot answer the second half: its RLS policy only exposes the blocks you
+ * created, so `.eq("blocked_id", me)` always came back empty and nobody who
+ * blocked this user was ever actually hidden from them.
  */
 export const useBlockedUsers = () => {
   const { user } = useAuth();
@@ -68,23 +73,14 @@ export const useBlockedUsers = () => {
     queryKey: ["blocked-users", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const [iBlockedRes, blockedMeRes] = await Promise.all([
-        supabase
-          .from("user_blocks" as any)
-          .select("blocked_id")
-          .eq("blocker_id", user!.id),
-        supabase
-          .from("user_blocks" as any)
-          .select("blocker_id")
-          .eq("blocked_id", user!.id),
-      ]);
-      const iBlocked = new Set<string>(
-        ((iBlockedRes.data as any[]) || []).map((r) => r.blocked_id as string),
-      );
-      const blockedMe = new Set<string>(
-        ((blockedMeRes.data as any[]) || []).map((r) => r.blocker_id as string),
-      );
-      return { iBlocked, blockedMe };
+      const { data } = await supabase.rpc("get_block_state");
+      const row = (Array.isArray(data) ? data[0] : data) as
+        | { i_blocked: string[] | null; blocked_me: string[] | null }
+        | undefined;
+      return {
+        iBlocked: new Set<string>(row?.i_blocked ?? []),
+        blockedMe: new Set<string>(row?.blocked_me ?? []),
+      };
     },
     ...LIVE_QUERY_OPTS,
   });

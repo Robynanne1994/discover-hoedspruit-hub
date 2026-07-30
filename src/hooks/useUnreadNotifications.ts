@@ -1,22 +1,30 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useBlockedUsers } from "@/hooks/useBlockedUsers";
+import { visibleNotifications } from "@/lib/notificationVisibility";
 
 export const useUnreadNotifications = () => {
   const { user } = useAuth();
-  const [count, setCount] = useState(0);
+  const [rows, setRows] = useState<{ kind: string; actor_id: string | null; link: string | null }[]>([]);
+  // A notification the viewer is not allowed to see must not sit in the badge
+  // count either, or they tap through to a list that is one shorter than the
+  // number promised. Blocking clears these server-side; this covers the rows
+  // that predate that rule.
+  const { data: blocks } = useBlockedUsers();
 
   const load = useCallback(async () => {
     if (!user) {
-      setCount(0);
+      setRows([]);
       return;
     }
-    const { count: c } = await supabase
+    const { data } = await supabase
       .from("business_notifications")
-      .select("id", { head: true, count: "exact" })
+      .select("kind,actor_id,link")
       .eq("user_id", user.id)
-      .eq("is_read", false);
-    setCount(c ?? 0);
+      .eq("is_read", false)
+      .limit(200);
+    setRows((data ?? []) as { kind: string; actor_id: string | null; link: string | null }[]);
   }, [user]);
 
   useEffect(() => {
@@ -35,5 +43,5 @@ export const useUnreadNotifications = () => {
     };
   }, [user, load]);
 
-  return count;
+  return visibleNotifications(rows, blocks).length;
 };
