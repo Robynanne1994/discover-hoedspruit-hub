@@ -737,7 +737,7 @@ const AccountInfo = () => {
       return;
     }
     emailCooldown.start();
-    setVerifyTarget({ email: current, reason: "confirm" });
+    setVerifyTarget({ email: current, reason: "confirm", issuedAt: Date.now() });
     setVerifySheetOpen(true);
   };
 
