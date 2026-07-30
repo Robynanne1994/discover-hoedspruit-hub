@@ -504,30 +504,6 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                           </button>
                         </div>
                       )}
-                      {n.kind === "follow_request_accepted" && n.link && (
-                        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onRowClick(n);
-                            }}
-                            style={{
-                              height: 30,
-                              padding: "0 14px",
-                              borderRadius: 999,
-                              background: "#423324",
-                              color: "#FFFFFF",
-                              border: "none",
-                              cursor: "pointer",
-                              fontFamily: SANS,
-                              fontSize: 12,
-                              fontWeight: 600,
-                            }}
-                          >
-                            Message
-                          </button>
-                        </div>
-                      )}
 
                     </div>
                   </div>

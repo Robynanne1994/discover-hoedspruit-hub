@@ -638,21 +638,6 @@ function NotifCard({
             </button>
           </div>
         )}
-        {n.kind === "follow_request_accepted" && n.link && (
-          <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-            <button
-              onClick={(e) => { e.stopPropagation(); onClick(); }}
-              style={{
-                height: 32, padding: "0 16px", borderRadius: 999,
-                background: BROWN, color: "#fff", border: "none",
-                cursor: "pointer", fontFamily: SANS, fontSize: 13, fontWeight: 600,
-                display: "inline-flex", alignItems: "center", gap: 6,
-              }}
-            >
-              Message
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Three-dot menu */}
