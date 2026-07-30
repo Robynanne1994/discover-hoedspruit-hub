@@ -2171,6 +2171,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      account_exists_for_email: { Args: { _email: string }; Returns: boolean }
       apply_moderation_action: {
         Args: {
           _action: string
@@ -2181,6 +2182,10 @@ export type Database = {
           _severity?: string
           _target_user_id?: string
         }
+        Returns: undefined
+      }
+      apply_signup_metadata: {
+        Args: { _metadata: Json; _user_id: string }
         Returns: undefined
       }
       assert_account_active: { Args: { _user_id: string }; Returns: undefined }
@@ -2272,6 +2277,14 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_email_available: {
+        Args: { _email: string; _exclude_id?: string }
+        Returns: boolean
+      }
+      is_phone_available: {
+        Args: { _exclude_id?: string; _phone: string }
         Returns: boolean
       }
       is_username_available: {
