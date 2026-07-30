@@ -85,7 +85,7 @@ export const fetchNotificationOptions = async (
     const { data } = await supabase
       .from("categories")
       .select("id,title")
-      .order("sort_order");
+      .order("title");
     return (data ?? []).map((c) => ({ id: c.id, label: c.title }));
   }
 
