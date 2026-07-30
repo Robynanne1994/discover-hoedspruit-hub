@@ -2,6 +2,21 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
+/**
+ * Everything the signup form knows about the new account. It all travels as
+ * user metadata because email confirmation means there is no session — and so
+ * nothing the client can write to `profiles` — until the code has been
+ * verified. `handle_new_user()` reads these off the auth row and builds the
+ * profile from them.
+ */
+export interface SignUpDetails {
+  displayName?: string;
+  firstName?: string;
+  surname?: string;
+  username?: string;
+  location?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   session: Session | null;
@@ -11,8 +26,8 @@ interface AuthContextType {
   signUp: (
     email: string,
     password: string,
-    opts?: { displayName?: string; firstName?: string; surname?: string }
-  ) => Promise<{ error: Error | null }>;
+    opts?: SignUpDetails
+  ) => Promise<{ error: Error | null; needsVerification: boolean }>;
   signOut: () => Promise<void>;
 }
 
@@ -115,16 +130,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: error as Error | null };
   };
 
-  const signUp = async (
-    email: string,
-    password: string,
-    opts?: { displayName?: string; firstName?: string; surname?: string }
-  ) => {
+  const signUp = async (email: string, password: string, opts?: SignUpDetails) => {
     const metadata: Record<string, string> = {};
     if (opts?.displayName) metadata.display_name = opts.displayName;
     if (opts?.firstName) metadata.first_name = opts.firstName;
     if (opts?.surname) metadata.surname = opts.surname;
-    const { error } = await supabase.auth.signUp({
+    if (opts?.username) metadata.username = opts.username;
+    if (opts?.location) metadata.location = opts.location;
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -132,7 +145,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         data: Object.keys(metadata).length ? metadata : undefined,
       },
     });
-    return { error: error as Error | null };
+    // With email confirmation on, Supabase creates the user but withholds the
+    // session until the emailed code is redeemed. No session therefore means
+    // "we've sent them a code", not "something went wrong".
+    return {
+      error: error as Error | null,
+      needsVerification: !error && !data.session,
+    };
   };
 
   const signOut = async () => {

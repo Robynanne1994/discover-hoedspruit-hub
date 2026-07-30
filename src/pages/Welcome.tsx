@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useGuestAuth } from "@/hooks/useGuestAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,15 @@ import { sanitiseUsername, validateUsername, USERNAME_MAX, USERNAME_HINT } from 
 
 import { RESET_LINK_TTL_MINUTES, sendPasswordResetEmail } from "@/lib/passwordReset";
 import { useResendCooldown } from "@/hooks/useResendCooldown";
+import VerificationCodeInput from "@/components/auth/VerificationCodeInput";
+import {
+  VERIFICATION_CODE_LENGTH,
+  VERIFICATION_CODE_TTL_MINUTES,
+  isCompleteCode,
+  isEmailNotConfirmedError,
+  resendSignupCode,
+  verifySignupCode,
+} from "@/lib/emailVerification";
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -76,7 +86,9 @@ const capitaliseName = (value: string) =>
 const Welcome = () => {
   const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
   const initialMode = location.state?.mode ?? "welcome";
-  const [mode, setMode] = useState<"welcome" | "signin" | "signup" | "forgot" | "forgotSent">(initialMode);
+  const [mode, setMode] = useState<
+    "welcome" | "signin" | "signup" | "forgot" | "forgotSent" | "verify"
+  >(initialMode);
   const navigate = useNavigate();
   const { enterGuest } = useGuestAuth();
   const [email, setEmail] = useState("");
@@ -101,7 +113,6 @@ const Welcome = () => {
     setUsernameStatus("checking");
     let cancelled = false;
     const t = setTimeout(async () => {
-      const { supabase } = await import("@/integrations/supabase/client");
       const { data, error } = await supabase.rpc(
         "is_username_available" as any,
         { _username: handle } as any
@@ -125,6 +136,16 @@ const Welcome = () => {
   // Supabase rate-limits auth emails, so the resend link counts down instead of
   // failing the request.
   const resetCooldown = useResendCooldown();
+  const verifyCooldown = useResendCooldown();
+
+  // "Check your email" step. The account already exists at this point; it just
+  // has no session until the emailed code comes back.
+  const [code, setCode] = useState("");
+  const [codeError, setCodeError] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
+  // Why we're asking: a brand-new signup, or a log in that Supabase refused
+  // because the address was never confirmed.
+  const [verifyReason, setVerifyReason] = useState<"signup" | "signin">("signup");
 
   const handleOAuth = async (provider: "google" | "apple") => {
     setOauthLoading(provider);
@@ -199,7 +220,6 @@ const Welcome = () => {
       // Check username availability (case-insensitive). A SECURITY DEFINER RPC
       // is used because RLS blocks reading other users' profile rows directly.
       const trimmedUsername = sanitiseUsername(username);
-      const { supabase } = await import("@/integrations/supabase/client");
       const { data: available, error: checkError } = await supabase.rpc(
         "is_username_available" as any,
         { _username: trimmedUsername } as any
@@ -215,10 +235,15 @@ const Welcome = () => {
         return;
       }
       const displayName = `${firstName} ${lastName}`;
-      const { error } = await signUp(email, password, {
+      // The username and residency travel as signup metadata: with email
+      // confirmation on there is no session yet, so the client can't write to
+      // `profiles`. handle_new_user() builds the profile row from them.
+      const { error, needsVerification } = await signUp(email, password, {
         displayName,
         firstName,
         surname: lastName,
+        username: trimmedUsername,
+        location: residency,
       });
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
@@ -226,33 +251,19 @@ const Welcome = () => {
         } else {
           toast.error(error.message);
         }
-      } else {
-        // Persist username on profile. The DB unique index is the final guard
-        // against a race between the availability check and this write.
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { error: upErr } = await supabase
-            .from("profiles")
-            .update({ username: trimmedUsername, location: residency })
-            .eq("id", user.id);
-          if (upErr) {
-            if ((upErr as any).code === "23505" || /duplicate|unique/i.test(upErr.message)) {
-              toast.error("That username is already taken. Please choose a different one.");
-              setLoading(false);
-              return;
-            }
-            // Non-fatal: the account exists; the username can be set later in settings.
-          }
-        }
-        toast.success("Account created! You're in.");
-        // Make sure the new account is signed in, then land on the homepage.
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-          localStorage.setItem("hh-keep-signed-in", "1");
-          await signIn(email, password);
-        }
+      } else if (needsVerification) {
+        // The account exists but isn't usable until the emailed code is typed
+        // back in — that's what proves the address is really theirs.
+        localStorage.setItem("hh-keep-signed-in", "1");
+        verifyCooldown.start();
+        openVerifyStep("signup");
         setLoading(false);
-        navigate("/", { replace: true });
+        return;
+      } else {
+        // Confirmation is switched off on this project: signUp handed back a
+        // session, so the account is already usable.
+        await finishSignup();
+        setLoading(false);
         return;
       }
     } else {
@@ -260,6 +271,17 @@ const Welcome = () => {
       const { error } = await signIn(email, password);
 
       if (error) {
+        // An account made before verification existed still has an unconfirmed
+        // address. Send them a code rather than dead-ending on an error they
+        // can do nothing about.
+        if (isEmailNotConfirmedError(error.message)) {
+          const { error: sendErr } = await resendSignupCode(email);
+          if (!sendErr) verifyCooldown.start();
+          openVerifyStep("signin");
+          if (sendErr) setCodeError(sendErr);
+          setLoading(false);
+          return;
+        }
         const msg = /invalid login credentials|invalid.*password|invalid.*email/i.test(error.message)
           ? "Incorrect email or password. Please try again."
           : error.message;
@@ -270,6 +292,61 @@ const Welcome = () => {
       }
     }
     setLoading(false);
+  };
+
+  /** Move to the "check your email" step with a clean slate. */
+  const openVerifyStep = (reason: "signup" | "signin") => {
+    setVerifyReason(reason);
+    setCode("");
+    setCodeError(null);
+    setMode("verify");
+  };
+
+  /** Land a freshly verified (or already-signed-in) new account on the homepage. */
+  const finishSignup = async () => {
+    toast.success("Account created! You're in.");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      localStorage.setItem("hh-keep-signed-in", "1");
+      await signIn(email, password);
+    }
+    navigate("/", { replace: true });
+  };
+
+  const handleVerifyCode = async (submitted?: string) => {
+    const entered = submitted ?? code;
+    if (verifying || !isCompleteCode(entered)) return;
+    setVerifying(true);
+    setCodeError(null);
+    const { error } = await verifySignupCode(email, entered);
+    if (error) {
+      setCodeError(error);
+      setVerifying(false);
+      return;
+    }
+    setVerifying(false);
+    if (verifyReason === "signup") {
+      await finishSignup();
+      return;
+    }
+    // Verifying signs the user in, so an unconfirmed log in ends up exactly
+    // where it was headed.
+    toast.success("Email verified.");
+    navigate("/", { replace: true });
+  };
+
+  const handleResendCode = async () => {
+    if (loading || verifyCooldown.waiting) return;
+    setLoading(true);
+    setCodeError(null);
+    const { error } = await resendSignupCode(email);
+    setLoading(false);
+    if (error) {
+      setCodeError(error);
+      return;
+    }
+    verifyCooldown.start();
+    toast.success("New code sent.");
   };
 
   const handleSendReset = async (e?: React.FormEvent) => {
@@ -285,6 +362,105 @@ const Welcome = () => {
     resetCooldown.start();
     setMode("forgotSent");
   };
+
+  if (mode === "verify") {
+    const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+    const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+    const ready = isCompleteCode(code) && !verifying;
+    return (
+      <div className="min-h-screen flex flex-col" style={{ background: "#E6E0CC", fontFamily: FF }}>
+        <PageHeader
+          title="Verify Email"
+          onBack={() => setMode(verifyReason === "signup" ? "signup" : "signin")}
+        />
+        <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
+          <h1
+            style={{
+              fontFamily: HEAD, fontSize: 32, fontWeight: 550, letterSpacing: "-0.02em",
+              color: "#1A1A1A", lineHeight: 1.1, margin: "0 0 10px",
+            }}
+          >
+            Check your email
+          </h1>
+          <p style={{ fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 24px" }}>
+            {verifyReason === "signin"
+              ? "This account hasn't confirmed its email address yet. We've sent a "
+              : "We've sent a "}
+            {VERIFICATION_CODE_LENGTH}-digit code to{" "}
+            <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{email.trim()}</span>. Enter
+            it below to confirm the address is yours — it's how we reset your password and
+            reach you if there's ever a problem with your account.
+          </p>
+
+          <VerificationCodeInput
+            value={code}
+            onChange={(next) => {
+              setCode(next);
+              if (codeError) setCodeError(null);
+            }}
+            onComplete={(full) => handleVerifyCode(full)}
+            disabled={verifying}
+            invalid={!!codeError}
+            autoFocus
+          />
+
+          {codeError && (
+            <div
+              role="alert"
+              className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-[13px] mt-4"
+              style={{ background: "#fdecec", border: "1px solid #e5484d", color: "#b42318" }}
+            >
+              <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+              <span>{codeError}</span>
+            </div>
+          )}
+
+          <Button
+            onClick={() => handleVerifyCode()}
+            className="w-full h-12 font-medium rounded-full mt-6"
+            style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+            disabled={!ready}
+          >
+            {verifying ? "Verifying..." : "Verify Email"}
+          </Button>
+
+          <p style={{ fontSize: 13, lineHeight: 1.55, color: "#6B6255", marginTop: 16, textAlign: "center" }}>
+            The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes. Nothing in your
+            inbox? Check your spam folder.
+          </p>
+
+          <p className="text-center text-sm mt-4" style={{ color: "#2b2420" }}>
+            Didn't get it?{" "}
+            <button
+              type="button"
+              onClick={handleResendCode}
+              disabled={loading || verifyCooldown.waiting}
+              className="font-medium"
+              style={{ color: "#715a3d", opacity: loading || verifyCooldown.waiting ? 0.6 : 1 }}
+            >
+              {loading
+                ? "Sending..."
+                : verifyCooldown.waiting
+                ? `Resend in ${verifyCooldown.remaining}s`
+                : "Send a new code"}
+            </button>
+          </p>
+
+          <p className="text-center text-sm mt-3" style={{ color: "#6B6255" }}>
+            Typed the wrong address?{" "}
+            <button
+              type="button"
+              onClick={() => setMode(verifyReason === "signup" ? "signup" : "signin")}
+              className="font-medium"
+              style={{ color: "#715a3d" }}
+            >
+              Go back
+            </button>
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (mode === "forgot" || mode === "forgotSent") {
     const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
