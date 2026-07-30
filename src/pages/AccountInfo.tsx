@@ -1549,7 +1549,7 @@ const VerifyEmailSheet = ({
         <h2
           style={{
             fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px",
+            fontWeight: 550, fontSize: 22, color: INK, margin: "0 0 8px",
           }}
         >
           {target.reason === "change" ? "Confirm your new email" : "Verify your email"}
