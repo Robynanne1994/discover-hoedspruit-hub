@@ -1108,6 +1108,16 @@ const AccountInfo = () => {
       {photoSheetOpen && (
         <PhotoPickerSheet
           hasPhoto={!!avatarUrl}
+          avatarUrl={avatarUrl}
+          initials={
+            fullName
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean)
+              .slice(0, 2)
+              .map((p) => p[0]?.toUpperCase() ?? "")
+              .join("") || "?"
+          }
           onClose={() => setPhotoSheetOpen(false)}
           onTakePhoto={() => {
             setPhotoSheetOpen(false);
