@@ -87,6 +87,35 @@ const Welcome = () => {
   const firstName = nameParts[0] ?? "";
   const lastName = nameParts.slice(1).join(" ");
   const [username, setUsername] = useState("");
+  const [usernameStatus, setUsernameStatus] = useState<
+    "idle" | "checking" | "available" | "taken"
+  >("idle");
+
+  // Debounced live availability check so the user finds out before submitting.
+  useEffect(() => {
+    const handle = sanitiseUsername(username);
+    if (validateUsername(handle)) {
+      setUsernameStatus("idle");
+      return;
+    }
+    setUsernameStatus("checking");
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data, error } = await supabase.rpc(
+        "is_username_available" as any,
+        { _username: handle } as any
+      );
+      if (cancelled) return;
+      if (error) setUsernameStatus("idle");
+      else setUsernameStatus(data ? "available" : "taken");
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [username]);
+
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
