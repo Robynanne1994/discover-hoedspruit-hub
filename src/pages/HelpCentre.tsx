@@ -70,7 +70,7 @@ const HelpCentre = () => {
           style={{
             fontFamily: '"Nohemi", ' + SANS,
             fontSize: 15,
-            fontWeight: 700,
+            fontWeight: 550,
             letterSpacing: "0.06em",
             textTransform: "uppercase",
             color: INK,
