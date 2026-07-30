@@ -686,16 +686,21 @@ const AccountInfo = () => {
               </Row>
 
               <Row label="Username">
-                <input
-                  value={username}
-                  onChange={(e) =>
-                    setUsername(e.target.value.replace(/\s+/g, "").toLowerCase().replace(/^@+/, ""))
-                  }
-                  style={rowInputStyle}
-                  autoCapitalize="none"
-                  autoCorrect="off"
-                />
+                <div style={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
+                  <span style={{ ...rowInputStyle, width: "auto", flex: "0 0 auto", color: "#6B6A5E" }}>
+                    @
+                  </span>
+                  <input
+                    value={username}
+                    onChange={(e) => setUsername(sanitiseUsername(e.target.value))}
+                    style={{ ...rowInputStyle, flex: 1 }}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    maxLength={USERNAME_MAX}
+                  />
+                </div>
               </Row>
+
 
               <Row label="Email">
                 <input
