@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
+import { sanitiseUsername, validateUsername, USERNAME_MAX } from "@/lib/username";
+
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
 import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
