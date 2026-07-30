@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useShare } from "@/hooks/useShare";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
@@ -213,6 +214,7 @@ const EventDetail = () => {
   const toggleFavourite = useToggleFavourite();
 
   const requireAuth = useRequireAuth();
+  const share = useShare();
 
   const handleToggleFavourite = () => {
     // Guests get a dismissable bottom sheet, not a full-screen redirect.
@@ -221,18 +223,14 @@ const EventDetail = () => {
     toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };
 
-  const handleShare = async () => {
-    const shareUrl = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: event?.title, url: shareUrl }); }
-      catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-        }
-      }
-    } else {
-      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-    }
+  // Opens the phone's own share sheet (copy link + the user's apps); falls back
+  // to the in-app sheet on desktop browsers that have none.
+  const handleShare = () => {
+    share({
+      title: event?.title || "Hello Hoedspruit",
+      text: (event as any)?.description || undefined,
+      url: `/events/${id}`,
+    });
   };
 
   // Geocode for Location tab

@@ -30,7 +30,7 @@ const EventCard = ({ event }: EventCardProps) => {
   return (
     <div className="group relative bg-card rounded-xl overflow-hidden shadow-card border border-muted-foreground/30 hover:border-muted-foreground/60 hover:shadow-warm transition-all duration-200">
       <FavouriteButton itemId={event.id} itemType="event" />
-      <ShareButton title={event.title} url={`${window.location.origin}/events`} />
+      <ShareButton title={getDisplayTitle(event)} url={`/events/${event.id}`} />
       <div className="flex">
         {event.image_url && (
           <div className="w-32 sm:w-40 shrink-0">

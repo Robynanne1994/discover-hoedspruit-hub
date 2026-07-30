@@ -7,7 +7,7 @@ import ImageLightbox from "@/components/ImageLightbox";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
-import { toast } from "sonner";
+import { useShare } from "@/hooks/useShare";
 import Seo from "@/components/Seo";
 
 
@@ -61,6 +61,7 @@ const LocalChannelDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { isAdmin, user } = useAuth();
   const requireAuth = useRequireAuth();
+  const share = useShare();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [tab, setTab] = useState<"details" | "about">("about");
 
@@ -90,20 +91,15 @@ const LocalChannelDetail = () => {
     toggleFavourite.mutate({ itemId: resource.id, itemType: "resource", currentlyFavourited: isFavourited });
   };
 
-  const handleShare = async () => {
+  // Opens the phone's own share sheet (copy link + the user's apps); falls back
+  // to the in-app sheet on desktop browsers that have none.
+  const handleShare = () => {
     if (!resource) return;
-    const shareUrl = window.location.href;
-    const shareData = { title: displayTitle, text: resource.description || resource.meta || "", url: shareUrl };
-    if (navigator.share) {
-      try { await navigator.share(shareData); }
-      catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-        }
-      }
-    } else {
-      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
-    }
+    share({
+      title: displayTitle,
+      text: resource.description || resource.meta || undefined,
+      url: `/local-channels/${slug}`,
+    });
   };
 
   const displayTitle = useMemo(() => {

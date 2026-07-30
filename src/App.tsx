@@ -10,6 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GuestAuthProvider } from "@/hooks/useGuestAuth";
+import { ShareProvider } from "@/hooks/useShare";
 import Index from "./pages/Index.tsx";
 
 import Welcome from "./pages/Welcome.tsx";
@@ -151,6 +152,7 @@ const App = () => (
         <OfflineScreen />
         <BrowserRouter>
           <GuestAuthProvider>
+            <ShareProvider>
               <NativePush />
               <RecoveryLinkRedirect />
               <ConditionalMain>
@@ -229,6 +231,7 @@ const App = () => (
               </ConditionalMain>
               <ScrollToTop />
               <ConditionalBottomNav />
+            </ShareProvider>
           </GuestAuthProvider>
         </BrowserRouter>
       </AuthProvider>
