@@ -738,7 +738,7 @@ const MyProfile = () => {
         }}
       >
         <span style={{ fontFamily: SANS, fontSize: 13, color: SUBTLE }}>
-          {visible.length === 1 ? "1 item" : `${visible.length} items`}
+          {visible.length === 1 ? "1 Item" : `${visible.length} Items`}
         </span>
         <button
           type="button"
