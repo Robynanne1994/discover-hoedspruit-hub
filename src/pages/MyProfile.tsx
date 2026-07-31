@@ -10,6 +10,7 @@ import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
 import SavedFilterSheet, { SavedSort, sortLabel } from "@/components/profile/SavedFilterSheet";
 import Seo from "@/components/Seo";
+import { residencyBadge } from "@/lib/residencyBadge";
 
 
 const PAGE_BG = "#E6E0CC";
