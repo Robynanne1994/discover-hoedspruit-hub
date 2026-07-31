@@ -995,7 +995,7 @@ const ListingDetail = () => {
                 fontFamily: FONT, fontSize: 14.5, fontWeight: 700, color: C.primary,
               }}
             >
-              {descExpanded ? "Read less" : "Read more"}
+              {descExpanded ? "Read Less" : "Read More"}
             </button>
           )}
         </div>
