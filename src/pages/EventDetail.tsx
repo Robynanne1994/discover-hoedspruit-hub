@@ -87,10 +87,10 @@ const categoryLineStyle: React.CSSProperties = {
   marginTop: 8,
   fontFamily: FONT,
   fontSize: 14,
-  fontWeight: 600,
+  fontWeight: 450,
   lineHeight: 1.45,
   letterSpacing: "0.005em",
-  color: C.primary,
+  color: "#423324",
 };
 const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
