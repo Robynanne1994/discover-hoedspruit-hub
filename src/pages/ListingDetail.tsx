@@ -1310,12 +1310,9 @@ const ListingDetail = () => {
     const addressText = listing.location || listing.title;
 
     const copyAddress = async () => {
-      try {
-        await navigator.clipboard.writeText(addressText);
-        toast.success("Address copied");
-      } catch {
-        toast.error("Couldn't copy the address");
-      }
+      const outcome = await sharePlainText(addressText);
+      if (outcome === "copied") toast.success("Address copied");
+      if (outcome === "failed") toast.error("Couldn't copy the address");
     };
 
     // One row of the directions / address card: circled icon, label + value, arrow.
