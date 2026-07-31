@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
-  Mail, Globe, ArrowUpRight, MapPin, Navigation,
+  Mail, Globe, ArrowUpRight, MapPin, Navigation, ChevronRight, Clock, Flag, Copy,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint, Users, Banknote,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
@@ -67,6 +67,22 @@ const C = {
   muted: "#8A8480",
   primary: "#715a3d",
   accent: "#B8916A",
+  dark: "#423324",
+  open: "#5C8A4A",
+  closed: "#B05B3F",
+  // Soft panel that sits on the beige sheet (suggest-an-edit, icon circles)
+  soft: "#EEE9DA",
+  softBorder: "rgba(112,90,61,0.16)",
+};
+
+// Anything that renders like a lucide icon (including our own WhatsApp / social SVGs).
+type IconComp = React.ComponentType<{ size?: string | number; strokeWidth?: string | number; color?: string; style?: React.CSSProperties }>;
+
+// Content cards on the beige sheet: white, generously rounded, no hairline.
+const cardStyle: React.CSSProperties = {
+  background: C.surface,
+  borderRadius: 20,
+  border: "none",
 };
 
 
@@ -106,7 +122,7 @@ const formatDetailLabel = (s: string): string => {
   }).join("");
 };
 
-type TabKey = "about" | "hours" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
+type TabKey = "about" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -124,6 +140,9 @@ const ListingDetail = () => {
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
   const [mapCoords, setMapCoords] = useState<LatLon | null>(null);
   const [heroImgError, setHeroImgError] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
+  const [descOverflows, setDescOverflows] = useState(false);
+  const descRef = useRef<HTMLDivElement>(null);
 
   const { data: listing, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["listing-detail", id],
@@ -247,10 +266,19 @@ const ListingDetail = () => {
     const hasS = (relatedSpecials?.length ?? 0) > 0;
     const hasE = (relatedEvents?.length ?? 0) > 0;
     const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
-    const keys: TabKey[] = ["about", "hours", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    const keys: TabKey[] = ["about", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
     if (!keys.includes(tab)) setTab("about");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relatedSpecials, relatedEvents, listing, tab]);
+
+  // Does the description need a "Read more"? Measured rather than guessed at a
+  // character count, so short-but-tall copy (headings, lists) clamps correctly.
+  useLayoutEffect(() => {
+    if (descExpanded) return;
+    const el = descRef.current;
+    if (!el) { setDescOverflows(false); return; }
+    setDescOverflows(el.scrollHeight - el.clientHeight > 8);
+  }, [listing, tab, descExpanded]);
 
   if (isLoading) {
     return (
@@ -396,6 +424,16 @@ const ListingDetail = () => {
   const descriptionText = (longDescription || "").trim();
   const whatsappNum = l.whatsapp as string | null;
   const waClean = whatsappNum ? whatsappNum.replace(/[^0-9]/g, "") : null;
+  // Contact rows show this instead of the raw WhatsApp number.
+  const whatsappCta = ((l.whatsapp_cta_label as string | null) || "").trim() || "Chat on WhatsApp";
+  const goodToKnow = ((l.good_to_know as string[] | null) ?? []).map((s) => (s || "").trim()).filter(Boolean);
+  // "26km from Town" — shown in the header and on the location tab.
+  const kmFromTown = (() => {
+    if (!l.km_from_town) return null;
+    const n = parseFloat(String(l.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
+    const value = Number.isFinite(n) ? (Math.round(n * 100) / 100).toString() : String(l.km_from_town);
+    return `${value}km from Town`;
+  })();
   const hasGallery = galleryImages.length > 0;
   const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
   const hasEvents = (relatedEvents?.length ?? 0) > 0;
@@ -414,6 +452,15 @@ const ListingDetail = () => {
   const actionWhatsappRaw = pickAction(whatsappNum, l.additional_whatsapps, l.action_whatsapp_index ?? 0);
   const actionWhatsappClean = actionWhatsappRaw ? actionWhatsappRaw.replace(/[^0-9]/g, "") : "";
   const actionWebsite = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
+
+  // Category labels, with the category the user arrived from first.
+  const categoryChips = (() => {
+    const cats = listingCategories ?? [];
+    const ordered = fromCategory
+      ? [...cats.filter((c) => c.title === fromCategory), ...cats.filter((c) => c.title !== fromCategory)]
+      : cats;
+    return ordered.map((c) => c.title);
+  })();
 
   const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length) || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
   const hasAbout = !!descriptionText;
@@ -474,15 +521,8 @@ const ListingDetail = () => {
       fields: [{ label: labels[l.price_level] || "", on: true }] });
   }
 
-  // Distance is a universal field (populated for Shopping, Accommodation, etc.),
-  // so render it for every listing that has a km value — not just accommodation.
-  if (l.km_from_town) {
-    const kmNum = parseFloat(String(l.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
-    const kmLabel = Number.isFinite(kmNum)
-      ? (Math.round(kmNum * 100) / 100).toString()
-      : String(l.km_from_town);
-    sections.push({ key: "distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}km from Town`, on: true }] });
-  }
+  // Distance is no longer a Details card — it sits in the header next to the
+  // rating and again under the map on the Location tab.
 
   if (isListingRestaurant) {
     const known = ["Dine-in", "Takeaway", "Delivery"];
@@ -814,9 +854,10 @@ const ListingDetail = () => {
     : sections;
 
   const hasDetails = sections.length > 0;
+  // Hours no longer has its own tab — it renders inside About.
+  const hasAboutTab = hasAbout || goodToKnow.length > 0 || hasHours;
   const visibleTabs: { key: TabKey; label: string }[] = [
-    ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
-    ...(hasHours ? [{ key: "hours" as TabKey, label: "Hours" }] : []),
+    ...(hasAboutTab ? [{ key: "about" as TabKey, label: "About" }] : []),
     ...(hasContact ? [{ key: "contact" as TabKey, label: "Contact" }] : []),
     ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
     ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
@@ -824,19 +865,19 @@ const ListingDetail = () => {
     ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
     ...(hasLocation ? [{ key: "location" as TabKey, label: "Location" }] : []),
   ];
+  // Falls back to the first available tab when the selected one has no content
+  // (e.g. a listing with no description, no hours and no "good to know" chips).
+  const activeTab: TabKey = visibleTabs.some((t) => t.key === tab) ? tab : (visibleTabs[0]?.key ?? "about");
 
 
-  // ----- Action pills -----
+  // ----- Action buttons (fixed bar above the bottom nav) -----
+  // WhatsApp leads and is styled as the primary action when the listing has one.
   const actions = [
-    actionPhone && { key: "call", label: "Call", href: `tel:${actionPhone}`, Icon: Phone, ext: false },
     actionWhatsappClean && {
-      key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${actionWhatsappClean}`, ext: true,
-      Icon: ({ size = 18, color = C.primary }: { size?: number; color?: string }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.693.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.83 9.83 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.82 11.82 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413Z" />
-        </svg>
-      ),
+      key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${actionWhatsappClean}`,
+      Icon: WhatsAppIcon, ext: true, filled: true,
     },
+    actionPhone && { key: "call", label: "Call", href: `tel:${actionPhone}`, Icon: Phone, ext: false },
     (l.google_maps_link || listing.location) && {
       key: "directions", label: "Directions",
       href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
@@ -859,44 +900,49 @@ const ListingDetail = () => {
       : actionWebsite && !actionWhatsappClean && (listing as any).instagram
         ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
         : null),
-  ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
+  ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean; filled?: boolean }>;
 
 
   // ----- Sub-components -----
-  const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => (
-    <a
-      href={a.href}
-      {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      style={{
-        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-        padding: "10px 18px", borderRadius: 999,
-        background: C.surface, border: `1px solid ${C.border}`,
-        color: C.heading, textDecoration: "none",
-        fontFamily: FONT, fontWeight: 400, fontSize: 14,
-        letterSpacing: "0.01em",
-        flexShrink: 0,
-        width: full ? "100%" : undefined,
-        transition: "transform 150ms ease-out",
-      }}
-      {...pressScale()}
-    >
-      <a.Icon size={16} strokeWidth={1.75} color={C.heading} />
-      <span>{a.label}</span>
-    </a>
-  );
+  // Stacked icon-over-label tile used in the fixed action bar.
+  const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
+    const fg = a.filled ? "#FFFFFF" : C.heading;
+    return (
+      <a
+        href={a.href}
+        {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        style={{
+          flex: 1, minWidth: 0,
+          display: "inline-flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+          padding: "12px 6px", borderRadius: 18,
+          background: a.filled ? C.dark : C.surface,
+          border: "none",
+          color: fg, textDecoration: "none",
+          fontFamily: FONT, fontWeight: 700, fontSize: 12.5,
+          letterSpacing: "0.01em",
+          boxShadow: a.filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
+          transition: "transform 150ms ease-out",
+        }}
+        {...pressScale()}
+      >
+        <a.Icon size={20} strokeWidth={1.75} color={fg} />
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{a.label}</span>
+      </a>
+    );
+  };
 
   const TabBtn = ({ k, label, scrollable }: { k: TabKey; label: string; scrollable?: boolean }) => {
-    const active = tab === k;
+    const active = activeTab === k;
     return (
       <button
         onClick={() => setTab(k)}
         style={{
           ...(scrollable
-            ? { flex: "0 0 auto", padding: "14px 14px" }
+            ? { flex: "0 0 auto", padding: "14px 12px" }
             : { flex: 1, padding: "14px 4px" }),
           background: "none", border: "none", cursor: "pointer",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
-          letterSpacing: "0.08em", textTransform: "uppercase",
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 16,
+          letterSpacing: "0.005em",
           color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
@@ -908,48 +954,87 @@ const ListingDetail = () => {
     );
   };
 
+  // Card header: small icon + uppercase label, matching the About / Location cards.
+  const CardHead = ({ Icon, children }: { Icon: IconComp; children: React.ReactNode }) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+      <Icon size={17} strokeWidth={1.75} color={C.primary} />
+      <h3 style={{
+        margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
+        letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
+      }}>{children}</h3>
+    </div>
+  );
+
   // ----- Tab content -----
-  const renderAbout = () => {
-    return (
-    <div style={{ padding: "20px" }}>
+  const renderAbout = () => (
+    <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
       {descriptionText && (
-        <>
-          <h2 style={headStyle}>About</h2>
-          <div className="ld-richtext">
+        <div style={{ ...cardStyle, padding: "20px 22px" }}>
+          <div
+            ref={descRef}
+            className="ld-richtext"
+            style={
+              descExpanded
+                ? undefined
+                : {
+                    maxHeight: 148,
+                    overflow: "hidden",
+                    WebkitMaskImage: "linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.15) 100%)",
+                    maskImage: "linear-gradient(to bottom, #000 55%, rgba(0,0,0,0.15) 100%)",
+                  }
+            }
+          >
             {renderListingRichText(descriptionText)}
           </div>
-        </>
+          {(descOverflows || descExpanded) && (
+            <button
+              onClick={() => setDescExpanded(!descExpanded)}
+              style={{
+                marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer",
+                fontFamily: FONT, fontSize: 14.5, fontWeight: 700, color: C.primary,
+              }}
+            >
+              {descExpanded ? "Read less" : "Read more"}
+            </button>
+          )}
+        </div>
       )}
 
-      <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
-    </div>
-    );
-  };
+      {goodToKnow.length > 0 && (
+        <div style={{ ...cardStyle, padding: "20px 22px" }}>
+          <CardHead Icon={Sparkles}>Good to know</CardHead>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            {goodToKnow.map((item) => (
+              <span
+                key={item}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 8,
+                  background: C.ivory, borderRadius: 999, padding: "9px 15px",
+                  fontFamily: FONT, fontSize: 14, color: C.text, lineHeight: 1.2,
+                }}
+              >
+                <Check size={15} strokeWidth={2.25} color={C.primary} style={{ flexShrink: 0 }} />
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
-  const renderHours = () => {
+      {renderHoursCard()}
+
+      <SuggestEditCard onClick={() => setSuggestEditOpen(true)} />
+    </div>
+  );
+
+  // Opening hours now live inside the About tab rather than a tab of their own.
+  const renderHoursCard = () => {
     if (!hasHours) return null;
     const holidayCheck = isSAPublicHoliday(getSADate());
     return (
-      <div style={{ padding: "20px" }}>
-        <h2 style={headStyle}>Hours</h2>
-        {openStatus && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", background: openStatus.state === "open" ? "#5C8A4A" : "#B05B3F" }} />
-            <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>
-              {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
-            </span>
-            {openStatus.state === "open" && openStatus.alwaysOpen && (
-              <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>· Never Closes</span>
-            )}
-            {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Closes {openStatus.closes}</span>
-            )}
-            {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
-            )}
-          </div>
-        )}
-        <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+      <div style={{ ...cardStyle, padding: "20px 22px" }}>
+        <CardHead Icon={Clock}>Opening hours</CardHead>
+        <div>
           {DAY_LABELS.map((day, i) => {
             const v = openingHours![day.toLowerCase()] || "";
             const isClosed = !v || v.toLowerCase() === "closed";
@@ -957,14 +1042,24 @@ const ListingDetail = () => {
             return (
               <div key={day} style={{ borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
                 <div style={{
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "12px 0",
+                  display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
+                  padding: "13px 0",
                 }}>
-                  <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                    {day}{isToday ? " · Today" : ""}
+                  <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                    <span style={{ fontSize: 14.5, color: isToday ? C.heading : C.muted, fontWeight: isToday ? 700 : 400 }}>
+                      {day}
+                    </span>
+                    {isToday && (
+                      <span style={{
+                        fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
+                        color: C.primary,
+                      }}>
+                        Today
+                      </span>
+                    )}
                   </span>
-                  <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                    {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " - ")}
+                  <span style={{ fontSize: 14.5, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400, whiteSpace: "nowrap" }}>
+                    {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " – ")}
                   </span>
                 </div>
                 {isToday && holidayCheck.isHoliday && (
@@ -976,16 +1071,13 @@ const ListingDetail = () => {
             );
           })}
         </div>
-
-        <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
       </div>
     );
   };
 
   const renderContact = () => (
-    <div style={{ padding: "20px" }}>
-      <h2 style={headStyle}>Contact</h2>
-      <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+    <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div style={{ ...cardStyle, padding: "4px 20px" }}>
         {(() => {
           const phones = collectContacts(listing.phone, (listing as any).additional_phones);
           const whatsapps = collectContacts(whatsappNum, (listing as any).additional_whatsapps);
@@ -995,9 +1087,11 @@ const ListingDetail = () => {
           const emailLabels = [((listing as any).email_label || "").trim(), ...((((listing as any).additional_email_labels) || []) as string[]).map((s) => (s || "").trim())];
           const rows: any[] = [];
           phones.forEach((p, i) => rows.push({ label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
+          // The number itself stays hidden — the row shows the listing's chat
+          // call-to-action ("Chat on WhatsApp" unless the editor overrode it).
           whatsapps.forEach((w, i) => {
             const clean = w.replace(/[^0-9]/g, "");
-            rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
+            rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: whatsappCta, href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
           });
           emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
           const websites = collectContacts(listing.website, (listing as any).additional_websites);
@@ -1028,14 +1122,13 @@ const ListingDetail = () => {
           </a>
         ))}
       </div>
-      <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
+      <SuggestEditCard onClick={() => setSuggestEditOpen(true)} />
     </div>
   );
 
 
   const renderDetails = () => (
-    <div style={{ padding: "20px" }}>
-      <h2 style={headStyle}>Details</h2>
+    <div style={{ padding: "16px 20px 20px" }}>
       {categoryDetailTabs.length > 1 && (
         <div
           role="tablist"
@@ -1079,14 +1172,14 @@ const ListingDetail = () => {
       {visibleSections.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {visibleSections.map((s) => (
-            <div key={s.key} style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
-                {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
+            <div key={s.key} style={{ ...cardStyle, padding: "20px 22px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+                {s.iconComp && <s.iconComp size={17} strokeWidth={1.75} color={C.primary} />}
                 <h3 style={{
-                  margin: 0, fontFamily: FONT, fontWeight: 550, fontSize: 12,
-                  letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
+                  margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
+                  letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
                 }}>{s.title}</h3>
               </div>
               {s.fields.length === 1 && s.fields[0].on === "__text__" ? (
@@ -1112,11 +1205,13 @@ const ListingDetail = () => {
           ))}
         </div>
       )}
-      <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
+      <div style={{ marginTop: 14 }}>
+        <SuggestEditCard onClick={() => setSuggestEditOpen(true)} />
+      </div>
     </div>
   );
 
-  const renderRelatedCard = (item: { id: string; title: string; image_url?: string | null; subtitle?: string | null; badge?: string | null }, to: string) => (
+  const renderRelatedCard =(item: { id: string; title: string; image_url?: string | null; subtitle?: string | null; badge?: string | null }, to: string) => (
     <Link
       key={item.id}
       to={to}
@@ -1204,54 +1299,97 @@ const ListingDetail = () => {
   const renderLocation = () => {
     const directionsHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
     const isSurrounds = (listing.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    const addressText = listing.location || listing.title;
+
+    const copyAddress = async () => {
+      try {
+        await navigator.clipboard.writeText(addressText);
+        toast.success("Address copied");
+      } catch {
+        toast.error("Couldn't copy the address");
+      }
+    };
+
+    // One row of the directions / address card: circled icon, label + value, arrow.
+    const LocationRow = ({
+      Icon, label, value, onClick, href, first,
+    }: {
+      Icon: IconComp; label: string; value: string; onClick?: () => void; href?: string; first?: boolean;
+    }) => {
+      const inner = (
+        <>
+          <span style={{
+            width: 40, height: 40, borderRadius: "50%", background: C.soft,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+          }}>
+            <Icon size={17} strokeWidth={1.75} color={C.primary} />
+          </span>
+          <span style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+            <span style={{
+              display: "block", fontFamily: FONT, fontSize: 10.5, fontWeight: 700,
+              letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, marginBottom: 3,
+            }}>
+              {label}
+            </span>
+            <span style={{ display: "block", fontFamily: FONT, fontSize: 15, color: C.heading, wordBreak: "break-word" }}>
+              {value}
+            </span>
+          </span>
+          <ArrowUpRight size={16} color={C.muted} style={{ flexShrink: 0 }} />
+        </>
+      );
+      const rowStyle: React.CSSProperties = {
+        display: "flex", alignItems: "center", gap: 14, width: "100%",
+        padding: "16px 0", textDecoration: "none",
+        background: "none", border: "none", cursor: "pointer",
+        borderTop: first ? "none" : `1px solid ${C.divider}`,
+      };
+      return href
+        ? <a href={href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>
+        : <button type="button" onClick={onClick} style={rowStyle}>{inner}</button>;
+    };
+
     return (
-      <div style={{ padding: "20px" }}>
-        <h2 style={headStyle}>Location</h2>
-        <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
+      <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 12 }}>
           {isSurrounds ? (
-            <div style={{ padding: "24px 20px", textAlign: "left", fontFamily: FONT, fontSize: 14, color: C.heading }}>
+            <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
               Hoedspruit &amp; Surrounds
             </div>
           ) : (
             <>
-              <LocationMap
-                coords={mapCoords}
-                href={directionsHref}
-                label={listing.title}
-                pinColor={C.primary}
-              />
-              {listing.location && (
-                <div style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <MapPin size={18} color={C.primary} style={{ flexShrink: 0, marginTop: 2 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, color: C.heading }}>{listing.location}</div>
+              <div style={{ borderRadius: 14, overflow: "hidden" }}>
+                <LocationMap
+                  coords={mapCoords}
+                  href={directionsHref}
+                  label={listing.title}
+                  pinColor={C.primary}
+                />
+              </div>
+              <div style={{ padding: "14px 10px 6px" }}>
+                {listing.location && (
+                  <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, color: C.heading, lineHeight: 1.35 }}>
+                    {listing.location}
                   </div>
-                </div>
-              )}
+                )}
+                {kmFromTown && (
+                  <div style={{ fontFamily: FONT, fontSize: 14, color: C.muted, marginTop: 4 }}>
+                    {kmFromTown}
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
+
         {!isSurrounds && (
-          <a
-            href={directionsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              marginTop: 14,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "8px 16px", borderRadius: 9999, height: 48,
-              background: "#423324", border: "none",
-              color: "#FFFFFF", textDecoration: "none",
-              fontFamily: FONT, fontWeight: 500, fontSize: 14, lineHeight: "20px",
-              letterSpacing: "0.01em",
-              transition: "transform 150ms ease-out",
-            }}
-            {...pressScale()}
-          >
-            <Navigation size={16} strokeWidth={1.75} color="#FFFFFF" />
-            <span>Get Directions</span>
-          </a>
+          <div style={{ ...cardStyle, padding: "0 20px" }}>
+            <LocationRow first Icon={Navigation} label="Directions" value="Open in Google Maps" href={directionsHref} />
+            <LocationRow Icon={Copy} label="Address" value={addressText} onClick={copyAddress} />
+          </div>
         )}
+
+        <SuggestEditCard onClick={() => setSuggestEditOpen(true)} />
       </div>
     );
   };
@@ -1267,7 +1405,7 @@ const ListingDetail = () => {
   const showHero = !!heroImgUrl && !heroImgError;
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
       <Seo
         title={`${listing.title} — Hello Hoedspruit`}
         description={
@@ -1323,11 +1461,11 @@ const ListingDetail = () => {
             alignItems: "center",
             gap: 8,
           }}>
-            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-              <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
-            </button>
             <button onClick={handleShare} aria-label="Share" style={floatBtn}>
               <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+            </button>
+            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+              <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
             </button>
             {isAdmin && (
               <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
@@ -1335,6 +1473,18 @@ const ListingDetail = () => {
               </button>
             )}
           </div>
+
+          {/* Category sits on the image now, not above the title */}
+          {categoryChips.length > 0 && (
+            <div style={{
+              position: "absolute", left: 20, bottom: 48, zIndex: 2,
+              display: "flex", flexWrap: "wrap", gap: 6, maxWidth: "calc(100% - 40px)",
+            }}>
+              {categoryChips.map((t) => (
+                <span key={t} style={categoryChipStyle}>{t}</span>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div style={{ position: "relative", paddingTop: "env(safe-area-inset-top)", background: C.surface }}>
@@ -1343,11 +1493,11 @@ const ListingDetail = () => {
               <BackArrowIcon size={20} color={C.heading} />
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-                <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
-              </button>
               <button onClick={handleShare} aria-label="Share" style={floatBtn}>
                 <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+              </button>
+              <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+                <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
               </button>
               {isAdmin && (
                 <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
@@ -1359,44 +1509,22 @@ const ListingDetail = () => {
         </div>
       )}
 
-      {/* Title block */}
-      <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {listingCategories && listingCategories.length > 0 && (() => {
-          const ordered = fromCategory
-            ? [
-                ...listingCategories.filter((c) => c.title === fromCategory),
-                ...listingCategories.filter((c) => c.title !== fromCategory),
-              ]
-            : listingCategories;
-          const titles = ordered.map((c) => c.title);
-          if (titles.length === 0) return null;
-          return (
-            <div style={{
-              marginBottom: 8,
-              display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6,
-            }}>
-              {titles.map((t, i) => (
-                <div key={t} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  {i > 0 && (
-                    <span aria-hidden style={{
-                      width: 4, height: 4, borderRadius: "50%",
-                      background: C.accent, flexShrink: 0,
-                    }} />
-                  )}
-                  <span style={{
-                    fontSize: 11,
-                    letterSpacing: "0.04em",
-                    textTransform: "uppercase",
-                    color: i === 0 ? C.primary : C.muted,
-                    fontWeight: i === 0 ? 700 : 400,
-                  }}>
-                    {t}
-                  </span>
-                </div>
-              ))}
-            </div>
-          );
-        })()}
+      {/* Title sheet — overlaps the hero with a rounded top edge */}
+      <div style={{
+        position: "relative",
+        zIndex: 3,
+        background: C.bg,
+        borderRadius: showHero ? "28px 28px 0 0" : 0,
+        marginTop: showHero ? -28 : 0,
+        padding: "22px 20px 0",
+      }}>
+        {!showHero && categoryChips.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
+            {categoryChips.map((t) => (
+              <span key={t} style={{ ...categoryChipStyle, background: C.ivory }}>{t}</span>
+            ))}
+          </div>
+        )}
 
         <h1
           data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
@@ -1409,80 +1537,70 @@ const ListingDetail = () => {
             ? <span data-no-title-case="true">{(listing as any).title_override}</span>
             : listing.title}
         </h1>
-        {listing.location && (() => {
-          const isSurroundsLoc = listing.location.trim().toLowerCase() === "hoedspruit & surrounds";
-          const mapHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
-          if (isSurroundsLoc) {
-            return (
-              <div
-                style={{
-                  marginTop: 6, fontSize: 12, fontWeight: 400, color: C.muted, letterSpacing: "0.01em",
-                  display: "flex", alignItems: "center", gap: 5,
-                }}
-              >
-                <MapPin size={13} strokeWidth={1.75} color={C.muted} style={{ flexShrink: 0 }} />
-                <span>{listing.location}</span>
-              </div>
-            );
-          }
-          return (
-            <a
-              href={mapHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                marginTop: 6, fontSize: 12, fontWeight: 400, color: C.muted, letterSpacing: "0.01em",
-                display: "flex", alignItems: "center", gap: 5, textDecoration: "none",
-              }}
-            >
-              <MapPin size={13} strokeWidth={1.75} color={C.muted} style={{ flexShrink: 0 }} />
-              <span>{listing.location}</span>
-            </a>
-          );
-        })()}
-        {l.google_rating != null && (() => {
-          const reviewsHref: string | null = l.google_reviews_url || null;
-          const inner = (
-            <>
-              <Star size={12} fill={C.accent} color={C.accent} strokeWidth={0} />
-              <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
-              {l.google_reviews_count != null && (
-                <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
-              )}
-            </>
-          );
-          const baseStyle = {
-            marginTop: 6, display: "flex", alignItems: "center", gap: 4,
-            fontSize: 12, fontWeight: 400, color: C.heading, textDecoration: "none",
-          } as const;
-          return reviewsHref ? (
-            <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={baseStyle}>
-              {inner}
-            </a>
-          ) : (
-            <div style={baseStyle}>{inner}</div>
-          );
-        })()}
+        {hasHours && openStatus && (
+          <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: "50%", flexShrink: 0,
+              background: openStatus.state === "open" ? C.open : C.closed,
+            }} />
+            <span style={{
+              fontSize: 16, fontWeight: 700, letterSpacing: "0.01em",
+              color: openStatus.state === "open" ? C.open : C.closed,
+            }}>
+              {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
+            </span>
+            {openStatus.state === "open" && openStatus.alwaysOpen && (
+              <span style={{ fontSize: 16, color: C.muted }}>· Never closes</span>
+            )}
+            {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
+              <span style={{ fontSize: 16, color: C.muted }}>· Closes {openStatus.closes}</span>
+            )}
+            {openStatus.state === "closed" && openStatus.opensAt && (
+              <span style={{ fontSize: 16, color: C.muted }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
+            )}
+          </div>
+        )}
 
-        {actions.length > 0 && (
-          actions.length === 4 ? (
-            <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {actions.map((a) => <PillBtn key={a.key} a={a} full />)}
-            </div>
-          ) : (
-            <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
-              {actions.map((a) => <PillBtn key={a.key} a={a} />)}
-            </div>
-          )
+        {(l.google_rating != null || kmFromTown) && (
+          <div style={{ marginTop: 14, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
+            {l.google_rating != null && (() => {
+              const reviewsHref: string | null = l.google_reviews_url || null;
+              const pill: React.CSSProperties = {
+                display: "inline-flex", alignItems: "center", gap: 7,
+                background: C.surface, borderRadius: 999, padding: "9px 12px 9px 15px",
+                fontFamily: FONT, fontSize: 15, color: C.heading, textDecoration: "none",
+              };
+              const inner = (
+                <>
+                  <Star size={16} fill={C.accent} color={C.accent} strokeWidth={0} />
+                  <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
+                  {l.google_reviews_count != null && (
+                    <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
+                  )}
+                  {reviewsHref && <ChevronRight size={16} strokeWidth={2} color={C.muted} />}
+                </>
+              );
+              return reviewsHref
+                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={pill}>{inner}</a>
+                : <div style={pill}>{inner}</div>;
+            })()}
+
+            {kmFromTown && (
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.muted }}>
+                <MapPin size={15} strokeWidth={1.75} color={C.muted} style={{ flexShrink: 0 }} />
+                <span>{kmFromTown}</span>
+              </div>
+            )}
+          </div>
         )}
       </div>
 
       {/* Sticky tab bar */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 30,
-        background: C.surface, borderBottom: `1px solid ${C.border}`,
+        background: C.bg, borderBottom: `1px solid rgba(112,90,61,0.14)`,
         display: "flex",
-        padding: "0 8px",
+        padding: "12px 12px 0",
         overflowX: "auto",
       }} className="scrollbar-hide">
         {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} scrollable={visibleTabs.length > 4} />)}
@@ -1490,16 +1608,26 @@ const ListingDetail = () => {
 
       {/* Tab content */}
       <section style={{ background: C.bg }}>
-        {tab === "about" && renderAbout()}
-        {tab === "hours" && renderHours()}
-        {tab === "contact" && renderContact()}
-        {tab === "details" && renderDetails()}
-        {tab === "specials" && renderSpecials()}
-        {tab === "events" && renderEvents()}
-        {tab === "gallery" && renderGallery()}
-        {tab === "location" && renderLocation()}
+        {activeTab === "about" && renderAbout()}
+        {activeTab === "contact" && renderContact()}
+        {activeTab === "details" && renderDetails()}
+        {activeTab === "specials" && renderSpecials()}
+        {activeTab === "events" && renderEvents()}
+        {activeTab === "gallery" && renderGallery()}
+        {activeTab === "location" && renderLocation()}
       </section>
 
+      {/* Fixed action bar, parked just above the bottom nav */}
+      {actions.length > 0 && (
+        <div style={{
+          position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+          zIndex: 40, width: "100%", maxWidth: 480,
+          padding: "0 14px", boxSizing: "border-box",
+          display: "flex", gap: 8,
+        }}>
+          {actions.map((a) => <ActionBtn key={a.key} a={a} />)}
+        </div>
+      )}
 
       <ImageLightbox
         images={galleryImages}
@@ -1538,14 +1666,45 @@ const iconBtn: React.CSSProperties = {
   display: "flex", alignItems: "center", justifyContent: "center",
 };
 
-const SuggestEditFooter = ({ onClick }: { onClick: () => void }) => (
-  <div style={{ marginTop: 32, textAlign: "center" }}>
+// White pill sitting on the hero image (and on the sheet when there's no hero).
+const categoryChipStyle: React.CSSProperties = {
+  display: "inline-block",
+  background: C.surface,
+  borderRadius: 999,
+  padding: "10px 18px",
+  fontFamily: FONT,
+  fontSize: 11.5,
+  fontWeight: 700,
+  letterSpacing: "0.13em",
+  textTransform: "uppercase",
+  color: C.heading,
+  whiteSpace: "nowrap",
+};
+
+const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
+  <div style={{
+    background: C.soft,
+    border: `1px solid ${C.softBorder}`,
+    borderRadius: 20,
+    padding: "20px 22px",
+  }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+      <Flag size={16} strokeWidth={1.75} color={C.primary} />
+      <h3 style={{
+        margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
+        letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
+      }}>
+        Something out of date?
+      </h3>
+    </div>
+    <p style={{ margin: 0, fontFamily: FONT, fontSize: 15, lineHeight: 1.5, color: C.text }}>
+      Hours, numbers and prices change. Tell us and we'll check it.
+    </p>
     <button onClick={onClick} style={{
-      background: "none", border: "none", cursor: "pointer", padding: 0,
-      fontFamily: FONT, fontSize: 13, color: C.text,
-      textDecoration: "underline", textUnderlineOffset: 3,
+      marginTop: 14, background: "none", border: "none", cursor: "pointer", padding: 0,
+      fontFamily: FONT, fontSize: 15, fontWeight: 700, color: C.primary,
     }}>
-      Suggest an edit to this listing.
+      Suggest an edit →
     </button>
   </div>
 );

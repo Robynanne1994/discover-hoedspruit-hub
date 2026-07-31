@@ -35,6 +35,7 @@ export const LISTING_FIELD_SPECS = {
   website_label: { type: "str" },
   whatsapp: { type: "str" },
   whatsapp_label: { type: "str" },
+  whatsapp_cta_label: { type: "str" },
   additional_phones: { type: "str_array" },
   additional_phone_labels: { type: "str_array" },
   additional_emails: { type: "str_array" },
@@ -60,6 +61,7 @@ export const LISTING_FIELD_SPECS = {
   is_featured: { type: "bool_default_false" },
   opening_hours: { type: "json" },
   details_display_mode: { type: "json" },
+  good_to_know: { type: "str_array" },
 
   // ---------- Universal: custom blocks ----------
   custom_title_1: { type: "str" },
@@ -182,10 +184,11 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 
 export const UNIVERSAL_FIELDS = [
   "title", "title_override", "card_primary_subcategory", "long_description",
+  "good_to_know",
   "image_url", "detail_image_url", "gallery_images", "location",
   "km_from_town",
   "phone", "phone_label", "email", "email_label",
-  "website", "website_label", "whatsapp", "whatsapp_label",
+  "website", "website_label", "whatsapp", "whatsapp_label", "whatsapp_cta_label",
   "additional_phones", "additional_phone_labels",
   "additional_emails", "additional_email_labels",
   "additional_whatsapps", "additional_whatsapp_labels",
