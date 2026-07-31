@@ -504,7 +504,7 @@ const MyProfile = () => {
                   <h2
                     style={{
                       fontFamily: HEAD,
-                      fontWeight: 700,
+                      fontWeight: 550,
                       fontSize: 22,
                       lineHeight: 1.15,
                       letterSpacing: "-0.4px",
