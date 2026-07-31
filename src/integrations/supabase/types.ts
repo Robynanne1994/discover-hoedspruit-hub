@@ -1097,7 +1097,6 @@ export type Database = {
           foods: string[]
           gallery_images: string[] | null
           good_for_kids: boolean | null
-          good_to_know: string[] | null
           google_maps_link: string | null
           google_rating: number | null
           google_reviews_count: number | null
@@ -1183,7 +1182,6 @@ export type Database = {
           website_label: string | null
           whatsapp: string | null
           whatsapp_label: string | null
-          whatsapp_cta_label: string | null
           wheelchair_car_park: boolean | null
           wheelchair_entrance: boolean | null
           wheelchair_friendly: boolean | null
@@ -1240,7 +1238,6 @@ export type Database = {
           foods?: string[]
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
-          good_to_know?: string[] | null
           google_maps_link?: string | null
           google_rating?: number | null
           google_reviews_count?: number | null
@@ -1326,7 +1323,6 @@ export type Database = {
           website_label?: string | null
           whatsapp?: string | null
           whatsapp_label?: string | null
-          whatsapp_cta_label?: string | null
           wheelchair_car_park?: boolean | null
           wheelchair_entrance?: boolean | null
           wheelchair_friendly?: boolean | null
@@ -1383,7 +1379,6 @@ export type Database = {
           foods?: string[]
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
-          good_to_know?: string[] | null
           google_maps_link?: string | null
           google_rating?: number | null
           google_reviews_count?: number | null
@@ -1469,7 +1464,6 @@ export type Database = {
           website_label?: string | null
           whatsapp?: string | null
           whatsapp_label?: string | null
-          whatsapp_cta_label?: string | null
           wheelchair_car_park?: boolean | null
           wheelchair_entrance?: boolean | null
           wheelchair_friendly?: boolean | null
