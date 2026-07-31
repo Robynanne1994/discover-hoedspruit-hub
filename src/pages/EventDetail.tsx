@@ -1030,8 +1030,8 @@ const EventDetail = () => {
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.muted }}>
-            <Clock size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.dark }}>
+            <Clock size={15} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
