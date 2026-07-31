@@ -69,7 +69,7 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "deal_label",
-  "valid_from", "valid_until", "card_footer_text", "is_active",
+  "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "tag", "sub_tag_1", "sub_tag_2",
