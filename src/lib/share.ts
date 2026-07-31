@@ -170,6 +170,40 @@ export async function openSystemShareSheet(content: ShareContent): Promise<Share
   }
 }
 
+/**
+ * Shares plain text through the OS sheet when available, otherwise copies it.
+ * Used for address/phone-style snippets where a URL is not wanted.
+ */
+export async function sharePlainText(text: string): Promise<"shared" | "copied" | "failed"> {
+  if (isNativeApp()) {
+    const Share = await loadNativeShare();
+    if (Share) {
+      try {
+        await Share.share({ text, dialogTitle: text });
+        return "shared";
+      } catch (err) {
+        if (isDismissal(err)) return "shared";
+      }
+    }
+  }
+
+  const nav = typeof navigator !== "undefined" ? navigator : null;
+  if (typeof nav?.share === "function") {
+    try {
+      const data: ShareData = { text };
+      if (typeof nav.canShare === "function" && !nav.canShare(data)) {
+        return (await copyToClipboard(text)) ? "copied" : "failed";
+      }
+      await nav.share(data);
+      return "shared";
+    } catch (err) {
+      if (isDismissal(err)) return "shared";
+    }
+  }
+
+  return (await copyToClipboard(text)) ? "copied" : "failed";
+}
+
 /** Copies text, with a legacy path for webviews and insecure contexts. */
 export async function copyToClipboard(value: string): Promise<boolean> {
   try {
