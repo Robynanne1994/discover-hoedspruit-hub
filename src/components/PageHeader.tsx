@@ -9,7 +9,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
  *
  * Standard:
  *  - Title: <h1>, Helvetica Neue, 20px / 700, #1A1A1A, letterSpacing -0.2px, centred
- *  - Top spacing: notch-safe calc(env(safe-area-inset-top) + 56px)
+ *  - Top spacing: notch-safe var(--header-top) (see src/index.css)
  *  - Divider: 1px, rgba(26,26,26,0.10), full-bleed, 20px below the title
  *
  * The title is centred with a 3-column grid (1fr / auto / 1fr) so it stays
@@ -64,7 +64,7 @@ const PageHeader = ({
   left,
   right,
   backBackground = CARD,
-  topPad = "calc(env(safe-area-inset-top) + 44px)",
+  topPad = "var(--header-top)",
   style,
 }: PageHeaderProps) => {
   const navigate = useNavigate();

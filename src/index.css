@@ -82,6 +82,31 @@ body {
 
 @layer base {
   :root {
+    /* ---------------------------------------------------------------
+       Safe-area / top spacing tokens (mobile app shell)
+
+       The app renders edge-to-edge under the status bar (viewport-fit=cover
+       in index.html + contentInset "never" in capacitor.config.ts), so every
+       screen is responsible for its own notch clearance. Use these tokens
+       instead of hand-rolling calc(env(safe-area-inset-top) + Npx) so the
+       first row of every page lands on exactly the same line.
+
+       --safe-top      raw notch/status-bar inset (59px on a Dynamic Island
+                       iPhone, 0 in a desktop browser)
+       --header-top    standard page-header top padding: a tight 10px under
+                       the status bar, native-app style
+       --masthead-top  slightly airier variant for the Home logo block
+       --overlay-top   for buttons floating over a full-bleed hero image
+
+       The max(...) floor keeps a sensible gap in a desktop browser / Lovable
+       preview where the inset resolves to 0.
+       --------------------------------------------------------------- */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --header-top: max(calc(var(--safe-top) + 10px), 22px);
+    --masthead-top: max(calc(var(--safe-top) + 14px), 28px);
+    --overlay-top: max(calc(var(--safe-top) + 10px), 16px);
+
     --background: 46 34% 85%;
     --foreground: 0 0% 10%;
 

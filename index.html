@@ -2,8 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- viewport-fit=cover lets the web view paint edge-to-edge underneath the
+         status bar / notch (no white band at the top) and is what switches on
+         the env(safe-area-inset-*) values the layout uses for top spacing. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="format-detection" content="telephone=no, address=no, email=no, date=no" />
+    <!-- Warm cream so the area behind the status bar matches the app background. -->
+    <meta name="theme-color" content="#E6E0CC" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <!-- TODO: Set the document title to the name of your application -->
     <title>Hello Hoedspruit – Your Guide to the Lowveld</title>
     <meta name="description" content="Explore restaurants, lodges, safari activities, events and more in Hoedspruit, South Africa&#39;s Lowveld.">

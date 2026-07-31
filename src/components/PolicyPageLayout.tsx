@@ -54,7 +54,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
   return (
     <div style={{ minHeight: "100vh", background: "#E6E0CC", paddingBottom: 100 }}>
       {/* Back button */}
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 44px)", paddingLeft: 20 }}>
+      <div style={{ paddingTop: "var(--header-top)", paddingLeft: 20 }}>
         <button
           onClick={() => navigate("/terms")}
           aria-label="Back"

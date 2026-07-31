@@ -7,8 +7,18 @@ const config: CapacitorConfig = {
   appId: "za.co.hellohoedspruit.app",
   appName: "Hello Hoedspruit",
   webDir: "dist",
+  // Warm cream behind the web view so no white ever flashes at the edges.
+  backgroundColor: "#E6E0CC",
   ios: {
-    contentInset: "always",
+    // "never" stops WKWebView adding its own safe-area content inset on top of
+    // ours. Combined with viewport-fit=cover in index.html the app renders
+    // edge-to-edge and the layout handles the notch itself via the
+    // --safe-top / --header-top CSS tokens in src/index.css.
+    contentInset: "never",
+    backgroundColor: "#E6E0CC",
+  },
+  android: {
+    backgroundColor: "#E6E0CC",
   },
   plugins: {
     PushNotifications: {

@@ -125,7 +125,7 @@ const SpecialDetail = () => {
   if (isLoading || !special) {
     return (
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text }}>
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+        <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
             aria-label="Back"
@@ -493,7 +493,7 @@ const SpecialDetail = () => {
           style={{
             ...floatBtn,
             position: "absolute",
-            top: "calc(env(safe-area-inset-top) + 16px)",
+            top: "var(--overlay-top)",
             left: 16,
             zIndex: 2,
           }}
@@ -502,7 +502,7 @@ const SpecialDetail = () => {
         </button>
         <div style={{
           position: "absolute",
-          top: "calc(env(safe-area-inset-top) + 16px)",
+          top: "var(--overlay-top)",
           right: 16,
           zIndex: 2,
           display: "flex",
