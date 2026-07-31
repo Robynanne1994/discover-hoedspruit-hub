@@ -543,38 +543,15 @@ const SpecialDetail = () => {
         </div>
       </div>
 
-      {/* Title block */}
-      <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {allTags.length > 0 && (
-          <div style={{
-            marginBottom: 8,
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            flexWrap: "wrap",
-          }}>
-            {allTags.map((t, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                {i > 0 && (
-                  <span style={{
-                    width: 4, height: 4, borderRadius: "50%",
-                    background: C.accent, flexShrink: 0,
-                  }} />
-                )}
-                <span style={{
-                  fontSize: 11,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  color: t.type === "main" ? C.primary : C.muted,
-                  fontWeight: t.type === "main" ? 700 : 400,
-                }}>
-                  {t.text}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-
+      {/* Title sheet — overlaps the hero with a rounded top edge */}
+      <div style={{
+        position: "relative",
+        zIndex: 3,
+        background: C.bg,
+        borderRadius: "28px 28px 0 0",
+        marginTop: -28,
+        padding: "22px 20px 0",
+      }}>
         <h1
           data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -586,37 +563,34 @@ const SpecialDetail = () => {
             ? <span data-no-title-case="true">{(special as any).title_override}</span>
             : special.title}
         </h1>
+
+        {allTags.length > 0 && (
+          <div style={categoryLineStyle}>
+            {allTags.map((t, i) => (
+              <span key={i}>
+                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
+                {t.text}
+              </span>
+            ))}
+          </div>
+        )}
+
         {special.business_name && (
-          <div style={{
-            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-            display: "flex", alignItems: "center", gap: 4,
-          }}>
-            <Store size={12} color={C.muted} strokeWidth={1.6} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.muted }}>
+            <Store size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: C.muted, textDecoration: "none", fontWeight: 400 }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: C.muted, textDecoration: "none" }}>
                 {special.business_name}
               </Link>
-            ) : <span style={{ fontWeight: 400 }}>{special.business_name}</span>}
+            ) : <span>{special.business_name}</span>}
           </div>
         )}
+
         <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
           <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
-          <span style={{ fontSize: 13.5, color: C.heading }}>{statusLabel}</span>
-          <span style={{ fontSize: 13.5, color: C.muted }}>· {datesText}</span>
+          <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
+          <span style={{ fontSize: 16, color: C.muted }}>· {datesText}</span>
         </div>
-
-        {actions.length > 0 && (
-          <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {actions.map((a, i) => {
-              const isLastOdd = actions.length % 2 === 1 && i === actions.length - 1;
-              return (
-                <div key={a.key} style={isLastOdd ? { gridColumn: "1 / -1" } : undefined}>
-                  <PillBtn a={a} full />
-                </div>
-              );
-            })}
-          </div>
-        )}
       </div>
 
       {/* Sticky tab bar */}
@@ -661,6 +635,18 @@ const SpecialDetail = () => {
           </>
         );
       })()}
+
+      {/* Fixed action bar, parked just above the bottom nav */}
+      {actions.length > 0 && (
+        <div style={{
+          position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+          zIndex: 40, width: "100%", maxWidth: 480,
+          padding: "0 14px", boxSizing: "border-box",
+          display: "flex", gap: 8,
+        }}>
+          {actions.map((a) => <ActionBtn key={a.key} a={a} />)}
+        </div>
+      )}
 
       {isAdmin && (
         <SpecialEditDialog open={editOpen} onOpenChange={setEditOpen} special={special} />
