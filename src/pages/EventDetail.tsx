@@ -982,37 +982,15 @@ const EventDetail = () => {
         </div>
       </div>
 
-      {/* Title block */}
-      <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {allTags.length > 0 && (
-          <div style={{
-            marginBottom: 8,
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            flexWrap: "wrap",
-          }}>
-            {allTags.map((t, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                {i > 0 && (
-                  <span style={{
-                    width: 4, height: 4, borderRadius: "50%",
-                    background: C.accent, flexShrink: 0,
-                  }} />
-                )}
-                <span style={{
-                  fontSize: 11,
-                  letterSpacing: "0.04em",
-                  textTransform: "uppercase",
-                  color: t.type === "main" ? C.primary : C.muted,
-                  fontWeight: t.type === "main" ? 700 : 400,
-                }}>
-                  {t.text}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
+      {/* Title sheet — overlaps the hero with a rounded top edge */}
+      <div style={{
+        position: "relative",
+        zIndex: 3,
+        background: C.bg,
+        borderRadius: "28px 28px 0 0",
+        marginTop: -28,
+        padding: "22px 20px 0",
+      }}>
         <h1
           data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -1024,71 +1002,54 @@ const EventDetail = () => {
             ? <span data-no-title-case="true">{(event as any).title_override}</span>
             : event.title}
         </h1>
-        {dateDisplay && (
-          <div style={{
-            marginTop: 8, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-            display: "flex", alignItems: "center", gap: 4,
-          }}>
-            <Calendar size={12} color={C.muted} strokeWidth={1.6} />
-            <span>{dateDisplay}</span>
+
+        {allTags.length > 0 && (
+          <div style={categoryLineStyle}>
+            {allTags.map((t, i) => (
+              <span key={i}>
+                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
+                {t.text}
+              </span>
+            ))}
           </div>
         )}
+
+        {dateDisplay && (
+          <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+            <span style={{
+              width: 8, height: 8, borderRadius: 999, flexShrink: 0,
+              background: isPast ? C.muted : "#5C8A4A",
+            }} />
+            <span style={{
+              fontSize: 16, fontWeight: 700, letterSpacing: "0.01em",
+              color: isPast ? C.muted : "#5C8A4A",
+            }}>
+              {isPast ? "Event has passed" : "Upcoming"}
+            </span>
+            <span style={{ fontSize: 16, color: C.muted }}>· {dateDisplay}</span>
+          </div>
+        )}
+
         {timeDisplay && (
-          <div style={{
-            marginTop: 4, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-            display: "flex", alignItems: "center", gap: 4,
-          }}>
-            <Clock size={12} color={C.muted} strokeWidth={1.6} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.muted }}>
+            <Clock size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
+
         {event.location && (
           <a
-            href={directionsHref}
+            href={directionsHref || undefined}
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-              fontWeight: 400,
-              display: "flex", alignItems: "center", gap: 4,
-              textDecoration: "none",
+              marginTop: 8, display: "flex", alignItems: "center", gap: 6,
+              fontSize: 15, color: C.muted, textDecoration: "none",
             }}
           >
-            <MapPin size={12} color={C.muted} strokeWidth={1.6} />
+            <MapPin size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
-        )}
-
-        {isPast ? (
-          <div style={{
-            marginTop: 16,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
-            padding: "10px 18px",
-            borderRadius: 999,
-            background: "#f5f0e8",
-            border: `1px solid ${C.border}`,
-            color: C.muted,
-            fontFamily: FONT, fontWeight: 400, fontSize: 14,
-            letterSpacing: "0.01em",
-            opacity: 1,
-          }}>
-            <Calendar size={16} strokeWidth={1.75} color={C.muted} />
-            <span>EVENT HAS PASSED</span>
-          </div>
-        ) : actions.length > 0 && (
-          <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            {actions.map((a, i) => {
-              const isLastOdd = actions.length % 2 === 1 && i === actions.length - 1;
-              return (
-                <div key={a.key} style={isLastOdd ? { gridColumn: "1 / -1" } : undefined}>
-                  <PillBtn a={a} full />
-                </div>
-              );
-            })}
-          </div>
         )}
       </div>
 
@@ -1121,6 +1082,18 @@ const EventDetail = () => {
         );
       })()}
 
+
+      {/* Fixed action bar, parked just above the bottom nav */}
+      {!isPast && actions.length > 0 && (
+        <div style={{
+          position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+          zIndex: 40, width: "100%", maxWidth: 480,
+          padding: "0 14px", boxSizing: "border-box",
+          display: "flex", gap: 8,
+        }}>
+          {actions.map((a) => <ActionBtn key={a.key} a={a} />)}
+        </div>
+      )}
 
       <ImageLightbox
         images={galleryImages}
