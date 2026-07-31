@@ -1035,8 +1035,12 @@ const AdminListings = () => {
                   </div>
                 )}
                 <div>
-                  <Label>Cover Image <span className="text-xs text-muted-foreground font-normal">(4:3 — used on listing cards, the detail page and saved cards)</span></Label>
+                  <Label>Cover Image <span className="text-xs text-muted-foreground font-normal">(4:3 — used on the detail page and saved cards)</span></Label>
                   <ImageUpload bucket="listing-images" value={form.detail_image_url || form.image_url} onChange={(url) => setForm({ ...form, detail_image_url: url, image_url: url, saved_image_url: url })} aspect={4/3} />
+                </div>
+                <div>
+                  <Label>Category Card Cover <span className="text-xs text-muted-foreground font-normal">(optional, 4:3 — crop exactly as it should appear on the card. Leave empty to use the cover image above)</span></Label>
+                  <ImageUpload bucket="listing-images" value={form.card_image_url} onChange={(url) => setForm({ ...form, card_image_url: url })} aspect={4/3} />
                 </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                 <div>
