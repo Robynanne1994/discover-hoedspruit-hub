@@ -292,6 +292,17 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </div>
           </div>
 
+          <div className="flex items-center gap-2">
+            <Switch
+              id="special-dlg-featured"
+              checked={!!form.is_featured}
+              onCheckedChange={(v) => set("is_featured", v)}
+            />
+            <Label htmlFor="special-dlg-featured" className="text-sm cursor-pointer font-normal">
+              Featured — pinned to the top of the specials list and homepage
+            </Label>
+          </div>
+
           <div>
             <Label>Card Footer Text <span className="text-xs text-muted-foreground font-normal">(optional — overrides the auto "Valid until..." text on the listing card)</span></Label>
             <Input value={form.card_footer_text || ""} onChange={(e) => set("card_footer_text", e.target.value)} placeholder="e.g. Weekends only" />
