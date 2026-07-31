@@ -420,7 +420,7 @@ const MyProfile = () => {
     setSheetOpen(false);
   };
 
-  const badge = profile?.location ? `${profile.location} Local`.toUpperCase() : null;
+  const badge = residencyBadge(profile?.location);
 
   // Guests (and signed-out users) never see the profile card with its
   // saved / followers / following stats. The effect above redirects them —
