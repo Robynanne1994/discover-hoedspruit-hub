@@ -1031,14 +1031,21 @@ const ListingDetail = () => {
   const renderHoursCard = () => {
     if (!hasHours) return null;
     const holidayCheck = isSAPublicHoliday(getSADate());
+    const alwaysOpen = openStatus?.state === "open" && openStatus?.alwaysOpen;
     return (
       <div style={{ ...cardStyle, padding: "20px 22px" }}>
         <CardHead Icon={Clock}>Opening hours</CardHead>
         <div>
           {DAY_LABELS.map((day, i) => {
             const v = openingHours![day.toLowerCase()] || "";
-            const isClosed = !v || v.toLowerCase() === "closed";
+            const isAlwaysOpenValue = /always\s*open|24\s*\/?\s*7|open\s*24|24\s*hours?|24h\b/i.test(v);
+            const isClosed = !alwaysOpen && !isAlwaysOpenValue && (!v || v.toLowerCase() === "closed");
             const isToday = day === todayLabel;
+            const displayValue = alwaysOpen || isAlwaysOpenValue
+              ? "Always open"
+              : isClosed
+                ? "Closed"
+                : v.replace(/\s*-\s*/g, " – ");
             return (
               <div key={day} style={{ borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
                 <div style={{
@@ -1059,7 +1066,7 @@ const ListingDetail = () => {
                     )}
                   </span>
                   <span style={{ fontSize: 14.5, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400, whiteSpace: "nowrap" }}>
-                    {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " – ")}
+                    {displayValue}
                   </span>
                 </div>
                 {isToday && holidayCheck.isHoliday && (
