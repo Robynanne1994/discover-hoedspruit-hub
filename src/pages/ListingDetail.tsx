@@ -1571,18 +1571,18 @@ const ListingDetail = () => {
             {l.google_rating != null && (() => {
               const reviewsHref: string | null = l.google_reviews_url || null;
               const pill: React.CSSProperties = {
-                display: "inline-flex", alignItems: "center", gap: 7,
-                background: C.surface, borderRadius: 999, padding: "9px 12px 9px 15px",
-                fontFamily: FONT, fontSize: 15, color: C.heading, textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: 5,
+                background: C.surface, borderRadius: 999, padding: "5px 9px 5px 10px",
+                fontFamily: FONT, fontSize: 12.5, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
-                  <Star size={16} fill={C.accent} color={C.accent} strokeWidth={0} />
+                  <Star size={13} fill={C.accent} color={C.accent} strokeWidth={0} />
                   <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
                   {l.google_reviews_count != null && (
                     <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
                   )}
-                  {reviewsHref && <ChevronRight size={16} strokeWidth={2} color={C.muted} />}
+                  {reviewsHref && <ChevronRight size={13} strokeWidth={2} color={C.muted} />}
                 </>
               );
               return reviewsHref
