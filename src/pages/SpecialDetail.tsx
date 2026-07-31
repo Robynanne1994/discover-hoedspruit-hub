@@ -37,6 +37,7 @@ const C = {
   muted: "#8A8480",
   primary: "#715a3d",
   accent: "#B8916A",
+  dark: "#423324",
 };
 
 const WhatsAppIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -61,6 +62,20 @@ const headStyle: React.CSSProperties = {
 const paraStyle: React.CSSProperties = {
   fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
   color: C.text, margin: "0 0 10px",
+};
+const cardStyle: React.CSSProperties = {
+  background: C.surface,
+  borderRadius: 20,
+  border: "none",
+};
+const categoryLineStyle: React.CSSProperties = {
+  marginTop: 8,
+  fontFamily: FONT,
+  fontSize: 14,
+  fontWeight: 600,
+  lineHeight: 1.45,
+  letterSpacing: "0.005em",
+  color: C.primary,
 };
 const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
@@ -218,22 +233,27 @@ const SpecialDetail = () => {
   }
 
 
-  const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
+  const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
+    const filled = a.key === "booking" || a.key === "whatsapp";
+    const fg = filled ? "#FFFFFF" : C.heading;
     const baseStyle: React.CSSProperties = {
-      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-      padding: "10px 18px", borderRadius: 999,
-      background: C.surface, border: `1px solid ${C.border}`,
-      color: C.heading, textDecoration: "none",
-      fontFamily: FONT, fontWeight: 400, fontSize: 14,
+      flex: 1, minWidth: 0,
+      display: "inline-flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+      padding: "12px 6px", borderRadius: 18,
+      background: filled ? C.dark : C.surface,
+      border: "none",
+      color: fg, textDecoration: "none",
+      fontFamily: FONT, fontWeight: 700, fontSize: 12.5,
       letterSpacing: "0.01em",
-      flexShrink: 0,
-      width: full ? "100%" : undefined,
+      boxShadow: filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
       transition: "transform 150ms ease-out",
     };
-    const content = (<>
-      <a.Icon size={16} strokeWidth={1.75} color={C.heading} />
-      <span>{a.label}</span>
-    </>);
+    const content = (
+      <>
+        <a.Icon size={20} strokeWidth={1.75} color={fg} />
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{a.label}</span>
+      </>
+    );
     if (a.internal) {
       return <Link to={a.href} style={baseStyle} {...pressScale()}>{content}</Link>;
     }
@@ -252,8 +272,8 @@ const SpecialDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
-          letterSpacing: "0.08em", textTransform: "uppercase",
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 16,
+          letterSpacing: "0.005em",
           color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
@@ -306,7 +326,7 @@ const SpecialDetail = () => {
     const desc = (special.description || "").trim();
 
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "16px 20px 20px" }}>
         {desc && (
           <>
             <h2 style={headStyle}>About</h2>
@@ -317,7 +337,7 @@ const SpecialDetail = () => {
         {detailRows.length > 0 && (
           <div style={{ marginTop: desc ? 28 : 0 }}>
             <h2 style={headStyle}>Details</h2>
-            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+            <div style={{ ...cardStyle, padding: "4px 20px" }}>
               {detailRows.map((r, i) => {
                 const inner = (
                   <>
@@ -356,7 +376,7 @@ const SpecialDetail = () => {
               style={{
                 display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
                 background: C.surface, border: `1px dashed ${C.primary}`,
-                borderRadius: 16, padding: "18px 20px", cursor: "pointer",
+                borderRadius: 20, padding: "18px 20px", cursor: "pointer",
                 fontFamily: FONT, transition: "transform 150ms ease-out",
               }}
               {...pressScale()}
@@ -400,13 +420,13 @@ const SpecialDetail = () => {
     });
 
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "16px 20px 20px" }}>
         {rows.length === 0 ? (
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact info provided.</p>
         ) : (
           <>
             <h2 style={{ ...headStyle, margin: "0 0 14px" }}>Contact</h2>
-            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+            <div style={{ ...cardStyle, padding: "4px 20px" }}>
               {rows.map((r, i) => {
                 const rowStyle: React.CSSProperties = {
                   display: "flex", alignItems: "center", gap: 14,
@@ -443,11 +463,11 @@ const SpecialDetail = () => {
       .map((s: string) => s.trim())
       .filter(Boolean);
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "16px 20px 20px" }}>
         {termsList.length > 0 ? (
           <>
             <h2 style={headStyle}>Terms & Conditions</h2>
-            <div style={{ background: C.surface, borderRadius: 16, padding: "12px 18px", border: `1px solid ${C.border}` }}>
+            <div style={{ ...cardStyle, padding: "14px 20px" }}>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {termsList.map((t, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
@@ -471,7 +491,7 @@ const SpecialDetail = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
       <Seo
         title={`${special.title} — Hoedspruit Special`}
         description={
@@ -509,11 +529,11 @@ const SpecialDetail = () => {
           alignItems: "center",
           gap: 8,
         }}>
-          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-            <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
-          </button>
           <button onClick={handleShare} aria-label="Share" style={floatBtn}>
             <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+          </button>
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+            <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
           </button>
           {isAdmin && (
             <button onClick={() => setEditOpen(true)} aria-label="Edit" style={floatBtn}>
@@ -625,15 +645,15 @@ const SpecialDetail = () => {
           <>
             <nav style={{
               position: "sticky", top: 0, zIndex: 30,
-              background: C.surface, borderBottom: `1px solid ${C.border}`,
-              display: "flex", padding: "0 8px",
+              background: C.bg, borderBottom: "1px solid rgba(112,90,61,0.14)",
+              display: "flex", padding: "12px 12px 0",
             }}>
               {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}
               {hasTerms && <TabBtn k="terms" label="Terms" />}
             </nav>
 
-            <section>
+            <section style={{ background: C.bg }}>
               {activeTab === "about" && renderAbout()}
               {activeTab === "contact" && renderContact()}
               {activeTab === "terms" && renderTerms()}
