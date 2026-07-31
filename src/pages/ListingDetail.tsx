@@ -1057,7 +1057,7 @@ const ListingDetail = () => {
             const isClosed = !alwaysOpen && !isAlwaysOpenValue && (!v || v.toLowerCase() === "closed");
             const isToday = day === todayLabel;
             const displayValue = alwaysOpen || isAlwaysOpenValue
-              ? "Always open"
+              ? "Always Open"
               : isClosed
                 ? "Closed"
                 : v.replace(/\s*-\s*/g, " – ");
