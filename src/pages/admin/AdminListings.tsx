@@ -378,6 +378,7 @@ const AdminListings = () => {
         image_url: (values.detail_image_url || values.image_url) || null,
         detail_image_url: (values.detail_image_url || values.image_url) || null,
         saved_image_url: (values.detail_image_url || values.image_url) || null,
+        card_image_url: (values.card_image_url || "").trim() || null,
         location: values.location || null,
         phone: values.phone || null,
         phone_label: (values.phone_label || "").trim() || null,
