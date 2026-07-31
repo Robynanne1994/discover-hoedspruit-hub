@@ -1025,7 +1025,7 @@ const EventDetail = () => {
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 16, color: C.muted }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 16, color: C.dark }}>· {dateDisplay}</span>
           </div>
         )}
 
