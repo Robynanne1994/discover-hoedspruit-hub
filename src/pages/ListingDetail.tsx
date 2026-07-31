@@ -283,7 +283,7 @@ const ListingDetail = () => {
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+        <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
             aria-label="Back"
@@ -317,7 +317,7 @@ const ListingDetail = () => {
   if (isError) {
     return (
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+        <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
             aria-label="Back"
@@ -358,7 +358,7 @@ const ListingDetail = () => {
   if (!listing) {
     return (
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+        <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
             aria-label="Back"
@@ -1445,7 +1445,7 @@ const ListingDetail = () => {
             style={{
               ...floatBtn,
               position: "absolute",
-              top: "calc(env(safe-area-inset-top) + 16px)",
+              top: "var(--overlay-top)",
               left: 16,
               zIndex: 2,
             }}
@@ -1454,7 +1454,7 @@ const ListingDetail = () => {
           </button>
           <div style={{
             position: "absolute",
-            top: "calc(env(safe-area-inset-top) + 16px)",
+            top: "var(--overlay-top)",
             right: 16,
             zIndex: 2,
             display: "flex",
@@ -1487,7 +1487,7 @@ const ListingDetail = () => {
           )}
         </div>
       ) : (
-        <div style={{ position: "relative", paddingTop: "env(safe-area-inset-top)", background: C.surface }}>
+        <div style={{ position: "relative", paddingTop: "var(--safe-top)", background: C.surface }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
             <button onClick={() => navigate(-1)} aria-label="Back" style={{ ...floatBtn, position: "relative" }}>
               <BackArrowIcon size={20} color={C.heading} />

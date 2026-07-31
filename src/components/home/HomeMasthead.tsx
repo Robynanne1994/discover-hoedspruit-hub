@@ -12,7 +12,9 @@ const HomeMasthead = () => {
   const { user } = useAuth();
   const unread = useUnreadNotifications();
   return (
-    <div style={{ paddingTop: 56, padding: "56px 20px 0" }}>
+    // Notch-safe: sits just under the status bar so the cream background runs
+    // edge-to-edge to the top of the screen. See --masthead-top in index.css.
+    <div style={{ padding: "var(--masthead-top) 20px 0" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "stretch", gap: 12, minWidth: 0 }}>
           <img

@@ -88,7 +88,7 @@ export const RefineDrawer = ({
         }}
       >
         {/* Header */}
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 20px) 20px 14px 20px" }}>
+        <div style={{ padding: "var(--header-top) 20px 14px 20px" }}>
           <div
             style={{
               display: "flex",

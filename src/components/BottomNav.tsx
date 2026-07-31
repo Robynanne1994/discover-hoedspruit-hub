@@ -29,13 +29,15 @@ const BottomNav = () => {
         maxWidth: 480,
         background: BAR_BG,
         borderRadius: "32px 32px 0 0",
-        height: 66,
-        padding: "0 10px",
+        // The app draws edge-to-edge, so the bar grows by the home-indicator
+        // inset and pads it out — the icons never sit under the indicator.
+        height: "calc(66px + var(--safe-bottom))",
+        padding: "0 10px var(--safe-bottom)",
         borderTop: "1px solid rgba(0,0,0,0.08)",
         boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 4 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 66, gap: 4 }}>
         {navItems.map((item) => {
           const path = location.pathname;
           let isActive = false;
