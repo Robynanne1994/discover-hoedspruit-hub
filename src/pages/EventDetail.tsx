@@ -1043,10 +1043,10 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 8, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 15, color: C.muted, textDecoration: "none",
+              fontSize: 15, color: C.dark, textDecoration: "none",
             }}
           >
-            <MapPin size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={15} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
