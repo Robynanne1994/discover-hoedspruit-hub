@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
-import { ArrowLeft, Plus } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowLeft, Plus, Search, UserPlus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -38,10 +38,13 @@ const COLOR = {
   pillBorder: "#E8E4DF",
   brown: "#423324",
   soft: "#F2EFE5",
+  // Track behind the Followers / Following segmented control.
+  track: "#EFEAD9",
 };
 
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const initialsOf = (name?: string | null) => {
   if (!name) return "";
@@ -355,7 +358,24 @@ const FollowList = () => {
 
   const users = (isFollowers ? followers : following) as RowUser[] | undefined;
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
-  const count = users?.length ?? 0;
+
+  // Client-side search over the loaded list — matches on both the display name
+  // and the handle so "@robyn" and "Robyn" both land.
+  const [search, setSearch] = useState("");
+  useEffect(() => setSearch(""), [type, id]);
+
+  const query = search.trim().toLowerCase();
+  const visibleUsers = useMemo(() => {
+    if (!users) return users;
+    if (!query) return users;
+    return users.filter((u) =>
+      `${u.display_name ?? ""} ${u.username ?? ""}`.toLowerCase().includes(query),
+    );
+  }, [users, query]);
+
+  const count = visibleUsers?.length ?? 0;
+  const hasAny = (users?.length ?? 0) > 0;
+  const isSearchEmpty = hasAny && count === 0;
 
   const title = isFollowers ? "followers." : "following.";
   const lede = isFollowers
@@ -384,14 +404,48 @@ const FollowList = () => {
   return (
     <div style={{ minHeight: "100vh", background: COLOR.page, paddingBottom: 100 }}>
       {/* Top bar */}
-      <PageHeader title="Connections" />
+      <PageHeader
+        title="Connections"
+        right={
+          isOwnPage ? (
+            <button
+              type="button"
+              aria-label="Find people to follow"
+              onClick={() =>
+                navigate("/search?tab=people", {
+                  state: { fromProfile: true, profileId: id },
+                })
+              }
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: COLOR.card,
+                border: "none",
+                padding: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                flexShrink: 0,
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+              }}
+            >
+              <UserPlus size={18} strokeWidth={1.8} color={COLOR.ink} />
+            </button>
+          ) : undefined
+        }
+      />
 
-      {/* Tabs */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 18, paddingBottom: 18 }}>
+      {/* Segmented tabs */}
+      <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 18 }}>
         <div
           style={{
             display: "flex",
-            borderBottom: `1px solid ${COLOR.line}`,
+            gap: 4,
+            padding: 5,
+            borderRadius: 999,
+            background: COLOR.track,
           }}
         >
           {[
@@ -404,20 +458,22 @@ const FollowList = () => {
                 key={tab.key}
                 to={`/profile/${id}/${tab.key}`}
                 replace
-
+                aria-current={active ? "page" : undefined}
                 style={{
                   flex: 1,
-                  textAlign: "center",
-                  padding: "12px 0",
-                  fontFamily: SANS,
-                  fontWeight: active ? 700 : 500,
-                  fontSize: 13,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: active ? COLOR.ink : COLOR.subtle,
+                  height: 40,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 999,
+                  fontFamily: HEAD,
+                  fontWeight: 600,
+                  fontSize: 15,
+                  letterSpacing: "-0.1px",
+                  color: active ? "#FFFFFF" : COLOR.ink,
+                  background: active ? COLOR.brown : "transparent",
                   textDecoration: "none",
-                  borderBottom: active ? `2px solid ${COLOR.ink}` : "2px solid transparent",
-                  marginBottom: -1,
+                  transition: "background 160ms ease, color 160ms ease",
                 }}
               >
                 {tab.label} ({tab.count})
@@ -425,6 +481,39 @@ const FollowList = () => {
             );
           })}
         </div>
+      </div>
+
+      {/* Search */}
+      <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 12, paddingBottom: 18 }}>
+        <label
+          style={{
+            height: 48,
+            background: COLOR.card,
+            borderRadius: 999,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "0 18px",
+          }}
+        >
+          <Search size={17} strokeWidth={1.8} color={COLOR.muted} style={{ flexShrink: 0 }} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search connections"
+            aria-label="Search connections"
+            style={{
+              flex: 1,
+              minWidth: 0,
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: SANS,
+              fontSize: 16,
+              color: COLOR.ink,
+            }}
+          />
+        </label>
       </div>
 
       {/* List card */}
@@ -457,6 +546,21 @@ const FollowList = () => {
                 <Skeleton className="h-8 w-24 rounded-full" />
               </div>
             ))}
+          </div>
+        ) : isSearchEmpty ? (
+          <div style={{ textAlign: "center", padding: "40px 0" }}>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: SANS,
+                fontStyle: "italic",
+                fontWeight: 500,
+                fontSize: 15,
+                color: COLOR.ink,
+              }}
+            >
+              No connections match “{search.trim()}”.
+            </p>
           </div>
         ) : count === 0 ? (
           <div style={{ textAlign: "center", padding: "40px 0" }}>
@@ -506,7 +610,7 @@ const FollowList = () => {
               overflow: "hidden",
             }}
           >
-            {users!.map((u, i) => (
+            {visibleUsers!.map((u, i) => (
               <RowWithMutation
                 key={u.id}
                 user={u}
