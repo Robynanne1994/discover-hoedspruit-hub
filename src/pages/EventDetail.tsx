@@ -1017,11 +1017,11 @@ const EventDetail = () => {
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             <span style={{
               width: 8, height: 8, borderRadius: 999, flexShrink: 0,
-              background: isPast ? C.muted : "#5C8A4A",
+              background: isPast ? C.muted : "#2F5A23",
             }} />
             <span style={{
               fontSize: 16, fontWeight: 700, letterSpacing: "0.01em",
-              color: isPast ? C.muted : "#5C8A4A",
+              color: isPast ? C.muted : "#2F5A23",
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
