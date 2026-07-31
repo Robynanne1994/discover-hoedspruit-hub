@@ -1132,9 +1132,9 @@ const CategoryPage = () => {
                 }}
               >
                 <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#F4EFE3" }}>
-                  {l.image_url ? (
+                  {((l as any).card_image_url || l.image_url) ? (
                     <img
-                      src={l.image_url}
+                      src={(l as any).card_image_url || l.image_url}
                       alt={l.title}
                       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                       loading="lazy"
