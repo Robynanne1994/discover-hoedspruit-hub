@@ -1255,7 +1255,7 @@ const ListingDetail = () => {
           <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted }}>{item.subtitle}</div>
         )}
         {item.badge && (
-          <div style={{ marginTop: 6, display: "inline-block", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
+          <div style={{ marginTop: 6, alignSelf: "flex-start", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
             {item.badge}
           </div>
         )}
