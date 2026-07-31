@@ -1238,15 +1238,16 @@ const ListingDetail = () => {
       key={item.id}
       to={to}
       style={{
-        display: "flex", gap: 12, alignItems: "center",
-        padding: 12, background: C.surface, border: `1px solid ${C.border}`,
+        display: "flex", gap: 12, alignItems: "stretch",
+        padding: 0, background: C.surface, border: `1px solid ${C.border}`,
         borderRadius: 16, textDecoration: "none", color: C.heading,
+        overflow: "hidden", minHeight: 88,
       }}
     >
-      <div style={{ width: 64, height: 64, flexShrink: 0, borderRadius: 12, overflow: "hidden", background: C.ivory }}>
-        {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />}
+      <div style={{ width: 96, flexShrink: 0, alignSelf: "stretch", background: C.ivory }}>
+        {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />}
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ flex: 1, minWidth: 0, padding: "12px 14px 12px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <div style={{ fontFamily: FONT, fontSize: 14, color: C.heading, lineHeight: 1.3, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
           {item.title}
         </div>
@@ -1254,7 +1255,7 @@ const ListingDetail = () => {
           <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted }}>{item.subtitle}</div>
         )}
         {item.badge && (
-          <div style={{ marginTop: 6, display: "inline-block", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
+          <div style={{ marginTop: 6, alignSelf: "flex-start", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
             {item.badge}
           </div>
         )}
