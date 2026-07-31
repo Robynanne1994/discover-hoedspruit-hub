@@ -254,7 +254,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
 const SectionHeader = ({ title, count }: { title: string; count: number }) => (
   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 20px", marginBottom: 14 }}>
     <h2 style={{
-      fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 800, fontSize: 24,
+      fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 24,
       lineHeight: 1.0, letterSpacing: "-0.4px", color: INK, margin: 0,
     }}>{title}</h2>
     <span style={{
