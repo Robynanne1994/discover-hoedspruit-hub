@@ -1035,10 +1035,10 @@ const ListingDetail = () => {
     const alwaysOpen = openStatus?.state === "open" && openStatus?.alwaysOpen;
     const statusColor = openStatus?.state === "open" ? C.open : C.closed;
     const statusText = openStatus?.state === "open"
-      ? "Open now"
+      ? "Open Now"
       : openStatus?.state === "temporarily_closed"
-        ? "Temporarily closed"
-        : "Closed now";
+        ? "Temporarily Closed"
+        : "Closed Now";
     return (
       <div style={{ ...cardStyle, padding: "20px 22px" }}>
         <CardHead Icon={Clock}>Opening hours</CardHead>
