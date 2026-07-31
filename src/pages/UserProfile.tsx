@@ -33,6 +33,7 @@ import { useShare } from "@/hooks/useShare";
 import { invalidateBlockQueries, useBlockedUsers } from "@/hooks/useBlockedUsers";
 import { useBlockCooldown, fetchBlockCooldown } from "@/hooks/useBlockCooldown";
 import BlockActionSheet from "@/components/BlockActionSheet";
+import { residencyBadge } from "@/lib/residencyBadge";
 import {
   blockCooldownBlockedMessage,
   blockCooldownNotice,
