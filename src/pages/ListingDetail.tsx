@@ -1335,7 +1335,7 @@ const ListingDetail = () => {
               {value}
             </span>
           </span>
-          <ArrowUpRight size={16} color={C.muted} style={{ flexShrink: 0 }} />
+          {href && <ArrowUpRight size={16} color={C.muted} style={{ flexShrink: 0 }} />}
         </>
       );
       const rowStyle: React.CSSProperties = {
