@@ -596,6 +596,32 @@ const UserProfile = () => {
                       </div>
                     );
                   })()}
+                  {/* Residency badge: visible on public profiles, and on
+                      private ones only once you follow them. */}
+                  {!isPrivateLocked &&
+                    (() => {
+                      const badge = residencyBadge((profile as any)?.location);
+                      if (!badge) return null;
+                      return (
+                        <div
+                          style={{
+                            display: "inline-block",
+                            marginTop: 8,
+                            background: "#F2EFE5",
+                            borderRadius: 999,
+                            padding: "5px 11px",
+                            fontFamily: SANS,
+                            fontSize: 10,
+                            fontWeight: 700,
+                            letterSpacing: "0.1em",
+                            color: "rgba(26,26,26,0.7)",
+                            lineHeight: 1,
+                          }}
+                        >
+                          {badge}
+                        </div>
+                      );
+                    })()}
                 </>
               )}
             </div>
