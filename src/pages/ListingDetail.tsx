@@ -1392,7 +1392,7 @@ const ListingDetail = () => {
         {!isSurrounds && (
           <div style={{ ...cardStyle, padding: "0 20px" }}>
             <LocationRow first Icon={Navigation} label="Directions" value="Open in Google Maps" href={directionsHref} />
-            <LocationRow Icon={Copy} label="Address" value={addressText} onClick={copyAddress} />
+            <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
           </div>
         )}
 
