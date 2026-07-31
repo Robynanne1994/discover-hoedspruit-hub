@@ -1025,13 +1025,13 @@ const EventDetail = () => {
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 16, color: C.muted }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 16, color: C.dark }}>· {dateDisplay}</span>
           </div>
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.muted }}>
-            <Clock size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.dark }}>
+            <Clock size={15} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
@@ -1043,10 +1043,10 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 8, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 15, color: C.muted, textDecoration: "none",
+              fontSize: 15, color: C.dark, textDecoration: "none",
             }}
           >
-            <MapPin size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={15} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
