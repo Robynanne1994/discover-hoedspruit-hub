@@ -1478,18 +1478,6 @@ const ListingDetail = () => {
               </button>
             )}
           </div>
-
-          {/* Category sits on the image now, not above the title */}
-          {categoryChips.length > 0 && (
-            <div style={{
-              position: "absolute", left: 20, bottom: 48, zIndex: 2,
-              display: "flex", flexWrap: "wrap", gap: 6, maxWidth: "calc(100% - 40px)",
-            }}>
-              {categoryChips.map((t) => (
-                <span key={t} style={categoryChipStyle}>{t}</span>
-              ))}
-            </div>
-          )}
         </div>
       ) : (
         <div style={{ position: "relative", paddingTop: "var(--safe-top)", background: C.surface }}>
@@ -1523,14 +1511,6 @@ const ListingDetail = () => {
         marginTop: showHero ? -28 : 0,
         padding: "22px 20px 0",
       }}>
-        {!showHero && categoryChips.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
-            {categoryChips.map((t) => (
-              <span key={t} style={{ ...categoryChipStyle, background: C.ivory }}>{t}</span>
-            ))}
-          </div>
-        )}
-
         <h1
           data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -1542,6 +1522,19 @@ const ListingDetail = () => {
             ? <span data-no-title-case="true">{(listing as any).title_override}</span>
             : listing.title}
         </h1>
+
+        {/* Categories — small brown text under the title, dot-separated */}
+        {categoryChips.length > 0 && (
+          <div style={categoryLineStyle}>
+            {categoryChips.map((t, i) => (
+              <span key={t}>
+                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+
         {hasHours && openStatus && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             <span style={{
@@ -1671,19 +1664,15 @@ const iconBtn: React.CSSProperties = {
   display: "flex", alignItems: "center", justifyContent: "center",
 };
 
-// White pill sitting on the hero image (and on the sheet when there's no hero).
-const categoryChipStyle: React.CSSProperties = {
-  display: "inline-block",
-  background: C.surface,
-  borderRadius: 999,
-  padding: "8px 14px",
+// Small brown category line sitting directly under the listing title.
+const categoryLineStyle: React.CSSProperties = {
+  marginTop: 8,
   fontFamily: FONT,
-  fontSize: 10.5,
-  fontWeight: 700,
-  letterSpacing: "0.13em",
-  textTransform: "uppercase",
-  color: C.heading,
-  whiteSpace: "nowrap",
+  fontSize: 14,
+  fontWeight: 600,
+  lineHeight: 1.45,
+  letterSpacing: "0.005em",
+  color: C.primary,
 };
 
 const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
