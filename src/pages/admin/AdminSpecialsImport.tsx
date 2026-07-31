@@ -20,7 +20,7 @@ const EXPECTED_HEADERS = [
   "contact_phone", "contact_whatsapp", "contact_email",
   "additional_phones", "additional_whatsapps",
   "terms", "tag", "sub_tag_1", "sub_tag_2",
-  "is_active",
+  "is_active", "is_featured",
 ];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
@@ -129,6 +129,7 @@ const AdminSpecialsImport = () => {
           sub_tag_1: row.sub_tag_1 || null,
           sub_tag_2: row.sub_tag_2 || null,
           is_active: row.is_active ? (row.is_active.toLowerCase() !== "false" && row.is_active !== "0") : true,
+          is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
         };
 
 
@@ -180,7 +181,7 @@ const AdminSpecialsImport = () => {
       "+27 123 456 789", "+27 123 456 789", "info@example.com",
       "", "",
       "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
-      "true",
+      "true", "false",
     ];
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const csv = EXPECTED_HEADERS.join(",") + "\n" + example.map(escapeCSV).join(",") + "\n";
@@ -201,7 +202,7 @@ const AdminSpecialsImport = () => {
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
       (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),
       s.tag ?? "", s.sub_tag_1 ?? "", s.sub_tag_2 ?? "",
-      s.is_active ? "true" : "false",
+      s.is_active ? "true" : "false", s.is_featured ? "true" : "false",
     ].map((v: any) => escapeCSV(String(v))).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "specials_export.csv");
     toast.success(`Exported ${specials.length} specials`);
