@@ -12,6 +12,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useShare } from "@/hooks/useShare";
+import { sharePlainText } from "@/lib/share";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
