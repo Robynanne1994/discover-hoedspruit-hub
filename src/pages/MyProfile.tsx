@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
-import { Pencil, Settings } from "lucide-react";
+import { ChevronDown, Pencil, Search, Settings, SlidersHorizontal, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
+import SavedFilterSheet, { SavedSort, sortLabel } from "@/components/profile/SavedFilterSheet";
 import Seo from "@/components/Seo";
 
 
@@ -16,9 +17,9 @@ const CARD = "#FFFFFF";
 const INNER = "#EFE7D3";
 const INK = "#1A1A1A";
 const SUBTLE = "rgba(26,26,26,0.55)";
-const LINE = "rgba(26,26,26,0.10)";
 const WHITE = "#FFFFFF";
 const PILL_BORDER = "#E8E4DF";
+const DARK_BROWN = "#423324";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -29,17 +30,31 @@ const titleCase = (s?: string | null) => {
   return s.toLowerCase().replace(/(^|[^\p{L}\p{N}])(\p{L})/gu, (_m, sep, ch) => sep + ch.toUpperCase());
 };
 
-const getInitial = (s?: string | null) => {
-  if (!s?.trim()) return "?";
-  const parts = s.trim().split(/\s+/);
-  const first = parts[0][0] ?? "";
-  const second = parts[1]?.[0] ?? "";
-  return `${first}${second}`.toUpperCase() || "?";
-};
+// Category chips read back the value stored on the listing/deal/resource, so
+// anything already cased deliberately (WhatsApp, B&B) is left alone and only
+// all-lower-case values get title-cased.
+const chipLabel = (s: string) => (/[A-Z]/.test(s) ? s.trim() : titleCase(s));
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 
-type Tab = "listings" | "deals" | "events" | "resources";
+type Tab = "all" | "listings" | "deals" | "events" | "resources";
+
+// A saved item of any kind, flattened into the single shape the grid, the
+// search box, the category chips and the sort all read from.
+type SavedItem = {
+  id: string;
+  type: "listing" | "event" | "special" | "resource";
+  raw: any;
+  href: string;
+  subtitle: React.ReactNode;
+  title: string;
+  savedAt: number;
+  rating: number | null;
+  /** Lower-cased haystack for the search box. */
+  search: string;
+  /** Every category chip this item answers to. */
+  tags: string[];
+};
 
 // Maps a favourite's item_type to the query key of the saved list that renders it.
 const SAVED_LIST_KEY: Record<string, string> = {
@@ -49,72 +64,25 @@ const SAVED_LIST_KEY: Record<string, string> = {
   resource: "my-saved-resources",
 };
 
-function SubTabs<T extends string>({
-  value,
-  onChange,
-  options,
-}: {
-  value: T;
-  onChange: (v: T) => void;
-  options: { id: T; label: string }[];
-}) {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "nowrap",
-        gap: 8,
-        marginBottom: 16,
-        overflowX: "auto",
-        WebkitOverflowScrolling: "touch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-        marginLeft: -20,
-        marginRight: -20,
-        padding: "0 20px",
-      }}
-      className="hide-scrollbar"
-    >
-      {options.map((opt) => {
-        const active = value === opt.id;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => onChange(opt.id)}
-            style={{
-              flex: "0 0 auto",
-              whiteSpace: "nowrap",
-              background: active ? "#423324" : "transparent",
-              color: active ? "#fff" : INK,
-              border: `1px solid ${active ? "#423324" : LINE}`,
-              borderRadius: 999,
-              padding: "6px 14px",
-              cursor: "pointer",
-              fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: active ? 600 : 400,
-              letterSpacing: "0.02em",
-            }}
-          >
-            {opt.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
+const TAB_FOR_TYPE: Record<SavedItem["type"], Tab> = {
+  listing: "listings",
+  special: "deals",
+  event: "events",
+  resource: "resources",
+};
 
 const MyProfile = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("listings");
-  const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
-  const [dealsSub, setDealsSub] = useState<"active" | "expired">("active");
-  const [listingCat, setListingCat] = useState<string>("all");
-  const [dealCat, setDealCat] = useState<string>("all");
-  const [resourceCat, setResourceCat] = useState<string>("all");
-
+  const [tab, setTab] = useState<Tab>("all");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SavedSort>("recent");
+  const [category, setCategory] = useState<string | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  // Draft state so a half-made choice in the sheet never reflows the grid
+  // behind it — only Apply commits.
+  const [draftSort, setDraftSort] = useState<SavedSort>("recent");
+  const [draftCategory, setDraftCategory] = useState<string | null>(null);
 
   useEffect(() => {
     if (authLoading) return;
@@ -123,15 +91,11 @@ const MyProfile = () => {
     if (!user) navigate("/my-profile-guest", { replace: true });
   }, [authLoading, user, navigate]);
 
-  // Reset pill filters to their first option whenever the main saved tab changes
+  // Category chips are derived per tab, so a chip picked on one tab can't
+  // survive onto the next and silently empty the grid.
   useEffect(() => {
-    setEventsSub("upcoming");
-    setDealsSub("active");
-    setListingCat("all");
-    setDealCat("all");
-    setResourceCat("all");
+    setCategory(null);
   }, [tab]);
-
 
   const id = user?.id;
   const queryClient = useQueryClient();
@@ -297,36 +261,166 @@ const MyProfile = () => {
     enabled: !!id,
   });
 
-  const renderCard = (
-    it: any,
-    type: "listing" | "event" | "special" | "resource",
-    href: string,
-    subtitle: React.ReactNode,
-  ) => (
-    <SavedCard
-      key={it.id}
-      it={it}
-      type={type}
-      href={href}
-      subtitle={subtitle}
-      onUnsave={(e) => handleUnsave(e, it.id, type)}
-    />
+  // Everything saved, flattened into one list so the "All" tab, the search box
+  // and the sort can work across types without four parallel code paths.
+  const items = useMemo<SavedItem[]>(() => {
+    const now = Date.now();
+    const at = (v?: string | null) => (v ? new Date(v).getTime() : 0);
+
+    const listings: SavedItem[] = (saved ?? []).map((it: any) => ({
+      id: it.id,
+      type: "listing",
+      raw: it,
+      href: `/listing/${it.id}`,
+      subtitle: null,
+      title: titleCase(it.title),
+      savedAt: at(it.created_at),
+      rating: it.google_rating ? Number(it.google_rating) : null,
+      search: `${it.title ?? ""} ${it.location ?? ""} ${it.categories?.title ?? ""}`.toLowerCase(),
+      tags: it.categories?.title ? [chipLabel(it.categories.title)] : [],
+    }));
+
+    const specials: SavedItem[] = (savedSpecials ?? []).map((it: any) => {
+      const expired = !!it.valid_until && at(it.valid_until) < now;
+      return {
+        id: it.id,
+        type: "special" as const,
+        raw: it,
+        href: `/specials/${it.id}`,
+        subtitle: it.business_name ? titleCase(it.business_name) : null,
+        title: titleCase(it.title),
+        savedAt: at(it.created_at),
+        rating: null,
+        search: `${it.title ?? ""} ${it.business_name ?? ""} ${it.tag ?? ""}`.toLowerCase(),
+        tags: ["Deals", expired ? "Expired" : "Active", ...(it.tag ? [chipLabel(it.tag)] : [])],
+      };
+    });
+
+    const events: SavedItem[] = (savedEvents ?? []).map((it: any) => {
+      const ref = it.end_date || it.start_date;
+      const past = ref ? at(ref) < now : false;
+      return {
+        id: it.id,
+        type: "event" as const,
+        raw: it,
+        href: `/events/${it.id}`,
+        subtitle: (
+          <>
+            {it.start_date && (
+              <div>
+                {new Date(it.start_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
+              </div>
+            )}
+            {it.location && <div>{it.location}</div>}
+          </>
+        ),
+        title: titleCase(it.title),
+        savedAt: at(it.created_at),
+        rating: null,
+        search: `${it.title ?? ""} ${it.location ?? ""} ${it.tag ?? ""}`.toLowerCase(),
+        tags: ["Events", past ? "Past" : "Upcoming"],
+      };
+    });
+
+    const resources: SavedItem[] = (savedResources ?? []).map((it: any) => {
+      const displayTitle = (it.title_override?.trim() as string) || it.title;
+      const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
+      return {
+        id: it.id,
+        type: "resource" as const,
+        raw: { ...it, title: displayTitle },
+        href: it.slug ? `/local-channels/${it.slug}` : `/local-channels`,
+        subtitle: metaParts.length ? <span>{metaParts.join(" · ")}</span> : null,
+        title: titleCase(displayTitle),
+        savedAt: at(it.created_at),
+        rating: null,
+        search: `${displayTitle ?? ""} ${metaParts.join(" ")} ${it.platform ?? ""}`.toLowerCase(),
+        tags: ["Resources", ...(it.platform ? [chipLabel(it.platform)] : [])],
+      };
+    });
+
+    return [...listings, ...specials, ...events, ...resources];
+  }, [saved, savedSpecials, savedEvents, savedResources]);
+
+  const tabItems = useMemo(
+    () => (tab === "all" ? items : items.filter((it) => TAB_FOR_TYPE[it.type] === tab)),
+    [items, tab],
   );
 
-  const EmptyTab = ({ text }: { text: string }) => (
-    <div
-      style={{
-        padding: "60px 24px",
-        textAlign: "center",
-        fontFamily: SANS,
-        fontSize: 14,
-        color: SUBTLE,
-        letterSpacing: "0.01em",
-      }}
-    >
-      {text}
-    </div>
-  );
+  const tabs = useMemo(() => {
+    const count = (t: Tab) => (t === "all" ? items.length : items.filter((it) => TAB_FOR_TYPE[it.type] === t).length);
+    return ([
+      { id: "all" as Tab, label: "All" },
+      { id: "listings" as Tab, label: "Listings" },
+      { id: "deals" as Tab, label: "Deals" },
+      { id: "events" as Tab, label: "Events" },
+      { id: "resources" as Tab, label: "Resources" },
+      // The active tab always stays visible, even once its last item is unsaved.
+    ]).map((t) => ({ ...t, count: count(t.id) })).filter((t) => t.id === "all" || t.count > 0 || t.id === tab);
+  }, [items, tab]);
+
+  // Chips offered by the sheet: on "All" the item types plus the listing
+  // categories (as in the design), on a single tab that tab's own categories.
+  const categories = useMemo(() => {
+    const TYPES = ["Deals", "Events", "Resources"];
+    const STATES = ["Active", "Expired", "Upcoming", "Past"];
+    const counts = new Map<string, number>();
+    tabItems.forEach((it) => it.tags.forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)));
+    // Time states lead the list on the tabs that actually have one. On "All"
+    // they'd sit among the categories and read as if they were categories too,
+    // so they're dropped there.
+    const states = tab === "deals" || tab === "events" ? STATES.filter((s) => counts.has(s)) : [];
+    STATES.forEach((s) => counts.delete(s));
+    // Type chips only earn a place on "All", where the grid is mixed; on a
+    // single tab every item shares the type already.
+    const types = tab === "all" ? TYPES.filter((t) => counts.has(t)) : [];
+    TYPES.forEach((t) => counts.delete(t));
+    const rest = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .map(([t]) => t);
+    return [...states, ...rest, ...types];
+  }, [tabItems, tab]);
+
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    const filtered = tabItems.filter((it) => {
+      if (q && !it.search.includes(q)) return false;
+      if (category && !it.tags.includes(category)) return false;
+      return true;
+    });
+    const sorted = [...filtered];
+    if (sort === "az") sorted.sort((a, b) => a.title.localeCompare(b.title));
+    else if (sort === "rating")
+      // Unrated items (events, deals, resources) sink below the rated ones
+      // rather than scattering through the grid.
+      sorted.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1) || b.savedAt - a.savedAt);
+    else sorted.sort((a, b) => b.savedAt - a.savedAt);
+    return sorted;
+  }, [tabItems, search, category, sort]);
+
+  // What Apply would show, so the sheet's button can preview the result count.
+  const draftCount = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return tabItems.filter((it) => {
+      if (q && !it.search.includes(q)) return false;
+      if (draftCategory && !it.tags.includes(draftCategory)) return false;
+      return true;
+    }).length;
+  }, [tabItems, search, draftCategory]);
+
+  const openSheet = () => {
+    setDraftSort(sort);
+    setDraftCategory(category);
+    setSheetOpen(true);
+  };
+
+  const applySheet = () => {
+    setSort(draftSort);
+    setCategory(draftCategory);
+    setSheetOpen(false);
+  };
+
+  const badge = profile?.location ? `${profile.location} Local`.toUpperCase() : null;
 
   // Guests (and signed-out users) never see the profile card with its
   // saved / followers / following stats. The effect above redirects them —
@@ -350,7 +444,6 @@ const MyProfile = () => {
         path="/my-profile"
         noIndex
       />
-      {/* Top header bar */}
 
       <PageHeader
         title="Profile"
@@ -376,20 +469,19 @@ const MyProfile = () => {
 
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>
-        <section style={{ background: CARD, borderRadius: 18, padding: "16px 16px 14px" }}>
+        <section style={{ background: CARD, borderRadius: 20, padding: "18px 18px 16px" }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
             <div
               style={{
-                width: 64,
-                height: 64,
+                width: 62,
+                height: 62,
                 borderRadius: "50%",
                 overflow: "hidden",
                 flexShrink: 0,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: profile?.avatar_url ? "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)" : WHITE,
-                border: profile?.avatar_url ? "none" : `1px solid ${PILL_BORDER}`,
+                background: INNER,
               }}
             >
               {profile?.avatar_url ? (
@@ -399,13 +491,11 @@ const MyProfile = () => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <span style={{ fontFamily: SANS, fontWeight: 500, fontSize: 22, color: INK }}>
-                  {getInitial(profile?.display_name || profile?.username)}
-                </span>
+                <User size={26} strokeWidth={1.5} color="rgba(26,26,26,0.5)" />
               )}
             </div>
 
-            <div style={{ flex: 1, minWidth: 0, paddingTop: 4 }}>
+            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
               {isLoading ? (
                 <Skeleton className="h-7 w-40" />
               ) : (
@@ -414,9 +504,9 @@ const MyProfile = () => {
                     style={{
                       fontFamily: HEAD,
                       fontWeight: 700,
-                      fontSize: 20,
-                      lineHeight: 1.2,
-                      letterSpacing: "-0.3px",
+                      fontSize: 22,
+                      lineHeight: 1.15,
+                      letterSpacing: "-0.4px",
                       color: INK,
                       margin: 0,
                     }}
@@ -436,6 +526,25 @@ const MyProfile = () => {
                       @{profile.username.toLowerCase()}
                     </div>
                   )}
+                  {badge && (
+                    <div
+                      style={{
+                        display: "inline-block",
+                        marginTop: 10,
+                        background: INNER,
+                        borderRadius: 999,
+                        padding: "5px 11px",
+                        fontFamily: SANS,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: "0.1em",
+                        color: "rgba(26,26,26,0.7)",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {badge}
+                    </div>
+                  )}
                 </>
               )}
             </div>
@@ -445,12 +554,12 @@ const MyProfile = () => {
               aria-label="Edit profile"
               style={{
                 flexShrink: 0,
-                height: 32,
-                padding: "0 14px",
+                height: 34,
+                padding: "0 15px",
                 borderRadius: 9999,
                 background: "transparent",
                 color: INK,
-                border: "1px solid #E8E4DF",
+                border: `1px solid ${PILL_BORDER}`,
                 fontFamily: SANS,
                 fontWeight: 600,
                 fontSize: 13,
@@ -469,22 +578,22 @@ const MyProfile = () => {
           {/* Stats inner card */}
           <div
             style={{
-              marginTop: 14,
+              marginTop: 16,
               background: "#F2EFE5",
-              borderRadius: 14,
-              padding: "12px 6px",
+              borderRadius: 16,
+              padding: "14px 6px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
             }}
           >
             {[
-              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#", clickable: true },
-              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#", clickable: true },
               { label: "SAVED", value: savedCount ?? 0, to: "#", clickable: false },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#", clickable: true },
+              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#", clickable: true },
             ].map((s, i) => {
               const inner = (
                 <>
-                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
+                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 22, color: INK, lineHeight: 1 }}>
                     {fmtCount(s.value)}
                   </span>
                   <span
@@ -493,8 +602,8 @@ const MyProfile = () => {
                       fontSize: 10,
                       fontWeight: 600,
                       letterSpacing: "0.12em",
-                      color: "rgba(26,26,26,0.75)",
-                      marginTop: 6,
+                      color: "rgba(26,26,26,0.6)",
+                      marginTop: 7,
                     }}
                   >
                     {s.label}
@@ -506,7 +615,7 @@ const MyProfile = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                borderLeft: i === 0 ? "none" : `1px solid ${INK}`,
+                borderLeft: i === 0 ? "none" : "1px solid rgba(26,26,26,0.12)",
               };
               return s.clickable ? (
                 <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
@@ -518,214 +627,190 @@ const MyProfile = () => {
         </section>
       </div>
 
-      {/* Top tabs */}
+      {/* Search + filter */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "18px 20px 0" }}>
+        <label
+          style={{
+            flex: 1,
+            minWidth: 0,
+            height: 48,
+            background: CARD,
+            borderRadius: 999,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "0 18px",
+          }}
+        >
+          <Search size={17} strokeWidth={1.8} color={SUBTLE} style={{ flexShrink: 0 }} />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search your saved"
+            aria-label="Search your saved items"
+            style={{
+              flex: 1,
+              minWidth: 0,
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: SANS,
+              fontSize: 16,
+              color: INK,
+            }}
+          />
+        </label>
+        <button
+          type="button"
+          onClick={openSheet}
+          aria-label="Filter and sort"
+          style={{
+            width: 48,
+            height: 48,
+            flexShrink: 0,
+            borderRadius: "50%",
+            background: CARD,
+            border: category ? `1.5px solid ${DARK_BROWN}` : "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          <SlidersHorizontal size={18} strokeWidth={1.8} color={INK} />
+        </button>
+      </div>
+
+      {/* Type pills */}
       <div
         style={{
-          marginTop: 22,
           display: "flex",
+          gap: 8,
+          marginTop: 16,
+          overflowX: "auto",
+          WebkitOverflowScrolling: "touch",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
           padding: "0 20px",
-          gap: 0,
-          borderBottom: `1px solid ${LINE}`,
         }}
+        className="hide-scrollbar"
       >
-        {(["listings", "deals", "events", "resources"] as Tab[]).map((t) => {
-          const active = tab === t;
+        {tabs.map((t) => {
+          const active = tab === t.id;
           return (
             <button
-              key={t}
+              key={t.id}
               type="button"
-              onClick={() => setTab(t)}
+              onClick={() => setTab(t.id)}
+              aria-pressed={active}
               style={{
-                flex: 1,
-                background: "none",
-                border: "none",
-                padding: "14px 0 12px",
+                flex: "0 0 auto",
+                whiteSpace: "nowrap",
+                background: active ? DARK_BROWN : CARD,
+                color: active ? WHITE : INK,
+                border: `1px solid ${active ? DARK_BROWN : PILL_BORDER}`,
+                borderRadius: 999,
+                padding: "9px 16px",
                 cursor: "pointer",
                 fontFamily: SANS,
-                fontSize: 16,
-                fontWeight: 700,
-                color: active ? INK : SUBTLE,
-                letterSpacing: "0.02em",
+                fontSize: 13,
+                fontWeight: 600,
+                letterSpacing: "0.01em",
                 lineHeight: 1.2,
-                position: "relative",
-                textTransform: "capitalize",
               }}
             >
-              {t}
-              <span
-                style={{
-                  position: "absolute",
-                  left: "20%",
-                  right: "20%",
-                  bottom: -1,
-                  height: 2,
-                  background: active ? INK : "transparent",
-                  borderRadius: 2,
-                }}
-              />
+              {t.label} ({t.count})
             </button>
           );
         })}
       </div>
 
-
-      {/* Tab content */}
-      <div style={{ padding: "20px 20px 0" }}>
-        {tab === "listings" && (() => {
-          const list = saved ?? [];
-          const cats = Array.from(new Set(list.map((it: any) => it.categories?.title).filter(Boolean))) as string[];
-          const filtered = listingCat === "all" ? list : list.filter((it: any) => it.categories?.title === listingCat);
-          return list.length ? (
-            <>
-              {cats.length > 1 && (
-                <SubTabs<string>
-                  value={listingCat}
-                  onChange={setListingCat}
-                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
-                />
-              )}
-              {filtered.length ? (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {filtered.map((it: any) => renderCard(it, "listing", `/listing/${it.id}`, null))}
-                </div>
-              ) : (
-                <EmptyTab text="No saved listings in this category." />
-              )}
-            </>
-          ) : (
-            <EmptyTab text="No saved listings yet." />
-          );
-        })()}
-
-        {tab === "deals" && (() => {
-          const now = Date.now();
-          const timeFiltered = (savedSpecials ?? []).filter((it: any) => {
-            const expired = it.valid_until && new Date(it.valid_until).getTime() < now;
-            return dealsSub === "active" ? !expired : expired;
-          });
-          const cats = Array.from(new Set(timeFiltered.map((it: any) => it.tag).filter(Boolean))) as string[];
-          const filtered = dealCat === "all" ? timeFiltered : timeFiltered.filter((it: any) => it.tag === dealCat);
-          return (
-            <>
-              <SubTabs<"active" | "expired">
-                value={dealsSub}
-                onChange={(v) => { setDealsSub(v); setDealCat("all"); }}
-                options={[
-                  { id: "active", label: "Active" },
-                  { id: "expired", label: "Expired" },
-                ]}
-              />
-              {cats.length > 1 && (
-                <SubTabs<string>
-                  value={dealCat}
-                  onChange={setDealCat}
-                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
-                />
-              )}
-              {filtered.length ? (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {filtered.map((it: any) =>
-                    renderCard(
-                      it,
-                      "special",
-                      `/specials/${it.id}`,
-                      it.business_name ? titleCase(it.business_name) : null,
-                    ),
-                  )}
-                </div>
-              ) : (
-                <EmptyTab text={dealsSub === "active" ? "No active deals saved." : "No expired deals."} />
-              )}
-            </>
-          );
-        })()}
-
-        {tab === "events" && (() => {
-          const now = Date.now();
-          const filtered = (savedEvents ?? []).filter((it: any) => {
-            const ref = it.end_date || it.start_date;
-            if (!ref) return eventsSub === "upcoming";
-            const past = new Date(ref).getTime() < now;
-            return eventsSub === "upcoming" ? !past : past;
-          });
-          return (
-            <>
-              <SubTabs<"upcoming" | "past">
-                value={eventsSub}
-                onChange={setEventsSub}
-                options={[
-                  { id: "upcoming", label: "Upcoming" },
-                  { id: "past", label: "Past" },
-                ]}
-              />
-              {filtered.length ? (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {filtered.map((it: any) =>
-                    renderCard(
-                      it,
-                      "event",
-                      `/events/${it.id}`,
-                      <>
-                        {it.start_date && (
-                          <div>
-                            {new Date(it.start_date).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "short",
-                            })}
-                          </div>
-                        )}
-                        {it.location && <div>{it.location}</div>}
-                      </>,
-                    ),
-                  )}
-                </div>
-              ) : (
-                <EmptyTab text={eventsSub === "upcoming" ? "No upcoming saved events." : "No past saved events."} />
-              )}
-            </>
-          );
-        })()}
-
-        {tab === "resources" && (() => {
-          const list = savedResources ?? [];
-          const cats = Array.from(new Set(list.map((it: any) => it.platform).filter(Boolean))) as string[];
-          const filtered = resourceCat === "all" ? list : list.filter((it: any) => it.platform === resourceCat);
-          return list.length ? (
-            <>
-              {cats.length > 1 && (
-                <SubTabs<string>
-                  value={resourceCat}
-                  onChange={setResourceCat}
-                  options={[{ id: "all", label: "All" }, ...[...cats].sort((a,b)=>titleCase(a).localeCompare(titleCase(b))).map((c) => ({ id: c, label: titleCase(c) }))]}
-                />
-              )}
-              {filtered.length ? (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {filtered.map((it: any) => {
-                    const displayTitle = (it.title_override?.trim()) || it.title;
-                    const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
-                    const href = it.slug ? `/local-channels/${it.slug}` : `/local-channels`;
-                    return renderCard(
-                      { ...it, title: displayTitle },
-                      "resource",
-                      href,
-                      <>
-                        {metaParts.length > 1 && <span>{metaParts.join(" · ")}</span>}
-                        {metaParts.length === 1 && <span>{metaParts[0]}</span>}
-                      </>,
-                    );
-                  })}
-                </div>
-              ) : (
-                <EmptyTab text="No saved resources in this channel." />
-              )}
-            </>
-          ) : (
-            <EmptyTab text="No saved resources yet." />
-          );
-        })()}
+      {/* Result count + sort */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 12,
+          padding: "16px 20px 0",
+        }}
+      >
+        <span style={{ fontFamily: SANS, fontSize: 13, color: SUBTLE }}>
+          {visible.length === 1 ? "1 item" : `${visible.length} items`}
+        </span>
+        <button
+          type="button"
+          onClick={openSheet}
+          style={{
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 5,
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 600,
+            color: INK,
+          }}
+        >
+          {category ? `${category} · ${sortLabel(sort)}` : sortLabel(sort)}
+          <ChevronDown size={15} strokeWidth={2} color={INK} />
+        </button>
       </div>
 
+      {/* Saved grid */}
+      <div style={{ padding: "14px 20px 0" }}>
+        {visible.length ? (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            {visible.map((it) => (
+              <SavedCard
+                key={`${it.type}-${it.id}`}
+                it={it.raw}
+                type={it.type}
+                href={it.href}
+                subtitle={it.subtitle}
+                onUnsave={(e) => handleUnsave(e, it.id, it.type)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div
+            style={{
+              padding: "60px 24px",
+              textAlign: "center",
+              fontFamily: SANS,
+              fontSize: 14,
+              color: SUBTLE,
+              letterSpacing: "0.01em",
+            }}
+          >
+            {items.length === 0
+              ? "Nothing saved yet. Tap the heart on anything you like."
+              : search.trim() || category
+                ? "Nothing here matches that. Try clearing your search or filters."
+                : "Nothing saved in this tab yet."}
+          </div>
+        )}
+      </div>
+
+      <SavedFilterSheet
+        open={sheetOpen}
+        onClose={() => setSheetOpen(false)}
+        sort={draftSort}
+        onSortChange={setDraftSort}
+        categories={categories}
+        category={draftCategory}
+        onCategoryChange={setDraftCategory}
+        onReset={() => {
+          setDraftSort("recent");
+          setDraftCategory(null);
+        }}
+        onApply={applySheet}
+        resultsCount={draftCount}
+      />
     </div>
   );
 };
