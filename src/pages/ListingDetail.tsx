@@ -69,7 +69,7 @@ const C = {
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
-  open: "#5C8A4A",
+  open: "#2b7f3f",
   closed: "#B05B3F",
   // Soft panel that sits on the beige sheet (suggest-an-edit, icon circles)
   soft: "#EEE9DA",
