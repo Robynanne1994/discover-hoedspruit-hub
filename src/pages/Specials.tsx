@@ -540,7 +540,7 @@ const Specials = () => {
               <>
                 <SectionHead
                   label={featured.length > 0 ? "Everything else" : "All deals"}
-                  right={`${rest.length} ${rest.length === 1 ? "deal" : "deals"}`}
+                  right={`${rest.length} ${rest.length === 1 ? "Deal" : "Deals"}`}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {rest.map((s: any) => (
