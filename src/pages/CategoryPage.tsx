@@ -1220,8 +1220,8 @@ const CategoryPage = () => {
 
                   {open !== null && (
                     <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: open ? OPEN_COLOR : CLOSED_COLOR, marginTop: 2 }}>
-                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: open ? OPEN_COLOR : CLOSED_COLOR, display: "inline-block" }} />
-                      {open ? "Open" : "Closed"}
+                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: open ? OPEN_COLOR : CLOSED_COLOR, flexShrink: 0, alignSelf: "center" }} />
+                      <span>{open ? "Open" : "Closed"}</span>
                     </div>
                   )}
                 </div>
