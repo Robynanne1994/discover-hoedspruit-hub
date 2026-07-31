@@ -543,7 +543,7 @@ const Categories = () => {
               <p style={{ margin: "4px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: "#6B6A5E" }}>
                 {quickLoading
                   ? "Loading..."
-                  : `${quickFilteredResults.length} ${quickFilteredResults.length === 1 ? "result" : "results"}`}
+                  : `${quickFilteredResults.length} ${quickFilteredResults.length === 1 ? "Result" : "Results"}`}
               </p>
             </div>
             <button
