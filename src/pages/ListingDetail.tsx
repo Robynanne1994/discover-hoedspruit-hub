@@ -1035,10 +1035,10 @@ const ListingDetail = () => {
     const alwaysOpen = openStatus?.state === "open" && openStatus?.alwaysOpen;
     const statusColor = openStatus?.state === "open" ? C.open : C.closed;
     const statusText = openStatus?.state === "open"
-      ? "Open now"
+      ? "Open Now"
       : openStatus?.state === "temporarily_closed"
-        ? "Temporarily closed"
-        : "Closed now";
+        ? "Temporarily Closed"
+        : "Closed Now";
     return (
       <div style={{ ...cardStyle, padding: "20px 22px" }}>
         <CardHead Icon={Clock}>Opening hours</CardHead>
@@ -1559,7 +1559,7 @@ const ListingDetail = () => {
               fontSize: 16, fontWeight: 700, letterSpacing: "0.01em",
               color: openStatus.state === "open" ? C.open : C.closed,
             }}>
-              {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
+              {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (
               <span style={{ fontSize: 16, color: C.muted }}>· Never closes</span>
