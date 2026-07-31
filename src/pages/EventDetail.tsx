@@ -41,6 +41,7 @@ const C = {
   muted: "#8A8480",
   primary: "#715a3d",
   accent: "#B8916A",
+  dark: "#423324",
 };
 
 const WhatsAppIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -76,6 +77,20 @@ const headStyle: React.CSSProperties = {
 const paraStyle: React.CSSProperties = {
   fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
   color: C.text, margin: "0 0 10px",
+};
+const cardStyle: React.CSSProperties = {
+  background: C.surface,
+  borderRadius: 20,
+  border: "none",
+};
+const categoryLineStyle: React.CSSProperties = {
+  marginTop: 8,
+  fontFamily: FONT,
+  fontSize: 14,
+  fontWeight: 600,
+  lineHeight: 1.45,
+  letterSpacing: "0.005em",
+  color: C.primary,
 };
 const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
@@ -379,32 +394,31 @@ const EventDetail = () => {
     },
   ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean; disabled?: boolean }>;
 
-  const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
+  const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
     const disabled = a.disabled;
+    const filled = !disabled && a.key === "booking";
+    const fg = disabled ? C.muted : filled ? "#FFFFFF" : C.heading;
     const baseStyle: React.CSSProperties = {
-      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-      padding: "10px 18px", borderRadius: 999,
-      background: disabled ? "#f5f0e8" : C.surface,
-      border: `1px solid ${C.border}`,
-      color: disabled ? C.muted : C.heading,
-      textDecoration: "none",
+      flex: 1, minWidth: 0,
+      display: "inline-flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+      padding: "12px 6px", borderRadius: 18,
+      background: disabled ? C.ivory : filled ? C.dark : C.surface,
+      border: "none",
+      color: fg, textDecoration: "none",
       cursor: disabled ? "not-allowed" : "pointer",
-      fontFamily: FONT, fontWeight: 400, fontSize: 14,
-      letterSpacing: "0.01em", flexShrink: 1,
-      width: full ? "100%" : undefined,
+      fontFamily: FONT, fontWeight: 700, fontSize: 12.5,
+      letterSpacing: "0.01em",
+      boxShadow: disabled ? "none" : filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
       transition: "transform 150ms ease-out",
-      opacity: disabled ? 0.7 : 1,
     };
-    const inner = (<>
-      <a.Icon size={16} strokeWidth={1.75} color={disabled ? C.muted : C.heading} />
-      <span>{a.label}</span>
-    </>);
-    if (disabled) {
-      return <div style={baseStyle}>{inner}</div>;
-    }
-    if (a.onClick) {
-      return <button type="button" onClick={a.onClick} style={baseStyle} {...pressScale()}>{inner}</button>;
-    }
+    const inner = (
+      <>
+        <a.Icon size={20} strokeWidth={1.75} color={fg} />
+        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}>{a.label}</span>
+      </>
+    );
+    if (disabled) return <div style={baseStyle}>{inner}</div>;
+    if (a.onClick) return <button type="button" onClick={a.onClick} style={baseStyle} {...pressScale()}>{inner}</button>;
     return (
       <a href={a.href} {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={baseStyle} {...pressScale()}>
         {inner}
@@ -420,8 +434,8 @@ const EventDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
-          letterSpacing: "0.08em", textTransform: "uppercase",
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 16,
+          letterSpacing: "0.005em",
           color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
@@ -442,7 +456,7 @@ const EventDetail = () => {
     if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3 });
 
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "16px 20px 20px" }}>
         {desc && (
           <>
             <h2 style={headStyle}>About</h2>
@@ -617,7 +631,7 @@ const EventDetail = () => {
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
 
   const renderRowsCard = (rows: typeof detailRows) => (
-    <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
+    <div style={{ ...cardStyle, overflow: "hidden" }}>
       {rows.map((r, i) => {
         const rowStyle: React.CSSProperties = {
           padding: 18,
@@ -689,7 +703,7 @@ const EventDetail = () => {
   );
 
   const renderDetails = () => (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: "16px 20px 20px" }}>
       {detailRows.length === 0 && !hasPricingCard ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
@@ -703,7 +717,7 @@ const EventDetail = () => {
           {hasPricingCard && (
             <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
               {sectionHeading("Pricing")}
-              <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
+              <div style={{ ...cardStyle, overflow: "hidden" }}>
                 {(() => {
                   const sections: { Icon: any; label: string; body: React.ReactNode; compact?: boolean }[] = [];
                   if (price) {
@@ -779,13 +793,13 @@ const EventDetail = () => {
   );
 
   const renderContact = () => (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: "16px 20px 20px" }}>
       {contactRows.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact details yet.</p>
       ) : (
         <>
           {sectionHeading("Contact")}
-          <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+          <div style={{ ...cardStyle, padding: "4px 20px" }}>
             {contactRows.map((r, i) => {
               const inner = (
                 <>
@@ -819,7 +833,7 @@ const EventDetail = () => {
 
 
   const renderGallery = () => (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: "16px 20px 20px" }}>
       {galleryImages.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No photos yet.</p>
       ) : (
@@ -841,7 +855,7 @@ const EventDetail = () => {
   const renderLocation = () => {
     const isSurrounds = (event.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
     return (
-      <div style={{ padding: 20 }}>
+      <div style={{ padding: "16px 20px 20px" }}>
         <h2 style={headStyle}>Location</h2>
         <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
           {isSurrounds ? (
@@ -891,7 +905,7 @@ const EventDetail = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: !isPast && actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
       <Seo
         title={`${event.title} — Hello Hoedspruit`}
         description={
@@ -954,11 +968,11 @@ const EventDetail = () => {
           alignItems: "center",
           gap: 8,
         }}>
-          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-            <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
-          </button>
           <button onClick={handleShare} aria-label="Share" style={floatBtn}>
             <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+          </button>
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+            <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
           </button>
           {isAdmin && (
             <button onClick={() => setEditOpen(true)} aria-label="Edit" style={floatBtn}>
@@ -1085,8 +1099,9 @@ const EventDetail = () => {
           <>
             <nav style={{
               position: "sticky", top: 0, zIndex: 30,
-              background: C.surface, borderBottom: `1px solid ${C.border}`,
-              display: "flex", padding: "0 8px",
+              background: C.bg, borderBottom: "1px solid rgba(112,90,61,0.14)",
+              display: "flex", padding: "12px 12px 0",
+              overflowX: "auto",
             }}>
               {hasAboutContent && <TabBtn k="about" label="About" />}
               <TabBtn k="details" label="Details" />
@@ -1095,7 +1110,7 @@ const EventDetail = () => {
               <TabBtn k="location" label="Location" />
             </nav>
 
-            <section>
+            <section style={{ background: C.bg }}>
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
               {tab === "contact" && hasContactContent && renderContact()}
