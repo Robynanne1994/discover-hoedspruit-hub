@@ -37,6 +37,9 @@ verify_jwt = false
 [functions.special-reminders]
 verify_jwt = false
 
+[functions.process-email-queue]
+verify_jwt = true
+
 # Auth email configuration.
 #
 # Applied when the Supabase config is pushed. The same values must be set in the
