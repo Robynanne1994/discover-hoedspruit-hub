@@ -684,7 +684,7 @@ const CategoryPage = () => {
       <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
         <PageHeader title="Explore" />
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 550, color: INK, margin: "0 0 10px" }}>
             Something went wrong
           </h2>
           <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
@@ -707,7 +707,7 @@ const CategoryPage = () => {
       <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
         <PageHeader title="Explore" />
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 550, color: INK, margin: "0 0 10px" }}>
             Category not found
           </h2>
           <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
@@ -1073,7 +1073,7 @@ const CategoryPage = () => {
         </div>
       ) : listingsError ? (
         <div style={{ textAlign: "center", padding: "60px 24px 80px" }}>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 700, color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 550, color: INK, margin: "0 0 10px" }}>
             Something went wrong
           </h2>
           <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
@@ -1253,7 +1253,7 @@ const CategoryPage = () => {
           >
             <MapPin size={42} strokeWidth={1.6} color={MUTED} />
           </div>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 26, fontWeight: 700, color: INK, margin: "0 0 14px", letterSpacing: "-0.3px" }}>
+          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 26, fontWeight: 550, color: INK, margin: "0 0 14px", letterSpacing: "-0.3px" }}>
             {isSearchEmpty ? "No matches found." : "Nothing here yet."}
           </h2>
           <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 400, lineHeight: 1.5, color: MUTED, margin: 0 }}>

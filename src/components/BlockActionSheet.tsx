@@ -81,7 +81,7 @@ const BlockActionSheet = ({
           </button>
         </div>
 
-        <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px" }}>
+        <h2 style={{ fontFamily: HEAD, fontWeight: 550, fontSize: 22, color: INK, margin: "0 0 8px" }}>
           {title}
         </h2>
         <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.55, color: BODY, margin: 0 }}>

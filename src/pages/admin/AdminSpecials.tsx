@@ -227,7 +227,7 @@ const AdminSpecials = () => {
       {showForm && (
         <div className="bg-card border border-border rounded-xl p-6 mb-8 space-y-4 max-w-2xl">
           <div className="flex items-center justify-between">
-            <h2 className="font-heading text-xl font-semibold text-slate-950">
+            <h2 className="font-heading text-xl font-medium text-slate-950">
               {editing ? "Edit Special" : "New Special"}
             </h2>
             <Button variant="ghost" size="icon" onClick={resetForm}><X className="h-4 w-4" /></Button>
