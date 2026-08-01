@@ -333,7 +333,7 @@ const ListingDetail = () => {
           </button>
         </div>
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: HEAD, fontSize: 22, fontWeight: 700, color: C.heading, margin: "0 0 10px" }}>
+          <h2 style={{ fontFamily: HEAD, fontSize: 22, fontWeight: 550, color: C.heading, margin: "0 0 10px" }}>
             Something went wrong
           </h2>
           <p style={{ fontFamily: FONT, fontSize: 14, color: C.muted, margin: "0 0 24px", lineHeight: 1.5 }}>
@@ -374,7 +374,7 @@ const ListingDetail = () => {
           </button>
         </div>
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: HEAD, fontSize: 22, fontWeight: 700, color: C.heading, margin: "0 0 10px" }}>
+          <h2 style={{ fontFamily: HEAD, fontSize: 22, fontWeight: 550, color: C.heading, margin: "0 0 10px" }}>
             Listing not found
           </h2>
           <p style={{ fontFamily: FONT, fontSize: 14, color: C.muted, margin: "0 0 24px", lineHeight: 1.5 }}>
@@ -1788,7 +1788,7 @@ const SuggestEditSheet = ({
             <XIcon size={20} color={C.heading} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an Edit</h2>
+        <h2 style={{ fontFamily: HEAD, fontWeight: 550, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an Edit</h2>
         <p style={{ fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
           Spotted something out of date or inaccurate on <strong style={{ color: C.heading, fontWeight: 700 }}>{listingTitle}</strong>? Please let us know and we will get it updated.
         </p>
