@@ -101,7 +101,7 @@ const ReviewSection = ({ listingId }: ReviewSectionProps) => {
         ) : null}
       </div>
 
-      <h2 className="font-sans text-2xl font-bold text-foreground mb-4">Reviews</h2>
+      <h2 className="font-sans text-2xl font-[550] text-foreground mb-4">Reviews</h2>
 
       {/* Write review form */}
       {!existingReview ? (
