@@ -149,7 +149,7 @@ const AdminAppUpdates = () => {
 
       {/* History */}
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold text-slate-950">Recent broadcasts</h2>
+        <h2 className="text-lg font-medium text-slate-950">Recent broadcasts</h2>
         {history.isLoading ? (
           <div className="text-sm">Loading…</div>
         ) : (history.data ?? []).length === 0 ? (

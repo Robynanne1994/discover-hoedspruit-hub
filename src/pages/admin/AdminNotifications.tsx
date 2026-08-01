@@ -59,7 +59,7 @@ const AdminNotifications = () => {
     <div className="bg-card rounded-lg p-5 space-y-3">
       <div className="flex items-center gap-2">
         <Icon className="h-5 w-5 text-slate-700" />
-        <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
+        <h2 className="text-lg font-medium text-slate-950">{title}</h2>
         <span className="text-xs opacity-60">({items.length})</span>
       </div>
       <p className="text-sm opacity-80">{description}</p>

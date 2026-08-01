@@ -455,7 +455,7 @@ const AdminBushTelegraph = () => {
 
       {/* CSV Import */}
       <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4">
-        <h2 className="font-semibold text-slate-950">CSV Import / Export</h2>
+        <h2 className="font-medium text-slate-950">CSV Import / Export</h2>
         <div
           className="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
           onClick={() => fileRef.current?.click()}
