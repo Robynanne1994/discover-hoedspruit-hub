@@ -322,7 +322,7 @@ const ReportCard = ({ report }: { report: ReportDef }) => {
 const AdminReports = () => {
   return (
     <div>
-      <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950 mb-2">Reports</h1>
+      <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">Reports</h1>
       <p className="text-sm text-muted-foreground mb-6 text-slate-950">
         Generate CSV reports on demand. Files download immediately and open in Google Sheets, Numbers or Excel.
       </p>

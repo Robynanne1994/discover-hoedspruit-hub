@@ -104,7 +104,7 @@ const AdminSearchSuggested = () => {
 
   return (
     <div className="max-w-3xl">
-      <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950 mb-2">
+      <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">
         Search — Suggested Listings
       </h1>
       <p className="text-sm text-muted-foreground mb-6">

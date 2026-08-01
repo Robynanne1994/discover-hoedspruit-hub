@@ -186,7 +186,7 @@ const AdminUserReports = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950 mb-2">Reported Users</h1>
+      <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">Reported Users</h1>
       <p className="text-sm text-muted-foreground mb-4 text-slate-950">
         Triage reports, then warn, suspend, or ban — actions are logged and the user is notified automatically.
       </p>

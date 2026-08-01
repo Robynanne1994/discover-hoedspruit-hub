@@ -219,7 +219,7 @@ const LocalChannelDetail = () => {
         })()}
         <h1
           data-no-title-case={resource.title_override?.trim() ? "true" : undefined}
-          style={{ fontFamily: HEAD, fontWeight: 600, fontSize: 28, lineHeight: 1.15, color: INK, margin: 0, letterSpacing: "0.01em", textTransform: resource.title_override?.trim() ? "none" : undefined }}
+          style={{ fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15, color: INK, margin: 0, letterSpacing: "0.01em", textTransform: resource.title_override?.trim() ? "none" : undefined }}
         >
           {displayTitle}
         </h1>

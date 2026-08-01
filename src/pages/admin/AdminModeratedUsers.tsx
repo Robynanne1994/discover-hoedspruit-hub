@@ -68,7 +68,7 @@ const AdminModeratedUsers = () => {
 
   return (
     <div>
-      <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950 mb-2">Moderated Users</h1>
+      <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">Moderated Users</h1>
       <p className="text-sm text-muted-foreground mb-6">
         Accounts currently warned, suspended, or banned. Suspensions auto-expire.
       </p>

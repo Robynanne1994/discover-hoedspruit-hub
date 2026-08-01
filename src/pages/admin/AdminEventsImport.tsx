@@ -435,7 +435,7 @@ const AdminEventsImport = () => {
           <Link to="/admin/events">
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
-          <h1 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate">Import/Export Events</h1>
+          <h1 className="font-heading text-xl sm:text-2xl lg:text-3xl font-[550] text-foreground truncate">Import/Export Events</h1>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={downloadEvents} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">

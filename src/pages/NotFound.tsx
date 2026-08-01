@@ -188,7 +188,7 @@ const NotFound = () => {
             marginBottom: 0,
             fontFamily: PLAYFAIR,
             fontStyle: "italic",
-            fontWeight: 600,
+            fontWeight: 550,
             fontSize: 48,
             lineHeight: 0.95,
             letterSpacing: "-1.8px",
