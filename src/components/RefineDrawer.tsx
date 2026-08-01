@@ -103,7 +103,7 @@ export const RefineDrawer = ({
                 fontFamily: SANS,
                 fontSize: 22,
                 lineHeight: 1.1,
-                fontWeight: 700,
+                fontWeight: 550,
                 color: INK,
                 letterSpacing: "-0.01em",
               }}

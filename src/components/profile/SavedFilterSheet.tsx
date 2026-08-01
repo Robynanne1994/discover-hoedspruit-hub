@@ -177,7 +177,7 @@ const SavedFilterSheet = ({
               margin: 0,
               fontFamily: HEAD,
               fontSize: 22,
-              fontWeight: 700,
+              fontWeight: 550,
               letterSpacing: "-0.02em",
               lineHeight: 1.1,
               color: INK,
