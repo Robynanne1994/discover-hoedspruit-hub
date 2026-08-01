@@ -83,7 +83,7 @@ const AdminNotifications = () => {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-bold text-slate-950">Notifications</h1>
+        <h1 className="text-2xl font-[550] text-slate-950">Notifications</h1>
         <p className="text-sm opacity-80 mt-1">
           Notifications now run automatically off your live content. There's nothing to assign here —
           when you add or edit a listing, event or special, every user who has the matching

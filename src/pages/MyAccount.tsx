@@ -252,7 +252,7 @@ const MyAccount = () => {
     return (
       <div className="min-h-screen pb-20" style={{ background: "transparent", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 600, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#1A1A1A", textTransform: "none", margin: 0 }}>Profile</h1>
+          <h1 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#1A1A1A", textTransform: "none", margin: 0 }}>Profile</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <UserCircle style={{ width: 48, height: 48, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
@@ -295,7 +295,7 @@ const MyAccount = () => {
 
         <div className="px-6 pt-6 pb-8">
           <h1
-            className="text-[26px] font-semibold text-foreground tracking-tight mb-6"
+            className="text-[26px] font-[550] text-foreground tracking-tight mb-6"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {activeSection === "favourites" && "Saved Listings"}

@@ -38,7 +38,7 @@ const HomeMasthead = () => {
               style={{
                 margin: 0,
                 fontFamily: NOHEMI,
-                fontWeight: 600,
+                fontWeight: 550,
                 fontSize: 22,
                 lineHeight: 1.05,
                 letterSpacing: "0.01em",

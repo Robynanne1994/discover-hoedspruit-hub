@@ -83,7 +83,7 @@ const AdminAppUpdates = () => {
       <div>
         <div className="flex items-center gap-2">
           <Megaphone className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-bold text-slate-950">App Updates &amp; Notifications</h1>
+          <h1 className="text-2xl font-[550] text-slate-950">App Updates &amp; Notifications</h1>
         </div>
         <p className="text-sm opacity-80 mt-1">
           Send an announcement to <strong>every</strong> app user. It always appears in their

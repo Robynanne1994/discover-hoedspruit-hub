@@ -587,7 +587,7 @@ const Welcome = () => {
               color: "#423324",
               fontSize: 22,
               lineHeight: 1.2,
-              fontWeight: 600,
+              fontWeight: 550,
               letterSpacing: "0.01em",
               marginTop: 16,
               textAlign: "center",

@@ -155,7 +155,7 @@ const AdminCategoryOrder = () => {
         <Button asChild variant="ghost" size="sm">
           <Link to="/admin/categories"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
         </Button>
-        <h1 className="text-xl font-semibold">Order listings — {category?.title ?? ""}</h1>
+        <h1 className="text-xl font-[550]">Order listings — {category?.title ?? ""}</h1>
       </div>
       <p className="text-sm text-muted-foreground mb-4">
         Drag listings into the order you want them to appear on the category page (default sort).

@@ -63,7 +63,7 @@ const OfflineScreen = () => {
         style={{
           fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontSize: 20,
-          fontWeight: 600,
+          fontWeight: 550,
           letterSpacing: "0.04em",
           textTransform: "uppercase",
           margin: 0,
