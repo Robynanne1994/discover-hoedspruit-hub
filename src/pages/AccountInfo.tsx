@@ -1527,7 +1527,7 @@ const PhotoPickerSheet = ({
           <h2
             style={{
               fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontWeight: 600,
+              fontWeight: 550,
               fontSize: 22,
               color: INK,
               margin: "0 0 4px",
@@ -1864,7 +1864,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
 
   const sheetHeadingStyle: React.CSSProperties = {
     fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-    fontWeight: 700, fontSize: 22, color: INK, margin: "0 0 8px",
+    fontWeight: 550, fontSize: 22, color: INK, margin: "0 0 8px",
   };
   const sheetCopyStyle: React.CSSProperties = {
     fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px",

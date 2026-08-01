@@ -307,7 +307,7 @@ const LocalChannelDetail = () => {
               <div style={{ padding: "24px 20px 0" }}>
                 <h2 style={{
                   margin: "0 0 12px",
-                  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+                  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
                   letterSpacing: 0, textTransform: "none", color: INK,
                 }}>
                   Details
@@ -385,7 +385,7 @@ const LocalChannelDetail = () => {
               <div style={{ padding: "24px 20px 0" }}>
                 <h2 style={{
                   margin: "0 0 12px",
-                  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+                  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
                   letterSpacing: 0, textTransform: "none", color: INK,
                 }}>
                   About

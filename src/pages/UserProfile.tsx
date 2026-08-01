@@ -742,7 +742,7 @@ const UserProfile = () => {
             <h2
               style={{
                 fontFamily: HEAD,
-                fontWeight: 600,
+                fontWeight: 550,
                 fontSize: 15,
                 letterSpacing: "0.01em",
                 textTransform: "uppercase",

@@ -531,7 +531,7 @@ const Categories = () => {
               <h2
                 style={{
                   fontFamily: FONT_BODY,
-                  fontWeight: 700,
+                  fontWeight: 550,
                   fontSize: 22,
                   lineHeight: 1.1,
                   color: COLORS.ink,
