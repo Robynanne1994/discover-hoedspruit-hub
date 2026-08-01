@@ -295,7 +295,7 @@ const MyAccount = () => {
 
         <div className="px-6 pt-6 pb-8">
           <h1
-            className="text-[26px] font-semibold text-foreground tracking-tight mb-6"
+            className="text-[26px] font-[550] text-foreground tracking-tight mb-6"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {activeSection === "favourites" && "Saved Listings"}
