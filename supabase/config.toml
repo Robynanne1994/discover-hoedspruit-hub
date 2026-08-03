@@ -40,6 +40,14 @@ verify_jwt = false
 [functions.process-email-queue]
 verify_jwt = true
 
+# The auth email sender. Supabase calls this itself, signing the request with
+# the Standard Webhooks secret in SEND_EMAIL_HOOK_SECRET rather than with a JWT,
+# so the platform JWT gate has to be off or every call is rejected before the
+# function sees it. The function verifies that signature itself and refuses any
+# request it cannot verify -- see the top of its index.ts.
+[functions.send-auth-email]
+verify_jwt = false
+
 # Auth email configuration.
 #
 # Applied when the Supabase config is pushed. The same values must be set in the
@@ -63,6 +71,26 @@ otp_length = 6
 # trying to escape when they mistyped it at signup, and would lock them out of
 # ever correcting it.
 double_confirm_changes = false
+
+# Hand every auth email to the send-auth-email function instead of letting the
+# platform's built-in sender deliver it.
+#
+# This is what stops the codes disappearing. The built-in sender is a shared,
+# rate-limited development convenience on a domain hellohoedspruit.com has never
+# authorised, so its mail is throttled to a handful an hour and lands under a
+# spam warning -- which also disables every link in the body. The hook moves
+# sending onto our own domain and renders the templates from this repo, so the
+# six-digit code is always in the email the app asks for it from.
+#
+# The [auth.email.template.*] entries below stay as a safety net: they are what
+# goes out if the hook is ever disabled.
+[auth.hook.send_email]
+enabled = true
+uri = "https://dgkfsavtyclwkramearr.supabase.co/functions/v1/send-auth-email"
+# Read from the environment -- the value is a shared secret and does not belong
+# in a committed file. Set SEND_EMAIL_HOOK_SECRET in the Supabase dashboard
+# (Edge Functions -> Secrets) and locally in supabase/.env.
+secrets = "env(SEND_EMAIL_HOOK_SECRET)"
 
 [auth.email.template.recovery]
 subject = "Reset your Hello Hoedspruit password"

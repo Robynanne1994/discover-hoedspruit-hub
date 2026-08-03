@@ -11,6 +11,7 @@
 // So: read the link the app was opened with, send the user to Account Info,
 // and redeem it there.
 import { supabase } from "@/integrations/supabase/client";
+import { authUrl } from "@/lib/publicOrigin";
 
 /** Where an email-change confirmation link should land. */
 export const EMAIL_CHANGE_PATH = "/account-settings/info";
@@ -128,9 +129,15 @@ export function clearEmailChangeParams(): void {
   window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
 }
 
-/** The `redirectTo` the emailed link should come back to. */
+/**
+ * The `redirectTo` the emailed link should come back to.
+ *
+ * Built from `authOrigin()`, not `window.location.origin`: inside the app shell
+ * the latter is "capacitor://localhost", which is not on Supabase's redirect
+ * allow list and could not be opened from an inbox even if it were.
+ */
 export function buildEmailChangeRedirectUrl(): string {
-  return `${window.location.origin}${EMAIL_CHANGE_PATH}`;
+  return authUrl(EMAIL_CHANGE_PATH);
 }
 
 /** Turn a Supabase error from redeeming the link into readable copy. */

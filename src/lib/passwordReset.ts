@@ -11,6 +11,7 @@
 // to the user with a countdown — no matter what the provider-side expiry is set
 // to.
 import { supabase } from "@/integrations/supabase/client";
+import { authUrl } from "@/lib/publicOrigin";
 
 /** How long an emailed reset link stays usable. */
 export const RESET_LINK_TTL_MINUTES = 15;
@@ -174,9 +175,15 @@ export function formatCountdown(ms: number): string {
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
 }
 
-/** The `redirectTo` the emailed link should come back to, stamped with now. */
+/**
+ * The `redirectTo` the emailed link should come back to, stamped with now.
+ *
+ * `authOrigin()` rather than `window.location.origin`: asking for a reset from
+ * inside the app shell would otherwise send Supabase a "capacitor://localhost"
+ * redirect, which is not on the allow list and which no inbox can open.
+ */
 export function buildResetRedirectUrl(now = Date.now()): string {
-  return `${window.location.origin}${RESET_PASSWORD_PATH}?issued=${now}`;
+  return `${authUrl(RESET_PASSWORD_PATH)}?issued=${now}`;
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

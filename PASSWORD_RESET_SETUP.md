@@ -59,10 +59,20 @@ drops the user on the Site URL instead. The app compensates —
 other route to `/reset-password` — but adding the URL keeps the address bar
 honest.
 
-Also make sure a working SMTP sender is configured (Authentication → Emails →
-SMTP Settings). Supabase's built-in sender is rate-limited to a handful of
-emails an hour on free projects, which looks exactly like "the button does
-nothing".
+**Delivery is handled by the send-email hook, not by SMTP settings.** Reset mail
+goes out through `supabase/functions/send-auth-email/index.ts` along with every
+other auth email, which is what moved it off the platform's built-in sender —
+rate-limited to a handful of messages an hour, and unauthenticated for our
+domain, which looks exactly like "the button does nothing". See
+**EMAIL_VERIFICATION_SETUP.md → Setup** for the Resend, DNS and hook steps;
+until those are done, resets have the same deliverability problem as everything
+else.
+
+Note also that the redirect is built by `authOrigin()`
+(`src/lib/publicOrigin.ts`), not `window.location.origin`. Asking for a reset
+from inside the app shell used to send Supabase
+`capacitor://localhost/reset-password` — not on the allow list, and not an
+address any inbox could open.
 
 ## Files
 
