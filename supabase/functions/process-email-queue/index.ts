@@ -298,13 +298,22 @@ Deno.serve(async (req) => {
         })
 
         if (isRateLimited(error)) {
-          await supabase.from('email_send_log').insert({
+          // 'rate_limited' is deliberately not 'failed': the retry budget counts
+          // 'failed' rows, and being throttled is not this message's fault.
+          // Requires the status CHECK constraint from
+          // 20260803120000_email_log_rate_limited_status.sql — before that
+          // migration this insert was rejected and the error never inspected,
+          // so throttling left no trace at all.
+          const { error: rateLogError } = await supabase.from('email_send_log').insert({
             message_id: payload.message_id,
             template_name: payload.label || queue,
             recipient_email: payload.to,
             status: 'rate_limited',
             error_message: errorMsg.slice(0, 1000),
           })
+          if (rateLogError) {
+            console.error('Failed to log rate-limit event', { queue, msg_id: msg.msg_id, error: rateLogError })
+          }
 
           const retryAfterSecs = getRetryAfterSeconds(error)
           await supabase

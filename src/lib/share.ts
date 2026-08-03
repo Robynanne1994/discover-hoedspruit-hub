@@ -16,16 +16,16 @@
 // webview window.location.origin is "capacitor://localhost", so sharing the raw
 // href sent people a link that only resolves on the sharer's own device.
 import { isNativeApp } from "@/lib/nativeBridge";
+import { PUBLIC_ORIGIN, shareOrigin } from "@/lib/publicOrigin";
 
 /**
  * Public origin every shared link must point at. Used whenever the runtime
  * origin is not something a recipient could open (native webview, localhost).
+ *
+ * Re-exported from src/lib/publicOrigin.ts, which the auth redirect builders
+ * read too — one definition of "where this app actually lives".
  */
-export const SHARE_ORIGIN = "https://hello-hoedspruit-hub.lovable.app";
-
-/** Origins that only exist on the sharer's own device. */
-const DEVICE_ONLY_ORIGIN =
-  /^(?:capacitor|ionic|file):|^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i;
+export const SHARE_ORIGIN = PUBLIC_ORIGIN;
 
 export interface ShareContent {
   /** Headline for the share — the listing / event / profile name. */
@@ -58,8 +58,7 @@ export function toShareUrl(url?: string): string {
   if (url && /^https?:\/\//i.test(url)) return url;
 
   const loc = typeof window !== "undefined" ? window.location : null;
-  const origin = loc?.origin || "";
-  const base = !origin || DEVICE_ONLY_ORIGIN.test(origin) ? SHARE_ORIGIN : origin;
+  const base = shareOrigin();
 
   if (url) return `${base}${url.startsWith("/") ? "" : "/"}${url}`;
   return `${base}${loc?.pathname || "/"}${loc?.search || ""}`;

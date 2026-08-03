@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { authOrigin } from "@/lib/publicOrigin";
 
 /**
  * Everything the signup form knows about the new account. It all travels as
@@ -141,7 +142,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
+        // Not window.location.origin: inside the app shell that is
+        // "capacitor://localhost", which Supabase drops (not on the redirect
+        // allow list) and which no mail client could open anyway. The signup
+        // email's one-tap link is a fallback to the six-digit code, but it has
+        // to actually work for the people who reach for it.
+        emailRedirectTo: authOrigin(),
         data: Object.keys(metadata).length ? metadata : undefined,
       },
     });
