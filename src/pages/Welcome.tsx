@@ -1071,7 +1071,7 @@ const Welcome = () => {
                   fontFamily: FF, color: "#715a3d", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
                 }}
               >
-                Forgot password?
+                Forgot Password?
               </button>
             </div>
           )}
