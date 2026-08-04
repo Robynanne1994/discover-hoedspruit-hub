@@ -381,13 +381,14 @@ const EventDetail = () => {
   // Action pills
   const actions = [
     bookingLink && {
-      key: "booking", label: bookingLinkLabel || "Book / Tickets",
+      key: "booking", label: "Book",
       href: bookingLink, Icon: ExternalLink, ext: true,
       disabled: isPast,
     },
     socialLink && {
       key: "social",
-      label: socialLabel || (/facebook\.com/i.test(socialLink) ? "Facebook" : /instagram\.com/i.test(socialLink) ? "Instagram" : "Website"),
+      // Always show the platform name only, whatever the admin label says.
+      label: /facebook\.com|fb\.com/i.test(socialLink) ? "Facebook" : /instagram\.com/i.test(socialLink) ? "Instagram" : "Website",
       href: socialLink,
       Icon: /facebook\.com/i.test(socialLink) ? FacebookIcon : /instagram\.com/i.test(socialLink) ? InstagramIcon : Globe,
       ext: true,
@@ -397,9 +398,11 @@ const EventDetail = () => {
       href: directionsHref, Icon: Send, ext: true,
     },
     canAddToCal && {
-      key: "calendar", label: "Add to Calendar",
+      key: "calendar", label: "Calendar",
       onClick: () => addToCalendar(e), Icon: CalendarPlus,
     },
+  ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean; disabled?: boolean }>;
+
   ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean; disabled?: boolean }>;
 
   const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
