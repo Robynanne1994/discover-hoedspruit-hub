@@ -467,7 +467,7 @@ const Specials = () => {
           <FilterPill
             label={`All (${totalCount})`}
             active={activeTab === ALL_TAB}
-            onClick={() => setActiveTab(ALL_TAB)}
+            onClick={() => setActiveTab(activeTab === ALL_TAB ? ALL_TAB : ALL_TAB)}
           />
           {endingSoonCount > 0 && (
             <FilterPill
