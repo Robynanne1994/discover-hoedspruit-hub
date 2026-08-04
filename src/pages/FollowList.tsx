@@ -281,26 +281,86 @@ const RowWithMutation = ({
         isSelf={isSelf}
       />
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <AlertDialogContent style={{ fontFamily: SANS }}>
-          <AlertDialogHeader>
-            <AlertDialogTitle style={{ fontFamily: SANS, color: COLOR.ink }}>
+        <AlertDialogContent
+          style={{
+            fontFamily: SANS,
+            background: COLOR.card,
+            borderRadius: 28,
+            border: "none",
+            padding: "28px 24px 24px",
+            maxWidth: 340,
+          }}
+        >
+          <AlertDialogHeader style={{ padding: 0, gap: 10 }}>
+            <AlertDialogTitle
+              style={{
+                fontFamily: SANS,
+                color: COLOR.ink,
+                fontSize: 22,
+                fontWeight: 700,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
+              }}
+            >
               Unfollow {name}?
             </AlertDialogTitle>
             <AlertDialogDescription
-              style={{ fontFamily: SANS, color: COLOR.muted, fontSize: 14, lineHeight: 1.5 }}
+              style={{
+                fontFamily: SANS,
+                color: COLOR.muted,
+                fontSize: 14,
+                lineHeight: 1.45,
+                marginTop: 4,
+              }}
             >
               {isPrivate
                 ? `Their profile is private, so you'll have to request to follow ${name} again and wait for them to approve it.`
                 : `You can follow ${name} again at any time.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel style={{ fontFamily: SANS }}>No, keep following</AlertDialogCancel>
+          <AlertDialogFooter
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 12,
+              marginTop: 24,
+              padding: 0,
+            }}
+          >
+            <AlertDialogCancel
+              style={{
+                fontFamily: SANS,
+                flex: 1,
+                height: 48,
+                borderRadius: 999,
+                background: "transparent",
+                border: `1.5px solid ${COLOR.line}`,
+                color: COLOR.ink,
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: "pointer",
+                margin: 0,
+              }}
+            >
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => unfollow.mutate()}
-              style={{ fontFamily: SANS, background: COLOR.brown, color: "#FFFFFF" }}
+              style={{
+                fontFamily: SANS,
+                flex: 1,
+                height: 48,
+                borderRadius: 999,
+                background: COLOR.brown,
+                color: "#FFFFFF",
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: "pointer",
+                border: "none",
+                margin: 0,
+              }}
             >
-              Yes, unfollow
+              Unfollow
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
