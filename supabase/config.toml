@@ -37,6 +37,13 @@ verify_jwt = false
 [functions.special-reminders]
 verify_jwt = false
 
+# Nightly Google ratings refresh. Called by pg_cron with the service role key,
+# or manually by an admin; the function checks the bearer token itself and
+# rejects anonymous callers, so the platform gate stays off.
+[functions.refresh-google-ratings]
+verify_jwt = false
+
+
 [functions.process-email-queue]
 verify_jwt = true
 

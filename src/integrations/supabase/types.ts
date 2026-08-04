@@ -1226,9 +1226,13 @@ export type Database = {
           good_for_kids: boolean | null
           good_to_know: string[] | null
           google_maps_link: string | null
+          google_place_id: string | null
+          google_place_name: string | null
           google_rating: number | null
           google_reviews_count: number | null
           google_reviews_url: string | null
+          google_sync_status: string | null
+          google_synced_at: string | null
           has_aircon: boolean | null
           has_airport_shuttle: boolean | null
           has_bar: boolean | null
@@ -1281,6 +1285,7 @@ export type Database = {
           price_level: number | null
           price_range: string | null
           product_categories: string[] | null
+          refresh_priority: string
           rooms_count: number | null
           saved_image_url: string | null
           seating: string[] | null
@@ -1370,9 +1375,13 @@ export type Database = {
           good_for_kids?: boolean | null
           good_to_know?: string[] | null
           google_maps_link?: string | null
+          google_place_id?: string | null
+          google_place_name?: string | null
           google_rating?: number | null
           google_reviews_count?: number | null
           google_reviews_url?: string | null
+          google_sync_status?: string | null
+          google_synced_at?: string | null
           has_aircon?: boolean | null
           has_airport_shuttle?: boolean | null
           has_bar?: boolean | null
@@ -1425,6 +1434,7 @@ export type Database = {
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
+          refresh_priority?: string
           rooms_count?: number | null
           saved_image_url?: string | null
           seating?: string[] | null
@@ -1514,9 +1524,13 @@ export type Database = {
           good_for_kids?: boolean | null
           good_to_know?: string[] | null
           google_maps_link?: string | null
+          google_place_id?: string | null
+          google_place_name?: string | null
           google_rating?: number | null
           google_reviews_count?: number | null
           google_reviews_url?: string | null
+          google_sync_status?: string | null
+          google_synced_at?: string | null
           has_aircon?: boolean | null
           has_airport_shuttle?: boolean | null
           has_bar?: boolean | null
@@ -1569,6 +1583,7 @@ export type Database = {
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
+          refresh_priority?: string
           rooms_count?: number | null
           saved_image_url?: string | null
           seating?: string[] | null
