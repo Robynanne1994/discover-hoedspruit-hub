@@ -7,7 +7,7 @@ import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
   Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
-  ReceiptText, NotebookPen,
+  ReceiptText, NotebookPen, Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,7 @@ import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isE
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
+import { sharePlainText } from "@/lib/share";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
 import {
@@ -47,6 +48,8 @@ const C = {
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
+  // Soft panel that sits on the beige sheet (icon circles)
+  soft: "#EEE9DA",
 };
 
 const WhatsAppIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
