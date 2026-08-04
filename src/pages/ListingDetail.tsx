@@ -491,7 +491,7 @@ const ListingDetail = () => {
         if (!v || v.toLowerCase() === "closed") continue;
         const mm = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
         if (!mm) continue;
-        return { opensAt: formatTime(mm[1]), opensDay: i === 1 ? "tomorrow" : DAY_LABELS[idx] };
+        return { opensAt: formatTime(mm[1]), opensDay: i === 1 ? "Tomorrow" : DAY_LABELS[idx] };
       }
       return null;
     };
@@ -1569,7 +1569,7 @@ const ListingDetail = () => {
               <span style={{ fontSize: 13, color: C.dark }}>· Closes {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
             )}
           </div>
         )}
