@@ -1563,13 +1563,13 @@ const ListingDetail = () => {
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (
-              <span style={{ fontSize: 13, color: C.muted }}>· Never Closes</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Never Closes</span>
             )}
             {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 13, color: C.muted }}>· Closes {openStatus.closes}</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Closes {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13, color: C.muted }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
             )}
           </div>
         )}
@@ -1599,8 +1599,8 @@ const ListingDetail = () => {
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.muted }}>
-                <MapPin size={14} strokeWidth={1.75} color={C.muted} style={{ flexShrink: 0 }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
+                <MapPin size={14} strokeWidth={1.75} color={C.dark} style={{ flexShrink: 0 }} />
                 <span>{kmFromTown}</span>
               </div>
             )}
