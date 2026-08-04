@@ -568,6 +568,45 @@ export type Database = {
         }
         Relationships: []
       }
+      email_verification_codes: {
+        Row: {
+          attempts: number
+          code_hash: string
+          consumed_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          last_sent_at: string
+          purpose: string
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          consumed_at?: string | null
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          last_sent_at?: string
+          purpose: string
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          consumed_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          last_sent_at?: string
+          purpose?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           additional_emails: string[]
@@ -2309,6 +2348,13 @@ export type Database = {
         Returns: undefined
       }
       assert_account_active: { Args: { _user_id: string }; Returns: undefined }
+      auth_user_for_email: {
+        Args: { _email: string }
+        Returns: {
+          is_confirmed: boolean
+          user_id: string
+        }[]
+      }
       block_cooldown_days: { Args: never; Returns: number }
       claim_business_owner_role: { Args: never; Returns: undefined }
       clear_expired_suspensions: { Args: never; Returns: number }
@@ -2429,6 +2475,7 @@ export type Database = {
         }
         Returns: number
       }
+      purge_expired_verification_codes: { Args: never; Returns: undefined }
       read_email_batch: {
         Args: { batch_size: number; queue_name: string; vt: number }
         Returns: {
