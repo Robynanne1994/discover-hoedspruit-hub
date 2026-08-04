@@ -195,7 +195,7 @@ const HomeLocalChannels = () => {
                       fontFamily: HN,
                       fontSize: 13,
                       fontWeight: 400,
-                      color: "#6B6A5E",
+                      color: "#423324",
                       lineHeight: 1.2,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
