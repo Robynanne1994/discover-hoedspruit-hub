@@ -25,7 +25,12 @@ import { collectContacts } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
-import { geocode, parseCoordsFromMapLink, HOEDSPRUIT_CENTRE, type LatLon } from "@/lib/tileMap";
+import {
+  resolveLocation,
+  HOEDSPRUIT_CENTRE,
+  type MappableRow,
+  type ResolvedLocation,
+} from "@/lib/tileMap";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { getCustomIcon } from "@/lib/customIcons";
@@ -139,7 +144,7 @@ const ListingDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
-  const [mapCoords, setMapCoords] = useState<LatLon | null>(null);
+  const [mapPlace, setMapPlace] = useState<ResolvedLocation | null>(null);
   const [heroImgError, setHeroImgError] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
   const [descOverflows, setDescOverflows] = useState(false);
@@ -157,18 +162,18 @@ const ListingDetail = () => {
 
   useEffect(() => {
     if (!listing) return;
-    setMapCoords(null);
-    const link: string | null = (listing as any).google_maps_link || null;
-    const loc: string | null = listing.location || null;
-    if (link) {
-      const parsed = parseCoordsFromMapLink(link);
-      if (parsed) { setMapCoords(parsed); return; }
-    }
-    const query = loc ? `${loc}, Hoedspruit, South Africa` : `${listing.title}, Hoedspruit, South Africa`;
+    setMapPlace(null);
     let cancelled = false;
-    geocode(query)
-      .then((coords) => { if (!cancelled) setMapCoords(coords ?? HOEDSPRUIT_CENTRE); })
-      .catch(() => { if (!cancelled) setMapCoords(HOEDSPRUIT_CENTRE); });
+    const row = listing as MappableRow;
+    resolveLocation({
+      latitude: row.latitude,
+      longitude: row.longitude,
+      googleMapsLink: row.google_maps_link,
+      location: listing.location,
+      title: listing.title,
+    })
+      .then((place) => { if (!cancelled) setMapPlace(place); })
+      .catch(() => { if (!cancelled) setMapPlace({ coords: HOEDSPRUIT_CENTRE, precise: false }); });
     return () => { cancelled = true; };
   }, [listing]);
 
@@ -465,7 +470,7 @@ const ListingDetail = () => {
 
   const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length) || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
   const hasAbout = !!descriptionText;
-  const hasLocation = !!(listing.location || mapCoords);
+  const hasLocation = !!(listing.location || mapPlace);
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
@@ -1380,7 +1385,8 @@ const ListingDetail = () => {
             <>
               <div style={{ borderRadius: 14, overflow: "hidden" }}>
                 <LocationMap
-                  coords={mapCoords}
+                  coords={mapPlace?.coords ?? null}
+                  precise={mapPlace?.precise ?? true}
                   href={directionsHref}
                   label={listing.title}
                   pinColor={C.primary}
