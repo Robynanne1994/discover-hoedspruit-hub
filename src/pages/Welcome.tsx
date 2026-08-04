@@ -695,9 +695,9 @@ const Welcome = () => {
     fontSize: 12,
     letterSpacing: "0.10em",
     textTransform: "uppercase",
-    color: "#6B6255",
+    color: "#423324",
     display: "block",
-    marginBottom: 4,
+    marginBottom: 2,
   };
 
   const hintStyle: React.CSSProperties = {
@@ -827,38 +827,6 @@ const Welcome = () => {
                         ? `@${username} is available.`
                         : USERNAME_HINT}
                 </p>
-              </div>
-
-              <div>
-                <Label style={CARD_LABEL}>
-                  RESIDENCY
-                </Label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                  {RESIDENCY_OPTIONS.map((opt) => {
-                    const active = residency === opt.value;
-                    return (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        onClick={() => setResidency(opt.value)}
-                        aria-pressed={active}
-                        style={{
-                          height: 40,
-                          borderRadius: 9999,
-                          background: active ? "#423324" : "#FFFFFF",
-                          border: active ? "1.5px solid #423324" : "1.5px solid rgba(26,26,26,0.14)",
-                          color: active ? "#FFFFFF" : "#1A1A1A",
-                          fontFamily: FF,
-                          fontSize: 14,
-                          fontWeight: 600,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {opt.label}
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
 
             </>
@@ -995,6 +963,42 @@ const Welcome = () => {
               }}
             />
           </div>
+
+          {/* Residency sits between email and password on sign-up */}
+          {mode === "signup" && (
+            <div>
+              <Label style={CARD_LABEL}>
+                RESIDENCY
+              </Label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                {RESIDENCY_OPTIONS.map((opt) => {
+                  const active = residency === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setResidency(opt.value)}
+                      aria-pressed={active}
+                      style={{
+                        height: 40,
+                        borderRadius: 9999,
+                        background: active ? "#423324" : "#FFFFFF",
+                        border: active ? "1.5px solid #423324" : "1.5px solid rgba(26,26,26,0.14)",
+                        color: active ? "#FFFFFF" : "#1A1A1A",
+                        fontFamily: FF,
+                        fontSize: 14,
+                        fontWeight: 600,
+                        cursor: "pointer",
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div>
             <Label htmlFor="password" style={CARD_LABEL}>
               Password
@@ -1094,21 +1098,23 @@ const Welcome = () => {
         {mode === "signup" && (
           <p style={{ fontFamily: FF, fontSize: 13, color: "#6B6255", margin: "12px 0 0", textAlign: "center" }}>
             By creating an account you agree to our{" "}
-            <button
-              type="button"
-              onClick={() => navigate("/terms")}
-              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#715A3D" }}
+            <a
+              href="https://hellohoedspruit.co/legal/terms-of-use"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#5A452E" }}
             >
-              Terms
-            </button>{" "}
+              Terms of Service
+            </a>{" "}
             and{" "}
-            <button
-              type="button"
-              onClick={() => navigate("/terms")}
-              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#715A3D" }}
+            <a
+              href="https://hellohoedspruit.co/legal/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#5A452E" }}
             >
               Privacy Policy
-            </button>
+            </a>
             .
           </p>
         )}
