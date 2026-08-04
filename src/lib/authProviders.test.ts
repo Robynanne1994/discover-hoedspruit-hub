@@ -3,7 +3,9 @@ import type { User } from "@supabase/supabase-js";
 import {
   friendlyOAuthError,
   hasPasswordIdentity,
+  isEmailDerivedName,
   isSocialAccount,
+  nameFromProvider,
   needsProfileSetup,
   profileGaps,
   signInMethodLabel,
@@ -81,6 +83,45 @@ describe("profileGaps", () => {
   it("treats whitespace as missing", () => {
     expect(needsProfileSetup({ ...complete, username: "   " })).toBe(true);
     expect(needsProfileSetup({ ...complete, location: "" })).toBe(true);
+  });
+});
+
+describe("nameFromProvider", () => {
+  const userWithMeta = (user_metadata: Record<string, unknown>) =>
+    ({ user_metadata } as unknown as User);
+
+  it("reads the keys Google and Apple actually use", () => {
+    expect(nameFromProvider(userWithMeta({ full_name: "Robyn McDonald" }))).toBe("Robyn McDonald");
+    expect(nameFromProvider(userWithMeta({ name: "Robyn McDonald" }))).toBe("Robyn McDonald");
+    expect(
+      nameFromProvider(userWithMeta({ given_name: "Robyn", family_name: "McDonald" })),
+    ).toBe("Robyn McDonald");
+  });
+
+  it("says nothing when the provider gave no name", () => {
+    expect(nameFromProvider(userWithMeta({ email: "robynmcd16@example.com" }))).toBe("");
+    expect(nameFromProvider(null)).toBe("");
+  });
+});
+
+describe("isEmailDerivedName", () => {
+  it("recognises the local part of the address posing as a name", () => {
+    expect(isEmailDerivedName("robynmcd16", "robynmcd16@example.com")).toBe(true);
+    expect(isEmailDerivedName("Robynmcd16", "robynmcd16@example.com")).toBe(true);
+    // Separators come back through as spaces or capitals; still not a name.
+    expect(isEmailDerivedName("Robyn Mcd16", "robyn.mcd16@example.com")).toBe(true);
+    expect(isEmailDerivedName("robyn_mcd", "robyn.mcd@example.com")).toBe(true);
+  });
+
+  it("leaves a real name alone", () => {
+    expect(isEmailDerivedName("Robyn McDonald", "robynmcd16@example.com")).toBe(false);
+    expect(isEmailDerivedName("Robyn", "robynmcd16@example.com")).toBe(false);
+  });
+
+  it("has nothing to say without both halves", () => {
+    expect(isEmailDerivedName("", "robynmcd16@example.com")).toBe(false);
+    expect(isEmailDerivedName("Robyn McDonald", null)).toBe(false);
+    expect(isEmailDerivedName("Robyn McDonald", undefined)).toBe(false);
   });
 });
 

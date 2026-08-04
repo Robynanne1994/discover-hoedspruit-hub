@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import Seo from "@/components/Seo";
 import { sanitiseUsername, validateUsername, USERNAME_MAX, USERNAME_HINT } from "@/lib/username";
-import { signInMethodLabel } from "@/lib/authProviders";
+import { isEmailDerivedName, nameFromProvider, signInMethodLabel } from "@/lib/authProviders";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -57,19 +57,6 @@ const RESIDENCY_OPTIONS = [
 // Capitalise the first letter of each word as the user types, matching signup.
 const capitaliseName = (value: string) =>
   value.replace(/(^|[\s'-])([a-z])/g, (_m, sep, ch) => sep + ch.toUpperCase());
-
-/** Everything a provider might have told us about someone's name. */
-function nameFromMetadata(metadata: Record<string, unknown> | undefined): string {
-  const pick = (key: string) => {
-    const value = metadata?.[key];
-    return typeof value === "string" ? value.trim() : "";
-  };
-  const full = pick("full_name") || pick("name") || pick("display_name");
-  if (full) return full;
-  const first = pick("given_name") || pick("first_name");
-  const last = pick("family_name") || pick("surname");
-  return [first, last].filter(Boolean).join(" ");
-}
 
 /** A starting suggestion for the handle, from the address they signed up with. */
 function suggestUsername(email: string | undefined): string {
@@ -116,11 +103,15 @@ const CompleteProfile = () => {
         .join(" ")
         .trim();
 
-      setFullName(
+      // A real name from the provider is worth offering; the local part of the
+      // email address is not. The profile row can hold that local part — it is
+      // what a signup with no name at all left behind — so the guard runs on
+      // whichever of these we ended up with, not just on the provider's answer.
+      const suggestedName =
         existingName ||
-          ((profile as any)?.display_name ?? "") ||
-          nameFromMetadata(user.user_metadata as Record<string, unknown>),
-      );
+        nameFromProvider(user) ||
+        ((profile as any)?.display_name ?? "");
+      setFullName(isEmailDerivedName(suggestedName, user.email) ? "" : suggestedName);
       setUsername(((profile as any)?.username as string) || suggestUsername(user.email));
       setResidency(((profile as any)?.location as string) || "");
     })();
@@ -193,13 +184,17 @@ const CompleteProfile = () => {
       return;
     }
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id,
+    const saved = {
       first_name: first,
       surname: last,
       display_name: `${first} ${last}`,
       username: handle,
       location: residency,
+    };
+
+    const { error } = await supabase.from("profiles").upsert({
+      id: user.id,
+      ...saved,
       email: user.email ?? null,
     } as any);
     setSaving(false);
@@ -213,6 +208,14 @@ const CompleteProfile = () => {
       return;
     }
 
+    // The gate in App.tsx decides where a provider account is allowed to be from
+    // its own copy of the profile, and it still holds the empty one it fetched
+    // on the way in. Refetching is a round trip, and until it lands the gate
+    // reads the profile as unfinished and sends us straight back here — the
+    // success message appears and the page never changes. Writing the row we
+    // just saved into that cache first closes the window entirely.
+    queryClient.setQueryData(["profile-setup", user.id], saved);
+    queryClient.invalidateQueries({ queryKey: ["profile-setup", user.id] });
     queryClient.invalidateQueries({ queryKey: ["profile"] });
     queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
     toast.success("You're all set. Welcome to Hoedspruit.");
@@ -247,7 +250,8 @@ const CompleteProfile = () => {
         <p style={{ fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 24px" }}>
           Your email is verified — you signed in with {method}, so there's no code to enter
           and no password to remember. We just need a few things before your profile is
-          ready for the rest of Hoedspruit to see.
+          ready for the rest of Hoedspruit to see. You can add a password later in Account
+          Info if you'd also like to log in with your email.
         </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
