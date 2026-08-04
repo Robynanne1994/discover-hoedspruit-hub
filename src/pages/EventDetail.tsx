@@ -403,8 +403,6 @@ const EventDetail = () => {
     },
   ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean; disabled?: boolean }>;
 
-  ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean; disabled?: boolean }>;
-
   const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
     const disabled = a.disabled;
     const filled = !disabled && a.key === "booking";
