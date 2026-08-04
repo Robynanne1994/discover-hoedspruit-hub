@@ -70,7 +70,7 @@ export async function signPayload(
 ): Promise<string> {
   const key = await crypto.subtle.importKey(
     "raw",
-    base64ToBytes(normaliseSecret(secret)),
+    base64ToBytes(normaliseSecret(secret)).buffer as ArrayBuffer,
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign"],
