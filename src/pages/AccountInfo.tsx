@@ -28,14 +28,18 @@ import VerificationCodeInput from "@/components/auth/VerificationCodeInput";
 import {
   VERIFICATION_CODE_LENGTH,
   VERIFICATION_CODE_TTL_MINUTES,
+  cancelEmailChange,
   isCompleteCode,
   isEmailVerified,
   isValidEmail,
+  readPendingEmailChange,
+  resendEmailChangeCode,
   resendSignupCode,
-  sendEmailChangeCode,
+  startEmailChange,
   verifyEmailChangeCode,
   verifySignupCode,
 } from "@/lib/emailVerification";
+import { hasPasswordIdentity, signInMethodLabel } from "@/lib/authProviders";
 import {
   clearEmailChangeParams,
   forgetEmailChangeLink,
@@ -429,14 +433,29 @@ const AccountInfo = () => {
     }
   }, [profile, user]);
 
-  // An email change requested in an earlier visit is still open server-side —
-  // Supabase parks the address on `new_email` until its code is redeemed. Pick
-  // it back up so the row explains itself instead of looking like nothing
+  // An email change requested in an earlier visit may still be open: the code
+  // lives for VERIFICATION_CODE_TTL_MINUTES whether or not the app stayed open.
+  // Pick it back up so the row explains itself instead of looking like nothing
   // happened.
   useEffect(() => {
-    const pending = (user as { new_email?: string } | null)?.new_email;
-    if (!pending || pending.toLowerCase() === (user?.email || "").toLowerCase()) return;
-    setVerifyTarget((prev) => prev ?? { email: pending, reason: "change", issuedAt: Date.now() });
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      const pending = await readPendingEmailChange();
+      if (cancelled || !pending) return;
+      if (pending.email.toLowerCase() === (user.email || "").toLowerCase()) return;
+      setVerifyTarget((prev) => {
+        if (prev) return prev;
+        // Count the window from when the code was issued, not from now, so a
+        // code that is nearly out of time doesn't look brand new.
+        const issuedAt =
+          new Date(pending.expiresAt).getTime() - VERIFICATION_CODE_TTL_MINUTES * 60 * 1000;
+        return { email: pending.email, reason: "change", issuedAt };
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [user]);
 
   // The code only works for VERIFICATION_CODE_TTL_MINUTES. Once that window
@@ -608,6 +627,18 @@ const AccountInfo = () => {
       return;
     }
 
+    // A code is already out to this exact address. Asking for another one would
+    // only hit the one-a-minute limit, so re-open the sheet instead — the thing
+    // that is actually outstanding is the code, not the save.
+    if (
+      emailChanged &&
+      verifyTarget?.reason === "change" &&
+      verifyTarget.email.toLowerCase() === trimmedEmail.toLowerCase()
+    ) {
+      setVerifySheetOpen(true);
+      return;
+    }
+
     setSavingProfile(true);
     try {
       // Only check availability when the handle actually changed. Re-saving your
@@ -680,24 +711,13 @@ const AccountInfo = () => {
       if (emailChanged) {
         // Sends a six-digit code to the NEW address. The account keeps its
         // current email until that code comes back, so a typo can never strand
-        // an account on an inbox nobody can open.
-        const { error: sendErr, applied } = await sendEmailChangeCode(trimmedEmail);
+        // an account on an inbox nobody can open. The function checks the
+        // address against every other account first and refuses it if it is
+        // already spoken for — that check is the authoritative one, since it
+        // sees auth.users as well as profiles.
+        const { error: sendErr } = await startEmailChange(trimmedEmail);
         if (sendErr) {
-          toast.error(sendErr);
-          setSavingProfile(false);
-          return;
-        }
-        if (applied) {
-          // "Confirm email" is off on the project, so Supabase moved the address
-          // across immediately and sent no code. Don't open a code sheet that
-          // would wait forever on an email nobody is going to receive.
-          setEmail(trimmedEmail);
-          setVerifyTarget(null);
-          toast.success("Email updated.", {
-            style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
-          });
-          queryClient.invalidateQueries({ queryKey: ["profile"] });
-          queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
+          toast.error(sendErr, { duration: 8000 });
           setSavingProfile(false);
           return;
         }
@@ -747,7 +767,7 @@ const AccountInfo = () => {
     setSendingEmailCode(true);
     const { error } =
       verifyTarget.reason === "change"
-        ? await sendEmailChangeCode(verifyTarget.email)
+        ? await resendEmailChangeCode()
         : await resendSignupCode(verifyTarget.email);
     setSendingEmailCode(false);
     if (error) {
@@ -763,15 +783,19 @@ const AccountInfo = () => {
   /**
    * Redeem the code. For a change this is the moment the account actually moves
    * to the new address; the on_auth_user_email_changed trigger mirrors it onto
-   * the profile, and USER_UPDATED refreshes `user` here.
+   * the profile.
    */
   const handleVerifyEmailCode = async (entered: string) => {
     if (!verifyTarget) return { error: "Nothing to verify." };
     const { error } =
       verifyTarget.reason === "change"
-        ? await verifyEmailChangeCode(verifyTarget.email, entered)
+        ? await verifyEmailChangeCode(entered)
         : await verifySignupCode(verifyTarget.email, entered);
     if (error) return { error };
+    // The access token in hand still carries the old address in its claims, so
+    // `user.email` would keep reading back the address we just moved off until
+    // it is refreshed.
+    await supabase.auth.refreshSession();
     setEmail(verifyTarget.email);
     setVerifyTarget(null);
     setVerifySheetOpen(false);
@@ -787,6 +811,12 @@ const AccountInfo = () => {
 
   /** Abandon a pending change and put the field back to the live address. */
   const handleCancelVerification = () => {
+    if (verifyTarget?.reason === "change") {
+      // Nothing on the account has moved, so this is only tidying — but it
+      // releases the one-a-minute limit and stops the row claiming to be
+      // waiting for a code nobody is going to enter.
+      void cancelEmailChange();
+    }
     setVerifyTarget(null);
     setVerifySheetOpen(false);
     setEmail(user?.email || (profile as any)?.email || "");
@@ -1114,7 +1144,17 @@ const AccountInfo = () => {
               </Row>
 
               <Row label="Password" onClick={() => setPwOpen(true)}>
-                <div style={{ ...rowValueStyle, letterSpacing: "2px" }}>••••••••</div>
+                {hasPasswordIdentity(user) ? (
+                  <div style={{ ...rowValueStyle, letterSpacing: "2px" }}>••••••••</div>
+                ) : (
+                  <>
+                    <div style={rowValueStyle}>Set a password</div>
+                    <EmailStatusNote tone="pending">
+                      You sign in with {signInMethodLabel(user)}. You can add a password if
+                      you'd like to log in with your email as well.
+                    </EmailStatusNote>
+                  </>
+                )}
               </Row>
             </>
           )}
@@ -1731,8 +1771,9 @@ const VerifyEmailSheet = ({
         </button>
 
         <p style={{ fontFamily: FF, fontSize: 12.5, lineHeight: 1.5, color: MUTED, margin: "14px 0 0", textAlign: "center" }}>
-          The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes. Check your spam folder
-          if it doesn't arrive.
+          The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes, so there's no rush.
+          Nothing after a minute or two? Check your spam or junk folder — it comes from
+          hello@hellohoedspruit.com.
         </p>
 
         <button
@@ -1778,7 +1819,15 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   const [errorField, setErrorField] = useState<{ field: "current" | "new" | "confirm"; msg: string } | null>(null);
   // "change" = normal form, "forgot" = confirm sending a reset email,
   // "sent" = the reset email has gone out.
-  const [view, setView] = useState<"change" | "forgot" | "sent">("change");
+  //
+  // An account that signed up with Google or Apple has never had a password,
+  // so there is no current one to ask for and the form would be unanswerable.
+  // It starts on "forgot" instead, which is the same email — the copy just
+  // calls it setting a password rather than resetting one.
+  const hasPassword = hasPasswordIdentity(user);
+  const [view, setView] = useState<"change" | "forgot" | "sent">(
+    hasPassword ? "change" : "forgot",
+  );
   const [sendingReset, setSendingReset] = useState(false);
   const resetCooldown = useResendCooldown();
   const accountEmail = user?.email || "";
@@ -1968,12 +2017,30 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
 
         {view === "forgot" && (
           <>
-            <h2 style={sheetHeadingStyle}>Forgot Password</h2>
+            <h2 style={sheetHeadingStyle}>
+              {hasPassword ? "Forgot Password" : "Set a Password"}
+            </h2>
             <p style={sheetCopyStyle}>
-              No problem. We'll email a secure link to{" "}
-              <span style={{ color: INK, fontWeight: 600 }}>{accountEmail || "your account email"}</span>
-              . Open it within {RESET_LINK_TTL_MINUTES} minutes and you can choose a
-              brand-new password — no current password needed.
+              {hasPassword ? (
+                <>
+                  No problem. We'll email a secure link to{" "}
+                  <span style={{ color: INK, fontWeight: 600 }}>
+                    {accountEmail || "your account email"}
+                  </span>
+                  . Open it within {RESET_LINK_TTL_MINUTES} minutes and you can choose a
+                  brand-new password — no current password needed.
+                </>
+              ) : (
+                <>
+                  You sign in with {signInMethodLabel(user)}, so this account has never had
+                  a password. You don't need one — but if you'd like to be able to log in
+                  with your email too, we'll send a link to{" "}
+                  <span style={{ color: INK, fontWeight: 600 }}>
+                    {accountEmail || "your account email"}
+                  </span>{" "}
+                  where you can choose one. It works for {RESET_LINK_TTL_MINUTES} minutes.
+                </>
+              )}
             </p>
             <button
               onClick={handleSendResetLink}
@@ -1988,11 +2055,15 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
                 ? "Sending…"
                 : resetCooldown.waiting
                 ? `Try again in ${resetCooldown.remaining}s`
-                : "Email Me a Reset Link"}
+                : hasPassword
+                ? "Email Me a Reset Link"
+                : "Email Me a Link"}
             </button>
-            <button type="button" onClick={() => setView("change")} style={textLinkStyle}>
-              Back to Change Password
-            </button>
+            {hasPassword && (
+              <button type="button" onClick={() => setView("change")} style={textLinkStyle}>
+                Back to Change Password
+              </button>
+            )}
           </>
         )}
 

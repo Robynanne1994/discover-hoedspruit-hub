@@ -33,6 +33,7 @@ import {
   resendSignupCode,
   verifySignupCode,
 } from "@/lib/emailVerification";
+import { friendlyOAuthError } from "@/lib/authProviders";
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -130,6 +131,10 @@ const Welcome = () => {
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState<SignInFailure | null>(null);
+  // The one signup failure worth keeping on screen rather than in a toast: the
+  // address already has an account, and the two things worth doing about it are
+  // both one tap away.
+  const [signupError, setSignupError] = useState<string | null>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [keepSignedIn, setKeepSignedIn] = useState(true);
   const [oauthLoading, setOauthLoading] = useState<"google" | "apple" | null>(null);
@@ -148,6 +153,19 @@ const Welcome = () => {
   // because the address was never confirmed.
   const [verifyReason, setVerifyReason] = useState<"signup" | "signin">("signup");
 
+  /**
+   * Sign in with Google or Apple.
+   *
+   * The provider has already proved the address, so there is no code to enter —
+   * but a provider hands us an email and very little else. Anything still
+   * missing (username, residency, name) is collected by /complete-profile,
+   * which App.tsx routes to on the way in; without that the account would exist
+   * with nothing on it but an email address.
+   *
+   * An address that already belongs to an email-and-password account is
+   * refused by Supabase rather than quietly taken over. `friendlyOAuthError`
+   * turns that into the two things worth doing about it.
+   */
   const handleOAuth = async (provider: "google" | "apple") => {
     setOauthLoading(provider);
     try {
@@ -155,14 +173,19 @@ const Welcome = () => {
         redirect_uri: window.location.origin,
       });
       if ((result as any).error) {
-        toast.error((result as any).error.message || "Could not sign in. Please try again.");
+        toast.error(friendlyOAuthError((result as any).error.message, provider), {
+          duration: 8000,
+        });
         setOauthLoading(null);
         return;
       }
+      // Redirected away to the provider: this page is going away, and the app
+      // picks up again when it comes back.
       if ((result as any).redirected) return;
+      localStorage.setItem("hh-keep-signed-in", "1");
       navigate("/", { replace: true });
     } catch (err: any) {
-      toast.error(err?.message || "Could not sign in. Please try again.");
+      toast.error(friendlyOAuthError(err?.message, provider), { duration: 8000 });
     }
     setOauthLoading(null);
   };
@@ -193,6 +216,7 @@ const Welcome = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError(null);
+    setSignupError(null);
     setLoading(true);
     if (mode === "signup") {
       if (!firstName || !lastName) {
@@ -236,9 +260,11 @@ const Welcome = () => {
         return;
       }
       const displayName = `${firstName} ${lastName}`;
-      // The username and residency travel as signup metadata: with email
-      // confirmation on there is no session yet, so the client can't write to
-      // `profiles`. handle_new_user() builds the profile row from them.
+      // The username and residency travel as signup metadata: the account is
+      // created unconfirmed, so there is no session yet and nothing the client
+      // could write to `profiles`. handle_new_user() builds the profile row
+      // from them, and the username is only claimed once the address is
+      // confirmed — see apply_signup_metadata().
       const { error, needsVerification } = await signUp(email, password, {
         displayName,
         firstName,
@@ -247,12 +273,11 @@ const Welcome = () => {
         location: residency,
       });
       if (error) {
-        if (/already registered|already exists|already in use/i.test(error.message)) {
+        const code = (error as Error & { code?: string }).code;
+        if (code === "email_in_use") {
           // The mirror image of the "no account for this email" message on the
           // log-in side: this address is taken, so point them at logging in.
-          toast.error(
-            `${email.trim() || "That email"} already has an account. Log in instead, or use a different email.`
-          );
+          setSignupError(error.message);
         } else if (/duplicate|unique/i.test(error.message)) {
           toast.error("That username is already taken. Please choose a different one.");
         } else {
@@ -264,12 +289,6 @@ const Welcome = () => {
         localStorage.setItem("hh-keep-signed-in", "1");
         verifyCooldown.start();
         openVerifyStep("signup");
-        setLoading(false);
-        return;
-      } else {
-        // Confirmation is switched off on this project: signUp handed back a
-        // session, so the account is already usable.
-        await finishSignup();
         setLoading(false);
         return;
       }
@@ -312,14 +331,28 @@ const Welcome = () => {
     setMode("verify");
   };
 
-  /** Land a freshly verified (or already-signed-in) new account on the homepage. */
-  const finishSignup = async () => {
-    toast.success("Account created! You're in.");
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      localStorage.setItem("hh-keep-signed-in", "1");
-      await signIn(email, password);
+  /**
+   * The address is confirmed; finish the job by signing in.
+   *
+   * Redeeming a code deliberately does not hand back a session — the code
+   * proves the inbox, not the person — so the password typed a moment ago is
+   * what actually signs them in. It is still in state either way: on the signup
+   * form they just chose it, and on the log in form they just typed it.
+   */
+  const finishVerification = async () => {
+    const { error } = await signIn(email, password);
+    if (error) {
+      // Verified, but the sign-in didn't take. Nothing has been lost — the
+      // account is live now — so hand them to the log in form rather than
+      // leaving them on a code screen with nothing left to enter.
+      toast.success("Email verified. Log in to finish.");
+      setPassword("");
+      setMode("signin");
+      return;
     }
+    toast.success(
+      verifyReason === "signup" ? "Account created! You're in." : "Email verified.",
+    );
     navigate("/", { replace: true });
   };
 
@@ -334,15 +367,8 @@ const Welcome = () => {
       setVerifying(false);
       return;
     }
+    await finishVerification();
     setVerifying(false);
-    if (verifyReason === "signup") {
-      await finishSignup();
-      return;
-    }
-    // Verifying signs the user in, so an unconfirmed log in ends up exactly
-    // where it was headed.
-    toast.success("Email verified.");
-    navigate("/", { replace: true });
   };
 
   const handleResendCode = async () => {
@@ -435,8 +461,9 @@ const Welcome = () => {
           </Button>
 
           <p style={{ fontSize: 13, lineHeight: 1.55, color: "#6B6255", marginTop: 16, textAlign: "center" }}>
-            The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes. Nothing in your
-            inbox? Check your spam folder.
+            The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes, so there's no rush.
+            Nothing in your inbox after a minute or two? Check your spam or junk folder —
+            it comes from hello@hellohoedspruit.com.
           </p>
 
           <p className="text-center text-sm mt-4" style={{ color: "#2b2420" }}>
@@ -857,6 +884,55 @@ const Welcome = () => {
               )}
             </div>
           )}
+          {signupError && mode === "signup" && (
+            <div
+              role="alert"
+              className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-[13px]"
+              style={{
+                background: "#fdecec",
+                border: "1px solid #e5484d",
+                color: "#b42318",
+                fontFamily: FF,
+              }}
+            >
+              <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+              <div>
+                <span>{signupError}</span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 8 }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSignupError(null);
+                      setPassword("");
+                      setMode("signin");
+                    }}
+                    style={{
+                      fontFamily: FF, fontWeight: 600, fontSize: 13, color: "#b42318",
+                      textDecoration: "underline", textUnderlineOffset: 3, background: "none",
+                      border: "none", padding: 0, cursor: "pointer",
+                    }}
+                  >
+                    Log in instead
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSignupError(null);
+                      setEmail("");
+                      emailInputRef.current?.focus();
+                    }}
+                    style={{
+                      fontFamily: FF, fontWeight: 600, fontSize: 13, color: "#b42318",
+                      textDecoration: "underline", textUnderlineOffset: 3, background: "none",
+                      border: "none", padding: 0, cursor: "pointer",
+                    }}
+                  >
+                    Use a different email
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
           <div>
             <Label htmlFor="email" style={CREATE_LABEL_STYLE}>
               Email
@@ -866,13 +942,19 @@ const Welcome = () => {
               ref={emailInputRef}
               type="email"
               value={email}
-              onChange={(e) => { setEmail(e.target.value); if (authError) setAuthError(null); }}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (authError) setAuthError(null);
+                if (signupError) setSignupError(null);
+              }}
               required
               placeholder="you@example.com"
               className="h-12 rounded-xl bg-card border-border text-[15px]"
               style={{
                 ...fieldStyle,
-                ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
+                ...((authError && mode === "signin") || (signupError && mode === "signup")
+                  ? { border: "1.5px solid #e5484d" }
+                  : {}),
               }}
             />
           </div>
@@ -1007,6 +1089,7 @@ const Welcome = () => {
           <button
             onClick={() => {
               setAuthError(null);
+              setSignupError(null);
               setMode(mode === "signup" ? "signin" : "signup");
             }}
             className="font-medium"

@@ -29,16 +29,16 @@
 //
 // See EMAIL_VERIFICATION_SETUP.md for the (unavoidably manual) dashboard and
 // DNS steps.
-import { sendLovableEmail } from "npm:@lovable.dev/email-js";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { renderAuthEmail, type AuthEmailAction } from "../_shared/authEmailTemplates.ts";
+import { deliverEmail } from "../_shared/emailSender.ts";
 import {
   readSignatureHeaders,
   verifyWebhookSignature,
 } from "../_shared/verifyWebhookSignature.ts";
 
 /** How long a code stays valid. Mirrors `otp_expiry` in supabase/config.toml. */
-const TTL_MINUTES = 15;
+const TTL_MINUTES = 30;
 
 /** What Supabase posts to a send-email hook. */
 interface HookPayload {
@@ -124,53 +124,6 @@ function buildConfirmationUrl(
   return url.toString();
 }
 
-interface SendArgs {
-  to: string;
-  subject: string;
-  html: string;
-  text: string;
-}
-
-/** Send through Resend. Returns the provider message id. */
-async function sendViaResend(apiKey: string, args: SendArgs): Promise<string> {
-  const from = Deno.env.get("AUTH_EMAIL_FROM") || "Hello Hoedspruit <noreply@hellohoedspruit.com>";
-  const replyTo = Deno.env.get("AUTH_EMAIL_REPLY_TO") || "hello@hellohoedspruit.com";
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [args.to],
-      subject: args.subject,
-      html: args.html,
-      // Sending both parts matters: HTML-only mail is a long-standing spam
-      // signal, and the text part is what a watch or a screen reader shows.
-      text: args.text,
-      reply_to: replyTo,
-      headers: {
-        // Tells receiving servers this is a one-off, user-triggered message
-        // rather than bulk mail, and stops threading separate codes together.
-        "X-Entity-Ref-ID": crypto.randomUUID(),
-        "Auto-Submitted": "auto-generated",
-      },
-    }),
-  });
-
-  const bodyText = await response.text();
-  if (!response.ok) {
-    throw new Error(`Resend ${response.status}: ${bodyText.slice(0, 500)}`);
-  }
-  try {
-    return (JSON.parse(bodyText) as { id?: string }).id ?? "";
-  } catch {
-    return "";
-  }
-}
-
 Deno.serve(async (req) => {
   if (req.method !== "POST") return hookError("Method not allowed", 405);
 
@@ -231,91 +184,20 @@ Deno.serve(async (req) => {
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  const log = supabaseUrl && serviceKey ? createClient(supabaseUrl, serviceKey) : null;
+  const admin = supabaseUrl && serviceKey ? createClient(supabaseUrl, serviceKey) : null;
 
-  // Never mail an address that has bounced or complained: repeatedly sending to
-  // a dead mailbox is what wrecks a sending domain's reputation for everyone
-  // else. Auth mail is user-triggered, so this only ever catches hard failures.
-  if (log) {
-    const { data: suppressed } = await log
-      .from("suppressed_emails")
-      .select("reason")
-      .eq("email", recipient.toLowerCase())
-      .maybeSingle();
-    if (suppressed && suppressed.reason !== "unsubscribe") {
-      console.warn("Refusing to send auth email to suppressed address", {
-        reason: suppressed.reason,
-      });
-      return hookError(
-        "We can't deliver email to that address. Please use a different one or contact support.",
-        422,
-      );
-    }
-  }
+  const outcome = await deliverEmail(
+    { to: recipient, subject, html, text, label: `auth_${action}` },
+    admin,
+  );
 
-  const resendKey = Deno.env.get("RESEND_API_KEY");
-  const messageId = crypto.randomUUID();
-  const label = `auth_${action}`;
-
-  try {
-    let providerMessageId = "";
-    if (resendKey) {
-      providerMessageId = await sendViaResend(resendKey, {
-        to: recipient,
-        subject,
-        html,
-        text,
-      });
-    } else {
-      // No Resend key yet: keep the flows alive on the sender the rest of the
-      // app already uses. Deliverability is not fixed until Resend is wired up.
-      console.warn("RESEND_API_KEY not set — falling back to the Lovable sender");
-      const apiKey = Deno.env.get("LOVABLE_API_KEY");
-      if (!apiKey) throw new Error("Neither RESEND_API_KEY nor LOVABLE_API_KEY is set");
-      await sendLovableEmail(
-        {
-          to: recipient,
-          subject,
-          html,
-          text,
-          purpose: "transactional",
-          label,
-          message_id: messageId,
-          idempotency_key: messageId,
-        },
-        { apiKey, sendUrl: Deno.env.get("LOVABLE_SEND_URL") },
-      );
-      providerMessageId = messageId;
-    }
-
-    if (log) {
-      await log.from("email_send_log").insert({
-        message_id: providerMessageId || messageId,
-        template_name: label,
-        recipient_email: recipient,
-        status: "sent",
-      });
-    }
-
-    // The body is ignored on success; a 200 tells Supabase the mail is away.
-    return json({});
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.error("Failed to send auth email", { action, error: message });
-
-    if (log) {
-      await log.from("email_send_log").insert({
-        message_id: messageId,
-        template_name: label,
-        recipient_email: recipient,
-        status: "failed",
-        error_message: message.slice(0, 1000),
-      });
-    }
-
+  if (!outcome.ok) {
     // Report the failure rather than swallowing it. A silent failure here is
     // precisely the bug being fixed: the app says "check your email" and the
     // person waits for something that was never sent.
-    return hookError("We couldn't send that email just now. Please try again.", 500);
+    return hookError(outcome.message, outcome.reason === "suppressed" ? 422 : 500);
   }
+
+  // The body is ignored on success; a 200 tells Supabase the mail is away.
+  return json({});
 });

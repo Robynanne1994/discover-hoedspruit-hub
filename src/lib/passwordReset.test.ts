@@ -8,6 +8,8 @@ import {
   resetLinkRemainingMs,
 } from "@/lib/passwordReset";
 
+const RESET_PATH = "/reset-password";
+
 describe("parseRecoveryUrl", () => {
   it("recognises the implicit flow (tokens in the hash)", () => {
     const { link } = parseRecoveryUrl(
@@ -22,8 +24,13 @@ describe("parseRecoveryUrl", () => {
     expect(link).toEqual({ kind: "implicit" });
   });
 
-  it("recognises the PKCE flow", () => {
-    const { link } = parseRecoveryUrl("?code=xyz", "");
+  it("recognises the PKCE flow by the stamp our own reset links carry", () => {
+    const { link } = parseRecoveryUrl("?issued=1700000000000&code=xyz", "");
+    expect(link).toEqual({ kind: "code", code: "xyz" });
+  });
+
+  it("recognises the PKCE flow by where it landed", () => {
+    const { link } = parseRecoveryUrl("?code=xyz", "", RESET_PATH);
     expect(link).toEqual({ kind: "code", code: "xyz" });
   });
 
@@ -32,16 +39,43 @@ describe("parseRecoveryUrl", () => {
     expect(link).toEqual({ kind: "tokenHash", tokenHash: "t123" });
   });
 
+  // The bug this guards against: an email-change confirmation was claimed as a
+  // password reset, so tapping the button in that email opened the reset screen
+  // and the change it was meant to finish never happened.
+  it("leaves another flow's credentials alone", () => {
+    expect(
+      parseRecoveryUrl("?token_hash=t123&type=email_change", "").link
+    ).toEqual({ kind: "none" });
+    expect(
+      parseRecoveryUrl("", "#access_token=abc&refresh_token=def&type=email_change").link
+    ).toEqual({ kind: "none" });
+    expect(parseRecoveryUrl("?code=xyz&type=email_change", "").link).toEqual({ kind: "none" });
+    expect(parseRecoveryUrl("?type=signup&token_hash=t1", "").link).toEqual({ kind: "none" });
+  });
+
+  it("does not claim a bare code that arrived somewhere else entirely", () => {
+    expect(parseRecoveryUrl("?code=xyz", "", "/account-settings/info").link).toEqual({
+      kind: "none",
+    });
+  });
+
   it("treats Supabase's error params as an expired link, in the hash or the query", () => {
     expect(
-      parseRecoveryUrl("", "#error=access_denied&error_code=otp_expired").link
+      parseRecoveryUrl("?issued=1700000000000", "#error=access_denied&error_code=otp_expired")
+        .link
     ).toEqual({ kind: "expired" });
-    expect(parseRecoveryUrl("?error_code=otp_expired", "").link).toEqual({ kind: "expired" });
+    expect(parseRecoveryUrl("?error_code=otp_expired", "", RESET_PATH).link).toEqual({
+      kind: "expired",
+    });
+    expect(parseRecoveryUrl("?error_code=otp_expired&type=recovery", "").link).toEqual({
+      kind: "expired",
+    });
   });
 
   it("reports no link when the page was opened directly", () => {
     expect(parseRecoveryUrl("", "").link).toEqual({ kind: "none" });
     expect(parseRecoveryUrl("?q=coffee", "#section").link).toEqual({ kind: "none" });
+    expect(parseRecoveryUrl("", "", RESET_PATH).link).toEqual({ kind: "none" });
   });
 
   it("ignores an unrelated error param elsewhere in the app", () => {

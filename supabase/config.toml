@@ -48,6 +48,17 @@ verify_jwt = true
 [functions.send-auth-email]
 verify_jwt = false
 
+# The app's own six-digit verification codes (signup, and changing your email).
+#
+# Two of its actions are deliberately callable without a session -- creating an
+# account and redeeming the code that activates it both happen before there is
+# one -- so the platform JWT gate has to be off. The other actions read the
+# bearer token themselves via auth.getUser and refuse anything else, and every
+# state change is behind a code that was only ever emailed to the address being
+# proved.
+[functions.account-email]
+verify_jwt = false
+
 # Auth email configuration.
 #
 # Applied when the Supabase config is pushed. The same values must be set in the
@@ -55,15 +66,23 @@ verify_jwt = false
 # managed there -- see PASSWORD_RESET_SETUP.md. The app enforces the 15-minute
 # window itself as well, so the reset screen behaves correctly either way.
 [auth.email]
-# Emailed codes and links (password recovery, confirmations) expire after 15
-# minutes.
-otp_expiry = 900
+# Emailed codes and links (password recovery, and anything still going through
+# Supabase's own sender) expire after 30 minutes. Fifteen was too short to
+# survive the ordinary case of reading the email on another device: the app's
+# own codes (supabase/functions/account-email) use the same window, and
+# VERIFICATION_CODE_TTL_MINUTES / RESET_LINK_TTL_MINUTES mirror it.
+otp_expiry = 1800
 # At most one auth email per address per minute; the resend buttons in the app
 # count this down instead of letting the request fail.
 max_frequency = "60s"
 # A new account is not usable until the six-digit code we email has been typed
 # back into the app. The address is the only way we can reset a password or
 # reach someone about their account, so it has to be a real inbox they own.
+#
+# This must stay ON. It is what stops an unverified account being signed in to:
+# the app creates the account unconfirmed, and Supabase refuses its password
+# until the code from account-email has been redeemed. With this off, an
+# unverified address would be a working account.
 enable_confirmations = true
 otp_length = 6
 # Changing your email confirms at the NEW address only. Double confirmation

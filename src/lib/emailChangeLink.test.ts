@@ -15,6 +15,18 @@ describe("parseEmailChangeUrl", () => {
     });
   });
 
+  it("recognises a PKCE code that says nothing, by where it landed", () => {
+    // Supabase's PKCE redirect carries no `type`, so a bare `?code=` is
+    // indistinguishable from a password reset's — except that only an
+    // email-change link is ever sent to Account Info.
+    expect(parseEmailChangeUrl("?code=xyz", "", "/account-settings/info")).toEqual({
+      kind: "code",
+      code: "xyz",
+    });
+    // ...and an ordinary visit to the same screen is still just a visit.
+    expect(parseEmailChangeUrl("", "", "/account-settings/info")).toEqual({ kind: "none" });
+  });
+
   it("recognises a token hash link", () => {
     expect(parseEmailChangeUrl("?token_hash=t123&type=email_change", "")).toEqual({
       kind: "tokenHash",

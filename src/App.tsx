@@ -81,6 +81,11 @@ import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
 import { RESET_PASSWORD_PATH, hasRecoveryLink } from "@/lib/passwordReset";
 import { EMAIL_CHANGE_PATH, hasEmailChangeLink } from "@/lib/emailChangeLink";
+import CompleteProfile from "./pages/CompleteProfile.tsx";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { isSocialAccount, needsProfileSetup } from "@/lib/authProviders";
+import { useQuery } from "@tanstack/react-query";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -99,7 +104,14 @@ const queryClient = new QueryClient({
 const ConditionalBottomNav = () => {
   const location = useLocation();
   const path = location.pathname;
-  if (path.startsWith("/admin") || path === "/welcome" || path === "/reset-password") return null;
+  if (
+    path.startsWith("/admin") ||
+    path === "/welcome" ||
+    path === "/reset-password" ||
+    path === "/complete-profile"
+  ) {
+    return null;
+  }
   return <BottomNav />;
 };
 
@@ -153,6 +165,64 @@ const EmailChangeLinkRedirect = () => {
   return null;
 };
 
+/** The path where a half-finished provider signup is completed. */
+const COMPLETE_PROFILE_PATH = "/complete-profile";
+
+/**
+ * Screens a signed-in-but-incomplete account is still allowed to reach, so the
+ * gate below can never trap someone: signing out, reading the terms and
+ * finishing a password reset all have to stay possible.
+ */
+const SETUP_EXEMPT_PATHS = [
+  COMPLETE_PROFILE_PATH,
+  "/welcome",
+  RESET_PASSWORD_PATH,
+  "/terms",
+];
+
+/**
+ * Sends a Google/Apple signup to finish its profile before it can use the app.
+ *
+ * A provider gives us a verified email address and nothing else — no username,
+ * no residency, often no usable name. Left alone, the account exists but has
+ * nothing on it, which is neither what the person expects nor something the
+ * rest of the app can show to anybody. Signing up with an email asks for all of
+ * this on the form, so this only ever catches the provider path.
+ */
+const ProfileSetupGate = () => {
+  const { user, loading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile-setup", user?.id],
+    enabled: !!user?.id && isSocialAccount(user),
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("first_name, surname, display_name, username, location")
+        .eq("id", user!.id)
+        .maybeSingle();
+      // `null` means the row hasn't been created yet (the trigger is a moment
+      // behind a brand-new signup); treat that as "nothing filled in".
+      return data ?? {};
+    },
+  });
+
+  React.useEffect(() => {
+    if (loading || !user || !profile) return;
+    if (!isSocialAccount(user)) return;
+    const incomplete = needsProfileSetup(profile as Record<string, string | null>);
+    if (incomplete && !SETUP_EXEMPT_PATHS.includes(location.pathname)) {
+      navigate(COMPLETE_PROFILE_PATH, { replace: true });
+    } else if (!incomplete && location.pathname === COMPLETE_PROFILE_PATH) {
+      navigate("/", { replace: true });
+    }
+  }, [loading, user, profile, location.pathname, navigate]);
+
+  return null;
+};
+
 const ConditionalMain = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith("/admin");
@@ -182,11 +252,13 @@ const App = () => (
               <NativePush />
               <RecoveryLinkRedirect />
               <EmailChangeLinkRedirect />
+              <ProfileSetupGate />
               <ConditionalMain>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/welcome" element={<Welcome />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/complete-profile" element={<CompleteProfile />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/category/:id" element={<CategoryPage />} />
