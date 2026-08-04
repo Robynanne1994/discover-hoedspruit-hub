@@ -356,7 +356,7 @@ const CompleteProfile = () => {
             className="font-medium"
             style={{ color: "#715a3d" }}
           >
-            Sign out
+            Sign Out
           </button>
         </p>
       </div>
