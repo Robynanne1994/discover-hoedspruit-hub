@@ -237,7 +237,7 @@ const ContactUs = () => {
 
       <div style={{ padding: "24px 20px 0" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, padding: "0 4px" }}>
-          <p style={{ fontFamily: `"Nohemi", ${FF}`, fontSize: 15, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1A1A1A", margin: 0 }}>Office Hours</p>
+          <p style={{ fontFamily: `"Nohemi", ${FF}`, fontSize: 15, fontWeight: 550, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1A1A1A", margin: 0 }}>Office Hours</p>
           {(() => {
             const now = new Date();
             const day = now.getDay();
