@@ -526,7 +526,12 @@ Deno.serve(async (req) => {
     }
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
-    const summary = mode === "backfill" ? await runBackfill(admin, limit) : await runRefresh(admin, limit);
+    const summary =
+      mode === "backfill"
+        ? await runBackfill(admin, limit)
+        : mode === "from_links"
+          ? await runFromLinks(admin, limit)
+          : await runRefresh(admin, limit);
     return json(summary);
   } catch (err) {
     console.error("refresh-google-ratings error", err);
