@@ -896,7 +896,7 @@ const Welcome = () => {
                         border: "none", padding: 0, cursor: "pointer",
                       }}
                     >
-                      Create an account
+                      Create an Account
                     </button>
                     <button
                       type="button"
