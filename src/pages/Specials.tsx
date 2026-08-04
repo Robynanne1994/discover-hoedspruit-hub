@@ -467,7 +467,7 @@ const Specials = () => {
           <FilterPill
             label={`All (${totalCount})`}
             active={activeTab === ALL_TAB}
-            onClick={() => setActiveTab(activeTab === ALL_TAB ? ALL_TAB : ALL_TAB)}
+            onClick={() => setActiveTab(ALL_TAB)}
           />
           {endingSoonCount > 0 && (
             <FilterPill
@@ -475,7 +475,9 @@ const Specials = () => {
               icon={<Clock size={12} strokeWidth={2} />}
               accent
               active={activeTab === ENDING_SOON_TAB}
-              onClick={() => setActiveTab(ENDING_SOON_TAB)}
+              onClick={() =>
+                setActiveTab(activeTab === ENDING_SOON_TAB ? ALL_TAB : ENDING_SOON_TAB)
+              }
             />
           )}
           {categoryTabs
@@ -486,7 +488,7 @@ const Specials = () => {
                 label={`${tab} (${categoryCounts.get(tab) || 0})`}
                 icon={tabIcon(tab)}
                 active={activeTab === tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(activeTab === tab ? ALL_TAB : tab)}
               />
             ))}
         </div>
