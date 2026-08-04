@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { formatEventDateRange } from "@/lib/eventDates";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -72,6 +73,23 @@ const untilLabel = (date?: string | null): string | null => {
     return null;
   }
 };
+
+/**
+ * Always renders event dates as "22 Aug 2026" / "29 – 30 Aug 2026", never as
+ * raw ISO. Falls back to the legacy free-text `date` field, but if that text is
+ * itself ISO (one date or a range) it gets reformatted too.
+ */
+const eventDateLabel = (e: { date?: string | null; start_date?: string | null; end_date?: string | null }): string | null => {
+  if (e.start_date) return formatEventDateRange(e) || null;
+  const text = (e.date || "").replace(/<[^>]*>/g, "").trim();
+  if (!text) return null;
+  const isos = text.match(/\d{4}-\d{2}-\d{2}/g);
+  if (isos?.length) {
+    return formatEventDateRange({ start_date: isos[0], end_date: isos[1] ?? isos[0] }) || null;
+  }
+  return text;
+};
+
 
 
 const Search = () => {
@@ -268,6 +286,13 @@ const Search = () => {
           {scope === "specials" && <SpecialsResults query={query} />}
           {scope === "people" && <PeopleResults query={query} />}
         </div>
+        {!hasQuery && scope !== "people" && (
+          <DiscoverMore
+            to={scope === "listings" ? "/categories" : scope === "events" ? "/events" : "/specials"}
+            label="Discover More"
+          />
+        )}
+
       </div>
     </div>
   );
@@ -483,7 +508,7 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
       justifyContent: "center",
       gap: 8,
       height: 48,
-      margin: "12px 14px 14px",
+      margin: "4px 0 0",
       borderRadius: 9999,
       background: DARK,
       color: "#FFFFFF",
@@ -554,7 +579,6 @@ const ListingsResults = ({ query }: { query: string }) => {
           initials={initialsOf((l as any).title_override || l.title)}
         />
       ))}
-      {!term && <DiscoverMore to="/categories" label="Discover More" />}
     </>
   );
 };
@@ -569,7 +593,7 @@ const EventsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, title_override, location, image_url, date, start_date")
+        .select("id, title, title_override, location, image_url, date, start_date, end_date")
         .or(`start_date.is.null,start_date.gte.${today}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
@@ -591,11 +615,10 @@ const EventsResults = ({ query }: { query: string }) => {
           image={e.image_url}
           title={e.title}
           titleOverride={(e as any).title_override}
-          subtitle={[e.date, e.location].filter(Boolean).join(" · ") || null}
+          subtitle={[eventDateLabel(e as any), e.location].filter(Boolean).join(" · ") || null}
           initials={initialsOf((e as any).title_override || e.title)}
         />
       ))}
-      {!term && <DiscoverMore to="/events" label="Discover More" />}
     </>
   );
 };
@@ -637,7 +660,6 @@ const SpecialsResults = ({ query }: { query: string }) => {
           initials={initialsOf((s as any).title_override || s.title)}
         />
       ))}
-      {!term && <DiscoverMore to="/specials" label="Discover More" />}
     </>
   );
 };
