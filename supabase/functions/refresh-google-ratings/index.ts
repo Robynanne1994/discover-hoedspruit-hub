@@ -359,18 +359,17 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
         displayName?: { text?: string };
       }[];
 
-      // Score against the listing title AND the name lifted from the link,
-      // taking the stronger of the two.
+      // Confidence is always listing title vs Google name. The link only tells
+      // us where and what to search for -- scoring against the link's own name
+      // would score itself and wave anything through.
       let best: { id: string; name: string; confidence: number } | null = null;
       for (const candidate of candidates) {
         if (!candidate?.id) continue;
         const name = candidate.displayName?.text ?? "";
-        const confidence = Math.max(
-          nameConfidence(listing.title, name),
-          hints.name ? nameConfidence(hints.name, name) : 0,
-        );
+        const confidence = nameConfidence(listing.title, name);
         if (!best || confidence > best.confidence) best = { id: candidate.id, name, confidence };
       }
+
 
       if (!best || best.confidence < MIN_CONFIDENCE) {
         failed.push({
