@@ -120,7 +120,7 @@ async function authorise(req: Request): Promise<boolean> {
 async function runBackfill(admin: ReturnType<typeof createClient>, limit: number) {
   const { data, error } = await admin
     .from("listings")
-    .select("id, title, google_place_id")
+    .select("id, title, location, google_place_id")
     .is("google_place_id", null)
     .limit(limit);
   if (error) throw new Error(error.message);
@@ -128,9 +128,15 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
   const listings = (data ?? []) as Listing[];
   let succeeded = 0;
   const failed: string[] = [];
+  const matched: { title: string; googleName: string; confidence: number }[] = [];
 
   for (const listing of listings) {
     try {
+      const locationHint = (listing.location ?? "").trim();
+      const textQuery = [listing.title, locationHint, "Hoedspruit Limpopo South Africa"]
+        .filter(Boolean)
+        .join(" ");
+
       const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
         method: "POST",
         headers: {
@@ -139,12 +145,12 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
           "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress",
         },
         body: JSON.stringify({
-          textQuery: `${listing.title} Hoedspruit Limpopo South Africa`,
-          pageSize: 1,
+          textQuery,
+          pageSize: 5,
           locationBias: {
             circle: {
               center: { latitude: -24.3548, longitude: 30.954 },
-              radius: 30000.0,
+              radius: 15000.0,
             },
           },
         }),
@@ -152,22 +158,58 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
 
       if (!res.ok) throw new Error(`Google returned ${res.status}`);
       const body = await res.json();
-      const place = body?.places?.[0];
+      const candidates = (body?.places ?? []) as {
+        id?: string;
+        displayName?: { text?: string };
+      }[];
 
-      if (place?.id) {
+      // Score every candidate, keep the strongest name match.
+      let best: { id: string; name: string; confidence: number } | null = null;
+      for (const candidate of candidates) {
+        if (!candidate?.id) continue;
+        const name = candidate.displayName?.text ?? "";
+        const confidence = nameConfidence(listing.title, name);
+        if (!best || confidence > best.confidence) {
+          best = { id: candidate.id, name, confidence };
+        }
+      }
+
+      let reject = !best || best.confidence < MIN_CONFIDENCE;
+
+      // Never let two listings share one Place ID.
+      if (!reject && best) {
+        const { data: clash } = await admin
+          .from("listings")
+          .select("id")
+          .eq("google_place_id", best.id)
+          .neq("id", listing.id)
+          .limit(1);
+        if ((clash ?? []).length > 0) reject = true;
+      }
+
+      if (!reject && best) {
         await admin
           .from("listings")
           .update({
-            google_place_id: place.id,
-            google_place_name: place.displayName?.text ?? null,
+            google_place_id: best.id,
+            google_place_name: best.name || null,
+            google_match_confidence: Number(best.confidence.toFixed(2)),
             google_sync_status: "matched",
           })
           .eq("id", listing.id);
+        matched.push({
+          title: listing.title,
+          googleName: best.name,
+          confidence: Number(best.confidence.toFixed(2)),
+        });
         succeeded++;
       } else {
         await admin
           .from("listings")
-          .update({ google_sync_status: "not_found" })
+          .update({
+            google_sync_status: "not_found",
+            google_match_confidence: best ? Number(best.confidence.toFixed(2)) : null,
+          })
           .eq("id", listing.id);
         failed.push(listing.title);
       }
@@ -182,7 +224,14 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
     await sleep(CALL_DELAY_MS);
   }
 
-  return { mode: "backfill", processed: listings.length, succeeded, failedCount: failed.length, failed };
+  return {
+    mode: "backfill",
+    processed: listings.length,
+    succeeded,
+    failedCount: failed.length,
+    failed,
+    matched,
+  };
 }
 
 async function selectDue(
