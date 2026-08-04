@@ -789,7 +789,7 @@ const MyProfile = () => {
             }}
           >
             {items.length === 0
-              ? "Nothing saved yet. Tap the heart on anything you like."
+              ? "Nothing saved yet. Tap the heart on anything you'd like to save and you can find it here later."
               : search.trim() || category
                 ? "Nothing here matches that. Try clearing your search or filters."
                 : "Nothing saved in this tab yet."}
