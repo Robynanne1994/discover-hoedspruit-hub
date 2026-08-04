@@ -73,6 +73,23 @@ const untilLabel = (date?: string | null): string | null => {
   }
 };
 
+/**
+ * Always renders event dates as "22 Aug 2026" / "29 – 30 Aug 2026", never as
+ * raw ISO. Falls back to the legacy free-text `date` field, but if that text is
+ * itself ISO (one date or a range) it gets reformatted too.
+ */
+const eventDateLabel = (e: { date?: string | null; start_date?: string | null; end_date?: string | null }): string | null => {
+  if (e.start_date) return formatEventDateRange(e) || null;
+  const text = (e.date || "").replace(/<[^>]*>/g, "").trim();
+  if (!text) return null;
+  const isos = text.match(/\d{4}-\d{2}-\d{2}/g);
+  if (isos?.length) {
+    return formatEventDateRange({ start_date: isos[0], end_date: isos[1] ?? isos[0] }) || null;
+  }
+  return text;
+};
+
+
 
 const Search = () => {
   const location = useLocation();
