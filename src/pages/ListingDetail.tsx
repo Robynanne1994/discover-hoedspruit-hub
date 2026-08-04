@@ -1049,7 +1049,17 @@ const ListingDetail = () => {
         : "Closed Now";
     return (
       <div style={{ ...cardStyle, padding: "20px 22px" }}>
-        <CardHead Icon={Clock}>Opening hours</CardHead>
+        <CardHead
+          Icon={Clock}
+          right={openStatus ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
+              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.01em", color: statusColor }}>{statusText}</span>
+            </span>
+          ) : null}
+        >
+          Opening hours
+        </CardHead>
         <div>
           {DAY_LABELS.map((day, i) => {
             const v = openingHours![day.toLowerCase()] || "";
@@ -1084,12 +1094,6 @@ const ListingDetail = () => {
                     <span style={{ fontSize: 14.5, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
                       {displayValue}
                     </span>
-                    {isToday && openStatus && (
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
-                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
-                        <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.01em", color: statusColor }}>{statusText}</span>
-                      </span>
-                    )}
                   </span>
                 </div>
                 {isToday && holidayCheck.isHoliday && (
