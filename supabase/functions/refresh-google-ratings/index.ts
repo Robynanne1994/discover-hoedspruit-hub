@@ -25,7 +25,59 @@ const json = (body: unknown, status = 200) =>
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-type Listing = { id: string; title: string; google_place_id: string | null };
+type Listing = {
+  id: string;
+  title: string;
+  location?: string | null;
+  google_place_id: string | null;
+};
+
+// Minimum title-vs-Google-name similarity we accept. Deliberately strict: a
+// missed match is harmless, a wrong match is not.
+const MIN_CONFIDENCE = 0.75;
+
+function normaliseName(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/\b(the|pty|ltd|hoedspruit|sa|south africa|limpopo)\b/g, " ")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function levenshteinRatio(a: string, b: string): number {
+  if (!a.length || !b.length) return 0;
+  const prev = new Array(b.length + 1).fill(0).map((_, i) => i);
+  const cur = new Array(b.length + 1).fill(0);
+  for (let i = 1; i <= a.length; i++) {
+    cur[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(
+        prev[j] + 1,
+        cur[j - 1] + 1,
+        prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    for (let j = 0; j <= b.length; j++) prev[j] = cur[j];
+  }
+  return 1 - prev[b.length] / Math.max(a.length, b.length);
+}
+
+// Confidence in [0,1]. Full containment or full token overlap counts as strong.
+function nameConfidence(title: string, googleName: string): number {
+  const a = normaliseName(title);
+  const b = normaliseName(googleName);
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const tokensA = new Set(a.split(" "));
+  const tokensB = new Set(b.split(" "));
+  let shared = 0;
+  for (const t of tokensA) if (tokensB.has(t)) shared++;
+  const jaccard = shared / (tokensA.size + tokensB.size - shared);
+  const contained = a.includes(b) || b.includes(a) ? 0.95 : 0;
+  return Math.max(levenshteinRatio(a, b), jaccard, contained);
+}
 
 // Constant-time string compare so a wrong job token leaks no timing signal.
 function tokensMatch(a: string, b: string): boolean {
