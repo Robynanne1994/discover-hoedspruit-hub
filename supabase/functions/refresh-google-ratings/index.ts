@@ -247,6 +247,8 @@ async function selectDue(
     .select("id, title, google_place_id")
     .eq("refresh_priority", priority)
     .not("google_place_id", "is", null)
+    // Rows awaiting a stricter re-match must never be written to.
+    .neq("google_sync_status", "needs_match")
     .or(`google_synced_at.is.null,google_synced_at.lt.${cutoff}`)
     .order("google_synced_at", { ascending: true, nullsFirst: true })
     .limit(limit);
