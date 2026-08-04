@@ -75,8 +75,9 @@ function nameConfidence(title: string, googleName: string): number {
   let shared = 0;
   for (const t of tokensA) if (tokensB.has(t)) shared++;
   const jaccard = shared / (tokensA.size + tokensB.size - shared);
-  const contained = a.includes(b) || b.includes(a) ? 0.95 : 0;
-  return Math.max(levenshteinRatio(a, b), jaccard, contained);
+  // No containment bonus: "Car Wash" sitting inside "Eco Car Wash" is not proof
+  // of the same business, so plain string/token similarity decides.
+  return Math.max(levenshteinRatio(a, b), jaccard);
 }
 
 // Constant-time string compare so a wrong job token leaks no timing signal.
