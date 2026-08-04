@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,9 @@ const LIVE_QUERY_OPTS = {
   refetchOnReconnect: true,
 };
 
+// Counts come back NULL from get_follow_counts when the viewer is not allowed
+// to see them (a private account they do not follow). Keep that distinction:
+// `null` means "hidden", 0 means "genuinely nobody".
 export const useFollowCounts = (userId: string | undefined) => {
   return useQuery({
     queryKey: ["follow-counts", userId],
@@ -28,8 +31,8 @@ export const useFollowCounts = (userId: string | undefined) => {
       const { data } = await supabase.rpc("get_follow_counts", { _user_id: userId! });
       const row = Array.isArray(data) ? data[0] : data;
       return {
-        followers: (row?.followers as number) ?? 0,
-        following: (row?.following as number) ?? 0,
+        followers: (row?.followers as number | null) ?? null,
+        following: (row?.following as number | null) ?? null,
       };
     },
     enabled: !!userId,
@@ -96,6 +99,24 @@ export const useIsFollowing = (targetUserId: string | undefined) => {
 };
 
 
+// A follow insert can legitimately fail — the account was made private and
+// blocked mid-tap, the follower was suspended, the row already exists after a
+// double-tap. These used to throw into nothing, so the button just went back
+// to "Follow" with no explanation. Turn the common cases into plain English.
+const followErrorMessage = (err: any): string => {
+  const msg = (err?.message || "").toLowerCase();
+  if (err?.code === "23505" || msg.includes("duplicate key")) {
+    return "You have already followed this account.";
+  }
+  if (msg.includes("blocked")) {
+    return "You cannot follow this account.";
+  }
+  if (msg.includes("banned") || msg.includes("suspended")) {
+    return err.message;
+  }
+  return "Could not update that follow. Please try again.";
+};
+
 export const useFollowMutation = (targetUserId: string) => {
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -107,17 +128,31 @@ export const useFollowMutation = (targetUserId: string) => {
     qc.invalidateQueries({ queryKey: ["following"] });
     qc.invalidateQueries({ queryKey: ["my-following-ids", user?.id] });
     qc.invalidateQueries({ queryKey: ["follow-requests", user?.id] });
+    qc.invalidateQueries({ queryKey: ["follow-request-count", user?.id] });
+    qc.invalidateQueries({ queryKey: ["follows-me"] });
   };
 
   const follow = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("follows").insert({
-        follower_id: user!.id,
-        following_id: targetUserId,
-      });
+      // Whether this lands as 'accepted' or 'pending' is the database's call:
+      // the BEFORE INSERT trigger reads the target's is_private. Reading it in
+      // the client and sending a status would let a stale profile cache decide
+      // privacy, which is exactly the wrong place for that decision.
+      const { data, error } = await supabase
+        .from("follows")
+        .insert({ follower_id: user!.id, following_id: targetUserId })
+        .select("status")
+        .maybeSingle();
       if (error) throw error;
+      return ((data as any)?.status as FollowStatus) ?? null;
     },
-    onSuccess: invalidate,
+    // Show the result immediately — "Requested" on a private account,
+    // "Following" on a public one — instead of waiting out a round trip.
+    onSuccess: (status) => {
+      if (status) qc.setQueryData(["is-following", user?.id, targetUserId], status);
+      invalidate();
+    },
+    onError: (err) => toast.error(followErrorMessage(err)),
   });
 
   const unfollow = useMutation({
@@ -129,7 +164,11 @@ export const useFollowMutation = (targetUserId: string) => {
         .eq("following_id", targetUserId);
       if (error) throw error;
     },
-    onSuccess: invalidate,
+    onSuccess: () => {
+      qc.setQueryData(["is-following", user?.id, targetUserId], null);
+      invalidate();
+    },
+    onError: () => toast.error("Could not update that follow. Please try again."),
   });
 
   return { follow, unfollow };
@@ -177,9 +216,66 @@ export const useMyFollowingIds = () => {
   });
 };
 
+// Keeps the pending-request queries honest without a page refresh: a request
+// arriving, being withdrawn, or the whole backlog being approved when the
+// account goes public all land as changes on `follows` rows pointed at me.
+let followRequestChannelSeq = 0;
+const useFollowRequestRealtime = () => {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  // Two screens can hold this at once (the profile badge and the requests
+  // list). Supabase keys channels by topic, so they need distinct names or the
+  // second subscriber quietly rides on the first one's lifetime.
+  const topic = useRef(`follow-requests-${++followRequestChannelSeq}`);
+  useEffect(() => {
+    if (!user) return;
+    const refresh = () => {
+      qc.invalidateQueries({ queryKey: ["follow-requests", user.id] });
+      qc.invalidateQueries({ queryKey: ["follow-request-count", user.id] });
+    };
+    const channel = supabase
+      .channel(`${topic.current}-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "follows" },
+        (payload: any) => {
+          const row = payload.new || payload.old || {};
+          // DELETE payloads can be sparse without REPLICA IDENTITY FULL, so a
+          // withdrawn request may arrive with no ids at all — refetch anyway.
+          if (payload.eventType === "DELETE" || row.following_id === user.id) refresh();
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, qc]);
+};
+
+// How many people are waiting on me to approve them. Drives the badge on the
+// profile and the Follow Requests row in Account Privacy.
+export const useFollowRequestCount = () => {
+  const { user } = useAuth();
+  useFollowRequestRealtime();
+  return useQuery({
+    queryKey: ["follow-request-count", user?.id],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("follows")
+        .select("id", { count: "exact", head: true })
+        .eq("following_id", user!.id)
+        .eq("status", "pending");
+      return count ?? 0;
+    },
+    enabled: !!user,
+    ...LIVE_QUERY_OPTS,
+  });
+};
+
 // Incoming pending follow requests (people who want to follow me)
 export const useFollowRequests = () => {
   const { user } = useAuth();
+  useFollowRequestRealtime();
   return useQuery({
     queryKey: ["follow-requests", user?.id],
     queryFn: async () => {
@@ -193,11 +289,17 @@ export const useFollowRequests = () => {
       const ids = rows.map((r: any) => r.follower_id);
       const { data: profiles } = await supabase.rpc("get_public_profiles", { _ids: ids });
       const map = Object.fromEntries((profiles || []).map((p: any) => [p.id, p]));
-      return rows.map((r: any) => ({
-        request_id: r.id,
-        created_at: r.created_at,
-        ...(map[r.follower_id] || { id: r.follower_id }),
-      }));
+      // A requester who does not resolve is someone we must not render: a
+      // deleted account, or one that has blocked us since asking. Showing an
+      // anonymous "User" row with Accept / Decline buttons is worse than
+      // showing nothing.
+      return rows
+        .filter((r: any) => !!map[r.follower_id])
+        .map((r: any) => ({
+          request_id: r.id,
+          created_at: r.created_at,
+          ...map[r.follower_id],
+        }));
     },
     enabled: !!user,
     ...LIVE_QUERY_OPTS,

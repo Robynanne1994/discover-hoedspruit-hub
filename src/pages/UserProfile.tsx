@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { MoreVertical, X, Share2, Flag, Ban, ChevronRight } from "lucide-react";
+import { MoreVertical, X, Share2, Flag, Ban, ChevronRight, Lock } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -183,7 +183,9 @@ const UserProfile = () => {
       supabase.from("follows").delete().eq("follower_id", id).eq("following_id", user.id),
     ]);
     queryClient.setQueryData(["user-blocked", user.id, id], true);
-    queryClient.setQueryData(["is-following", user.id, id], false);
+    // null, not false: this cache holds a FollowStatus ('accepted' | 'pending'
+    // | null), and the block just tore the follow down in both directions.
+    queryClient.setQueryData(["is-following", user.id, id], null);
     await invalidateBlockQueries(queryClient);
     toast.success("User blocked");
   };
@@ -228,6 +230,22 @@ const UserProfile = () => {
   const { data: isFollowing } = useIsFollowing(id);
   const { follow, unfollow } = useFollowMutation(id!);
 
+  // Whether this profile is locked to us decides what the rest of the screen
+  // is even allowed to ask for, so it is derived here, before the queries.
+  // `isOwnProfile` has to be part of it: your own private profile is not
+  // locked to you.
+  const isOwnProfile = user?.id === id;
+  const followStatus = isFollowing ?? null; // 'accepted' | 'pending' | null
+  const following = followStatus === "accepted";
+  const requested = followStatus === "pending";
+  const isPending = follow.isPending || unfollow.isPending;
+  const isPrivateLocked =
+    !isOwnProfile && !!(profile as any)?.is_private && !following;
+  // Don't fetch what we are not going to show. The RPCs refuse a locked
+  // profile anyway (see the 20260804160000 migration); this just avoids four
+  // pointless round trips on every private profile that gets opened.
+  const canSeeActivity = !!id && !isPrivateLocked;
+
   // Saved listings (favourites of type "listing")
   const { data: saved } = useQuery({
     queryKey: ["user-saved-listings", id],
@@ -249,7 +267,7 @@ const UserProfile = () => {
         .map((f: any) => ({ ...map[f.item_id], created_at: f.created_at }))
         .filter((l: any) => l.id);
     },
-    enabled: !!id,
+    enabled: canSeeActivity,
   });
 
   // Saved events
@@ -269,7 +287,7 @@ const UserProfile = () => {
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e: any) => e.id);
     },
-    enabled: !!id,
+    enabled: canSeeActivity,
   });
 
   // Saved specials
@@ -289,7 +307,7 @@ const UserProfile = () => {
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s: any) => s.id);
     },
-    enabled: !!id,
+    enabled: canSeeActivity,
   });
 
   // Saved resources
@@ -309,7 +327,7 @@ const UserProfile = () => {
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r: any) => r.id);
     },
-    enabled: !!id,
+    enabled: canSeeActivity,
   });
 
   // SAVED stat — derived from the same data that renders the cards so the
@@ -321,14 +339,6 @@ const UserProfile = () => {
     (savedEvents?.length ?? 0) +
     (savedSpecials?.length ?? 0) +
     (savedResources?.length ?? 0);
-
-  const isOwnProfile = user?.id === id;
-  const followStatus = isFollowing ?? null; // 'accepted' | 'pending' | null
-  const following = followStatus === "accepted";
-  const requested = followStatus === "pending";
-  const isPending = follow.isPending || unfollow.isPending;
-  const isPrivateLocked =
-    !isOwnProfile && !!(profile as any)?.is_private && !following;
 
   const handleFollowClick = () => {
     // Guests get a dismissable bottom sheet, not a full-screen redirect.
@@ -655,7 +665,11 @@ const UserProfile = () => {
           </div>
 
 
-          {/* Stats inner card */}
+          {/* Stats inner card — a private account shows nobody its follower,
+              following or saved numbers until they approve them. The counts
+              are a fact about who this person knows and what they like, which
+              is exactly what privacy is being asked to cover. */}
+          {!isPrivateLocked && (
           <div
             style={{
               marginTop: 14,
@@ -667,8 +681,8 @@ const UserProfile = () => {
             }}
           >
             {[
-              { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: !isPrivateLocked, scrollTo: null as string | null },
-              { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: !isPrivateLocked, scrollTo: null },
+              { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: true, scrollTo: null as string | null },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: true, scrollTo: null },
               { label: "SAVED", value: savedCount ?? 0, to: "", clickable: true, scrollTo: "user-saved-section" },
             ].map((s, i) => {
               const inner = (
@@ -726,6 +740,7 @@ const UserProfile = () => {
             })}
 
           </div>
+          )}
         </section>
       </div>
 
@@ -739,6 +754,20 @@ const UserProfile = () => {
               textAlign: "center",
             }}
           >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "#F2EFE5",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 14,
+              }}
+            >
+              <Lock size={18} strokeWidth={1.8} color={INK} />
+            </div>
             <h2
               style={{
                 fontFamily: HEAD,
@@ -762,9 +791,32 @@ const UserProfile = () => {
               }}
             >
               {requested
-                ? "Your follow request is awaiting approval."
-                : "Follow this account to see their saved places, events, specials and resources. Please note, they will first need to approve your follow request."}
+                ? `${personName === "this user" ? "They" : personName} still has to approve your follow request. You'll be notified when they do.`
+                : "Send a follow request to see their followers, who they follow and everything they've saved. They'll need to approve it first."}
             </p>
+            {!isOwnProfile && (
+              <button
+                onClick={handleFollowClick}
+                disabled={isPending}
+                style={{
+                  marginTop: 18,
+                  height: 38,
+                  padding: "0 22px",
+                  borderRadius: 999,
+                  background: requested ? "transparent" : "#423324",
+                  color: requested ? INK : "#FFFFFF",
+                  border: requested ? `1px solid ${LINE}` : "none",
+                  fontFamily: SANS,
+                  fontWeight: 600,
+                  fontSize: 13,
+                  letterSpacing: "0.02em",
+                  cursor: isPending ? "default" : "pointer",
+                  opacity: isPending ? 0.6 : 1,
+                }}
+              >
+                {requested ? "Cancel request" : "Send follow request"}
+              </button>
+            )}
           </div>
         </div>
       ) : (<>

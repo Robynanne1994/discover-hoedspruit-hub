@@ -296,6 +296,9 @@ export default function MyNotifications() {
     // '/profile/<id>' link, which is how the card keeps showing this person's
     // avatar once the follows row is deleted by a decline.
     const actor = actorMap[n.ref_id];
+    // Word it exactly the way the trigger will, so the card does not visibly
+    // rewrite itself when the real row arrives a moment later.
+    const who = actor?.display_name?.trim() || "this person";
     initialUnreadRef.current?.delete(n.id);
     setAllNotifs((prev) =>
       prev.map((x) =>
@@ -303,7 +306,9 @@ export default function MyNotifications() {
           ? {
               ...x,
               kind: accept ? "follow_request_accepted" : "follow_request_declined",
-              title: accept ? "You accepted this follow request" : "You declined this follow request",
+              title: accept
+                ? `You accepted ${who}'s follow request`
+                : `You declined ${who}'s follow request`,
               body: accept ? "They are now following you." : "Their follow request was declined.",
               link: actor ? `/profile/${actor.id}` : x.link,
               is_read: true,
