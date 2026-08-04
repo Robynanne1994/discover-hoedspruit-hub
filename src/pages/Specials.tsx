@@ -843,7 +843,7 @@ const FeaturedSection = ({
 const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | null; onClick: () => void }) => {
   const priceValue = special.price || special.savings || special.original_price;
   const image = special.image_url || special.detail_image_url || special.homepage_image_url;
-  const meta = [special.business_name, km ? `${km} from Town` : null].filter(Boolean).join(" • ");
+  const meta = special.business_name || "";
 
   return (
     <article
