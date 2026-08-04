@@ -53,6 +53,47 @@ export function isSocialAccount(user: User | null): boolean {
   return socialProviders(user).length > 0;
 }
 
+/**
+ * Everything a provider might have told us about someone's name.
+ *
+ * Google and Apple use their own keys for this — `full_name`, `name`,
+ * `given_name` + `family_name` — none of which are the keys the signup form
+ * writes. Returns "" when the provider said nothing usable.
+ */
+export function nameFromProvider(user: User | null): string {
+  const metadata = (user?.user_metadata ?? {}) as Record<string, unknown>;
+  const pick = (key: string) => {
+    const value = metadata[key];
+    return typeof value === "string" ? value.trim() : "";
+  };
+  const full = pick("full_name") || pick("name") || pick("display_name");
+  if (full) return full;
+  const first = pick("given_name") || pick("first_name");
+  const last = pick("family_name") || pick("surname");
+  return [first, last].filter(Boolean).join(" ");
+}
+
+/**
+ * Is this "name" really just the email address with the domain lopped off?
+ *
+ * A provider signup that carries no name at all used to end up with the local
+ * part of its address standing in for one, so an account signed up with
+ * robynmcd16@example.com was called "Robynmcd16". That is nobody's name, and
+ * offering it as a prefilled first-and-last name only means the person has to
+ * clear the field before they can type their own. Better to show nothing.
+ *
+ * Matches loosely: the separators in an address (`robyn.mcd`, `robyn_mcd`)
+ * often come back through as spaces or capitals, and those are the same
+ * non-name.
+ */
+export function isEmailDerivedName(value: string, email?: string | null): boolean {
+  const local = (email ?? "").split("@")[0]?.trim().toLowerCase() ?? "";
+  const candidate = value.trim().toLowerCase();
+  if (!local || !candidate) return false;
+  const strip = (text: string) => text.replace(/[\s._'-]+/g, "");
+  return strip(candidate) === strip(local);
+}
+
 /** "Google", "Apple" — for a sentence. Falls back to a generic word. */
 export function providerLabel(provider: string): string {
   const labels: Record<string, string> = {
