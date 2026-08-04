@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { authOrigin } from "@/lib/publicOrigin";
+import { startSignup, type SignupDetails } from "@/lib/emailVerification";
 
 /**
  * Everything the signup form knows about the new account. It all travels as
@@ -10,13 +10,7 @@ import { authOrigin } from "@/lib/publicOrigin";
  * verified. `handle_new_user()` reads these off the auth row and builds the
  * profile from them.
  */
-export interface SignUpDetails {
-  displayName?: string;
-  firstName?: string;
-  surname?: string;
-  username?: string;
-  location?: string;
-}
+export type SignUpDetails = SignupDetails;
 
 interface AuthContextType {
   user: User | null;
@@ -131,33 +125,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return { error: error as Error | null };
   };
 
+  /**
+   * Create an account and send it a six-digit code.
+   *
+   * Not `supabase.auth.signUp()`: that makes Supabase send its own confirmation
+   * email, rendered from whatever template the project has in its dashboard —
+   * and when that is the stock one it contains a button and no code at all,
+   * which is the bug this replaces. The account-email function creates the user
+   * through the admin API instead, so the only email that goes out is the one
+   * it sends itself, with the code in the subject line and the body.
+   *
+   * The account is created unconfirmed and cannot be signed in to until the
+   * code comes back, so `needsVerification` is always true on success.
+   */
   const signUp = async (email: string, password: string, opts?: SignUpDetails) => {
-    const metadata: Record<string, string> = {};
-    if (opts?.displayName) metadata.display_name = opts.displayName;
-    if (opts?.firstName) metadata.first_name = opts.firstName;
-    if (opts?.surname) metadata.surname = opts.surname;
-    if (opts?.username) metadata.username = opts.username;
-    if (opts?.location) metadata.location = opts.location;
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        // Not window.location.origin: inside the app shell that is
-        // "capacitor://localhost", which Supabase drops (not on the redirect
-        // allow list) and which no mail client could open anyway. The signup
-        // email's one-tap link is a fallback to the six-digit code, but it has
-        // to actually work for the people who reach for it.
-        emailRedirectTo: authOrigin(),
-        data: Object.keys(metadata).length ? metadata : undefined,
-      },
-    });
-    // With email confirmation on, Supabase creates the user but withholds the
-    // session until the emailed code is redeemed. No session therefore means
-    // "we've sent them a code", not "something went wrong".
-    return {
-      error: error as Error | null,
-      needsVerification: !error && !data.session,
-    };
+    const { error, code } = await startSignup(email, password, opts);
+    if (error) {
+      // Carry the machine-readable reason on the Error so the signup screen can
+      // tell "that address is taken" apart from "that didn't send".
+      const failure = new Error(error) as Error & { code?: string };
+      failure.code = code;
+      return { error: failure, needsVerification: false };
+    }
+    return { error: null, needsVerification: true };
   };
 
   const signOut = async () => {

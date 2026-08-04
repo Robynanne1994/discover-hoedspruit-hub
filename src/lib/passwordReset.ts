@@ -40,7 +40,11 @@ export const RESET_PASSWORD_PATH = "/reset-password";
 const initialUrl =
   typeof window === "undefined"
     ? null
-    : { search: window.location.search, hash: window.location.hash };
+    : {
+        search: window.location.search,
+        hash: window.location.hash,
+        pathname: window.location.pathname,
+      };
 
 /** What kind of recovery credentials (if any) the app was opened with. */
 export type RecoveryLink =
@@ -75,8 +79,24 @@ const RECOVERY_URL_PARAMS = [
 /**
  * Work out which flavour of recovery link (if any) these URL parts represent.
  * Exported for tests; app code should use `readRecoveryLink()`.
+ *
+ * `pathname` is what the app was opened at. It matters because credentials in
+ * a URL don't always say what they are for: the PKCE flow comes back as a bare
+ * `?code=`, identical whether it started life as a password reset or as an
+ * email confirmation. The path is the tie-breaker — our reset links land on
+ * RESET_PASSWORD_PATH and nothing else does.
+ *
+ * THIS IS WHERE "the button in the email opened the password reset screen"
+ * CAME FROM. Every shape was claimed as a recovery link regardless of what it
+ * said it was, so a `type=email_change` confirmation was read as a reset,
+ * App.tsx redirected to the reset screen, and the email change it was supposed
+ * to complete sat unconfirmed with the app still waiting for its code.
  */
-export function parseRecoveryUrl(search: string, hash: string): RecoveryLinkInfo {
+export function parseRecoveryUrl(
+  search: string,
+  hash: string,
+  pathname = "",
+): RecoveryLinkInfo {
   const query = new URLSearchParams(search.replace(/^\?/, ""));
   // Supabase uses the hash for the implicit flow and the query string for PKCE,
   // and reports failures ("this link has expired") in whichever it is using.
@@ -87,13 +107,26 @@ export function parseRecoveryUrl(search: string, hash: string): RecoveryLinkInfo
   const issuedNum = issuedRaw === null ? NaN : Number(issuedRaw);
   const issuedAt = Number.isFinite(issuedNum) && issuedNum > 0 ? issuedNum : null;
 
+  const type = param("type");
+  // Something that names another flow is emphatically not ours, whatever else
+  // it carries.
+  if (type && !type.startsWith("recovery")) {
+    return { link: { kind: "none" }, issuedAt };
+  }
+
+  // Positive evidence that these credentials belong to a password reset: the
+  // link says so, it carries the `issued` stamp buildResetRedirectUrl() adds to
+  // every reset link we send, or it landed on the reset screen.
+  const onResetPath = pathname === RESET_PASSWORD_PATH;
+  const isRecovery = !!type || issuedRaw !== null || onResetPath;
+  if (!isRecovery) return { link: { kind: "none" }, issuedAt };
+
   // Supabase reports a rejected link as error params ("otp_expired") rather than
   // tokens. `error_code` is specific enough to act on; a bare `error` param only
   // counts when the URL also looks like a reset link, so an unrelated `?error=`
   // elsewhere in the app is never mistaken for one.
   const isAuthError =
-    !!param("error_code") ||
-    (!!param("error") && (issuedRaw !== null || param("type") === "recovery"));
+    !!param("error_code") || (!!param("error") && (issuedRaw !== null || !!type));
   if (isAuthError) {
     return { link: { kind: "expired" }, issuedAt };
   }
@@ -104,7 +137,7 @@ export function parseRecoveryUrl(search: string, hash: string): RecoveryLinkInfo
   const code = param("code");
   if (code) return { link: { kind: "code", code }, issuedAt };
 
-  if (fragment.has("access_token") || param("type") === "recovery") {
+  if (fragment.has("access_token") || type) {
     return { link: { kind: "implicit" }, issuedAt };
   }
 
@@ -121,7 +154,7 @@ let cachedLink: RecoveryLinkInfo | null = null;
 export function readRecoveryLink(): RecoveryLinkInfo {
   if (!cachedLink) {
     cachedLink = initialUrl
-      ? parseRecoveryUrl(initialUrl.search, initialUrl.hash)
+      ? parseRecoveryUrl(initialUrl.search, initialUrl.hash, initialUrl.pathname)
       : { link: { kind: "none" }, issuedAt: null };
   }
   return cachedLink;

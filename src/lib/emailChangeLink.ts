@@ -28,7 +28,11 @@ export const EMAIL_CHANGE_PATH = "/account-settings/info";
 const initialUrl =
   typeof window === "undefined"
     ? null
-    : { search: window.location.search, hash: window.location.hash };
+    : {
+        search: window.location.search,
+        hash: window.location.hash,
+        pathname: window.location.pathname,
+      };
 
 /** What kind of email-change credentials (if any) the app was opened with. */
 export type EmailChangeLink =
@@ -61,7 +65,11 @@ const EMAIL_CHANGE_URL_PARAMS = [
  * recovery links out of the URL (src/lib/passwordReset.ts), and the two must
  * never claim each other's credentials.
  */
-export function parseEmailChangeUrl(search: string, hash: string): EmailChangeLink {
+export function parseEmailChangeUrl(
+  search: string,
+  hash: string,
+  pathname = "",
+): EmailChangeLink {
   const query = new URLSearchParams(search.replace(/^\?/, ""));
   // Supabase uses the hash for the implicit flow and the query string for PKCE,
   // and reports failures ("this link has expired") in whichever it is using.
@@ -72,7 +80,17 @@ export function parseEmailChangeUrl(search: string, hash: string): EmailChangeLi
   // Supabase writes `email_change` on both halves of a double-confirmation
   // change; older projects have been seen sending `email_change_current` and
   // `email_change_new`, so match the prefix rather than the exact string.
-  if (!type || !type.startsWith("email_change")) return { kind: "none" };
+  //
+  // The PKCE flow says nothing at all — it comes back as a bare `?code=`, the
+  // same shape a password reset comes back as. Where it landed is then the only
+  // thing that distinguishes them, and only an email-change link lands here.
+  if (type ? !type.startsWith("email_change") : pathname !== EMAIL_CHANGE_PATH) {
+    return { kind: "none" };
+  }
+  if (!type && !param("code") && !param("token_hash") && !param("error_code")) {
+    // On the Account Info screen with nothing in the URL: just a normal visit.
+    return { kind: "none" };
+  }
 
   // A rejected link comes back as error params ("otp_expired") rather than
   // tokens.
@@ -99,7 +117,7 @@ let cachedLink: EmailChangeLink | null = null;
 export function readEmailChangeLink(): EmailChangeLink {
   if (!cachedLink) {
     cachedLink = initialUrl
-      ? parseEmailChangeUrl(initialUrl.search, initialUrl.hash)
+      ? parseEmailChangeUrl(initialUrl.search, initialUrl.hash, initialUrl.pathname)
       : { kind: "none" };
   }
   return cachedLink;
