@@ -20,10 +20,20 @@ type Props = {
   href?: string;
   /** Accessible name, e.g. the listing title. */
   label?: string;
+  /**
+   * False when `coords` is only the town centre fallback. The map then zooms
+   * out to show Hoedspruit in context instead of framing a street the listing
+   * may well not be on.
+   */
+  precise?: boolean;
   zoom?: number;
   height?: number;
   pinColor?: string;
 };
+
+/** Street level for a real address; town level for the fallback. */
+const PRECISE_ZOOM = 16;
+const APPROXIMATE_ZOOM = 13;
 
 /**
  * A real, street-level map rendered from raster tiles — no SDK, no API key and
@@ -35,13 +45,16 @@ const LocationMap = ({
   coords,
   href,
   label,
-  zoom = 16,
+  precise = true,
+  zoom,
   height = 220,
   pinColor = "#715a3d",
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
+  const [failed, setFailed] = useState(0);
   const retina = typeof window !== "undefined" && window.devicePixelRatio > 1.2;
+  const level = zoom ?? (precise ? PRECISE_ZOOM : APPROXIMATE_ZOOM);
 
   useEffect(() => {
     const el = ref.current;
@@ -60,10 +73,17 @@ const LocationMap = ({
   const tiles = useMemo(
     () =>
       coords && width
-        ? buildTileGrid({ lat: coords.lat, lon: coords.lon, zoom, width, height })
+        ? buildTileGrid({ lat: coords.lat, lon: coords.lon, zoom: level, width, height })
         : [],
-    [coords, width, height, zoom]
+    [coords, width, height, level]
   );
+
+  // Re-attempt the grid from scratch when the framing changes.
+  useEffect(() => setFailed(0), [coords, level]);
+
+  // Both CARTO and the OpenStreetMap fallback are unreachable — say so rather
+  // than leaving an empty panel that reads as "this place has no location".
+  const unreachable = tiles.length > 0 && failed >= tiles.length;
 
   return (
     <div
@@ -92,7 +112,6 @@ const LocationMap = ({
             src={tileUrl(t.z, t.x, t.y, retina)}
             alt=""
             draggable={false}
-            loading="lazy"
             decoding="async"
             style={{
               position: "absolute",
@@ -107,7 +126,10 @@ const LocationMap = ({
             onLoad={(e) => (e.currentTarget.style.opacity = "1")}
             onError={(e) => {
               const img = e.currentTarget;
-              if (img.dataset.fallback) return;
+              if (img.dataset.fallback) {
+                setFailed((n) => n + 1);
+                return;
+              }
               img.dataset.fallback = "1";
               img.src = fallbackTileUrl(t.z, t.x, t.y);
             }}
@@ -115,7 +137,26 @@ const LocationMap = ({
         ))}
       </div>
 
-      {coords && (
+      {unreachable && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "0 24px",
+            textAlign: "center",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 13,
+            color: "rgba(43,36,32,0.55)",
+          }}
+        >
+          Map unavailable offline — tap for directions
+        </div>
+      )}
+
+      {coords && !unreachable && (
         <div
           aria-hidden
           style={{
@@ -167,6 +208,7 @@ const LocationMap = ({
         />
       )}
 
+      {!unreachable && (
       <a
         href="https://www.openstreetmap.org/copyright"
         target="_blank"
@@ -189,6 +231,7 @@ const LocationMap = ({
       >
         © OpenStreetMap, © CARTO
       </a>
+      )}
     </div>
   );
 };

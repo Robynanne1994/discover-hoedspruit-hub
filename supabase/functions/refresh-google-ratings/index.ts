@@ -36,6 +36,21 @@ type Listing = {
 // missed match is harmless, a wrong match is not.
 const MIN_CONFIDENCE = 0.75;
 
+/**
+ * The place's coordinates, ready to merge into a listings update, so the app's
+ * Location tab can pin the real spot instead of geocoding the written address.
+ * Anything outside southern Africa is dropped rather than written — the column
+ * check constraint would reject it and take the whole refresh down with it.
+ */
+function coordinateUpdate(place: { location?: { latitude?: number; longitude?: number } }) {
+  const lat = place?.location?.latitude;
+  const lng = place?.location?.longitude;
+  if (typeof lat !== "number" || typeof lng !== "number") return {};
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return {};
+  if (lat < -35 || lat > -20 || lng < 25 || lng > 35) return {};
+  return { latitude: lat, longitude: lng };
+}
+
 function normaliseName(input: string): string {
   return input
     .toLowerCase()
@@ -143,7 +158,7 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_KEY,
-          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress",
+          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.location",
         },
         body: JSON.stringify({
           textQuery,
@@ -162,16 +177,19 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
       const candidates = (body?.places ?? []) as {
         id?: string;
         displayName?: { text?: string };
+        location?: { latitude?: number; longitude?: number };
       }[];
 
       // Score every candidate, keep the strongest name match.
-      let best: { id: string; name: string; confidence: number } | null = null;
+      let best:
+        | { id: string; name: string; confidence: number; coords: Record<string, number> }
+        | null = null;
       for (const candidate of candidates) {
         if (!candidate?.id) continue;
         const name = candidate.displayName?.text ?? "";
         const confidence = nameConfidence(listing.title, name);
         if (!best || confidence > best.confidence) {
-          best = { id: candidate.id, name, confidence };
+          best = { id: candidate.id, name, confidence, coords: coordinateUpdate(candidate) };
         }
       }
 
@@ -196,6 +214,7 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
             google_place_name: best.name || null,
             google_match_confidence: Number(best.confidence.toFixed(2)),
             google_sync_status: "matched",
+            ...best.coords,
           })
           .eq("id", listing.id);
         matched.push({
@@ -348,7 +367,7 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
         headers: {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": GOOGLE_KEY,
-          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress",
+          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.location",
         },
         body: JSON.stringify(bodyReq),
       });
@@ -357,17 +376,22 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
       const candidates = (body?.places ?? []) as {
         id?: string;
         displayName?: { text?: string };
+        location?: { latitude?: number; longitude?: number };
       }[];
 
       // Confidence is always listing title vs Google name. The link only tells
       // us where and what to search for -- scoring against the link's own name
       // would score itself and wave anything through.
-      let best: { id: string; name: string; confidence: number } | null = null;
+      let best:
+        | { id: string; name: string; confidence: number; coords: Record<string, number> }
+        | null = null;
       for (const candidate of candidates) {
         if (!candidate?.id) continue;
         const name = candidate.displayName?.text ?? "";
         const confidence = nameConfidence(listing.title, name);
-        if (!best || confidence > best.confidence) best = { id: candidate.id, name, confidence };
+        if (!best || confidence > best.confidence) {
+          best = { id: candidate.id, name, confidence, coords: coordinateUpdate(candidate) };
+        }
       }
 
 
@@ -406,6 +430,7 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
           google_place_name: best.name || null,
           google_match_confidence: Number(best.confidence.toFixed(2)),
           google_sync_status: "matched",
+          ...best.coords,
         })
         .eq("id", listing.id);
       matched.push({
@@ -472,7 +497,7 @@ async function runRefresh(admin: ReturnType<typeof createClient>, limit: number)
         {
           headers: {
             "X-Goog-Api-Key": GOOGLE_KEY,
-            "X-Goog-FieldMask": "id,displayName,rating,userRatingCount,googleMapsLinks",
+            "X-Goog-FieldMask": "id,displayName,rating,userRatingCount,googleMapsLinks,location",
           },
         },
       );
@@ -488,6 +513,7 @@ async function runRefresh(admin: ReturnType<typeof createClient>, limit: number)
       if (typeof place?.userRatingCount === "number") update.google_reviews_count = place.userRatingCount;
       const reviewsUri = place?.googleMapsLinks?.reviewsUri;
       if (reviewsUri) update.google_reviews_url = reviewsUri;
+      Object.assign(update, coordinateUpdate(place));
 
       const { error } = await admin.from("listings").update(update).eq("id", listing.id);
       if (error) throw new Error(error.message);

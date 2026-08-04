@@ -23,7 +23,12 @@ import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
-import { geocode, parseCoordsFromMapLink, HOEDSPRUIT_CENTRE, type LatLon } from "@/lib/tileMap";
+import {
+  resolveLocation,
+  HOEDSPRUIT_CENTRE,
+  type MappableRow,
+  type ResolvedLocation,
+} from "@/lib/tileMap";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -215,7 +220,7 @@ const EventDetail = () => {
   const [tab, setTab] = useState<TabKey>("details");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [mapCoords, setMapCoords] = useState<LatLon | null>(null);
+  const [mapPlace, setMapPlace] = useState<ResolvedLocation | null>(null);
 
   const { data: event, isLoading } = useQuery({
     queryKey: ["event-detail", id],
@@ -261,18 +266,18 @@ const EventDetail = () => {
   useEffect(() => {
 
     if (!event) return;
-    setMapCoords(null);
-    const link: string | null = (event as any).google_maps_link || null;
-    const loc: string | null = event.location || null;
-    if (link) {
-      const parsed = parseCoordsFromMapLink(link);
-      if (parsed) { setMapCoords(parsed); return; }
-    }
-    const query = loc ? `${loc}, Hoedspruit, South Africa` : `${event.title}, Hoedspruit, South Africa`;
+    setMapPlace(null);
     let cancelled = false;
-    geocode(query)
-      .then((coords) => { if (!cancelled) setMapCoords(coords ?? HOEDSPRUIT_CENTRE); })
-      .catch(() => { if (!cancelled) setMapCoords(HOEDSPRUIT_CENTRE); });
+    const row = event as MappableRow;
+    resolveLocation({
+      latitude: row.latitude,
+      longitude: row.longitude,
+      googleMapsLink: row.google_maps_link,
+      location: event.location,
+      title: event.title,
+    })
+      .then((place) => { if (!cancelled) setMapPlace(place); })
+      .catch(() => { if (!cancelled) setMapPlace({ coords: HOEDSPRUIT_CENTRE, precise: false }); });
     return () => { cancelled = true; };
   }, [event]);
 
@@ -864,7 +869,8 @@ const EventDetail = () => {
           ) : (
             <>
               <LocationMap
-                coords={mapCoords}
+                coords={mapPlace?.coords ?? null}
+                precise={mapPlace?.precise ?? true}
                 href={directionsHref || undefined}
                 label={event.title}
                 pinColor={C.primary}
