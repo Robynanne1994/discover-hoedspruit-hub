@@ -27,16 +27,28 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Listing = { id: string; title: string; google_place_id: string | null };
 
+// Constant-time string compare so a wrong job token leaks no timing signal.
+function tokensMatch(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 // Either the scheduled job (shared job token) or a signed-in admin may run this.
+// Anything else -- including a bare anon/publishable key, which anyone reading
+// the shipped frontend has -- is rejected.
 async function authorise(req: Request): Promise<boolean> {
   const jobToken = Deno.env.get("RATINGS_JOB_TOKEN") ?? "";
   const presented = req.headers.get("x-job-token") ?? "";
-  if (jobToken && presented && presented === jobToken) return true;
+  if (jobToken && presented && tokensMatch(presented, jobToken)) return true;
 
   const authHeader = req.headers.get("Authorization") ?? "";
   const token = authHeader.replace("Bearer ", "").trim();
   if (!token) return false;
+  if (token === ANON_KEY) return false;
   if (token === SERVICE_ROLE_KEY) return true;
+
 
   const client = createClient(SUPABASE_URL, ANON_KEY, {
     global: { headers: { Authorization: `Bearer ${token}` } },
