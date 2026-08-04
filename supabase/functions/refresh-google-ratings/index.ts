@@ -27,8 +27,12 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Listing = { id: string; title: string; google_place_id: string | null };
 
-// Either the cron job (service role key) or a signed-in admin may run this.
+// Either the scheduled job (shared job token) or a signed-in admin may run this.
 async function authorise(req: Request): Promise<boolean> {
+  const jobToken = Deno.env.get("RATINGS_JOB_TOKEN") ?? "";
+  const presented = req.headers.get("x-job-token") ?? "";
+  if (jobToken && presented && presented === jobToken) return true;
+
   const authHeader = req.headers.get("Authorization") ?? "";
   const token = authHeader.replace("Bearer ", "").trim();
   if (!token) return false;
