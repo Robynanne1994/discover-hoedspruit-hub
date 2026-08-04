@@ -599,14 +599,14 @@ const EventDetail = () => {
       value: notes.length === 1 ? (
         <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {notes.map((n, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
               <span style={{
                 flexShrink: 0, width: 6, height: 6, borderRadius: 999,
                 background: C.primary, marginTop: 8,
               }} />
-              <span style={{ whiteSpace: "pre-line", flex: 1, minWidth: 0 }}>{n}</span>
+              <span style={{ whiteSpace: "pre-line", flex: 1, minWidth: 0, fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text }}>{n}</span>
             </div>
           ))}
         </div>
