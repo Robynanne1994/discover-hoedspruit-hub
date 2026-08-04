@@ -697,7 +697,7 @@ const Welcome = () => {
     textTransform: "uppercase",
     color: "#6B6255",
     display: "block",
-    marginBottom: 8,
+    marginBottom: 4,
   };
 
   const hintStyle: React.CSSProperties = {
