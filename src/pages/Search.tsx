@@ -508,7 +508,7 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
       justifyContent: "center",
       gap: 8,
       height: 48,
-      margin: "12px 14px 14px",
+      margin: "4px 0 0",
       borderRadius: 9999,
       background: DARK,
       color: "#FFFFFF",
@@ -579,7 +579,6 @@ const ListingsResults = ({ query }: { query: string }) => {
           initials={initialsOf((l as any).title_override || l.title)}
         />
       ))}
-      {!term && <DiscoverMore to="/categories" label="Discover More" />}
     </>
   );
 };
@@ -594,7 +593,7 @@ const EventsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, title_override, location, image_url, date, start_date")
+        .select("id, title, title_override, location, image_url, date, start_date, end_date")
         .or(`start_date.is.null,start_date.gte.${today}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
@@ -616,11 +615,10 @@ const EventsResults = ({ query }: { query: string }) => {
           image={e.image_url}
           title={e.title}
           titleOverride={(e as any).title_override}
-          subtitle={[e.date, e.location].filter(Boolean).join(" · ") || null}
+          subtitle={[eventDateLabel(e as any), e.location].filter(Boolean).join(" · ") || null}
           initials={initialsOf((e as any).title_override || e.title)}
         />
       ))}
-      {!term && <DiscoverMore to="/events" label="Discover More" />}
     </>
   );
 };
@@ -662,7 +660,6 @@ const SpecialsResults = ({ query }: { query: string }) => {
           initials={initialsOf((s as any).title_override || s.title)}
         />
       ))}
-      {!term && <DiscoverMore to="/specials" label="Discover More" />}
     </>
   );
 };
