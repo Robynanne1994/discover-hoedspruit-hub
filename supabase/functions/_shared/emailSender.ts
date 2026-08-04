@@ -27,11 +27,37 @@ export type SendOutcome =
   | { ok: false; reason: "suppressed"; message: string }
   | { ok: false; reason: "failed"; message: string };
 
+/**
+ * Who the mail is from, and where a reply to it should go.
+ *
+ * Both senders need both. Resend puts them on the envelope; the Lovable API
+ * *rejects the send outright* without a `from` — `400 missing_parameter: from`
+ * — which is how every fallback send came to fail while the app said the code
+ * was on its way.
+ */
+function senderAddress(): string {
+  return Deno.env.get("AUTH_EMAIL_FROM") || "Hello Hoedspruit <noreply@hellohoedspruit.com>";
+}
+
+function replyToAddress(): string {
+  return Deno.env.get("AUTH_EMAIL_REPLY_TO") || "hello@hellohoedspruit.com";
+}
+
+/**
+ * The domain out of a `Name <local@domain>` address, for the Lovable API's
+ * `sender_domain`. It infers this from `from` when it is left out, but the
+ * inference is theirs and this is the one thing in the payload we already know
+ * for certain.
+ */
+function senderDomain(from: string): string {
+  const address = from.match(/<([^>]+)>/)?.[1] ?? from;
+  return address.split("@")[1]?.trim() ?? "";
+}
+
 /** Send through Resend. Returns the provider message id. */
 async function sendViaResend(apiKey: string, email: OutgoingEmail): Promise<string> {
-  const from =
-    Deno.env.get("AUTH_EMAIL_FROM") || "Hello Hoedspruit <noreply@hellohoedspruit.com>";
-  const replyTo = Deno.env.get("AUTH_EMAIL_REPLY_TO") || "hello@hellohoedspruit.com";
+  const from = senderAddress();
+  const replyTo = replyToAddress();
 
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
@@ -123,12 +149,18 @@ export async function deliverEmail(
       console.warn("RESEND_API_KEY not set — falling back to the Lovable sender");
       const apiKey = Deno.env.get("LOVABLE_API_KEY");
       if (!apiKey) throw new Error("Neither RESEND_API_KEY nor LOVABLE_API_KEY is set");
+      const from = senderAddress();
+      const domain = senderDomain(from);
       await sendLovableEmail(
         {
           to: email.to,
+          // Required. Leaving it out is a 400 from the API, not a default.
+          from,
+          ...(domain ? { sender_domain: domain } : {}),
           subject: email.subject,
           html: email.html,
           text: email.text,
+          reply_to: replyToAddress(),
           purpose: "transactional",
           label: email.label,
           message_id: messageId,
