@@ -7,7 +7,7 @@ import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
   Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
-  ReceiptText, NotebookPen,
+  ReceiptText, NotebookPen, Copy,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,7 @@ import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isE
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
+import { sharePlainText } from "@/lib/share";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
 import {
@@ -47,6 +48,8 @@ const C = {
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
+  // Soft panel that sits on the beige sheet (icon circles)
+  soft: "#EEE9DA",
 };
 
 const WhatsAppIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -858,56 +861,93 @@ const EventDetail = () => {
 
   const renderLocation = () => {
     const isSurrounds = (event.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    const addressText = event.location || event.title;
+    const mapHref = directionsHref || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
+
+    const copyAddress = async () => {
+      const outcome = await sharePlainText(addressText);
+      if (outcome === "copied") toast.success("Address copied");
+      if (outcome === "failed") toast.error("Couldn't copy the address");
+    };
+
+    // One row of the directions / address card: circled icon, label + value, arrow.
+    const LocationRow = ({
+      Icon, label, value, onClick, href, first,
+    }: {
+      Icon: any; label: string; value: string; onClick?: () => void; href?: string; first?: boolean;
+    }) => {
+      const inner = (
+        <>
+          <span style={{
+            width: 40, height: 40, borderRadius: "50%", background: C.soft,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+          }}>
+            <Icon size={17} strokeWidth={1.75} color={C.primary} />
+          </span>
+          <span style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+            <span style={{
+              display: "block", fontFamily: FONT, fontSize: 10.5, fontWeight: 700,
+              letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, marginBottom: 3,
+            }}>
+              {label}
+            </span>
+            <span style={{ display: "block", fontFamily: FONT, fontSize: 15, color: C.heading, wordBreak: "break-word" }}>
+              {value}
+            </span>
+          </span>
+          {href && <ArrowUpRight size={16} color={C.muted} style={{ flexShrink: 0 }} />}
+        </>
+      );
+      const rowStyle: React.CSSProperties = {
+        display: "flex", alignItems: "center", gap: 14, width: "100%",
+        padding: "16px 0", textDecoration: "none",
+        background: "none", border: "none", cursor: "pointer",
+        borderTop: first ? "none" : `1px solid ${C.divider}`,
+      };
+      return href
+        ? <a href={href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>
+        : <button type="button" onClick={onClick} style={rowStyle}>{inner}</button>;
+    };
+
     return (
-      <div style={{ padding: "16px 20px 20px" }}>
-        <h2 style={headStyle}>Location</h2>
-        <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
+      <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 12 }}>
           {isSurrounds ? (
-            <div style={{ padding: "32px 20px", textAlign: "center", fontFamily: FONT, fontSize: 14, color: C.heading }}>
+            <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
               Hoedspruit &amp; Surrounds
             </div>
           ) : (
             <>
-              <LocationMap
-                coords={mapPlace?.coords ?? null}
-                precise={mapPlace?.precise ?? true}
-                href={directionsHref || undefined}
-                label={event.title}
-                pinColor={C.primary}
-              />
-              {event.location && (
-                <div style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <MapPin size={18} color={C.primary} style={{ flexShrink: 0, marginTop: 2 }} />
-                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, color: C.heading }}>{event.location}</div>
-                </div>
-              )}
+              <div style={{ borderRadius: 14, overflow: "hidden" }}>
+                <LocationMap
+                  coords={mapPlace?.coords ?? null}
+                  precise={mapPlace?.precise ?? true}
+                  href={mapHref}
+                  label={event.title}
+                  pinColor={C.primary}
+                />
+              </div>
+              <div style={{ padding: "14px 10px 6px" }}>
+                {event.location && (
+                  <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, color: C.heading, lineHeight: 1.35 }}>
+                    {event.location}
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
-        {!isSurrounds && directionsHref && (
-          <a
-            href={directionsHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              marginTop: 14,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "8px 16px", borderRadius: 9999, height: 48,
-              background: "#423324", border: "none",
-              color: "#FFFFFF", textDecoration: "none",
-              fontFamily: FONT, fontWeight: 500, fontSize: 14, lineHeight: "20px",
-              letterSpacing: "0.01em",
-              transition: "transform 150ms ease-out",
-            }}
-            {...pressScale()}
-          >
-            <Navigation size={16} strokeWidth={1.75} color="#FFFFFF" />
-            <span>Get Directions</span>
-          </a>
+
+        {!isSurrounds && (
+          <div style={{ ...cardStyle, padding: "0 20px" }}>
+            <LocationRow first Icon={Navigation} label="Directions" value="Open in Google Maps" href={mapHref} />
+            <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
+          </div>
         )}
       </div>
     );
   };
+
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: !isPast && actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
