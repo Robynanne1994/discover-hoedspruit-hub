@@ -1719,7 +1719,7 @@ const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
       marginTop: 14, background: "none", border: "none", cursor: "pointer", padding: 0,
       fontFamily: FONT, fontSize: 15, fontWeight: 700, color: C.primary,
     }}>
-      Suggest an edit →
+      Suggest an Edit →
     </button>
   </div>
 );
