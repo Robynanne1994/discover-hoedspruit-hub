@@ -843,13 +843,13 @@ const Welcome = () => {
                         onClick={() => setResidency(opt.value)}
                         aria-pressed={active}
                         style={{
-                          height: 48,
+                          height: 40,
                           borderRadius: 9999,
                           background: active ? "#423324" : "#FFFFFF",
                           border: active ? "1.5px solid #423324" : "1.5px solid rgba(26,26,26,0.14)",
                           color: active ? "#FFFFFF" : "#1A1A1A",
                           fontFamily: FF,
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: 600,
                           cursor: "pointer",
                         }}
