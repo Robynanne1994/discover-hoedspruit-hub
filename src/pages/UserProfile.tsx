@@ -1068,32 +1068,64 @@ const UserProfile = () => {
 
       {/* Unfollow confirmation */}
       <Dialog open={unfollowOpen} onOpenChange={setUnfollowOpen}>
-        <DialogContent style={{ background: CREAM, border: "none", borderRadius: 20 }}>
-          <DialogHeader>
+        <DialogContent
+          style={{
+            background: "#FFFFFF",
+            border: "none",
+            borderRadius: 28,
+            padding: "28px 24px 24px",
+            maxWidth: 340,
+          }}
+        >
+          <DialogHeader style={{ padding: 0, gap: 10 }}>
             <DialogTitle
               style={{
                 fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 16,
-                letterSpacing: "0.01em",
+                fontWeight: 700,
+                fontSize: 22,
+                letterSpacing: "-0.02em",
+                lineHeight: 1.1,
                 color: INK,
               }}
             >
               Unfollow {titleCase(profile?.display_name) || "this user"}?
             </DialogTitle>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontWeight: 400,
+                fontSize: 14,
+                lineHeight: 1.45,
+                color: MUTED,
+                margin: "4px 0 0",
+              }}
+            >
+              {profile?.is_private
+                ? `Their profile is private, so you'll have to request to follow them again and wait for them to approve it.`
+                : "You can follow them again at any time."}
+            </p>
           </DialogHeader>
-          <DialogFooter style={{ display: "flex", gap: 10, marginTop: 12 }}>
+          <DialogFooter
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 12,
+              marginTop: 24,
+              padding: 0,
+            }}
+          >
             <button
               onClick={() => setUnfollowOpen(false)}
               style={{
                 flex: 1,
-                height: 44,
+                height: 48,
                 borderRadius: 999,
                 background: "transparent",
-                border: `1px solid ${LINE}`,
+                border: `1.5px solid ${LINE}`,
                 color: INK,
                 fontFamily: SANS,
-                fontSize: 14,
+                fontSize: 15,
+                fontWeight: 600,
                 cursor: "pointer",
               }}
             >
@@ -1106,13 +1138,14 @@ const UserProfile = () => {
               }}
               style={{
                 flex: 1,
-                height: 44,
+                height: 48,
                 borderRadius: 999,
                 background: INK,
                 border: "none",
-                color: CREAM,
+                color: "#FFFFFF",
                 fontFamily: SANS,
-                fontSize: 14,
+                fontSize: 15,
+                fontWeight: 600,
                 cursor: "pointer",
               }}
             >
