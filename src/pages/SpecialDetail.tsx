@@ -4,15 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import {
   Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
-  ArrowUpRight, Banknote, Tag, Send, Mail,
+  ArrowUpRight, Banknote, Tag, Send, Mail, MapPin, Navigation,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useShare } from "@/hooks/useShare";
-import { copyToClipboard } from "@/lib/share";
+import { copyToClipboard, sharePlainText } from "@/lib/share";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
@@ -20,6 +20,13 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
+import LocationMap from "@/components/LocationMap";
+import {
+  resolveLocation,
+  HOEDSPRUIT_CENTRE,
+  type MappableRow,
+  type ResolvedLocation,
+} from "@/lib/tileMap";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -38,6 +45,8 @@ const C = {
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
+  // Soft panel that sits on the beige sheet (icon circles)
+  soft: "#EEE9DA",
 };
 
 const WhatsAppIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -95,7 +104,7 @@ const formatPrice = (raw?: string | null) => {
   return trimmed;
 };
 
-type TabKey = "about" | "details" | "contact" | "terms";
+type TabKey = "about" | "details" | "contact" | "terms" | "location";
 
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -114,6 +123,41 @@ const SpecialDetail = () => {
     },
     enabled: !!id,
   });
+
+  const [mapPlace, setMapPlace] = useState<ResolvedLocation | null>(null);
+
+  // The special itself has no address; the location tab mirrors the linked listing.
+  const { data: business } = useQuery({
+    queryKey: ["special-business", (special as any)?.business_id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id,title,location,google_maps_link,latitude,longitude,km_from_town")
+        .eq("id", (special as any).business_id)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!(special as any)?.business_id,
+  });
+
+  // Geocode for Location tab
+  useEffect(() => {
+    if (!business) return;
+    setMapPlace(null);
+    let cancelled = false;
+    const row = business as unknown as MappableRow;
+    resolveLocation({
+      latitude: row.latitude,
+      longitude: row.longitude,
+      googleMapsLink: row.google_maps_link,
+      location: (business as any).location,
+      title: (business as any).title,
+    })
+      .then((place) => { if (!cancelled) setMapPlace(place); })
+      .catch(() => { if (!cancelled) setMapPlace({ coords: HOEDSPRUIT_CENTRE, precise: false }); });
+    return () => { cancelled = true; };
+  }, [business]);
 
   const isFavourited = useIsFavourited(id!, "special");
   const toggleFavourite = useToggleFavourite();
@@ -456,6 +500,109 @@ const SpecialDetail = () => {
   };
 
 
+  const renderLocation = () => {
+    const b: any = business || {};
+    const locText = (b.location as string | null) || null;
+    const isSurrounds = (locText || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    const addressText = locText || b.title || special.business_name || special.title;
+    const mapHref = b.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
+    const kmFromTown = (() => {
+      if (!b.km_from_town) return null;
+      const n = parseFloat(String(b.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
+      const value = Number.isFinite(n) ? (Math.round(n * 100) / 100).toString() : String(b.km_from_town);
+      return `${value}km from Town`;
+    })();
+
+    const copyAddress = async () => {
+      const outcome = await sharePlainText(addressText);
+      if (outcome === "copied") toast.success("Address copied");
+      if (outcome === "failed") toast.error("Couldn't copy the address");
+    };
+
+    // One row of the directions / address card: circled icon, label + value, arrow.
+    const LocationRow = ({
+      Icon, label, value, onClick, href, first,
+    }: {
+      Icon: any; label: string; value: string; onClick?: () => void; href?: string; first?: boolean;
+    }) => {
+      const inner = (
+        <>
+          <span style={{
+            width: 40, height: 40, borderRadius: "50%", background: C.soft,
+            display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+          }}>
+            <Icon size={17} strokeWidth={1.75} color={C.primary} />
+          </span>
+          <span style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+            <span style={{
+              display: "block", fontFamily: FONT, fontSize: 10.5, fontWeight: 700,
+              letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, marginBottom: 3,
+            }}>
+              {label}
+            </span>
+            <span style={{ display: "block", fontFamily: FONT, fontSize: 15, color: C.heading, wordBreak: "break-word" }}>
+              {value}
+            </span>
+          </span>
+          {href && <ArrowUpRight size={16} color={C.muted} style={{ flexShrink: 0 }} />}
+        </>
+      );
+      const rowStyle: React.CSSProperties = {
+        display: "flex", alignItems: "center", gap: 14, width: "100%",
+        padding: "16px 0", textDecoration: "none",
+        background: "none", border: "none", cursor: "pointer",
+        borderTop: first ? "none" : `1px solid ${C.divider}`,
+      };
+      return href
+        ? <a href={href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>
+        : <button type="button" onClick={onClick} style={rowStyle}>{inner}</button>;
+    };
+
+    return (
+      <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 12 }}>
+          {isSurrounds ? (
+            <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
+              Hoedspruit &amp; Surrounds
+            </div>
+          ) : (
+            <>
+              <div style={{ borderRadius: 14, overflow: "hidden" }}>
+                <LocationMap
+                  coords={mapPlace?.coords ?? null}
+                  precise={mapPlace?.precise ?? true}
+                  href={mapHref}
+                  label={b.title || special.title}
+                  pinColor={C.primary}
+                />
+              </div>
+              <div style={{ padding: "14px 10px 6px" }}>
+                {locText && (
+                  <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, color: C.heading, lineHeight: 1.35 }}>
+                    {locText}
+                  </div>
+                )}
+                {kmFromTown && (
+                  <div style={{ fontFamily: FONT, fontSize: 14, color: C.muted, marginTop: 4 }}>
+                    {kmFromTown}
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+
+        {!isSurrounds && (
+          <div style={{ ...cardStyle, padding: "0 20px" }}>
+            <LocationRow first Icon={Navigation} label="Directions" value="Open in Google Maps" href={mapHref} />
+            <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+
   const renderTerms = () => {
     const termsList: string[] = (special.terms || "")
       .split("\n")
@@ -601,10 +748,12 @@ const SpecialDetail = () => {
         const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
         const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
+        const hasLocation = !!(business && ((business as any).location || mapPlace));
 
         const availableTabs: TabKey[] = [
           ...(hasAbout ? ["about" as TabKey] : []),
           ...(hasContact ? ["contact" as TabKey] : []),
+          ...(hasLocation ? ["location" as TabKey] : []),
           ...(hasTerms ? ["terms" as TabKey] : []),
         ];
         const activeTab: TabKey | null = availableTabs.includes(tab) ? tab : (availableTabs[0] ?? null);
@@ -623,12 +772,14 @@ const SpecialDetail = () => {
             }}>
               {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}
+              {hasLocation && <TabBtn k="location" label="Location" />}
               {hasTerms && <TabBtn k="terms" label="Terms" />}
             </nav>
 
             <section style={{ background: C.bg }}>
               {activeTab === "about" && renderAbout()}
               {activeTab === "contact" && renderContact()}
+              {activeTab === "location" && renderLocation()}
               {activeTab === "terms" && renderTerms()}
             </section>
           </>
