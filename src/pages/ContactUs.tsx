@@ -131,7 +131,7 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
     style={{
       fontFamily: `"Nohemi", ${FF}`,
       fontSize: 15,
-      fontWeight: 700,
+      fontWeight: 550,
       letterSpacing: "0.06em",
       textTransform: "uppercase",
       color: "#1A1A1A",
