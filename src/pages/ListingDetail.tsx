@@ -1042,14 +1042,6 @@ const ListingDetail = () => {
     return (
       <div style={{ ...cardStyle, padding: "20px 22px" }}>
         <CardHead Icon={Clock}>Opening hours</CardHead>
-        {openStatus && (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: -8, marginBottom: 16 }}>
-            <span style={{ width: 8, height: 8, borderRadius: "50%", flexShrink: 0, background: statusColor }} />
-            <span style={{ fontSize: 14, fontWeight: 600, letterSpacing: "0.01em", color: statusColor }}>
-              {statusText}
-            </span>
-          </div>
-        )}
         <div>
           {DAY_LABELS.map((day, i) => {
             const v = openingHours![day.toLowerCase()] || "";
