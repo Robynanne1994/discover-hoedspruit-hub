@@ -748,11 +748,6 @@ const Welcome = () => {
         >
           {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>
-        <p style={{ fontFamily: FF, fontSize: 15, color: "#6B6255", margin: "0 0 22px", lineHeight: 1.4 }}>
-          {mode === "signup"
-            ? "Four details and the town is yours."
-            : "Sign in to pick up your saved places and follows."}
-        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           {/* Fields live in one white card */}
