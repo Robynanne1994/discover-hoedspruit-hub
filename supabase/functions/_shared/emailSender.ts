@@ -124,6 +124,52 @@ async function isSuppressed(
 }
 
 /**
+ * The unsubscribe handle for an address.
+ *
+ * The Lovable sender refuses a transactional send without one — `400
+ * missing_unsubscribe` — and `email_unsubscribe_tokens` holds exactly one per
+ * address (its `email` column is unique). A stable token means an unsubscribe
+ * can be traced back to the address that asked for it, rather than to whichever
+ * message happened to carry the click.
+ *
+ * Falls back to a throwaway when there is no admin client or the table can't be
+ * reached: the API only needs *a* token, and refusing to send account mail over
+ * unsubscribe bookkeeping would be the wrong way round.
+ */
+async function unsubscribeTokenFor(
+  admin: SupabaseClient | null,
+  recipient: string,
+): Promise<string> {
+  const email = recipient.toLowerCase();
+  if (!admin) return crypto.randomUUID();
+
+  const { data: existing } = await admin
+    .from("email_unsubscribe_tokens")
+    .select("token")
+    .eq("email", email)
+    .maybeSingle();
+  if (existing?.token) return existing.token as string;
+
+  const token = crypto.randomUUID();
+  const { data: inserted } = await admin
+    .from("email_unsubscribe_tokens")
+    .insert({ token, email })
+    .select("token")
+    .maybeSingle();
+  if (inserted?.token) return inserted.token as string;
+
+  // Almost certainly a race with a concurrent send to the same address, which
+  // the unique constraint just lost — so the row exists now, and it is the one
+  // that has to be used.
+  const { data: raced } = await admin
+    .from("email_unsubscribe_tokens")
+    .select("token")
+    .eq("email", email)
+    .maybeSingle();
+  return (raced?.token as string) ?? token;
+}
+
+/**
  * Send one email and log the attempt.
  *
  * `admin` is a service-role client, used for the suppression check and the send
@@ -170,6 +216,13 @@ export async function deliverEmail(
           text: email.text,
           reply_to: replyToAddress(),
           purpose: "transactional",
+          // Account mail is a poor fit for an unsubscribe link — nobody opts
+          // out of their own login code — but this sender refuses the send
+          // without one, and not sending is worse. `isSuppressed` above
+          // deliberately does not honour a reason of "unsubscribe" for the same
+          // reason: a bounce or a spam complaint stops us mailing an address,
+          // an unsubscribe must never stop someone getting into their account.
+          unsubscribe_token: await unsubscribeTokenFor(admin, email.to),
           label: email.label,
           message_id: messageId,
           idempotency_key: messageId,
