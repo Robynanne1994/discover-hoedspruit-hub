@@ -587,8 +587,8 @@ const SpecialDetail = () => {
 
         <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
           <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
-          <span style={{ fontSize: 16, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
-          <span style={{ fontSize: 16, color: C.muted }}>· {datesText}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
+          <span style={{ fontSize: 13, color: C.dark }}>· {datesText}</span>
         </div>
       </div>
 
