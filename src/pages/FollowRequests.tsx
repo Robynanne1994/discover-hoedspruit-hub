@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Check, X, UserCircle } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequests, useRespondToFollowRequest } from "@/hooks/useFollows";
 
 const PAGE_BG = "#E6E0CC";
@@ -26,12 +28,39 @@ const initialsOf = (displayName?: string | null, username?: string | null) => {
 
 const FollowRequests = () => {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const { data: requests, isLoading } = useFollowRequests();
   const respond = useRespondToFollowRequest();
 
+  // Nothing here belongs to a signed-out visitor, and the query is disabled
+  // for them anyway — which would leave them staring at "No follow requests
+  // right now" as if that were an answer about their account.
+  useEffect(() => {
+    if (!loading && !user) navigate("/my-profile-guest", { replace: true });
+  }, [user, loading, navigate]);
+
+  const pending = requests?.length ?? 0;
+
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: SANS }}>
-      <PageHeader title="Follow Requests" />
+      <PageHeader
+        title="Follow Requests"
+        subtitle={
+          pending > 0 ? (
+            <div
+              style={{
+                fontFamily: SANS,
+                fontSize: 11,
+                letterSpacing: "1.4px",
+                textTransform: "uppercase",
+                color: MUTED,
+              }}
+            >
+              {pending} Waiting
+            </div>
+          ) : undefined
+        }
+      />
 
       <div style={{ padding: "16px 20px 0" }}>
         {isLoading ? (
@@ -57,8 +86,11 @@ const FollowRequests = () => {
           </div>
         ) : (requests?.length ?? 0) === 0 ? (
           <div style={{ textAlign: "center", padding: "60px 24px" }}>
-            <p style={{ fontFamily: SANS, fontSize: 14, color: MUTED, margin: 0 }}>
-              No follow requests right now.
+            <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 600, color: INK, margin: "0 0 6px" }}>
+              No follow requests right now
+            </p>
+            <p style={{ fontFamily: SANS, fontSize: 13.5, lineHeight: 1.5, color: MUTED, margin: "0 auto", maxWidth: 280 }}>
+              While your account is private, anyone who wants to follow you shows up here first.
             </p>
           </div>
         ) : (

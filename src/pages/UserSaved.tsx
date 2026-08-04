@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsFollowing } from "@/hooks/useFollows";
 import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
@@ -91,24 +92,38 @@ const UserSaved = () => {
     titleCase(profile?.display_name) ||
     (profile?.username ? `@${profile.username}` : "User");
 
+  // This screen is only ever the saved grid — there is nothing here to show a
+  // viewer who has not been approved. Send them to the profile, which is the
+  // one screen that explains the account is private and offers to request.
+  const { data: followStatus } = useIsFollowing(id);
+  useEffect(() => {
+    if (!id || !profile || authUser?.id === id) return;
+    if ((profile as any).is_private && followStatus !== "accepted") {
+      navigate(`/profile/${id}`, { replace: true });
+    }
+  }, [id, profile, followStatus, authUser, navigate]);
+
   const { data: saved } = useQuery({
     queryKey: ["user-saved-listings-full", id],
     enabled: !!id,
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "listing")
-        .order("created_at", { ascending: false });
+      // get_user_favourites, not a direct read: RLS on `favourites` only ever
+      // exposes your own rows, so this page came back empty for every profile
+      // it was actually meant to show. The RPC is also where the privacy rules
+      // live — it returns nothing for an account that has hidden its activity
+      // or is private and has not approved this viewer.
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "listing",
+      });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, saved_image_url, location, google_rating, google_reviews_count")
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
     },
   });
 
@@ -116,20 +131,23 @@ const UserSaved = () => {
     queryKey: ["user-saved-events-full", id],
     enabled: !!id,
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "event")
-        .order("created_at", { ascending: false });
+      // get_user_favourites, not a direct read: RLS on `favourites` only ever
+      // exposes your own rows, so this page came back empty for every profile
+      // it was actually meant to show. The RPC is also where the privacy rules
+      // live — it returns nothing for an account that has hidden its activity
+      // or is private and has not approved this viewer.
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "event",
+      });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: events } = await supabase
         .from("events")
         .select("id, title, image_url, saved_image_url, location, start_date, end_date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
     },
   });
 
@@ -137,20 +155,23 @@ const UserSaved = () => {
     queryKey: ["user-saved-specials-full", id],
     enabled: !!id,
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "special")
-        .order("created_at", { ascending: false });
+      // get_user_favourites, not a direct read: RLS on `favourites` only ever
+      // exposes your own rows, so this page came back empty for every profile
+      // it was actually meant to show. The RPC is also where the privacy rules
+      // live — it returns nothing for an account that has hidden its activity
+      // or is private and has not approved this viewer.
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "special",
+      });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
         .select("id, title, image_url, saved_image_url, business_name, valid_until")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
     },
   });
 
@@ -158,20 +179,23 @@ const UserSaved = () => {
     queryKey: ["user-saved-resources-full", id],
     enabled: !!id,
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "resource")
-        .order("created_at", { ascending: false });
+      // get_user_favourites, not a direct read: RLS on `favourites` only ever
+      // exposes your own rows, so this page came back empty for every profile
+      // it was actually meant to show. The RPC is also where the privacy rules
+      // live — it returns nothing for an account that has hidden its activity
+      // or is private and has not approved this viewer.
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "resource",
+      });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
         .select("id, title, title_override, image_url, saved_image_url, platform, meta, meta_2, slug")
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
     },
   });
 

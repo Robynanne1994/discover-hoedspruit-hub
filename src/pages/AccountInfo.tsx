@@ -314,9 +314,6 @@ const AccountInfo = () => {
   const [pwOpen, setPwOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [activityPrivate, setActivityPrivate] = useState(false);
-  const [savingPrivacy, setSavingPrivacy] = useState(false);
   const [residencyOpen, setResidencyOpen] = useState(false);
   // Set while an email address is waiting on its six-digit code. Holds the
   // address the code went to and why we asked for it: "change" once a new
@@ -344,41 +341,12 @@ const AccountInfo = () => {
   const emailEdited =
     email.trim().toLowerCase() !== accountEmail.toLowerCase() && email.trim() !== "";
 
-  const { data: pendingRequestCount } = useQuery({
-    queryKey: ["follow-request-count", user?.id],
-    enabled: !!user?.id,
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("follows")
-        .select("id", { count: "exact", head: true })
-        .eq("following_id", user!.id)
-        .eq("status", "pending");
-      return count ?? 0;
-    },
-  });
-
-  const togglePrivacy = async (field: "is_private" | "activity_private", value: boolean) => {
-    if (!user) return;
-    setSavingPrivacy(true);
-    const prevIs = isPrivate;
-    const prevAct = activityPrivate;
-    if (field === "is_private") setIsPrivate(value);
-    else setActivityPrivate(value);
-    const { error } = await supabase
-      .from("profiles")
-      .upsert({ id: user.id, [field]: value } as any);
-    setSavingPrivacy(false);
-    if (error) {
-      if (field === "is_private") setIsPrivate(prevIs);
-      else setActivityPrivate(prevAct);
-      toast.error("Could not update privacy. Please try again.");
-      return;
-    }
-    queryClient.invalidateQueries({ queryKey: ["profile"] });
-    queryClient.invalidateQueries({ queryKey: ["user-profile"] });
-    queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
-    toast.success("Privacy updated.");
-  };
+  // The privacy toggles and the pending-request count used to be duplicated
+  // here, unrendered — this screen has no privacy UI; it all lives in
+  // AccountPrivacy. A second write path for is_private is worse than dead
+  // code: it did not approve the waiting requests or refresh the follow
+  // queries, so whichever one got wired up next would quietly disagree with
+  // the other.
 
 
   const handleDeleteAccount = async () => {
@@ -425,8 +393,6 @@ const AccountInfo = () => {
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
       setAvatarUrl((profile as any).avatar_url || "");
-      setIsPrivate(!!(profile as any).is_private);
-      setActivityPrivate(!!(profile as any).activity_private);
       initialized.current = true;
     } else if (!profile && user && !initialized.current) {
       setEmail(linkConfirmedEmail.current || user.email || "");

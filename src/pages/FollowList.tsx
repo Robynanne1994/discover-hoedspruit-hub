@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Lock, Plus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -326,44 +326,47 @@ const FollowList = () => {
   const isFollowers = type === "followers";
   const isOwnPage = !!authUser && authUser.id === id;
 
-  const { data: followers, isLoading: loadingFollowers } = useFollowersList(
-    isFollowers ? id : undefined,
-  );
-  const { data: following, isLoading: loadingFollowing } = useFollowingList(
-    !isFollowers ? id : undefined,
-  );
   const { data: myFollowingIds } = useMyFollowingIds();
   const { data: counts } = useFollowCounts(id);
   const share = useShare();
 
-  // Fetch viewed user's display name/username so empty states can address them by name
+  // Who this page is about. It used to read `profiles` directly, which RLS
+  // only ever answers for your own row — so every other user's name came back
+  // null and the empty state said "This user". get_public_profiles is the
+  // supported way to resolve someone else, and it also carries the is_private
+  // flag this page needs.
   const { data: viewedProfile } = useQuery({
     queryKey: ["follow-list-profile", id],
     enabled: !!id && !isOwnPage,
     queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("display_name, username")
-        .eq("id", id!)
-        .maybeSingle();
-      return data as { display_name: string | null; username: string | null } | null;
+      const { data } = await supabase.rpc("get_public_profiles", { _ids: [id!] });
+      return ((data && data[0]) || null) as
+        | { display_name: string | null; username: string | null; is_private: boolean | null }
+        | null;
     },
   });
   const viewedName =
     viewedProfile?.display_name?.trim() ||
     (viewedProfile?.username ? `@${viewedProfile.username}` : "This user");
 
+  // A private account's connections are for its approved followers only.
+  // The RPCs behind this page now refuse a locked profile outright, so without
+  // this the page would just render a permanently empty list with no
+  // explanation — someone typing the URL in deserves to be told why.
+  const { data: viewerFollowStatus } = useIsFollowing(isOwnPage ? undefined : id);
+  const isLocked =
+    !isOwnPage && !!viewedProfile?.is_private && viewerFollowStatus !== "accepted";
+
+  const { data: followers, isLoading: loadingFollowers } = useFollowersList(
+    isFollowers && !isLocked ? id : undefined,
+  );
+  const { data: following, isLoading: loadingFollowing } = useFollowingList(
+    !isFollowers && !isLocked ? id : undefined,
+  );
+
   const users = (isFollowers ? followers : following) as RowUser[] | undefined;
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
   const count = users?.length ?? 0;
-
-  const title = isFollowers ? "followers." : "following.";
-  const lede = isFollowers
-    ? "People who follow your finds."
-    : "People whose taste you trust.";
-
-  const sisterPath = `/profile/${id}/${isFollowers ? "following" : "followers"}`;
-  const sisterLabel = isFollowers ? "see who you follow ↗" : "see your followers ↗";
 
   const handlePrimaryCta = () => {
     if (!isFollowers) {
@@ -394,9 +397,11 @@ const FollowList = () => {
             borderBottom: `1px solid ${COLOR.line}`,
           }}
         >
+          {/* The counts come back null for a profile we are not allowed to
+              see, so the tab shows the plain label rather than a made-up 0. */}
           {[
-            { key: "followers", label: "Followers", count: counts?.followers ?? 0 },
-            { key: "following", label: "Following", count: counts?.following ?? 0 },
+            { key: "followers", label: "Followers", count: counts?.followers ?? null },
+            { key: "following", label: "Following", count: counts?.following ?? null },
           ].map((tab) => {
             const active = (tab.key === "followers") === isFollowers;
             return (
@@ -420,7 +425,7 @@ const FollowList = () => {
                   marginBottom: -1,
                 }}
               >
-                {tab.label} ({tab.count})
+                {tab.count === null ? tab.label : `${tab.label} (${tab.count})`}
               </Link>
             );
           })}
@@ -429,7 +434,72 @@ const FollowList = () => {
 
       {/* List card */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
-        {isLoading ? (
+        {isLocked ? (
+          <div
+            style={{
+              background: COLOR.card,
+              borderRadius: 18,
+              padding: "36px 24px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: COLOR.soft,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 14,
+              }}
+            >
+              <Lock size={18} strokeWidth={1.8} color={COLOR.ink} />
+            </div>
+            <p
+              style={{
+                margin: "0 0 8px",
+                fontFamily: SANS,
+                fontWeight: 700,
+                fontSize: 15,
+                color: COLOR.ink,
+              }}
+            >
+              This account is private
+            </p>
+            <p
+              style={{
+                margin: "0 auto 18px",
+                maxWidth: 280,
+                fontFamily: SANS,
+                fontSize: 13.5,
+                lineHeight: 1.5,
+                color: COLOR.muted,
+              }}
+            >
+              {viewerFollowStatus === "pending"
+                ? `${viewedName} still has to approve your follow request before you can see who they follow.`
+                : `Follow ${viewedName} to see their followers and who they follow.`}
+            </p>
+            <Link
+              to={`/profile/${id}`}
+              style={{
+                display: "inline-block",
+                background: COLOR.brown,
+                color: "#FFFFFF",
+                textDecoration: "none",
+                borderRadius: 999,
+                padding: "11px 22px",
+                fontFamily: SANS,
+                fontWeight: 600,
+                fontSize: 13,
+              }}
+            >
+              View profile
+            </Link>
+          </div>
+        ) : isLoading ? (
           <div
             style={{
               background: COLOR.card,

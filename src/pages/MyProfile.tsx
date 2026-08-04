@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useFollowCounts } from "@/hooks/useFollows";
-import { ChevronDown, Pencil, Search, Settings, SlidersHorizontal, User } from "lucide-react";
+import { useFollowCounts, useFollowRequestCount } from "@/hooks/useFollows";
+import { ChevronDown, ChevronRight, Pencil, Search, Settings, SlidersHorizontal, User, UserPlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
@@ -160,6 +160,11 @@ const MyProfile = () => {
   });
 
   const { data: counts } = useFollowCounts(id);
+  // Follow requests used to be reachable only from Account Settings → Account
+  // Privacy, three taps in and only while the account is private, so people
+  // waiting for approval were easy to miss entirely. Surface them where the
+  // account itself lives.
+  const { data: pendingRequests } = useFollowRequestCount();
 
   const { data: saved } = useQuery({
     queryKey: ["my-saved-listings", id],
@@ -625,6 +630,48 @@ const MyProfile = () => {
               );
             })}
           </div>
+
+          {/* Waiting follow requests. Only shown when there is something to
+              act on, so a public account never sees a row it can't use. */}
+          {!!pendingRequests && (
+            <Link
+              to="/follow-requests"
+              style={{
+                marginTop: 12,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                background: INNER,
+                borderRadius: 14,
+                padding: "12px 14px",
+                textDecoration: "none",
+              }}
+            >
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  background: DARK_BROWN,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <UserPlus size={15} strokeWidth={2} color="#FFFFFF" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: SANS, fontSize: 14, fontWeight: 600, color: INK }}>
+                  Follow requests
+                </div>
+                <div style={{ fontFamily: SANS, fontSize: 12.5, color: SUBTLE, marginTop: 2 }}>
+                  {pendingRequests} {pendingRequests === 1 ? "person is" : "people are"} waiting for your approval
+                </div>
+              </div>
+              <ChevronRight size={18} strokeWidth={1.8} color={INK} style={{ flexShrink: 0 }} />
+            </Link>
+          )}
         </section>
       </div>
 

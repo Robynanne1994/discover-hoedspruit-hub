@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useFollowRequestCount } from "@/hooks/useFollows";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 import { ArrowUpRight } from "lucide-react";
@@ -96,18 +97,7 @@ const AccountPrivacy = () => {
     enabled: !!user,
   });
 
-  const { data: pendingRequestCount } = useQuery({
-    queryKey: ["follow-request-count", user?.id],
-    enabled: !!user?.id,
-    queryFn: async () => {
-      const { count } = await supabase
-        .from("follows")
-        .select("id", { count: "exact", head: true })
-        .eq("following_id", user!.id)
-        .eq("status", "pending");
-      return count ?? 0;
-    },
-  });
+  const { data: pendingRequestCount } = useFollowRequestCount();
 
   // The switch state is derived straight from the cached profile so it is
   // correct on the very first paint when navigating back to this page.
@@ -118,11 +108,16 @@ const AccountPrivacy = () => {
 
   const togglePrivacy = async (value: boolean) => {
     if (!user) return;
+    // How many people were still waiting, read before the write: going public
+    // approves the lot server-side, so afterwards the count is always zero and
+    // there would be nothing left to tell the user about.
+    const waiting = pendingRequestCount ?? 0;
     setSavingPrivacy(true);
     setPendingPrivate(value);
     const { error } = await supabase
       .from("profiles")
-      .upsert({ id: user.id, is_private: value } as any);
+      .update({ is_private: value } as any)
+      .eq("id", user.id);
     setSavingPrivacy(false);
     if (error) {
       setPendingPrivate(null);
@@ -135,7 +130,18 @@ const AccountPrivacy = () => {
     setPendingPrivate(null);
     queryClient.invalidateQueries({ queryKey: ["profile"] });
     queryClient.invalidateQueries({ queryKey: ["user-profile"] });
-    toast.success("Privacy updated.");
+    queryClient.invalidateQueries({ queryKey: ["follow-request-count"] });
+    queryClient.invalidateQueries({ queryKey: ["follow-requests"] });
+    queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
+    queryClient.invalidateQueries({ queryKey: ["followers"] });
+
+    if (!value && waiting > 0) {
+      toast.success(
+        `Your account is public. ${waiting} pending follow ${waiting === 1 ? "request was" : "requests were"} approved.`,
+      );
+      return;
+    }
+    toast.success(value ? "Your account is now private." : "Your account is now public.");
   };
 
   const SectionTitle = ({ children }: { children: React.ReactNode }) => (
@@ -194,7 +200,10 @@ const AccountPrivacy = () => {
             onChange={togglePrivacy}
             isFirst
           />
-          {isPrivate && (
+          {/* Also shown for a public account that still has requests waiting
+              (legacy rows from before going public approved them), so nobody
+              is left queued behind a row that has disappeared. */}
+          {(isPrivate || (pendingRequestCount ?? 0) > 0) && (
             <div
               onClick={() => navigate("/follow-requests")}
               style={{

@@ -2379,8 +2379,8 @@ export type Database = {
       get_follow_counts: {
         Args: { _user_id: string }
         Returns: {
-          followers: number
-          following: number
+          followers: number | null
+          following: number | null
         }[]
       }
       get_followers: {
