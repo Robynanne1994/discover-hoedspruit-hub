@@ -235,6 +235,205 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
   };
 }
 
+// ---------------------------------------------------------------------------
+// from_links: recover 'not_found' listings using the hand-picked
+// google_maps_link. Follows short links to their resolved URL, reads the place
+// name and @lat,lng out of it, then does a Text Search tightly biased to those
+// coordinates. Same 0.75 confidence bar and duplicate rejection as backfill.
+// ---------------------------------------------------------------------------
+
+type LinkHints = { name: string | null; lat: number | null; lng: number | null };
+
+async function resolveMapsLink(link: string): Promise<{ url: string; hints: LinkHints }> {
+  let url = link.trim();
+  // Short links (maps.app.goo.gl / goo.gl/maps) need following to the real URL.
+  try {
+    const res = await fetch(url, { redirect: "follow", headers: { "User-Agent": "Mozilla/5.0" } });
+    if (res.url) url = res.url;
+    // Consume the body so the connection is released.
+    await res.text().catch(() => "");
+  } catch (err) {
+    console.error("link resolve failed", link, err);
+  }
+  return { url, hints: parseMapsUrl(url) };
+}
+
+function parseMapsUrl(url: string): LinkHints {
+  let name: string | null = null;
+  let lat: number | null = null;
+  let lng: number | null = null;
+
+  const placeMatch = url.match(/\/maps\/place\/([^/@?]+)/);
+  if (placeMatch) {
+    try {
+      name = decodeURIComponent(placeMatch[1]).replace(/\+/g, " ").trim();
+    } catch {
+      name = placeMatch[1].replace(/\+/g, " ").trim();
+    }
+    if (/^data=|^@/.test(name)) name = null;
+  }
+
+  const atMatch = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+  if (atMatch) {
+    lat = Number(atMatch[1]);
+    lng = Number(atMatch[2]);
+  } else {
+    // Some links carry coordinates in query params instead of the @ segment.
+    const qMatch = url.match(/[?&](?:q|query|center|ll|destination)=(-?\d+\.\d+)(?:,|%2C)(-?\d+\.\d+)/);
+    if (qMatch) {
+      lat = Number(qMatch[1]);
+      lng = Number(qMatch[2]);
+    }
+  }
+  if (lat !== null && (!Number.isFinite(lat) || !Number.isFinite(lng!))) {
+    lat = null;
+    lng = null;
+  }
+  return { name, lat, lng };
+}
+
+async function runFromLinks(admin: ReturnType<typeof createClient>, limit: number) {
+  const { data, error } = await admin
+    .from("listings")
+    .select("id, title, location, google_maps_link, google_place_id")
+    .eq("google_sync_status", "not_found")
+    .not("google_maps_link", "is", null)
+    .neq("google_maps_link", "")
+    .limit(limit);
+  if (error) throw new Error(error.message);
+
+  const listings = (data ?? []) as (Listing & { google_maps_link: string })[];
+  let succeeded = 0;
+  const failed: { title: string; reason: string; confidence?: number; candidate?: string }[] = [];
+  const matched: {
+    title: string;
+    linkName: string | null;
+    googleName: string;
+    confidence: number;
+  }[] = [];
+
+  for (const listing of listings) {
+    try {
+      const { hints } = await resolveMapsLink(listing.google_maps_link);
+      if (!hints.name && hints.lat === null) {
+        failed.push({ title: listing.title, reason: "link_unparseable" });
+        continue;
+      }
+
+      const textQuery = [hints.name ?? listing.title, listing.location ?? ""]
+        .filter(Boolean)
+        .join(" ");
+
+      const bodyReq: Record<string, unknown> = { textQuery, pageSize: 5 };
+      if (hints.lat !== null && hints.lng !== null) {
+        // 500m bias: the coordinates came from a link chosen by hand, so we
+        // trust them and refuse anything further out.
+        bodyReq.locationRestriction = {
+          rectangle: {
+            low: { latitude: hints.lat - 0.0045, longitude: hints.lng - 0.0045 },
+            high: { latitude: hints.lat + 0.0045, longitude: hints.lng + 0.0045 },
+          },
+        };
+      } else {
+        bodyReq.locationBias = {
+          circle: {
+            center: { latitude: -24.3548, longitude: 30.954 },
+            radius: 15000.0,
+          },
+        };
+      }
+
+      const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": GOOGLE_KEY,
+          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress",
+        },
+        body: JSON.stringify(bodyReq),
+      });
+      if (!res.ok) throw new Error(`Google returned ${res.status}`);
+      const body = await res.json();
+      const candidates = (body?.places ?? []) as {
+        id?: string;
+        displayName?: { text?: string };
+      }[];
+
+      // Confidence is always listing title vs Google name. The link only tells
+      // us where and what to search for -- scoring against the link's own name
+      // would score itself and wave anything through.
+      let best: { id: string; name: string; confidence: number } | null = null;
+      for (const candidate of candidates) {
+        if (!candidate?.id) continue;
+        const name = candidate.displayName?.text ?? "";
+        const confidence = nameConfidence(listing.title, name);
+        if (!best || confidence > best.confidence) best = { id: candidate.id, name, confidence };
+      }
+
+
+      if (!best || best.confidence < MIN_CONFIDENCE) {
+        failed.push({
+          title: listing.title,
+          reason: best ? "below_confidence" : "no_candidates",
+          confidence: best ? Number(best.confidence.toFixed(2)) : undefined,
+          candidate: best?.name,
+        });
+
+        await admin
+          .from("listings")
+          .update({
+            google_match_confidence: best ? Number(best.confidence.toFixed(2)) : null,
+          })
+          .eq("id", listing.id);
+        continue;
+      }
+
+      const { data: clash } = await admin
+        .from("listings")
+        .select("id")
+        .eq("google_place_id", best.id)
+        .neq("id", listing.id)
+        .limit(1);
+      if ((clash ?? []).length > 0) {
+        failed.push({ title: listing.title, reason: "duplicate_place_id" });
+        continue;
+      }
+
+      await admin
+        .from("listings")
+        .update({
+          google_place_id: best.id,
+          google_place_name: best.name || null,
+          google_match_confidence: Number(best.confidence.toFixed(2)),
+          google_sync_status: "matched",
+        })
+        .eq("id", listing.id);
+      matched.push({
+        title: listing.title,
+        linkName: hints.name,
+        googleName: best.name,
+        confidence: Number(best.confidence.toFixed(2)),
+      });
+      succeeded++;
+    } catch (err) {
+      console.error("from_links failed", listing.title, err);
+      failed.push({ title: listing.title, reason: "error" });
+    }
+    await sleep(CALL_DELAY_MS);
+  }
+
+  return {
+    mode: "from_links",
+    processed: listings.length,
+    succeeded,
+    failedCount: failed.length,
+    failed,
+    matched,
+  };
+}
+
+
+
 async function selectDue(
   admin: ReturnType<typeof createClient>,
   priority: "high" | "normal",
@@ -318,7 +517,9 @@ Deno.serve(async (req) => {
     let limit = DEFAULT_LIMIT;
     try {
       const body = await req.json();
-      if (body?.mode === "backfill" || body?.mode === "refresh") mode = body.mode;
+      if (body?.mode === "backfill" || body?.mode === "refresh" || body?.mode === "from_links") {
+        mode = body.mode;
+      }
       const parsed = Number(body?.limit);
       if (Number.isFinite(parsed) && parsed > 0) limit = Math.min(Math.floor(parsed), 200);
     } catch {
@@ -326,7 +527,12 @@ Deno.serve(async (req) => {
     }
 
     const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
-    const summary = mode === "backfill" ? await runBackfill(admin, limit) : await runRefresh(admin, limit);
+    const summary =
+      mode === "backfill"
+        ? await runBackfill(admin, limit)
+        : mode === "from_links"
+          ? await runFromLinks(admin, limit)
+          : await runRefresh(admin, limit);
     return json(summary);
   } catch (err) {
     console.error("refresh-google-ratings error", err);
