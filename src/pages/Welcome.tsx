@@ -1062,7 +1062,7 @@ const Welcome = () => {
                     }}
                   />
                 </span>
-                <span style={{ fontFamily: FF, fontSize: 13, color: "#2B2420", whiteSpace: "nowrap" }}>Keep me signed in</span>
+                <span style={{ fontFamily: FF, fontSize: 13, color: "#2B2420", whiteSpace: "nowrap" }}>Keep Me Signed In</span>
               </button>
               <button
                 type="button"
