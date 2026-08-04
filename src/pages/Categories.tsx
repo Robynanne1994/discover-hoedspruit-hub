@@ -30,12 +30,12 @@ const COLORS = {
 const QUICK_FILTERS = ["Open Now", "Saved", "Child Friendly", "Pet Friendly"];
 
 type ViewMode = "grid" | "list";
-type SortMode = "count" | "az";
+type SortMode = "default" | "count" | "az";
 
 const Categories = () => {
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [sortMode, setSortMode] = useState<SortMode>("count");
+  const [sortMode, setSortMode] = useState<SortMode>("default");
   const [activeQuick, setActiveQuick] = useState<string[]>([]);
   const location = useLocation();
   const navigate = useNavigate();
@@ -285,6 +285,9 @@ const Categories = () => {
 
   const sortedGrid = useMemo(() => {
     const arr = [...gridCategories];
+    if (sortMode === "default") {
+      return arr;
+    }
     if (sortMode === "az") {
       arr.sort((a, b) => a.title.localeCompare(b.title));
     } else {
@@ -751,6 +754,7 @@ const Categories = () => {
       {/* Sort toggle */}
       <div style={{ padding: "16px 20px 0", display: "flex", gap: 10 }}>
         {([
+          { mode: "default" as SortMode, label: "Default" },
           { mode: "count" as SortMode, label: "Most Listings" },
           { mode: "az" as SortMode, label: "A – Z" },
         ]).map(({ mode, label }) => {
