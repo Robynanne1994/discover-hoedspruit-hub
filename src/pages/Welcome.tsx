@@ -1073,7 +1073,7 @@ const Welcome = () => {
                 type="button"
                 onClick={() => setMode("forgot")}
                 style={{
-                  fontFamily: FF, color: "#715a3d", fontSize: 14.5, fontWeight: 600,
+                  fontFamily: FF, color: "#715a3d", fontSize: 13, fontWeight: 600, whiteSpace: "nowrap",
                 }}
               >
                 Forgot password?
