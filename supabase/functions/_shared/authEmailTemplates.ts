@@ -50,7 +50,7 @@ export interface RenderedEmail {
 }
 
 const BRAND = "Hello Hoedspruit";
-const SUPPORT_EMAIL = "hello@hellohoedspruit.com";
+const SUPPORT_EMAIL = "hello@hellohoedspruit.co";
 
 /** Palette, matching the app and the templates in supabase/templates/. */
 const CREAM = "#E6E0CC";

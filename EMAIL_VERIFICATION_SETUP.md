@@ -35,7 +35,7 @@ at once, and they are what this replaces:
    Tapping it opened the reset-password screen — while the app sat on the code
    screen waiting for a code that was never coming.
 3. **It may not arrive at all.** The built-in sender is a shared, heavily
-   rate-limited development convenience, on a domain `hellohoedspruit.com` has
+   rate-limited development convenience, on a domain `hellohoedspruit.co` has
    never vouched for. What does arrive lands in spam under a red banner, and a
    banner-flagged message has every link in it disabled.
 
@@ -157,7 +157,7 @@ be done from the codebase.
 
 1. Create a [Resend](https://resend.com) account. The free tier covers 3,000
    emails a month, far more than signups will need.
-2. **Domains → Add Domain →** `hellohoedspruit.com`.
+2. **Domains → Add Domain →** `hellohoedspruit.co`.
 3. Resend shows three DNS records (SPF, DKIM, DMARC). Add them wherever the
    domain's DNS is managed, then press Verify. This is the step that
    authenticates the mail as genuinely ours, and the one that removes the
@@ -167,6 +167,15 @@ be done from the codebase.
 Until this is done, sending falls back to the Lovable sender so the flows keep
 working — but the deliverability problem is *not* fixed by the fallback.
 
+**Whichever sender is in use, the From address has to be on a domain that
+sender has verified, and the two do not share one.** The Lovable sender is
+verified for `notify.hellohoedspruit.co` and refuses anything else with
+`403 no_matching_sender`; Resend will be verified for whatever you add in step
+2 above. Get this wrong and nothing goes out — the app reports "we couldn't
+send that email just now" and the provider's real answer only ever lands in
+`email_send_log.error_message`, which is the first place to look when account
+email stops arriving.
+
 ### 2. Secrets
 
 In Supabase → **Edge Functions → Secrets**:
@@ -174,13 +183,18 @@ In Supabase → **Edge Functions → Secrets**:
 | Secret | Value | Needed for |
 | --- | --- | --- |
 | `RESEND_API_KEY` | the key from step 1 | deliverability |
-| `AUTH_EMAIL_FROM` | `Hello Hoedspruit <noreply@hellohoedspruit.com>` | deliverability |
-| `AUTH_EMAIL_REPLY_TO` | `hello@hellohoedspruit.com` | deliverability |
+| `AUTH_EMAIL_FROM` | `Hello Hoedspruit <noreply@hellohoedspruit.co>` | deliverability |
+| `AUTH_EMAIL_REPLY_TO` | `hello@hellohoedspruit.co` | deliverability |
 | `VERIFICATION_CODE_PEPPER` | any long random string | optional; falls back to the service role key |
 | `SEND_EMAIL_HOOK_SECRET` | generated in step 4 | only if the send-email hook is used |
 
 `AUTH_EMAIL_FROM` **must** be on the domain verified in step 1. Sending as a
 domain you haven't verified is worse than not sending at all.
+
+Set it only once Resend is verified. Until then, leave it unset: the built-in
+default is `noreply@notify.hellohoedspruit.co`, which is the address the
+fallback sender is verified for, and an `AUTH_EMAIL_FROM` pointing at a
+Resend-only domain would break the fallback while Resend is still being set up.
 
 ### 3. Auth settings
 
@@ -220,7 +234,7 @@ to that one phone's webview, which Supabase drops (not on the allow list) and no
 mail client can open. `src/lib/publicOrigin.ts` rewrites it.
 
 It defaults to `https://hello-hoedspruit-hub.lovable.app`. **When the app moves
-to hellohoedspruit.com, set `VITE_PUBLIC_SITE_URL` to it** and add that origin to
+to hellohoedspruit.co, set `VITE_PUBLIC_SITE_URL` to it** and add that origin to
 the redirect allow list.
 
 ## Checking it worked

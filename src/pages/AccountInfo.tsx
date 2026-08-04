@@ -1773,7 +1773,7 @@ const VerifyEmailSheet = ({
         <p style={{ fontFamily: FF, fontSize: 12.5, lineHeight: 1.5, color: MUTED, margin: "14px 0 0", textAlign: "center" }}>
           The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes, so there's no rush.
           Nothing after a minute or two? Check your spam or junk folder — it comes from
-          hello@hellohoedspruit.com.
+          hello@hellohoedspruit.co.
         </p>
 
         <button

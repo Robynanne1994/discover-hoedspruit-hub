@@ -9,6 +9,9 @@
 import { sendLovableEmail } from "npm:@lovable.dev/email-js";
 import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 
+/** Where a person should write if the automated path has failed them. */
+const SUPPORT_EMAIL = "hello@hellohoedspruit.co";
+
 export interface OutgoingEmail {
   to: string;
   subject: string;
@@ -36,11 +39,16 @@ export type SendOutcome =
  * was on its way.
  */
 function senderAddress(): string {
-  return Deno.env.get("AUTH_EMAIL_FROM") || "Hello Hoedspruit <noreply@hellohoedspruit.com>";
+  // notify.hellohoedspruit.co, not hellohoedspruit.co and not .com: a sender is
+  // only ever as good as the domain it is verified for, and this subdomain is
+  // the one this project has actually proved it owns. Sending as anything else
+  // is refused outright — `403 no_matching_sender` — which is how the fallback
+  // came to fail even once it was passing a From address at all.
+  return Deno.env.get("AUTH_EMAIL_FROM") || "Hello Hoedspruit <noreply@notify.hellohoedspruit.co>";
 }
 
 function replyToAddress(): string {
-  return Deno.env.get("AUTH_EMAIL_REPLY_TO") || "hello@hellohoedspruit.com";
+  return Deno.env.get("AUTH_EMAIL_REPLY_TO") || SUPPORT_EMAIL;
 }
 
 /**
@@ -131,7 +139,7 @@ export async function deliverEmail(
       ok: false,
       reason: "suppressed",
       message:
-        "We can't deliver email to that address. Please use a different one, or write to hello@hellohoedspruit.com.",
+        `We can't deliver email to that address. Please use a different one, or write to ${SUPPORT_EMAIL}.`,
     };
   }
 

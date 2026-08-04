@@ -9,7 +9,7 @@
 //      convenience for development — a few messages an hour on a free project.
 //      From the inside that is indistinguishable from "the email is broken".
 //   2. What does arrive is flagged. It comes from a shared provider domain that
-//      hellohoedspruit.com has never vouched for, so it fails the checks
+//      hellohoedspruit.co has never vouched for, so it fails the checks
 //      (SPF/DKIM/DMARC) a receiving server uses to decide who a message is
 //      really from. That is what puts it in spam under a red banner — and a
 //      banner-flagged message has all of its links disabled, which is why the

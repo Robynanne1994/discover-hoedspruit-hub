@@ -17,8 +17,8 @@ afterEach(() => {
 
 describe("authOrigin", () => {
   it("keeps a real web origin", () => {
-    setOrigin("https://hellohoedspruit.com");
-    expect(authOrigin()).toBe("https://hellohoedspruit.com");
+    setOrigin("https://hellohoedspruit.co");
+    expect(authOrigin()).toBe("https://hellohoedspruit.co");
   });
 
   // The bug this module exists for. Inside the app shell the origin is a
@@ -48,14 +48,14 @@ describe("authOrigin", () => {
 
 describe("authUrl", () => {
   it("joins a path onto the auth origin", () => {
-    setOrigin("https://hellohoedspruit.com");
-    expect(authUrl("/reset-password")).toBe("https://hellohoedspruit.com/reset-password");
+    setOrigin("https://hellohoedspruit.co");
+    expect(authUrl("/reset-password")).toBe("https://hellohoedspruit.co/reset-password");
   });
 
   it("tolerates a path with no leading slash", () => {
-    setOrigin("https://hellohoedspruit.com");
+    setOrigin("https://hellohoedspruit.co");
     expect(authUrl("account-settings/info")).toBe(
-      "https://hellohoedspruit.com/account-settings/info",
+      "https://hellohoedspruit.co/account-settings/info",
     );
   });
 
@@ -67,8 +67,8 @@ describe("authUrl", () => {
 
 describe("shareOrigin", () => {
   it("keeps a real web origin", () => {
-    setOrigin("https://hellohoedspruit.com");
-    expect(shareOrigin()).toBe("https://hellohoedspruit.com");
+    setOrigin("https://hellohoedspruit.co");
+    expect(shareOrigin()).toBe("https://hellohoedspruit.co");
   });
 
   // Stricter than authOrigin(): a recipient on another phone can reach a dev
