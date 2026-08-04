@@ -6,15 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
-import { ArrowLeft, Eye, EyeOff, AlertCircle, Check } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, AlertCircle } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
@@ -688,22 +681,43 @@ const Welcome = () => {
   const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
   const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
+  // Inputs now sit inside a white card, so they take the cream inset fill
+  // instead of white-on-cream.
   const fieldStyle: React.CSSProperties = {
-    background: "#ffffff",
+    background: "#F0EBE0",
     color: "#1A1A1A",
-    borderColor: "rgba(26,26,26,0.10)",
+    borderColor: "transparent",
+  };
+
+  const CARD_LABEL: React.CSSProperties = {
+    fontFamily: FF,
+    fontWeight: 700,
+    fontSize: 12,
+    letterSpacing: "0.10em",
+    textTransform: "uppercase",
+    color: "#6B6255",
+    display: "block",
+    marginBottom: 8,
+  };
+
+  const hintStyle: React.CSSProperties = {
+    fontFamily: FF,
+    fontSize: 12.5,
+    color: "#6B6A5E",
+    margin: "6px 0 0",
+  };
+
+  const socialButtonStyle: React.CSSProperties = {
+    height: 48, borderRadius: 9999, background: "#FFFFFF",
+    border: "1px solid rgba(26,26,26,0.10)", color: "#1A1A1A",
+    fontFamily: FF, fontSize: 16, fontWeight: 600,
+    display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+    cursor: "pointer", opacity: oauthLoading ? 0.6 : 1,
   };
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#E6E0CC", fontFamily: FF }}>
-      <style>{`
-        .residency-select [data-radix-select-trigger-icon] > svg {
-          opacity: 1 !important;
-          color: #8A8480 !important;
-        }
-      `}</style>
-
-      <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
+      <div className="flex-1 px-5 pb-12 pt-6 flex flex-col">
         {/* Circular back button */}
         <button
           type="button"
@@ -729,20 +743,37 @@ const Welcome = () => {
         <h1
           style={{
             fontFamily: HEAD, fontSize: 38, fontWeight: 550, letterSpacing: "-0.02em",
-            color: "#1A1A1A", lineHeight: 1.05, margin: "0 0 10px",
+            color: "#1A1A1A", lineHeight: 1.05, margin: "0 0 8px",
           }}
         >
-          {mode === "signup" ? "Create account" : "Welcome back"}
+          {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>
+        <p style={{ fontFamily: FF, fontSize: 15, color: "#6B6255", margin: "0 0 22px", lineHeight: 1.4 }}>
+          {mode === "signup"
+            ? "Four details and the town is yours."
+            : "Sign in to pick up your saved places and follows."}
+        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="space-y-4">
+          {/* Fields live in one white card */}
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 16,
+              border: "1px solid rgba(26,26,26,0.06)",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
 
           {mode === "signup" && (
             <>
               <div>
-                <Label htmlFor="fullName" style={CREATE_LABEL_STYLE}>
-                  First &amp; Last Name
+                <Label htmlFor="fullName" style={CARD_LABEL}>
+                  Full Name
                 </Label>
                 <Input
                   id="fullName"
@@ -752,19 +783,19 @@ const Welcome = () => {
                   required
                   autoCapitalize="words"
                   placeholder="Your first and last name"
-                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                  className="h-12 rounded-xl text-[15px]"
                   style={fieldStyle}
                 />
               </div>
 
               <div>
-                <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
+                <Label htmlFor="username" style={CARD_LABEL}>
                   Username
                 </Label>
                 <div className="relative">
                   <span
                     className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px]"
-                    style={{ ...fieldStyle, color: "#6B6A5E" }}
+                    style={{ color: "#8A8480" }}
                   >
                     @
                   </span>
@@ -778,13 +809,13 @@ const Welcome = () => {
                     autoCorrect="off"
                     maxLength={USERNAME_MAX}
                     placeholder="yourname"
-                    className="h-12 rounded-xl bg-card border-border text-[15px] pl-8"
+                    className="h-12 rounded-xl text-[15px] pl-8"
                     style={fieldStyle}
                   />
                 </div>
                 <p
-                  className="mt-1.5 text-[12px]"
                   style={{
+                    ...hintStyle,
                     color:
                       usernameStatus === "taken"
                         ? "#B42318"
@@ -804,24 +835,35 @@ const Welcome = () => {
               </div>
 
               <div>
-                <Label style={CREATE_LABEL_STYLE}>
-                  Are you a local or a visitor?
+                <Label style={CARD_LABEL}>
+                  Local Or Visitor
                 </Label>
-                <Select value={residency} onValueChange={setResidency}>
-                  <SelectTrigger className="residency-select h-12 w-full rounded-xl border border-border bg-white px-4 text-[15px]">
-                    <SelectValue
-                      placeholder="Select one"
-                      style={{ color: residency ? "#1A1A1A" : "#8A8480" }}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {RESIDENCY_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value} className="text-[15px]">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  {RESIDENCY_OPTIONS.map((opt) => {
+                    const active = residency === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setResidency(opt.value)}
+                        aria-pressed={active}
+                        style={{
+                          height: 48,
+                          borderRadius: 9999,
+                          background: active ? "#423324" : "#FFFFFF",
+                          border: active ? "1.5px solid #423324" : "1.5px solid rgba(26,26,26,0.14)",
+                          color: active ? "#FFFFFF" : "#1A1A1A",
+                          fontFamily: FF,
+                          fontSize: 15,
+                          fontWeight: 600,
+                          cursor: "pointer",
+                        }}
+                      >
                         {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
             </>
@@ -934,7 +976,7 @@ const Welcome = () => {
             </div>
           )}
           <div>
-            <Label htmlFor="email" style={CREATE_LABEL_STYLE}>
+            <Label htmlFor="email" style={CARD_LABEL}>
               Email
             </Label>
             <Input
@@ -949,7 +991,7 @@ const Welcome = () => {
               }}
               required
               placeholder="you@example.com"
-              className="h-12 rounded-xl bg-card border-border text-[15px]"
+              className="h-12 rounded-xl text-[15px]"
               style={{
                 ...fieldStyle,
                 ...((authError && mode === "signin") || (signupError && mode === "signup")
@@ -959,7 +1001,7 @@ const Welcome = () => {
             />
           </div>
           <div>
-            <Label htmlFor="password" style={CREATE_LABEL_STYLE}>
+            <Label htmlFor="password" style={CARD_LABEL}>
               Password
             </Label>
             <div className="relative">
@@ -970,8 +1012,8 @@ const Welcome = () => {
                 onChange={(e) => { setPassword(e.target.value); if (authError) setAuthError(null); }}
                 required
                 minLength={8}
-                placeholder={mode === "signup" ? "Min 8 chars, with a number & symbol" : "Enter your password"}
-                className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
+                placeholder={mode === "signup" ? "Create a password" : "Enter your password"}
+                className="h-12 rounded-xl text-[15px] pr-12"
                 style={{
                   ...fieldStyle,
                   // A missing account is an email problem, not a password one —
@@ -990,59 +1032,91 @@ const Welcome = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-          </div>
+            {mode === "signup" && (
+              <p style={hintStyle}>At least 8 characters, with a number and a symbol.</p>
+            )}
           </div>
 
           {mode === "signin" && (
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
               <button
                 type="button"
                 onClick={() => setKeepSignedIn((v) => !v)}
                 style={{
-                  display: "flex", alignItems: "center", gap: 10,
+                  display: "flex", alignItems: "center", gap: 12,
                   background: "none", border: "none", padding: 0, cursor: "pointer",
                 }}
                 aria-pressed={keepSignedIn}
               >
+                {/* Pill toggle */}
                 <span
                   style={{
-                    width: 22, height: 22, borderRadius: 6,
-                    background: keepSignedIn ? "#423324" : "transparent",
-                    border: keepSignedIn ? "none" : "1.5px solid rgba(26,26,26,0.30)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0,
+                    width: 46, height: 28, borderRadius: 9999, flexShrink: 0,
+                    background: keepSignedIn ? "#423324" : "rgba(26,26,26,0.16)",
+                    display: "flex", alignItems: "center",
+                    padding: 3,
+                    transition: "background 150ms ease",
                   }}
                 >
-                  {keepSignedIn && <Check size={14} color="#FFFFFF" strokeWidth={3} />}
+                  <span
+                    style={{
+                      width: 22, height: 22, borderRadius: 9999, background: "#FFFFFF",
+                      transform: keepSignedIn ? "translateX(18px)" : "translateX(0)",
+                      transition: "transform 150ms ease",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                    }}
+                  />
                 </span>
-                <span style={{ fontFamily: FF, fontSize: 14, color: "#2B2420" }}>Keep me signed in</span>
+                <span style={{ fontFamily: FF, fontSize: 14.5, color: "#2B2420" }}>Keep me signed in</span>
               </button>
               <button
                 type="button"
                 onClick={() => setMode("forgot")}
                 style={{
-                  fontFamily: FF, color: "#715a3d", fontSize: 14, fontWeight: 500,
-                  textDecoration: "underline", textUnderlineOffset: 3,
+                  fontFamily: FF, color: "#715a3d", fontSize: 14.5, fontWeight: 600,
                 }}
               >
                 Forgot password?
               </button>
             </div>
           )}
+          </div>
 
           <Button
             type="submit"
-            className="w-full h-12 font-medium rounded-full mt-6"
-            style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+            className="w-full h-12 rounded-full mt-5"
+            style={{ background: "#423324", color: "#FFFFFF", fontSize: 16, fontWeight: 600 }}
             disabled={loading}
           >
             {loading
               ? "Loading..."
               : mode === "signup"
               ? "Create Account"
-              : "Log in"}
+              : "Log In"}
           </Button>
         </form>
+
+        {mode === "signup" && (
+          <p style={{ fontFamily: FF, fontSize: 13, color: "#6B6255", margin: "12px 0 0", textAlign: "center" }}>
+            By creating an account you agree to our{" "}
+            <button
+              type="button"
+              onClick={() => navigate("/terms")}
+              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#715A3D" }}
+            >
+              Terms
+            </button>{" "}
+            and{" "}
+            <button
+              type="button"
+              onClick={() => navigate("/terms")}
+              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#715A3D" }}
+            >
+              Privacy Policy
+            </button>
+            .
+          </p>
+        )}
 
         {/* OR divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "22px 0 16px" }}>
@@ -1056,13 +1130,7 @@ const Welcome = () => {
             type="button"
             onClick={() => handleOAuth("google")}
             disabled={oauthLoading !== null}
-            style={{
-              height: 48, borderRadius: 9999, background: "transparent",
-              border: "1.5px solid rgba(26,26,26,0.18)", color: "#1A1A1A",
-              fontFamily: FF, fontSize: 16, fontWeight: 500,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-              cursor: "pointer", opacity: oauthLoading ? 0.6 : 1,
-            }}
+            style={socialButtonStyle}
           >
             <GoogleIcon />
             Continue with Google
@@ -1071,13 +1139,7 @@ const Welcome = () => {
             type="button"
             onClick={() => handleOAuth("apple")}
             disabled={oauthLoading !== null}
-            style={{
-              height: 48, borderRadius: 9999, background: "transparent",
-              border: "1.5px solid rgba(26,26,26,0.18)", color: "#1A1A1A",
-              fontFamily: FF, fontSize: 16, fontWeight: 500,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
-              cursor: "pointer", opacity: oauthLoading ? 0.6 : 1,
-            }}
+            style={socialButtonStyle}
           >
             <AppleIcon />
             Continue with Apple
@@ -1085,17 +1147,16 @@ const Welcome = () => {
         </div>
 
         <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
-          {mode === "signup" ? "Already have an account?" : "Don't have an account yet?"}{" "}
+          {mode === "signup" ? "Already have an account?" : "New here?"}{" "}
           <button
             onClick={() => {
               setAuthError(null);
               setSignupError(null);
               setMode(mode === "signup" ? "signin" : "signup");
             }}
-            className="font-medium"
-            style={{ fontFamily: FF, color: "#715a3d" }}
+            style={{ fontFamily: FF, color: "#715a3d", fontWeight: 600 }}
           >
-            {mode === "signup" ? "Log in" : "Sign Up"}
+            {mode === "signup" ? "Log in" : "Create an account"}
           </button>
         </p>
       </div>
