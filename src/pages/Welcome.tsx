@@ -831,7 +831,7 @@ const Welcome = () => {
 
               <div>
                 <Label style={CARD_LABEL}>
-                  Local Or Visitor
+                  RESIDENCY
                 </Label>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                   {RESIDENCY_OPTIONS.map((opt) => {
@@ -896,7 +896,7 @@ const Welcome = () => {
                         border: "none", padding: 0, cursor: "pointer",
                       }}
                     >
-                      Create an account
+                      Create an Account
                     </button>
                     <button
                       type="button"
