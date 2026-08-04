@@ -1026,18 +1026,18 @@ const EventDetail = () => {
               background: isPast ? C.muted : "#2b7f3f",
             }} />
             <span style={{
-              fontSize: 16, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
               color: isPast ? C.muted : "#2b7f3f",
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 16, color: C.dark }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 13, color: C.dark }}>· {dateDisplay}</span>
           </div>
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.dark }}>
-            <Clock size={15} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
+            <Clock size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
@@ -1049,10 +1049,10 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 8, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 15, color: C.dark, textDecoration: "none",
+              fontSize: 13, color: C.dark, textDecoration: "none",
             }}
           >
-            <MapPin size={15} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
