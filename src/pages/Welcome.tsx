@@ -1151,7 +1151,7 @@ const Welcome = () => {
             }}
             style={{ fontFamily: FF, color: "#715a3d", fontWeight: 600 }}
           >
-            {mode === "signup" ? "Log in" : "Create an account"}
+            {mode === "signup" ? "Log In" : "Create an Account"}
           </button>
         </p>
       </div>
