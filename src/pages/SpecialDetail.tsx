@@ -575,10 +575,10 @@ const SpecialDetail = () => {
         )}
 
         {special.business_name && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 15, color: C.muted }}>
-            <Store size={15} color={C.muted} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
+            <Store size={14} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: C.muted, textDecoration: "none" }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: C.dark, textDecoration: "none" }}>
                 {special.business_name}
               </Link>
             ) : <span>{special.business_name}</span>}
