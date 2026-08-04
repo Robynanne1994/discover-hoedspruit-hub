@@ -198,7 +198,7 @@ const Welcome = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("deleted") === "1") {
       toast.error(
-        "Something went wrong with your account. Please continue as a guest or create another account. Feel free to reach out to us at hello@hellohoedspruit.com.",
+        "Something went wrong with your account. Please continue as a guest or create another account. Feel free to reach out to us at hello@hellohoedspruit.co.",
         { duration: 10000 },
       );
       // clean the query string so the toast doesn't re-fire
@@ -456,7 +456,7 @@ const Welcome = () => {
           <p style={{ fontSize: 13, lineHeight: 1.55, color: "#6B6255", marginTop: 16, textAlign: "center" }}>
             The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes, so there's no rush.
             Nothing in your inbox after a minute or two? Check your spam or junk folder —
-            it comes from hello@hellohoedspruit.com.
+            it comes from hello@hellohoedspruit.co.
           </p>
 
           <p className="text-center text-sm mt-4" style={{ color: "#2b2420" }}>

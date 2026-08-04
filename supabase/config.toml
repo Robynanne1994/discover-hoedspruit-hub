@@ -95,7 +95,7 @@ double_confirm_changes = false
 # platform's built-in sender deliver it.
 #
 # This is what stops the codes disappearing. The built-in sender is a shared,
-# rate-limited development convenience on a domain hellohoedspruit.com has never
+# rate-limited development convenience on a domain hellohoedspruit.co has never
 # authorised, so its mail is throttled to a handful an hour and lands under a
 # spam warning -- which also disables every link in the body. The hook moves
 # sending onto our own domain and renders the templates from this repo, so the
