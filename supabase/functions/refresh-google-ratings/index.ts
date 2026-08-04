@@ -25,7 +25,60 @@ const json = (body: unknown, status = 200) =>
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-type Listing = { id: string; title: string; google_place_id: string | null };
+type Listing = {
+  id: string;
+  title: string;
+  location?: string | null;
+  google_place_id: string | null;
+};
+
+// Minimum title-vs-Google-name similarity we accept. Deliberately strict: a
+// missed match is harmless, a wrong match is not.
+const MIN_CONFIDENCE = 0.75;
+
+function normaliseName(input: string): string {
+  return input
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/\b(the|pty|ltd|hoedspruit|sa|south africa|limpopo)\b/g, " ")
+    .replace(/[^a-z0-9 ]+/g, " ")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function levenshteinRatio(a: string, b: string): number {
+  if (!a.length || !b.length) return 0;
+  const prev = new Array(b.length + 1).fill(0).map((_, i) => i);
+  const cur = new Array(b.length + 1).fill(0);
+  for (let i = 1; i <= a.length; i++) {
+    cur[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      cur[j] = Math.min(
+        prev[j] + 1,
+        cur[j - 1] + 1,
+        prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    for (let j = 0; j <= b.length; j++) prev[j] = cur[j];
+  }
+  return 1 - prev[b.length] / Math.max(a.length, b.length);
+}
+
+// Confidence in [0,1]. Full containment or full token overlap counts as strong.
+function nameConfidence(title: string, googleName: string): number {
+  const a = normaliseName(title);
+  const b = normaliseName(googleName);
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+  const tokensA = new Set(a.split(" "));
+  const tokensB = new Set(b.split(" "));
+  let shared = 0;
+  for (const t of tokensA) if (tokensB.has(t)) shared++;
+  const jaccard = shared / (tokensA.size + tokensB.size - shared);
+  // No containment bonus: "Car Wash" sitting inside "Eco Car Wash" is not proof
+  // of the same business, so plain string/token similarity decides.
+  return Math.max(levenshteinRatio(a, b), jaccard);
+}
 
 // Constant-time string compare so a wrong job token leaks no timing signal.
 function tokensMatch(a: string, b: string): boolean {
@@ -68,7 +121,7 @@ async function authorise(req: Request): Promise<boolean> {
 async function runBackfill(admin: ReturnType<typeof createClient>, limit: number) {
   const { data, error } = await admin
     .from("listings")
-    .select("id, title, google_place_id")
+    .select("id, title, location, google_place_id")
     .is("google_place_id", null)
     .limit(limit);
   if (error) throw new Error(error.message);
@@ -76,9 +129,15 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
   const listings = (data ?? []) as Listing[];
   let succeeded = 0;
   const failed: string[] = [];
+  const matched: { title: string; googleName: string; confidence: number }[] = [];
 
   for (const listing of listings) {
     try {
+      const locationHint = (listing.location ?? "").trim();
+      const textQuery = [listing.title, locationHint, "Hoedspruit Limpopo South Africa"]
+        .filter(Boolean)
+        .join(" ");
+
       const res = await fetch("https://places.googleapis.com/v1/places:searchText", {
         method: "POST",
         headers: {
@@ -87,12 +146,12 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
           "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress",
         },
         body: JSON.stringify({
-          textQuery: `${listing.title} Hoedspruit Limpopo South Africa`,
-          pageSize: 1,
+          textQuery,
+          pageSize: 5,
           locationBias: {
             circle: {
               center: { latitude: -24.3548, longitude: 30.954 },
-              radius: 30000.0,
+              radius: 15000.0,
             },
           },
         }),
@@ -100,22 +159,58 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
 
       if (!res.ok) throw new Error(`Google returned ${res.status}`);
       const body = await res.json();
-      const place = body?.places?.[0];
+      const candidates = (body?.places ?? []) as {
+        id?: string;
+        displayName?: { text?: string };
+      }[];
 
-      if (place?.id) {
+      // Score every candidate, keep the strongest name match.
+      let best: { id: string; name: string; confidence: number } | null = null;
+      for (const candidate of candidates) {
+        if (!candidate?.id) continue;
+        const name = candidate.displayName?.text ?? "";
+        const confidence = nameConfidence(listing.title, name);
+        if (!best || confidence > best.confidence) {
+          best = { id: candidate.id, name, confidence };
+        }
+      }
+
+      let reject = !best || best.confidence < MIN_CONFIDENCE;
+
+      // Never let two listings share one Place ID.
+      if (!reject && best) {
+        const { data: clash } = await admin
+          .from("listings")
+          .select("id")
+          .eq("google_place_id", best.id)
+          .neq("id", listing.id)
+          .limit(1);
+        if ((clash ?? []).length > 0) reject = true;
+      }
+
+      if (!reject && best) {
         await admin
           .from("listings")
           .update({
-            google_place_id: place.id,
-            google_place_name: place.displayName?.text ?? null,
+            google_place_id: best.id,
+            google_place_name: best.name || null,
+            google_match_confidence: Number(best.confidence.toFixed(2)),
             google_sync_status: "matched",
           })
           .eq("id", listing.id);
+        matched.push({
+          title: listing.title,
+          googleName: best.name,
+          confidence: Number(best.confidence.toFixed(2)),
+        });
         succeeded++;
       } else {
         await admin
           .from("listings")
-          .update({ google_sync_status: "not_found" })
+          .update({
+            google_sync_status: "not_found",
+            google_match_confidence: best ? Number(best.confidence.toFixed(2)) : null,
+          })
           .eq("id", listing.id);
         failed.push(listing.title);
       }
@@ -130,7 +225,14 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
     await sleep(CALL_DELAY_MS);
   }
 
-  return { mode: "backfill", processed: listings.length, succeeded, failedCount: failed.length, failed };
+  return {
+    mode: "backfill",
+    processed: listings.length,
+    succeeded,
+    failedCount: failed.length,
+    failed,
+    matched,
+  };
 }
 
 async function selectDue(
@@ -146,6 +248,8 @@ async function selectDue(
     .select("id, title, google_place_id")
     .eq("refresh_priority", priority)
     .not("google_place_id", "is", null)
+    // Rows awaiting a stricter re-match must never be written to.
+    .neq("google_sync_status", "needs_match")
     .or(`google_synced_at.is.null,google_synced_at.lt.${cutoff}`)
     .order("google_synced_at", { ascending: true, nullsFirst: true })
     .limit(limit);

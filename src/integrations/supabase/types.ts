@@ -1226,6 +1226,7 @@ export type Database = {
           good_for_kids: boolean | null
           good_to_know: string[] | null
           google_maps_link: string | null
+          google_match_confidence: number | null
           google_place_id: string | null
           google_place_name: string | null
           google_rating: number | null
@@ -1375,6 +1376,7 @@ export type Database = {
           good_for_kids?: boolean | null
           good_to_know?: string[] | null
           google_maps_link?: string | null
+          google_match_confidence?: number | null
           google_place_id?: string | null
           google_place_name?: string | null
           google_rating?: number | null
@@ -1524,6 +1526,7 @@ export type Database = {
           good_for_kids?: boolean | null
           good_to_know?: string[] | null
           google_maps_link?: string | null
+          google_match_confidence?: number | null
           google_place_id?: string | null
           google_place_name?: string | null
           google_rating?: number | null
