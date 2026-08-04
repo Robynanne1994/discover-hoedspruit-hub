@@ -516,7 +516,9 @@ Deno.serve(async (req) => {
     let limit = DEFAULT_LIMIT;
     try {
       const body = await req.json();
-      if (body?.mode === "backfill" || body?.mode === "refresh") mode = body.mode;
+      if (body?.mode === "backfill" || body?.mode === "refresh" || body?.mode === "from_links") {
+        mode = body.mode;
+      }
       const parsed = Number(body?.limit);
       if (Number.isFinite(parsed) && parsed > 0) limit = Math.min(Math.floor(parsed), 200);
     } catch {
