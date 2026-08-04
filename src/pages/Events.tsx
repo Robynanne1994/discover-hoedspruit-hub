@@ -546,7 +546,7 @@ const Events = () => {
 
 
   const handleFilterPill = (v: FilterType) => {
-    updateParams({ f: v === "all" ? null : v });
+    updateParams({ f: activeFilter === v || v === "all" ? null : v });
   };
 
   return (
