@@ -376,7 +376,9 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
           title: listing.title,
           reason: best ? "below_confidence" : "no_candidates",
           confidence: best ? Number(best.confidence.toFixed(2)) : undefined,
+          candidate: best?.name,
         });
+
         await admin
           .from("listings")
           .update({
