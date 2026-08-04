@@ -304,7 +304,7 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
 
   const listings = (data ?? []) as (Listing & { google_maps_link: string })[];
   let succeeded = 0;
-  const failed: { title: string; reason: string; confidence?: number }[] = [];
+  const failed: { title: string; reason: string; confidence?: number; candidate?: string }[] = [];
   const matched: {
     title: string;
     linkName: string | null;
