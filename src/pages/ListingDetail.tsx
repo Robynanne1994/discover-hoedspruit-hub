@@ -961,13 +961,16 @@ const ListingDetail = () => {
   };
 
   // Card header: small icon + uppercase label, matching the About / Location cards.
-  const CardHead = ({ Icon, children }: { Icon: IconComp; children: React.ReactNode }) => (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
-      <Icon size={17} strokeWidth={1.75} color={C.primary} />
-      <h3 style={{
-        margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
-        letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
-      }}>{children}</h3>
+  const CardHead = ({ Icon, children, right }: { Icon: IconComp; children: React.ReactNode; right?: React.ReactNode }) => (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginBottom: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <Icon size={17} strokeWidth={1.75} color={C.primary} />
+        <h3 style={{
+          margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
+          letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
+        }}>{children}</h3>
+      </div>
+      {right}
     </div>
   );
 
