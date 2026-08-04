@@ -286,6 +286,13 @@ const Search = () => {
           {scope === "specials" && <SpecialsResults query={query} />}
           {scope === "people" && <PeopleResults query={query} />}
         </div>
+        {!hasQuery && scope !== "people" && (
+          <DiscoverMore
+            to={scope === "listings" ? "/categories" : scope === "events" ? "/events" : "/specials"}
+            label="Discover More"
+          />
+        )}
+
       </div>
     </div>
   );
