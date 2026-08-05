@@ -8,7 +8,7 @@ import {
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint, Users, Banknote,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
-  CalendarDays,
+  CalendarDays, Images,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
