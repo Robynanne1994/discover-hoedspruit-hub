@@ -774,7 +774,7 @@ const FeaturedSection = ({
   return (
     <section style={{ marginBottom: 24 }}>
       <SectionHead
-        icon={<Star size={13} strokeWidth={1.8} color={COLOR.mutedInk} />}
+        icon={<Star size={13} strokeWidth={1.8} color={COLOR.pillActiveBg} />}
         label={isCarousel ? "Top deals this week" : "Deal of the week"}
         right={isCarousel ? `${index + 1} / ${items.length}` : undefined}
       />
