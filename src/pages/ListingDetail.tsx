@@ -1654,7 +1654,7 @@ const ListingDetail = () => {
               const reviewsHref: string | null = l.google_reviews_url || null;
               const row: React.CSSProperties = {
                 display: "inline-flex", alignItems: "center", gap: 5,
-                fontFamily: FONT, fontSize: 14, color: C.heading, textDecoration: "none",
+                fontFamily: FONT, fontSize: 12.5, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
