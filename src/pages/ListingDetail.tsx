@@ -994,7 +994,7 @@ const ListingDetail = () => {
           background: "none", border: "none", cursor: "pointer",
           fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
           letterSpacing: "0.005em",
-          color: active ? C.heading : C.muted,
+          color: active ? C.heading : "#6B6A5E",
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
           whiteSpace: "nowrap",
