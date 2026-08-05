@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { getWeekPublicHolidays, holidayHoursNote, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
-import { collectContacts } from "@/lib/contacts";
+import { collectContacts, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
@@ -458,7 +458,32 @@ const ListingDetail = () => {
   const actionEmail = pickAction(listing.email, l.additional_emails, l.action_email_index ?? 0);
   const actionWhatsappRaw = pickAction(whatsappNum, l.additional_whatsapps, l.action_whatsapp_index ?? 0);
   const actionWhatsappClean = actionWhatsappRaw ? actionWhatsappRaw.replace(/[^0-9]/g, "") : "";
-  const actionWebsite = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
+
+  // Websites the listing can actually be linked to, paired with their labels.
+  // A placeholder ("-", "N/A") or a note ("coming soon") in the website column
+  // means the listing has no website, so it must render nothing at all.
+  const websiteEntries = (() => {
+    const urls = [listing.website || "", ...(((l.additional_websites as string[] | null) ?? []))];
+    const labels = [
+      ((l.website_label as string | null) || "").trim(),
+      ...((((l as any).additional_website_labels as string[] | null) || []) as string[]).map((s) => (s || "").trim()),
+    ];
+    const seen = new Set<string>();
+    const out: { url: string; label: string }[] = [];
+    urls.forEach((raw, i) => {
+      const url = (raw || "").trim();
+      if (!isUsableWebsite(url)) return;
+      const key = url.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push({ url, label: labels[i] || "" });
+    });
+    return out;
+  })();
+  const actionWebsiteRaw = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
+  const actionWebsite = isUsableWebsite(actionWebsiteRaw)
+    ? actionWebsiteRaw.trim()
+    : (websiteEntries[0]?.url ?? "");
 
   // Category labels, with the category the user arrived from first.
   const categoryChips = (() => {
@@ -469,7 +494,7 @@ const ListingDetail = () => {
     return ordered.map((c) => c.title);
   })();
 
-  const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length) || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
+  const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
   const hasAbout = !!descriptionText;
   const hasLocation = !!(listing.location || mapPlace);
 
@@ -898,22 +923,30 @@ const ListingDetail = () => {
       Icon: Send, ext: true,
     },
     (actionWebsite
-      ? (/facebook\.com/i.test(actionWebsite)
-          ? { key: "website", label: "Facebook", href: actionWebsite, Icon: FacebookIcon, ext: true }
-          : /instagram\.com/i.test(actionWebsite)
-            ? { key: "website", label: "Instagram", href: actionWebsite, Icon: InstagramIcon, ext: true }
-            : { key: "website", label: "Website", href: actionWebsite, Icon: Globe, ext: true })
+      ? (websiteKind(actionWebsite) === "facebook"
+          ? { key: "website", label: "Facebook", href: websiteHref(actionWebsite), Icon: FacebookIcon, ext: true }
+          : websiteKind(actionWebsite) === "instagram"
+            ? { key: "website", label: "Instagram", href: websiteHref(actionWebsite), Icon: InstagramIcon, ext: true }
+            : { key: "website", label: "Website", href: websiteHref(actionWebsite), Icon: Globe, ext: true })
       : (listing as any).facebook
         ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
         : (listing as any).instagram
           ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
           : null),
-    // If website is shown but no WhatsApp, surface Facebook (or Instagram) as an extra action
-    (actionWebsite && !actionWhatsappClean && (listing as any).facebook
-      ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
-      : actionWebsite && !actionWhatsappClean && (listing as any).instagram
-        ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
-        : null),
+    // If a real website is shown but there's no WhatsApp, surface Facebook (or
+    // Instagram) as an extra action. Skipped when the website slot already holds
+    // the social page itself, which would just repeat the same button.
+    (() => {
+      const showsRealWebsite = !!actionWebsite && websiteKind(actionWebsite) === "website";
+      if (!showsRealWebsite || actionWhatsappClean) return null;
+      if ((listing as any).facebook) {
+        return { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true };
+      }
+      if ((listing as any).instagram) {
+        return { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true };
+      }
+      return null;
+    })(),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean; filled?: boolean }>;
 
 
@@ -1141,12 +1174,19 @@ const ListingDetail = () => {
             rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: whatsappCta, href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
           });
           emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
-          const websites = collectContacts(listing.website, (listing as any).additional_websites);
-          const websiteLabels = [((listing as any).website_label || "").trim(), ...((((listing as any).additional_website_labels) || []) as string[]).map((s) => (s || "").trim())];
           const cleanUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
-          websites.forEach((w, i) => rows.push({ label: "", custom: false, value: websiteLabels[i] || cleanUrl(w), href: w, Icon: Globe }));
-          if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
-          if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
+          // A Facebook or Instagram page saved in the website column reads as
+          // that social page, not as a globe pointing at "facebook.com/...".
+          websiteEntries.forEach(({ url, label }) => {
+            const kind = websiteKind(url);
+            const Icon = kind === "facebook" ? FacebookIcon : kind === "instagram" ? InstagramIcon : Globe;
+            const fallback = kind === "facebook" ? "Facebook" : kind === "instagram" ? "Instagram" : cleanUrl(url);
+            rows.push({ label: "", custom: false, value: label || fallback, href: websiteHref(url), Icon });
+          });
+          // Only when the website column isn't already showing that same page.
+          const websiteKinds = new Set(websiteEntries.map(({ url }) => websiteKind(url)));
+          if ((listing as any).facebook && !websiteKinds.has("facebook")) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
+          if ((listing as any).instagram && !websiteKinds.has("instagram")) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
           return rows;
         })().map((r: any, i) => (
           <a key={`${r.label}-${i}`} href={r.href} target="_blank" rel="noopener noreferrer" style={{
