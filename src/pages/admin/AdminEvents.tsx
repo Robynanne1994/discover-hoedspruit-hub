@@ -16,10 +16,11 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
+import HostLinkField from "@/components/admin/HostLinkField";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -186,12 +187,18 @@ const AdminEvents = () => {
         hosted_by_name: values.hosted_by_name || null,
         hosted_by_subtitle: values.hosted_by_subtitle || null,
         hosted_by_image_url: values.hosted_by_image_url || null,
+        hosted_by_link: values.hosted_by_link || null,
+        hosted_by_listing_id: values.hosted_by_listing_id || null,
         hosted_by_name_2: values.hosted_by_name_2 || null,
         hosted_by_subtitle_2: values.hosted_by_subtitle_2 || null,
         hosted_by_image_url_2: values.hosted_by_image_url_2 || null,
+        hosted_by_link_2: values.hosted_by_link_2 || null,
+        hosted_by_listing_id_2: values.hosted_by_listing_id_2 || null,
         hosted_by_name_3: values.hosted_by_name_3 || null,
         hosted_by_subtitle_3: values.hosted_by_subtitle_3 || null,
         hosted_by_image_url_3: values.hosted_by_image_url_3 || null,
+        hosted_by_link_3: values.hosted_by_link_3 || null,
+        hosted_by_listing_id_3: values.hosted_by_listing_id_3 || null,
       };
       if (editing) {
         const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
@@ -263,12 +270,18 @@ const AdminEvents = () => {
       hosted_by_name: (ev as any).hosted_by_name ?? "",
       hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
       hosted_by_image_url: (ev as any).hosted_by_image_url ?? "",
+      hosted_by_link: ev.hosted_by_link ?? "",
+      hosted_by_listing_id: ev.hosted_by_listing_id ?? "",
       hosted_by_name_2: (ev as any).hosted_by_name_2 ?? "",
       hosted_by_subtitle_2: (ev as any).hosted_by_subtitle_2 ?? "",
       hosted_by_image_url_2: (ev as any).hosted_by_image_url_2 ?? "",
+      hosted_by_link_2: ev.hosted_by_link_2 ?? "",
+      hosted_by_listing_id_2: ev.hosted_by_listing_id_2 ?? "",
       hosted_by_name_3: (ev as any).hosted_by_name_3 ?? "",
       hosted_by_subtitle_3: (ev as any).hosted_by_subtitle_3 ?? "",
       hosted_by_image_url_3: (ev as any).hosted_by_image_url_3 ?? "",
+      hosted_by_link_3: ev.hosted_by_link_3 ?? "",
+      hosted_by_listing_id_3: ev.hosted_by_listing_id_3 ?? "",
     });
     setOpen(true);
   };
@@ -435,18 +448,26 @@ const AdminEvents = () => {
                       const nameKey = (n === 1 ? "hosted_by_name" : `hosted_by_name_${n}`) as keyof typeof form;
                       const subKey = (n === 1 ? "hosted_by_subtitle" : `hosted_by_subtitle_${n}`) as keyof typeof form;
                       const imgKey = (n === 1 ? "hosted_by_image_url" : `hosted_by_image_url_${n}`) as keyof typeof form;
+                      const linkKey = (n === 1 ? "hosted_by_link" : `hosted_by_link_${n}`) as keyof typeof form;
+                      const listingKey = (n === 1 ? "hosted_by_listing_id" : `hosted_by_listing_id_${n}`) as keyof typeof form;
                       return (
                         <div key={n} className="space-y-3 p-3 border rounded">
                           <div className="flex items-center justify-between">
                             <Label className="text-sm font-semibold text-slate-950">Host {n}</Label>
                             {n === shown && (
                               <Button type="button" variant="ghost" size="sm" onClick={() => {
-                                setForm({ ...form, [nameKey]: "", [subKey]: "", [imgKey]: "", __hostsShown: shown - 1 } as any);
+                                setForm({ ...form, [nameKey]: "", [subKey]: "", [imgKey]: "", [linkKey]: "", [listingKey]: "", __hostsShown: shown - 1 } as any);
                               }}>Remove</Button>
                             )}
                           </div>
                           <div><Label>Name</Label><Input value={(form[nameKey] as string) || ""} onChange={(e) => setForm({ ...form, [nameKey]: e.target.value })} placeholder="e.g. Kristi & Joëlle" /></div>
                           <div><Label>Subtitle</Label><Input value={(form[subKey] as string) || ""} onChange={(e) => setForm({ ...form, [subKey]: e.target.value })} placeholder="e.g. Yoga Teachers" /></div>
+                          <HostLinkField
+                            key={`${editing?.id ?? "new"}-${n}`}
+                            value={{ link: (form[linkKey] as string) || "", listingId: (form[listingKey] as string) || "" }}
+                            listings={(listings || []) as { id: string; title: string }[]}
+                            onChange={(v) => setForm((f) => ({ ...f, [linkKey]: v.link, [listingKey]: v.listingId }))}
+                          />
                           <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={(form[imgKey] as string) || ""} onChange={(url) => setForm({ ...form, [imgKey]: url })} /></div>
                         </div>
                       );

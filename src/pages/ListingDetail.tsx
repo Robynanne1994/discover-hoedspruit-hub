@@ -515,8 +515,9 @@ const ListingDetail = () => {
   const openStatus = computeOpenStatus();
 
   // ----- Public holidays -----
-  // Any holiday in the next seven days is flagged on its row in the hours list,
-  // so it shows for the whole week being viewed and not only on the day itself.
+  // The hours list is this Monday–Sunday, so holidays come from the calendar
+  // week we are in: a holiday next Monday belongs to next week's list, not to
+  // the Monday row on screen, which stands for the Monday just gone.
   const weekHolidays = getWeekPublicHolidays(getSADate());
   const todayHoliday = Object.values(weekHolidays).find((h) => h.daysAway === 0) || null;
 
