@@ -83,6 +83,45 @@ export function isSAPublicHoliday(date: Date): { isHoliday: boolean; name?: stri
   return match ? { isHoliday: true, name: match.name } : { isHoliday: false };
 }
 
+const WEEKDAY_LABELS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+export interface WeekHoliday {
+  /** Weekday name as it appears in an opening-hours list, e.g. "Monday". */
+  day: string;
+  date: Date;
+  name: string;
+  /** 0 = today, 1 = tomorrow, … 6 = six days out. */
+  daysAway: number;
+}
+
+/**
+ * Public holidays falling in the seven days from `from` (inclusive), keyed by
+ * lowercase weekday name.
+ *
+ * Opening-hours lists always show a full Monday–Sunday week, so a holiday is
+ * flagged on its row for the whole week leading up to it rather than only on
+ * the day itself — the way Google Business Profiles surface holiday hours.
+ * Looking forward (rather than at the current calendar week) means a holiday
+ * that has already passed is not flagged again on its now-stale row.
+ */
+export function getWeekPublicHolidays(from: Date = getSADate()): Record<string, WeekHoliday> {
+  const result: Record<string, WeekHoliday> = {};
+  for (let i = 0; i < 7; i++) {
+    const date = addDays(from, i);
+    const { isHoliday, name } = isSAPublicHoliday(date);
+    if (!isHoliday || !name) continue;
+    const day = WEEKDAY_LABELS[date.getDay()];
+    result[day.toLowerCase()] = { day, date, name, daysAway: i };
+  }
+  return result;
+}
+
+/** e.g. "Christmas Day (25 Dec) — hours might differ" */
+export function holidayHoursNote(holiday: Pick<WeekHoliday, "name" | "date">): string {
+  return `${holiday.name} (${holiday.date.getDate()} ${MONTH_LABELS[holiday.date.getMonth()]}) — hours might differ`;
+}
+
 /** Get current date in South Africa timezone */
 export function getSADate(): Date {
   const now = new Date();
