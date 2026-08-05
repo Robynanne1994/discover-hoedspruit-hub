@@ -8,6 +8,7 @@ import {
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint, Users, Banknote,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
+  CalendarDays,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -18,7 +19,7 @@ import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNG
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
-import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
+import { getWeekPublicHolidays, holidayHoursNote, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
@@ -512,6 +513,12 @@ const ListingDetail = () => {
     return { state: "closed", ...(findNext(1) || {}) };
   };
   const openStatus = computeOpenStatus();
+
+  // ----- Public holidays -----
+  // Any holiday in the next seven days is flagged on its row in the hours list,
+  // so it shows for the whole week being viewed and not only on the day itself.
+  const weekHolidays = getWeekPublicHolidays(getSADate());
+  const todayHoliday = Object.values(weekHolidays).find((h) => h.daysAway === 0) || null;
 
   // ----- Detail sections (flattened from old accordion logic) -----
   type DField = { label: string; on: boolean | string };
@@ -1039,7 +1046,6 @@ const ListingDetail = () => {
   // Opening hours now live inside the About tab rather than a tab of their own.
   const renderHoursCard = () => {
     if (!hasHours) return null;
-    const holidayCheck = isSAPublicHoliday(getSADate());
     const alwaysOpen = openStatus?.state === "open" && openStatus?.alwaysOpen;
     const statusColor = openStatus?.state === "open" ? C.open : C.closed;
     const statusText = openStatus?.state === "open"
@@ -1066,6 +1072,7 @@ const ListingDetail = () => {
             const isAlwaysOpenValue = /always\s*open|24\s*\/?\s*7|open\s*24|24\s*hours?|24h\b/i.test(v);
             const isClosed = !alwaysOpen && !isAlwaysOpenValue && (!v || v.toLowerCase() === "closed");
             const isToday = day === todayLabel;
+            const holiday = weekHolidays[day.toLowerCase()];
             const displayValue = alwaysOpen || isAlwaysOpenValue
               ? "Always Open"
               : isClosed
@@ -1096,9 +1103,14 @@ const ListingDetail = () => {
                     </span>
                   </span>
                 </div>
-                {isToday && holidayCheck.isHoliday && (
-                  <div style={{ padding: "8px 12px", marginBottom: 12, background: C.ivory, borderRadius: 10, fontSize: 12.5, color: C.text }}>
-                    Public holiday{holidayCheck.name ? ` (${holidayCheck.name})` : ""} — hours might differ
+                {holiday && (
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 7,
+                    padding: "8px 12px", marginBottom: 12, background: C.ivory, borderRadius: 10,
+                    fontSize: 12.5, color: C.text, lineHeight: 1.35,
+                  }}>
+                    <CalendarDays size={13} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
+                    <span>{holidayHoursNote(holiday)}</span>
                   </div>
                 )}
               </div>
@@ -1583,6 +1595,9 @@ const ListingDetail = () => {
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
               <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
+            )}
+            {todayHoliday && (
+              <span style={{ fontSize: 13, color: C.dark }}>· {todayHoliday.name} — hours might differ</span>
             )}
           </div>
         )}
