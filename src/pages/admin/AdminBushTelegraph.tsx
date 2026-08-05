@@ -23,7 +23,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "homepage_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "is_featured", "sort_order"];
+const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
@@ -355,10 +355,7 @@ const AdminBushTelegraph = () => {
           description: r.description || null,
           url: r.url?.trim() || "",
           resource_type: r.resource_type?.trim() || "link",
-          image_url: r.image_url?.trim() || null,
-          detail_image_url: r.detail_image_url?.trim() || null,
-          homepage_image_url: r.homepage_image_url?.trim() || null,
-          qr_image_url: r.qr_image_url?.trim() || null,
+          // Images are backend-only: CSV never sets or clears them.
           admin_name: r.admin_name?.trim() || null,
           admins: (r.admin_name || "")
             .split("|")
@@ -421,7 +418,7 @@ const AdminBushTelegraph = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
       r.title, r.title_override ?? "", r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
-      r.image_url ?? "", r.detail_image_url ?? "", r.homepage_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
+      r.resource_type ?? "link",
       (Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
         : (r.admin_name ?? "")),

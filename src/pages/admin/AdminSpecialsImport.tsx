@@ -13,7 +13,7 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 
 const EXPECTED_HEADERS = [
   "title", "title_override", "deal_label", "business_name", "business_id", "description",
-  "image_url", "detail_image_url",
+  // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until", "card_footer_text",
   "price", "price_label", "original_price", "savings",
   "booking_required", "booking_link", "booking_link_label", "promo_code",
@@ -174,7 +174,6 @@ const AdminSpecialsImport = () => {
   const downloadTemplate = () => {
     const example = [
       "Sunset Dinner Deal", "", "50% OFF", "Bush Lodge", "", "Half-price dinner with wine pairing",
-      "", "",
       "2026-01-01", "2026-06-30", "Weekends only",
       "R450pp", "per person", "R900pp", "50% off",
       "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
@@ -194,7 +193,6 @@ const AdminSpecialsImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
       s.title ?? "", s.title_override ?? "", s.deal_label ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
-      s.image_url ?? "", s.detail_image_url ?? "",
       s.valid_from ?? "", s.valid_until ?? "", s.card_footer_text ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "", s.savings ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",

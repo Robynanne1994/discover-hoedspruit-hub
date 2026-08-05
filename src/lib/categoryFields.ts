@@ -189,7 +189,9 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 export const UNIVERSAL_FIELDS = [
   "title", "title_override", "card_primary_subcategory", "long_description",
   "good_to_know",
-  "image_url", "detail_image_url", "gallery_images", "location",
+  // Images (image_url, detail_image_url, gallery_images) are deliberately absent:
+  // they are managed in the backend editor only and never travel via CSV.
+  "location",
   "km_from_town",
   "phone", "phone_label", "email", "email_label",
   "website", "website_label", "whatsapp", "whatsapp_label", "whatsapp_cta_label",
