@@ -701,25 +701,18 @@ const SpecialDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.bg,
+        background: C.ivory,
         borderRadius: "28px 28px 0 0",
         marginTop: -28,
         padding: "22px 20px 0",
       }}>
-        <h1
-          data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
-          style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
-            color: C.heading, letterSpacing: "0.01em",
-          }}
-        >
-          {(special as any).title_override?.trim()
-            ? <span data-no-title-case="true">{(special as any).title_override}</span>
-            : special.title}
-        </h1>
-
+        {/* Deal eyebrow — small uppercase label above the headline */}
         {allTags.length > 0 && (
-          <div style={categoryLineStyle}>
+          <div style={{
+            fontFamily: FONT, fontWeight: 500, fontSize: 10.5,
+            textTransform: "uppercase", letterSpacing: "0.18em",
+            color: C.primary, marginBottom: 8,
+          }}>
             {allTags.map((t, i) => (
               <span key={i}>
                 {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
@@ -729,23 +722,36 @@ const SpecialDetail = () => {
           </div>
         )}
 
+        <h1
+          data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 30, lineHeight: 1.12,
+            color: C.heading, letterSpacing: "-0.3px",
+          }}
+        >
+          {(special as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(special as any).title_override}</span>
+            : special.title}
+        </h1>
+
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
+          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
+          <span style={{ fontSize: 13.5, color: C.text }}>· {datesText}</span>
+        </div>
+
         {special.business_name && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
-            <Store size={14} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: C.text }}>
+            <Store size={15} color={C.text} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: C.dark, textDecoration: "none" }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: C.text, textDecoration: "none" }}>
                 {special.business_name}
               </Link>
             ) : <span>{special.business_name}</span>}
           </div>
         )}
-
-        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
-          <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
-          <span style={{ fontSize: 13, color: C.dark }}>· {datesText}</span>
-        </div>
       </div>
+
 
       {/* Sticky tab bar */}
       {(() => {
