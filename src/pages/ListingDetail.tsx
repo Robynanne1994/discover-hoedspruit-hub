@@ -1623,26 +1623,18 @@ const ListingDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.bg,
+        background: C.ivory,
         borderRadius: showHero ? "28px 28px 0 0" : 0,
         marginTop: showHero ? -28 : 0,
         padding: "22px 20px 0",
       }}>
-        <h1
-          data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
-          style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
-            color: C.heading, letterSpacing: "0.01em",
-          }}
-        >
-          {(listing as any).title_override?.trim()
-            ? <span data-no-title-case="true">{(listing as any).title_override}</span>
-            : listing.title}
-        </h1>
-
-        {/* Categories — small brown text under the title, dot-separated */}
+        {/* Category eyebrow — small uppercase label above the headline */}
         {categoryChips.length > 0 && (
-          <div style={categoryLineStyle}>
+          <div style={{
+            fontFamily: FONT, fontWeight: 500, fontSize: 10.5,
+            textTransform: "uppercase", letterSpacing: "0.18em",
+            color: C.primary, marginBottom: 8,
+          }}>
             {categoryChips.map((t, i) => (
               <span key={t}>
                 {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
@@ -1652,6 +1644,18 @@ const ListingDetail = () => {
           </div>
         )}
 
+        <h1
+          data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 30, lineHeight: 1.12,
+            color: C.heading, letterSpacing: "-0.3px",
+          }}
+        >
+          {(listing as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(listing as any).title_override}</span>
+            : listing.title}
+        </h1>
+
         {hasHours && openStatus && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             <span style={{
@@ -1659,53 +1663,52 @@ const ListingDetail = () => {
               background: openStatus.state === "open" ? C.open : C.closed,
             }} />
             <span style={{
-              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 14, fontWeight: 700, letterSpacing: "0.01em",
               color: openStatus.state === "open" ? C.open : C.closed,
             }}>
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Never Closes</span>
+              <span style={{ fontSize: 13.5, color: C.text }}>· Never Closes</span>
             )}
             {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Closes {openStatus.closes}</span>
+              <span style={{ fontSize: 13.5, color: C.text }}>· Closes {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13.5, color: C.text }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
             )}
             {todayHoliday && (
-              <span style={{ fontSize: 13, color: C.dark }}>· {todayHoliday.name} — hours might differ</span>
+              <span style={{ fontSize: 13.5, color: C.text }}>· {todayHoliday.name} — hours might differ</span>
             )}
           </div>
         )}
 
         {(l.google_rating != null || kmFromTown) && (
-          <div style={{ marginTop: 14, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 20 }}>
             {l.google_rating != null && (() => {
               const reviewsHref: string | null = l.google_reviews_url || null;
-              const pill: React.CSSProperties = {
-                display: "inline-flex", alignItems: "center", gap: 5,
-                background: C.surface, borderRadius: 999, padding: "5px 9px 5px 10px",
-                fontFamily: FONT, fontSize: 12.5, color: C.heading, textDecoration: "none",
+              const row: React.CSSProperties = {
+                display: "inline-flex", alignItems: "center", gap: 6,
+                fontFamily: FONT, fontSize: 14, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
-                  <Star size={13} fill={C.accent} color={C.accent} strokeWidth={0} />
+                  <Star size={15} fill={C.heading} color={C.heading} strokeWidth={0} />
                   <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
                   {l.google_reviews_count != null && (
-                    <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
+                    <span style={{ color: "#6B6A5E" }}>({l.google_reviews_count.toLocaleString("en-ZA")})</span>
                   )}
-                  {reviewsHref && <ChevronRight size={13} strokeWidth={2} color={C.muted} />}
+                  {reviewsHref && <ChevronRight size={15} strokeWidth={2} color="#6B6A5E" />}
                 </>
               );
               return reviewsHref
-                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={pill}>{inner}</a>
-                : <div style={pill}>{inner}</div>;
+                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={row}>{inner}</a>
+                : <div style={row}>{inner}</div>;
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
-                <MapPin size={14} strokeWidth={1.75} color={C.dark} style={{ flexShrink: 0 }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: C.text }}>
+                <MapPin size={15} strokeWidth={1.75} color={C.text} style={{ flexShrink: 0 }} />
                 <span>{kmFromTown}</span>
               </div>
             )}
@@ -1713,16 +1716,17 @@ const ListingDetail = () => {
         )}
       </div>
 
-      {/* Sticky tab bar */}
+      {/* Sticky tab bar — attached to the title sheet */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 30,
-        background: C.bg, borderBottom: `1px solid rgba(112,90,61,0.14)`,
+        background: C.ivory, borderBottom: `1px solid rgba(26,26,26,0.10)`,
         display: "flex",
-        padding: "12px 12px 0",
+        padding: "14px 12px 0",
         overflowX: "auto",
       }} className="scrollbar-hide">
         {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} scrollable={visibleTabs.length > 4} />)}
       </nav>
+
 
       {/* Tab content */}
       <section style={{ background: C.bg }}>
