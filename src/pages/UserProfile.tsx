@@ -1155,10 +1155,10 @@ const UserProfile = () => {
                 margin: "4px 0 0",
               }}
             >
-              {profile?.is_private
-                ? `Their profile is private, so you'll have to request to follow them again and wait for them to approve it.`
-                : "You can follow them again at any time."}
+              Their profile is private, so you'll have to request to follow them
+              again and wait for them to approve it.
             </p>
+
           </DialogHeader>
           <DialogFooter
             style={{
