@@ -16,6 +16,7 @@ import {
 } from "@/lib/categoryFields";
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
 import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
+import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
@@ -81,7 +82,10 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
       const row: Record<string, string> = {};
       headers.forEach((header, index) => {
         const v = values[index] ?? "";
-        row[header] = v.trim() === "-" ? "" : v;
+        // Every "no value" placeholder ("-", "N/A", ...) is normalised to a
+        // single dash, which parseField reads as "clear this field". An empty
+        // cell is different: on update it means "leave whatever is there".
+        row[header] = isBlankPlaceholder(v) && v.trim() !== "" ? "-" : v;
       });
       return row;
     })
@@ -136,15 +140,18 @@ function serializeField(value: unknown, type: FieldType): string {
 // Parse a CSV cell to a DB value. Returns:
 //   - { skip: true } when the cell is empty AND we're updating (preserve existing value)
 //   - { value: parsed } otherwise (parsed may be null for blank-on-create or "-")
+// Empty and "-" are deliberately different: empty means "I'm not saying", "-"
+// means "there isn't one".
 function parseField(raw: string | undefined, type: FieldType, isUpdate: boolean):
   { skip: true } | { skip: false; value: unknown } {
   const cell = typeof raw === "string" ? raw : "";
   const trimmed = cell.trim();
   // Empty cell on update → preserve existing value
   if (trimmed === "" && isUpdate) return { skip: true };
-  // Empty cell on create → null (or default for bool_default_false)
-  // "-" explicitly clears to null
-  if (trimmed === "" || trimmed === "-") {
+  // Empty cell on create → null (or default for bool_default_false).
+  // A "-" (or any other placeholder) explicitly clears to null, on create and
+  // on update alike — that's how a listing loses a website it no longer has.
+  if (trimmed === "" || isBlankPlaceholder(trimmed)) {
     switch (type) {
       case "bool_default_false": return { skip: false, value: false };
       case "str_array": return { skip: false, value: [] };
@@ -361,7 +368,7 @@ const AdminImport = () => {
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
-        const title = row.title?.trim();
+        const title = isBlankPlaceholder(row.title) ? "" : row.title.trim();
         if (!title) {
           results.errors.push(`Row ${i + 2}: Missing title, skipped`);
           continue;
@@ -369,8 +376,10 @@ const AdminImport = () => {
         csvTitles.add(title.toLowerCase());
 
         // Resolve categories from CSV (pipe-separated, case/whitespace insensitive)
-        const catField = row.categories?.trim() || "";
-        const catNames = catField ? catField.split("|").map((s) => s.trim()).filter(Boolean) : [];
+        const catField = isBlankPlaceholder(row.categories) ? "" : row.categories.trim();
+        const catNames = catField
+          ? catField.split("|").map((s) => s.trim()).filter((s) => s && !isBlankPlaceholder(s))
+          : [];
         const resolvedCatIds: string[] = [];
 
         if (!isAllCategories) {
@@ -396,7 +405,9 @@ const AdminImport = () => {
 
         // Resolve subcategories. In category-scoped imports, only resolve under the selected category
         // (so we never touch another category's subcategory links).
-        const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
+        const subNames = isBlankPlaceholder(row.subcategories)
+          ? []
+          : row.subcategories.split("|").map((s) => s.trim()).filter((s) => s && !isBlankPlaceholder(s));
         const resolvedSubIdsRaw: string[] = [];
         const subResolutionCatIds = isAllCategories ? resolvedCatIds : [selectedCategoryId];
         for (const subName of subNames) {
@@ -464,8 +475,8 @@ const AdminImport = () => {
           if (!spec) continue;
           if (googleOwned && isGoogleSyncedField(fieldName)) {
             // Only flag it when the CSV actually carried a value to lose — a blank
-            // cell on update was going to be skipped anyway.
-            if ((row[fieldName] ?? "").trim() !== "") googleCellsIgnored = true;
+            // or placeholder cell on update was never going to write anything.
+            if (!isBlankPlaceholder(row[fieldName])) googleCellsIgnored = true;
             continue;
           }
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
@@ -855,6 +866,11 @@ const AdminImport = () => {
               {isAllCategories
                 ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields are preserved."
                 : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Leave a cell blank to keep whatever the listing already has. Put a "-" in it
+              to clear that field — a website column with "-" means the listing has no
+              website, and its website button and contact row disappear.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               google_rating, google_reviews_count and google_reviews_url are only imported for
