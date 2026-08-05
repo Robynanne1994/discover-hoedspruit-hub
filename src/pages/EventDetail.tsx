@@ -450,10 +450,10 @@ const EventDetail = () => {
         onClick={() => setTab(k)}
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
-          padding: "14px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 16,
+          padding: "13px 4px",
+          fontFamily: FONT, fontWeight: active ? 700 : 500, fontSize: 16,
           letterSpacing: "0.005em",
-          color: active ? C.heading : C.muted,
+          color: active ? C.heading : "#6B6A5E",
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
