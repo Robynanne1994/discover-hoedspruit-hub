@@ -1634,16 +1634,16 @@ const ListingDetail = () => {
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Never Closes</span>
+              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· Never Closes</span>
             )}
             {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Closes {openStatus.closes}</span>
+              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· Closes {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
             )}
             {todayHoliday && (
-              <span style={{ fontSize: 13, color: C.dark }}>· {todayHoliday.name} — hours might differ</span>
+              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· {todayHoliday.name} — hours might differ</span>
             )}
           </div>
         )}
