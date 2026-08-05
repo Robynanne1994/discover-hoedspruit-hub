@@ -91,35 +91,42 @@ export interface WeekHoliday {
   day: string;
   date: Date;
   name: string;
-  /** 0 = today, 1 = tomorrow, … 6 = six days out. */
+  /** Days from today: -2 = earlier this week, 0 = today, 3 = later this week. */
   daysAway: number;
 }
 
 /**
- * Public holidays falling in the seven days from `from` (inclusive), keyed by
- * lowercase weekday name.
+ * Public holidays falling in the Monday–Sunday week that contains `from`,
+ * keyed by lowercase weekday name.
  *
- * Opening-hours lists always show a full Monday–Sunday week, so a holiday is
- * flagged on its row for the whole week leading up to it rather than only on
- * the day itself — the way Google Business Profiles surface holiday hours.
- * Looking forward (rather than at the current calendar week) means a holiday
- * that has already passed is not flagged again on its now-stale row.
+ * An opening-hours list shows one row per weekday, and those rows are *this*
+ * week: on a Wednesday the Monday row stands for the Monday just gone, not the
+ * one coming. So holidays are matched against the calendar week the reader is
+ * in — a holiday falling next Monday belongs to next week's list and must not
+ * be flagged on a row that means last Monday.
  */
 export function getWeekPublicHolidays(from: Date = getSADate()): Record<string, WeekHoliday> {
   const result: Record<string, WeekHoliday> = {};
+  // Monday is day 0 of the list; getDay() counts from Sunday.
+  const dayOfWeek = (from.getDay() + 6) % 7;
+  const monday = addDays(from, -dayOfWeek);
   for (let i = 0; i < 7; i++) {
-    const date = addDays(from, i);
+    const date = addDays(monday, i);
     const { isHoliday, name } = isSAPublicHoliday(date);
     if (!isHoliday || !name) continue;
     const day = WEEKDAY_LABELS[date.getDay()];
-    result[day.toLowerCase()] = { day, date, name, daysAway: i };
+    result[day.toLowerCase()] = { day, date, name, daysAway: i - dayOfWeek };
   }
   return result;
 }
 
-/** e.g. "Christmas Day (25 Dec) — hours might differ" */
-export function holidayHoursNote(holiday: Pick<WeekHoliday, "name" | "date">): string {
-  return `${holiday.name} (${holiday.date.getDate()} ${MONTH_LABELS[holiday.date.getMonth()]}) — hours might differ`;
+/**
+ * e.g. "Christmas Day (25 Dec) — hours might differ", or "… — hours may have
+ * differed" for a holiday earlier in the week being shown.
+ */
+export function holidayHoursNote(holiday: Pick<WeekHoliday, "name" | "date"> & { daysAway?: number }): string {
+  const tense = (holiday.daysAway ?? 0) < 0 ? "hours may have differed" : "hours might differ";
+  return `${holiday.name} (${holiday.date.getDate()} ${MONTH_LABELS[holiday.date.getMonth()]}) — ${tense}`;
 }
 
 /** Get current date in South Africa timezone */

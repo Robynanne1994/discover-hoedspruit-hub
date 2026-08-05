@@ -37,21 +37,30 @@ describe("getWeekPublicHolidays", () => {
     expect(week.friday?.daysAway).toBe(0);
   });
 
-  it("does not flag a holiday that has already passed", () => {
-    // Sun 2026-06-21 — Youth Day (16 Jun) is behind us, so Tuesday stays clean.
-    const week = getWeekPublicHolidays(new Date(2026, 5, 21));
-    expect(Object.keys(week)).toHaveLength(0);
+  it("keeps a holiday earlier in the same week on its own row", () => {
+    // Fri 2026-05-01 is Workers' Day; from the Sunday it is still this week's Friday.
+    const week = getWeekPublicHolidays(new Date(2026, 4, 3));
+    expect(week.friday?.name).toBe("Workers' Day");
+    expect(week.friday?.daysAway).toBe(-2);
   });
 
-  it("moves a row on to the next holiday once the current one passes", () => {
-    // Sat 2026-12-26 — Christmas is behind us, so Friday now carries New Year's Day.
-    const week = getWeekPublicHolidays(new Date(2026, 11, 26));
-    expect(week.friday?.name).toBe("New Year's Day");
+  it("does not reach into next week", () => {
+    // Sun 2026-06-14 — Youth Day is Tuesday 16 June, which belongs to the next
+    // Monday–Sunday list, not to the Tuesday row showing now.
+    expect(Object.keys(getWeekPublicHolidays(new Date(2026, 5, 14)))).toHaveLength(0);
+  });
+
+  it("starts the week on Monday", () => {
+    // Sun 2026-12-27 sits at the end of the Christmas week, so Friday and
+    // Saturday still carry their holidays and New Year's Day is not yet shown.
+    const week = getWeekPublicHolidays(new Date(2026, 11, 27));
+    expect(week.friday?.name).toBe("Christmas Day");
     expect(week.saturday?.name).toBe("Day of Goodwill");
-    expect(week.saturday?.daysAway).toBe(0);
+    expect(week.saturday?.daysAway).toBe(-1);
   });
 
   it("looks across a year boundary", () => {
+    // Mon 2026-12-28 → the week runs into Friday 1 January 2027.
     const week = getWeekPublicHolidays(new Date(2026, 11, 28));
     expect(week.friday?.name).toBe("New Year's Day");
     expect(week.friday?.date.getFullYear()).toBe(2027);
@@ -66,6 +75,11 @@ describe("holidayHoursNote", () => {
   it("names the holiday and its date", () => {
     expect(holidayHoursNote({ name: "Christmas Day", date: new Date(2026, 11, 25) }))
       .toBe("Christmas Day (25 Dec) — hours might differ");
+  });
+
+  it("reads in the past tense for a holiday earlier in the week", () => {
+    expect(holidayHoursNote({ name: "Christmas Day", date: new Date(2026, 11, 25), daysAway: -2 }))
+      .toBe("Christmas Day (25 Dec) — hours may have differed");
   });
 });
 

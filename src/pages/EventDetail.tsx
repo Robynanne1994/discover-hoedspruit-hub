@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
@@ -7,7 +7,7 @@ import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
   Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
-  ReceiptText, NotebookPen, Copy,
+  ReceiptText, NotebookPen, Copy, ChevronRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -459,10 +459,12 @@ const EventDetail = () => {
   const renderAbout = () => {
     const desc = (e.description || "").trim();
 
-    const hosts: { name: string; subtitle?: string; image?: string; link?: string }[] = [];
-    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url, link: (e as any).hosted_by_link });
-    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2, link: (e as any).hosted_by_link_2 });
-    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3 });
+    // A host can link to a listing on the app or out to a URL — never both, so
+    // the listing wins if some old row somehow carries the two.
+    const hosts: { name: string; subtitle?: string; image?: string; link?: string; listingId?: string }[] = [];
+    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
+    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
+    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
 
     return (
       <div style={{ padding: "16px 20px 20px" }}>
@@ -479,10 +481,13 @@ const EventDetail = () => {
             <h2 style={{ ...headStyle, marginBottom: 14 }}>Hosted by</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {hosts.map((h, i) => {
-                const Tag: any = h.link ? "a" : "div";
-                const tagProps = h.link
-                  ? { href: h.link, target: "_blank", rel: "noopener noreferrer" }
-                  : {};
+                const Tag: any = h.listingId ? Link : h.link ? "a" : "div";
+                const tagProps = h.listingId
+                  ? { to: `/listing/${h.listingId}` }
+                  : h.link
+                    ? { href: h.link, target: "_blank", rel: "noopener noreferrer" }
+                    : {};
+                const linked = !!(h.listingId || h.link);
                 return (
                   <Tag
                     key={i}
@@ -517,8 +522,10 @@ const EventDetail = () => {
                         <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted, marginTop: 2 }}>{h.subtitle}</div>
                       )}
                     </div>
-                    {h.link && (
-                      <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />
+                    {linked && (
+                      h.listingId
+                        ? <ChevronRight size={18} color={C.primary} style={{ flexShrink: 0 }} />
+                        : <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />
                     )}
                   </Tag>
                 );

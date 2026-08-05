@@ -45,14 +45,17 @@ const EXPECTED_HEADERS = [
   "hosted_by_subtitle",
   "hosted_by_image_url",
   "hosted_by_link",
+  "hosted_by_listing",
   "hosted_by_name_2",
   "hosted_by_subtitle_2",
   "hosted_by_image_url_2",
   "hosted_by_link_2",
+  "hosted_by_listing_2",
   "hosted_by_name_3",
   "hosted_by_subtitle_3",
   "hosted_by_image_url_3",
   "hosted_by_link_3",
+  "hosted_by_listing_3",
   "is_featured",
 ];
 
@@ -172,6 +175,11 @@ const AdminEventsImport = () => {
         return null;
       };
 
+      // A host's link column is either an outbound URL (hosted_by_link) or a
+      // listing on the app, named here the way business_names are.
+      const resolveHostListing = (name: string | undefined, rowIdx: number): string | null =>
+        name && name.trim() ? resolveListing(name.trim(), rowIdx) : null;
+
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
         const title = row.title?.trim();
@@ -227,14 +235,17 @@ const AdminEventsImport = () => {
           hosted_by_subtitle: row.hosted_by_subtitle || null,
           hosted_by_image_url: row.hosted_by_image_url || null,
           hosted_by_link: row.hosted_by_link || null,
+          hosted_by_listing_id: resolveHostListing(row.hosted_by_listing, i),
           hosted_by_name_2: row.hosted_by_name_2 || null,
           hosted_by_subtitle_2: row.hosted_by_subtitle_2 || null,
           hosted_by_image_url_2: row.hosted_by_image_url_2 || null,
           hosted_by_link_2: row.hosted_by_link_2 || null,
+          hosted_by_listing_id_2: resolveHostListing(row.hosted_by_listing_2, i),
           hosted_by_name_3: row.hosted_by_name_3 || null,
           hosted_by_subtitle_3: row.hosted_by_subtitle_3 || null,
           hosted_by_image_url_3: row.hosted_by_image_url_3 || null,
           hosted_by_link_3: row.hosted_by_link_3 || null,
+          hosted_by_listing_id_3: resolveHostListing(row.hosted_by_listing_3, i),
           performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
         };
@@ -331,14 +342,17 @@ const AdminEventsImport = () => {
       hosted_by_subtitle: "Yoga Teachers",
       hosted_by_image_url: "https://example.com/host1.jpg",
       hosted_by_link: "https://example.com/kristi",
-      hosted_by_name_2: "",
-      hosted_by_subtitle_2: "",
+      hosted_by_listing: "",
+      hosted_by_name_2: "Another Linked Listing",
+      hosted_by_subtitle_2: "Venue",
       hosted_by_image_url_2: "",
       hosted_by_link_2: "",
+      hosted_by_listing_2: "Another Linked Listing",
       hosted_by_name_3: "",
       hosted_by_subtitle_3: "",
       hosted_by_image_url_3: "",
       hosted_by_link_3: "",
+      hosted_by_listing_3: "",
       is_featured: "true",
 
     };
@@ -359,6 +373,9 @@ const AdminEventsImport = () => {
       events.flatMap((e: any) => [
         ...(e.business_id ? [e.business_id] : []),
         ...((e.business_ids ?? []) as string[]),
+        e.hosted_by_listing_id,
+        e.hosted_by_listing_id_2,
+        e.hosted_by_listing_id_3,
       ]).filter(Boolean),
     ));
     const idToTitle = new Map<string, string>();
@@ -411,14 +428,17 @@ const AdminEventsImport = () => {
         hosted_by_subtitle: e.hosted_by_subtitle ?? "",
         hosted_by_image_url: e.hosted_by_image_url ?? "",
         hosted_by_link: e.hosted_by_link ?? "",
+        hosted_by_listing: idToTitle.get(e.hosted_by_listing_id) ?? "",
         hosted_by_name_2: e.hosted_by_name_2 ?? "",
         hosted_by_subtitle_2: e.hosted_by_subtitle_2 ?? "",
         hosted_by_image_url_2: e.hosted_by_image_url_2 ?? "",
         hosted_by_link_2: e.hosted_by_link_2 ?? "",
+        hosted_by_listing_2: idToTitle.get(e.hosted_by_listing_id_2) ?? "",
         hosted_by_name_3: e.hosted_by_name_3 ?? "",
         hosted_by_subtitle_3: e.hosted_by_subtitle_3 ?? "",
         hosted_by_image_url_3: e.hosted_by_image_url_3 ?? "",
         hosted_by_link_3: e.hosted_by_link_3 ?? "",
+        hosted_by_listing_3: idToTitle.get(e.hosted_by_listing_id_3) ?? "",
         is_featured: e.is_featured ? "true" : "false",
       };
       return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
