@@ -4,11 +4,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts, useFollowRequestCount } from "@/hooks/useFollows";
-import { ChevronDown, ChevronRight, Pencil, Search, Settings, SlidersHorizontal, User, UserPlus } from "lucide-react";
+import { ChevronDown, ChevronRight, Pencil, Search, Settings, User, UserPlus } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
-import SavedFilterSheet, { SavedSort, sortLabel } from "@/components/profile/SavedFilterSheet";
 import Seo from "@/components/Seo";
 import { residencyBadge } from "@/lib/residencyBadge";
 
@@ -40,8 +39,12 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 
 type Tab = "all" | "listings" | "deals" | "events" | "resources";
 
+// Anything dated within this window counts as "happening soon" and is pulled to
+// the top of the All grid ahead of the plain recently-saved run.
+const SOON_WINDOW = 7 * 24 * 60 * 60 * 1000;
+
 // A saved item of any kind, flattened into the single shape the grid, the
-// search box, the category chips and the sort all read from.
+// search box and the ordering all read from.
 type SavedItem = {
   id: string;
   type: "listing" | "event" | "special" | "resource";
@@ -50,11 +53,27 @@ type SavedItem = {
   subtitle: React.ReactNode;
   title: string;
   savedAt: number;
-  rating: number | null;
+  /**
+   * When this item happens or stops being valid — an event's start, a deal's
+   * expiry. Null for listings and resources, which never go out of date.
+   */
+  dueAt: number | null;
+  /** Event already over, deal already expired. */
+  isPast: boolean;
   /** Lower-cased haystack for the search box. */
   search: string;
-  /** Every category chip this item answers to. */
+  /** Category chips this item answers to (listing category, resource platform). */
   tags: string[];
+};
+
+// Upcoming/active: soonest first, undated items after them, then newest saved.
+// Past/expired: most recently finished first.
+const byDate = (past: boolean) => (a: SavedItem, b: SavedItem) => {
+  if (a.dueAt == null || b.dueAt == null) {
+    if (a.dueAt !== b.dueAt) return a.dueAt == null ? 1 : -1;
+    return b.savedAt - a.savedAt;
+  }
+  return past ? b.dueAt - a.dueAt : a.dueAt - b.dueAt;
 };
 
 // Maps a favourite's item_type to the query key of the saved list that renders it.
@@ -77,13 +96,14 @@ const MyProfile = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("all");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState<SavedSort>("recent");
+  // One sub-filter per tab, each on a single axis the tab actually has. The old
+  // Filter & Sort sheet stacked category, item type and time state into one chip
+  // row and offered a Rating sort that only listings could answer, so three of
+  // the four tabs had controls that quietly did nothing.
   const [category, setCategory] = useState<string | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
-  // Draft state so a half-made choice in the sheet never reflows the grid
-  // behind it — only Apply commits.
-  const [draftSort, setDraftSort] = useState<SavedSort>("recent");
-  const [draftCategory, setDraftCategory] = useState<string | null>(null);
+  const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
+  const [dealsSub, setDealsSub] = useState<"active" | "expired">("active");
+  const [showPast, setShowPast] = useState(false);
 
   useEffect(() => {
     if (authLoading) return;
@@ -92,10 +112,13 @@ const MyProfile = () => {
     if (!user) navigate("/my-profile-guest", { replace: true });
   }, [authLoading, user, navigate]);
 
-  // Category chips are derived per tab, so a chip picked on one tab can't
-  // survive onto the next and silently empty the grid.
+  // Sub-filters are derived per tab, so a choice made on one tab can't survive
+  // onto the next and silently empty the grid.
   useEffect(() => {
     setCategory(null);
+    setEventsSub("upcoming");
+    setDealsSub("active");
+    setShowPast(false);
   }, [tab]);
 
   const id = user?.id;
@@ -281,13 +304,14 @@ const MyProfile = () => {
       subtitle: null,
       title: titleCase(it.title),
       savedAt: at(it.created_at),
-      rating: it.google_rating ? Number(it.google_rating) : null,
+      dueAt: null,
+      isPast: false,
       search: `${it.title ?? ""} ${it.location ?? ""} ${it.categories?.title ?? ""}`.toLowerCase(),
       tags: it.categories?.title ? [chipLabel(it.categories.title)] : [],
     }));
 
     const specials: SavedItem[] = (savedSpecials ?? []).map((it: any) => {
-      const expired = !!it.valid_until && at(it.valid_until) < now;
+      const endsAt = it.valid_until ? at(it.valid_until) : null;
       return {
         id: it.id,
         type: "special" as const,
@@ -296,13 +320,16 @@ const MyProfile = () => {
         subtitle: it.business_name ? titleCase(it.business_name) : null,
         title: titleCase(it.title),
         savedAt: at(it.created_at),
-        rating: null,
+        dueAt: endsAt,
+        isPast: endsAt != null && endsAt < now,
         search: `${it.title ?? ""} ${it.business_name ?? ""} ${it.tag ?? ""}`.toLowerCase(),
-        tags: ["Deals", expired ? "Expired" : "Active", ...(it.tag ? [chipLabel(it.tag)] : [])],
+        tags: [],
       };
     });
 
     const events: SavedItem[] = (savedEvents ?? []).map((it: any) => {
+      // Runs until the end date, but the date that matters for ordering is when
+      // it starts — that's what you'd be counting down to.
       const ref = it.end_date || it.start_date;
       const past = ref ? at(ref) < now : false;
       return {
@@ -322,9 +349,10 @@ const MyProfile = () => {
         ),
         title: titleCase(it.title),
         savedAt: at(it.created_at),
-        rating: null,
+        dueAt: it.start_date ? at(it.start_date) : ref ? at(ref) : null,
+        isPast: past,
         search: `${it.title ?? ""} ${it.location ?? ""} ${it.tag ?? ""}`.toLowerCase(),
-        tags: ["Events", past ? "Past" : "Upcoming"],
+        tags: [],
       };
     });
 
@@ -339,9 +367,10 @@ const MyProfile = () => {
         subtitle: metaParts.length ? <span>{metaParts.join(" · ")}</span> : null,
         title: titleCase(displayTitle),
         savedAt: at(it.created_at),
-        rating: null,
+        dueAt: null,
+        isPast: false,
         search: `${displayTitle ?? ""} ${metaParts.join(" ")} ${it.platform ?? ""}`.toLowerCase(),
-        tags: ["Resources", ...(it.platform ? [chipLabel(it.platform)] : [])],
+        tags: it.platform ? [chipLabel(it.platform)] : [],
       };
     });
 
@@ -365,66 +394,87 @@ const MyProfile = () => {
     ]).map((t) => ({ ...t, count: count(t.id) })).filter((t) => t.id === "all" || t.count > 0 || t.id === tab);
   }, [items, tab]);
 
-  // Chips offered by the sheet: on "All" the item types plus the listing
-  // categories (as in the design), on a single tab that tab's own categories.
+  // Category chips, and only on the two tabs that have a real category to
+  // offer: a listing's category and a resource's platform. Deals and events are
+  // filtered by time instead, which is the axis that actually matters there.
   const categories = useMemo(() => {
-    const TYPES = ["Deals", "Events", "Resources"];
-    const STATES = ["Active", "Expired", "Upcoming", "Past"];
+    if (tab !== "listings" && tab !== "resources") return [];
     const counts = new Map<string, number>();
     tabItems.forEach((it) => it.tags.forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)));
-    // Time states lead the list on the tabs that actually have one. On "All"
-    // they'd sit among the categories and read as if they were categories too,
-    // so they're dropped there.
-    const states = tab === "deals" || tab === "events" ? STATES.filter((s) => counts.has(s)) : [];
-    STATES.forEach((s) => counts.delete(s));
-    // Type chips only earn a place on "All", where the grid is mixed; on a
-    // single tab every item shares the type already.
-    const types = tab === "all" ? TYPES.filter((t) => counts.has(t)) : [];
-    TYPES.forEach((t) => counts.delete(t));
-    const rest = [...counts.entries()]
+    return [...counts.entries()]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
       .map(([t]) => t);
-    return [...states, ...rest, ...types];
   }, [tabItems, tab]);
 
-  const visible = useMemo(() => {
+  // The sub-filter row for the current tab. Time state where the content
+  // expires, categories where it doesn't, nothing at all on All.
+  const subFilter = useMemo(() => {
+    if (tab === "events")
+      return {
+        value: eventsSub,
+        onChange: (v: string) => setEventsSub(v as "upcoming" | "past"),
+        options: [
+          { id: "upcoming", label: "Upcoming" },
+          { id: "past", label: "Past" },
+        ],
+      };
+    if (tab === "deals")
+      return {
+        value: dealsSub,
+        onChange: (v: string) => setDealsSub(v as "active" | "expired"),
+        options: [
+          { id: "active", label: "Active" },
+          { id: "expired", label: "Expired" },
+        ],
+      };
+    // A lone category chip filters nothing — every item on the tab carries it.
+    if (categories.length > 1)
+      return {
+        value: category ?? "all",
+        onChange: (v: string) => setCategory(v === "all" ? null : v),
+        options: [{ id: "all", label: "All" }, ...categories.map((c) => ({ id: c, label: c }))],
+      };
+    return null;
+  }, [tab, eventsSub, dealsSub, categories, category]);
+
+  // The grid, split into what is still ahead of you and what has already been
+  // and gone. Past events and expired deals are real clutter in a saved list,
+  // so on All they sit behind a toggle underneath rather than in the grid.
+  const { current, past } = useMemo(() => {
+    const now = Date.now();
     const q = search.trim().toLowerCase();
-    const filtered = tabItems.filter((it) => {
-      if (q && !it.search.includes(q)) return false;
-      if (category && !it.tags.includes(category)) return false;
-      return true;
-    });
-    const sorted = [...filtered];
-    if (sort === "az") sorted.sort((a, b) => a.title.localeCompare(b.title));
-    else if (sort === "rating")
-      // Unrated items (events, deals, resources) sink below the rated ones
-      // rather than scattering through the grid.
-      sorted.sort((a, b) => (b.rating ?? -1) - (a.rating ?? -1) || b.savedAt - a.savedAt);
-    else sorted.sort((a, b) => b.savedAt - a.savedAt);
-    return sorted;
-  }, [tabItems, search, category, sort]);
+    let list = tabItems.filter((it) => !q || it.search.includes(q));
 
-  // What Apply would show, so the sheet's button can preview the result count.
-  const draftCount = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return tabItems.filter((it) => {
-      if (q && !it.search.includes(q)) return false;
-      if (draftCategory && !it.tags.includes(draftCategory)) return false;
-      return true;
-    }).length;
-  }, [tabItems, search, draftCategory]);
+    if (tab === "events") list = list.filter((it) => (eventsSub === "past" ? it.isPast : !it.isPast));
+    else if (tab === "deals") list = list.filter((it) => (dealsSub === "expired" ? it.isPast : !it.isPast));
+    else if (category) list = list.filter((it) => it.tags.includes(category));
 
-  const openSheet = () => {
-    setDraftSort(sort);
-    setDraftCategory(category);
-    setSheetOpen(true);
-  };
+    // On a single-type tab the pill row already says which half you asked for,
+    // so nothing is held back below the grid.
+    if (tab !== "all") {
+      const over = (tab === "events" && eventsSub === "past") || (tab === "deals" && dealsSub === "expired");
+      const sorted = [...list];
+      if (tab === "events" || tab === "deals") sorted.sort(byDate(over));
+      else sorted.sort((a, b) => b.savedAt - a.savedAt);
+      return { current: sorted, past: [] as SavedItem[] };
+    }
 
-  const applySheet = () => {
-    setSort(draftSort);
-    setCategory(draftCategory);
-    setSheetOpen(false);
-  };
+    // Anything happening in the next week leads, soonest first, then the rest
+    // by most recently saved. No sort control: this is what you'd have picked.
+    const soon = (it: SavedItem) => it.dueAt != null && it.dueAt - now <= SOON_WINDOW;
+    const upcoming = list
+      .filter((it) => !it.isPast)
+      .sort((a, b) => {
+        const [sa, sb] = [soon(a), soon(b)];
+        if (sa !== sb) return sa ? -1 : 1;
+        if (sa && sb) return (a.dueAt ?? 0) - (b.dueAt ?? 0);
+        return b.savedAt - a.savedAt;
+      });
+    return { current: upcoming, past: list.filter((it) => it.isPast).sort(byDate(true)) };
+  }, [tabItems, search, category, tab, eventsSub, dealsSub]);
+
+  // Searching is deliberate, so a match that happens to be over still shows.
+  const pastOpen = showPast || !!search.trim();
 
   const badge = residencyBadge(profile?.location);
 
@@ -675,12 +725,11 @@ const MyProfile = () => {
         </section>
       </div>
 
-      {/* Search + filter */}
-      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "18px 20px 0" }}>
+      {/* Search */}
+      <div style={{ padding: "18px 20px 0" }}>
         <label
           style={{
-            flex: 1,
-            minWidth: 0,
+            width: "100%",
             height: 48,
             background: CARD,
             borderRadius: 999,
@@ -708,26 +757,6 @@ const MyProfile = () => {
             }}
           />
         </label>
-        <button
-          type="button"
-          onClick={openSheet}
-          aria-label="Filter and sort"
-          style={{
-            width: 48,
-            height: 48,
-            flexShrink: 0,
-            borderRadius: "50%",
-            background: CARD,
-            border: category ? `1.5px solid ${DARK_BROWN}` : "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          <SlidersHorizontal size={18} strokeWidth={1.8} color={INK} />
-        </button>
       </div>
 
       {/* Type pills */}
@@ -774,46 +803,66 @@ const MyProfile = () => {
         })}
       </div>
 
-      {/* Result count + sort */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-          padding: "16px 20px 0",
-        }}
-      >
-        <span style={{ fontFamily: SANS, fontSize: 13, color: SUBTLE }}>
-          {visible.length === 1 ? "1 Item" : `${visible.length} Items`}
-        </span>
-        <button
-          type="button"
-          onClick={openSheet}
+      {/* Sub-filter for the current tab. One axis, always one the tab has. */}
+      {subFilter && (
+        <div
           style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 5,
-            fontFamily: SANS,
-            fontSize: 13,
-            fontWeight: 600,
-            color: INK,
+            display: "flex",
+            gap: 8,
+            marginTop: 12,
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            padding: "0 20px",
           }}
+          className="hide-scrollbar"
         >
-          {category ? `${category} · ${sortLabel(sort)}` : sortLabel(sort)}
-          <ChevronDown size={15} strokeWidth={2} color={INK} />
-        </button>
+          {subFilter.options.map((o) => {
+            const active = subFilter.value === o.id;
+            return (
+              <button
+                key={o.id}
+                type="button"
+                onClick={() => subFilter.onChange(o.id)}
+                aria-pressed={active}
+                style={{
+                  flex: "0 0 auto",
+                  whiteSpace: "nowrap",
+                  // Reads as secondary to the type pills above: no card fill
+                  // when it's off, so the two rows never compete.
+                  background: active ? DARK_BROWN : "transparent",
+                  color: active ? WHITE : INK,
+                  border: `1px solid ${active ? DARK_BROWN : "rgba(26,26,26,0.14)"}`,
+                  borderRadius: 999,
+                  padding: "6px 14px",
+                  cursor: "pointer",
+                  fontFamily: SANS,
+                  fontSize: 13,
+                  fontWeight: active ? 600 : 400,
+                  letterSpacing: "0.01em",
+                  lineHeight: 1.2,
+                }}
+              >
+                {o.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Result count */}
+      <div style={{ padding: "16px 20px 0" }}>
+        <span style={{ fontFamily: SANS, fontSize: 13, color: SUBTLE }}>
+          {current.length === 1 ? "1 Item" : `${current.length} Items`}
+        </span>
       </div>
 
       {/* Saved grid */}
       <div style={{ padding: "14px 20px 0" }}>
-        {visible.length ? (
+        {current.length ? (
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {visible.map((it) => (
+            {current.map((it) => (
               <SavedCard
                 key={`${it.type}-${it.id}`}
                 it={it.raw}
@@ -839,26 +888,77 @@ const MyProfile = () => {
               ? "Nothing saved yet. Tap the heart on anything you'd like to save and you can find it here later."
               : search.trim() || category
                 ? "Nothing here matches that. Try clearing your search or filters."
-                : "Nothing saved in this tab yet."}
+                : past.length
+                  ? "Nothing coming up. Everything you've saved has already been and gone."
+                  : "Nothing saved in this tab yet."}
           </div>
         )}
-      </div>
 
-      <SavedFilterSheet
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        sort={draftSort}
-        onSortChange={setDraftSort}
-        categories={categories}
-        category={draftCategory}
-        onCategoryChange={setDraftCategory}
-        onReset={() => {
-          setDraftSort("recent");
-          setDraftCategory(null);
-        }}
-        onApply={applySheet}
-        resultsCount={draftCount}
-      />
+        {/* Been and gone. Kept out of the grid above so a saved list doesn't
+            fill up with events that already happened, but still reachable. */}
+        {past.length > 0 && (
+          <>
+            <button
+              type="button"
+              onClick={() => setShowPast((v) => !v)}
+              aria-expanded={pastOpen}
+              style={{
+                width: "100%",
+                marginTop: current.length ? 20 : 0,
+                background: "none",
+                border: "none",
+                borderTop: `1px solid rgba(26,26,26,0.10)`,
+                padding: "16px 0 0",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 5,
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                color: INK,
+              }}
+            >
+              {pastOpen ? "Hide" : "Show"} Past ({past.length})
+              <ChevronDown
+                size={15}
+                strokeWidth={2}
+                color={INK}
+                style={{
+                  transform: pastOpen ? "rotate(180deg)" : "none",
+                  transition: "transform 200ms ease",
+                }}
+              />
+            </button>
+
+            {pastOpen && (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 12,
+                  marginTop: 14,
+                  // Dimmed so the two groups stay legible as separate things
+                  // even once you've scrolled past the divider.
+                  opacity: 0.65,
+                }}
+              >
+                {past.map((it) => (
+                  <SavedCard
+                    key={`past-${it.type}-${it.id}`}
+                    it={it.raw}
+                    type={it.type}
+                    href={it.href}
+                    subtitle={it.subtitle}
+                    onUnsave={(e) => handleUnsave(e, it.id, it.type)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
