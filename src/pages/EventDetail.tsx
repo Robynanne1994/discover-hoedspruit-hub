@@ -1102,11 +1102,11 @@ const EventDetail = () => {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              marginTop: 8, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 13, color: C.dark, textDecoration: "none",
+              marginTop: 10, display: "flex", alignItems: "center", gap: 6,
+              fontSize: 14, color: C.text, textDecoration: "none",
             }}
           >
-            <MapPin size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={15} color={C.text} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
