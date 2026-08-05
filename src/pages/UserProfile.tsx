@@ -344,7 +344,10 @@ const UserProfile = () => {
     // Guests get a dismissable bottom sheet, not a full-screen redirect.
     if (!requireAuth("follow people")) return;
     if (following) {
-      setUnfollowOpen(true);
+      // Only a private account needs a warning: re-following means requesting
+      // approval again. Public accounts unfollow straight away.
+      if ((profile as any)?.is_private) setUnfollowOpen(true);
+      else unfollow.mutate();
     } else if (requested) {
       // Cancel pending request — no confirmation needed
       unfollow.mutate();
