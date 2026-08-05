@@ -12,9 +12,32 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-const DEFAULT_LIMIT = 32;
-const HIGH_PRIORITY_DAYS = 6;
-const NORMAL_PRIORITY_DAYS = 25;
+// Listings fetched per run. The nightly cron sends no limit of its own, so this
+// is what it gets. It has to clear more than the refresh windows below generate,
+// or the queue only grows: those windows come to roughly 22 fetches a night at
+// today's listing count. The rest is headroom, so a backlog of newly matched or
+// hand-entered Place IDs drains in a few nights rather than a fortnight.
+//
+// Raising this does not raise the bill — the windows decide how many fetches are
+// due, this only caps how fast they get made.
+const DEFAULT_LIMIT = 100;
+// How stale a rating gets before it is re-fetched. These two numbers, not the
+// batch size, are what set the monthly Google bill: each listing costs one call
+// per window it lives through.
+//
+// Asking for `rating` and `userRatingCount` bills the call at the Places
+// Enterprise rate, whose free allowance is only 1,000 calls a month (Essentials
+// gets 10,000; the tier is decided by the highest-tier field requested). At 6/25
+// days the ~400 listings currently holding a Place ID came to ~970 calls a
+// month, which cleared the allowance by a margin of about thirty and would have
+// gone over as soon as the remaining Place IDs were filled in.
+//
+// At 10/30 days the same listings cost ~660 a month, and ~790 once every listing
+// has an ID — inside the free tier with room to keep adding listings. The cost
+// of that is a rating up to ten days old rather than six, which for a town guide
+// nobody will notice. Shorten these again only alongside the sums.
+const HIGH_PRIORITY_DAYS = 10;
+const NORMAL_PRIORITY_DAYS = 30;
 const CALL_DELAY_MS = 100;
 
 const json = (body: unknown, status = 200) =>
