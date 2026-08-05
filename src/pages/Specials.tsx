@@ -714,7 +714,7 @@ const SectionHead = ({
           fontWeight: 700,
           letterSpacing: "1.6px",
           textTransform: "uppercase",
-          color: COLOR.mutedInk,
+          color: COLOR.pillActiveBg,
         }}
       >
         {label}
