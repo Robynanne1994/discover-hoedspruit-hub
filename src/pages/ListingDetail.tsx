@@ -1596,6 +1596,18 @@ const ListingDetail = () => {
         marginTop: showHero ? -28 : 0,
         padding: "22px 20px 0",
       }}>
+        {/* Categories — small brown text above the title, dot-separated */}
+        {categoryChips.length > 0 && (
+          <div style={{ ...categoryLineStyle, marginTop: 0, marginBottom: 8 }}>
+            {categoryChips.map((t, i) => (
+              <span key={t}>
+                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+
         <h1
           data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -1608,17 +1620,6 @@ const ListingDetail = () => {
             : listing.title}
         </h1>
 
-        {/* Categories — small brown text under the title, dot-separated */}
-        {categoryChips.length > 0 && (
-          <div style={categoryLineStyle}>
-            {categoryChips.map((t, i) => (
-              <span key={t}>
-                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
-                {t}
-              </span>
-            ))}
-          </div>
-        )}
 
         {hasHours && openStatus && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
