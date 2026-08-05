@@ -674,6 +674,7 @@ const SpecialDetail = () => {
         >
           <BackArrowIcon size={20} color={C.heading} />
         </button>
+        {/* Share / save / edit sit together in one white capsule */}
         <div style={{
           position: "absolute",
           top: "var(--overlay-top)",
@@ -681,16 +682,20 @@ const SpecialDetail = () => {
           zIndex: 2,
           display: "flex",
           alignItems: "center",
-          gap: 8,
+          gap: 2,
+          background: "#FFFFFF",
+          borderRadius: 999,
+          padding: 4,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
         }}>
-          <button onClick={handleShare} aria-label="Share" style={floatBtn}>
-            <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+          <button onClick={handleShare} aria-label="Share" style={capsuleBtn}>
+            <Share2 size={19} strokeWidth={1.6} color={C.heading} />
           </button>
-          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-            <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={capsuleBtn}>
+            <Heart size={19} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
           </button>
           {isAdmin && (
-            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={floatBtn}>
+            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={capsuleBtn}>
               <Pencil size={18} strokeWidth={1.6} color={C.heading} />
             </button>
           )}
