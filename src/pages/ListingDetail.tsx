@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { getWeekPublicHolidays, holidayHoursNote, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
-import { collectContacts, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
+import { collectContacts, isUsableSocialLink, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
@@ -485,6 +485,11 @@ const ListingDetail = () => {
     ? actionWebsiteRaw.trim()
     : (websiteEntries[0]?.url ?? "");
 
+  // Own social columns, held to the same test as the website column so a "-" or
+  // a note never becomes a dead Facebook link.
+  const facebookLink = isUsableSocialLink((l as any).facebook) ? String((l as any).facebook).trim() : "";
+  const instagramLink = isUsableSocialLink((l as any).instagram) ? String((l as any).instagram).trim() : "";
+
   // Category labels, with the category the user arrived from first.
   const categoryChips = (() => {
     const cats = listingCategories ?? [];
@@ -494,7 +499,7 @@ const ListingDetail = () => {
     return ordered.map((c) => c.title);
   })();
 
-  const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
+  const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || facebookLink || instagramLink || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
   const hasAbout = !!descriptionText;
   const hasLocation = !!(listing.location || mapPlace);
 
@@ -922,28 +927,27 @@ const ListingDetail = () => {
       href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
       Icon: Send, ext: true,
     },
+    // The website slot comes from the website column alone. A listing with no
+    // website gets no button here — nothing stands in for it, so an empty
+    // website column can never surface as a "Facebook" button in its place.
     (actionWebsite
       ? (websiteKind(actionWebsite) === "facebook"
           ? { key: "website", label: "Facebook", href: websiteHref(actionWebsite), Icon: FacebookIcon, ext: true }
           : websiteKind(actionWebsite) === "instagram"
             ? { key: "website", label: "Instagram", href: websiteHref(actionWebsite), Icon: InstagramIcon, ext: true }
             : { key: "website", label: "Website", href: websiteHref(actionWebsite), Icon: Globe, ext: true })
-      : (listing as any).facebook
-        ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
-        : (listing as any).instagram
-          ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
-          : null),
+      : null),
     // If a real website is shown but there's no WhatsApp, surface Facebook (or
     // Instagram) as an extra action. Skipped when the website slot already holds
     // the social page itself, which would just repeat the same button.
     (() => {
       const showsRealWebsite = !!actionWebsite && websiteKind(actionWebsite) === "website";
       if (!showsRealWebsite || actionWhatsappClean) return null;
-      if ((listing as any).facebook) {
-        return { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true };
+      if (facebookLink) {
+        return { key: "facebook", label: "Facebook", href: websiteHref(facebookLink), Icon: FacebookIcon, ext: true };
       }
-      if ((listing as any).instagram) {
-        return { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true };
+      if (instagramLink) {
+        return { key: "instagram", label: "Instagram", href: websiteHref(instagramLink), Icon: InstagramIcon, ext: true };
       }
       return null;
     })(),
@@ -1185,8 +1189,8 @@ const ListingDetail = () => {
           });
           // Only when the website column isn't already showing that same page.
           const websiteKinds = new Set(websiteEntries.map(({ url }) => websiteKind(url)));
-          if ((listing as any).facebook && !websiteKinds.has("facebook")) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
-          if ((listing as any).instagram && !websiteKinds.has("instagram")) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
+          if (facebookLink && !websiteKinds.has("facebook")) rows.push({ label: "Facebook", value: "Facebook", href: websiteHref(facebookLink), Icon: FacebookIcon });
+          if (instagramLink && !websiteKinds.has("instagram")) rows.push({ label: "Instagram", value: "Instagram", href: websiteHref(instagramLink), Icon: InstagramIcon });
           return rows;
         })().map((r: any, i) => (
           <a key={`${r.label}-${i}`} href={r.href} target="_blank" rel="noopener noreferrer" style={{

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isUsableWebsite, websiteHref, websiteKind } from "./contacts";
+import { isUsableSocialLink, isUsableWebsite, websiteHref, websiteKind } from "./contacts";
 import { sanitizeDashes } from "./sanitizeListing";
 
 describe("isUsableWebsite", () => {
@@ -23,6 +23,16 @@ describe("isUsableWebsite", () => {
     expect(isUsableWebsite("coming soon")).toBe(false);
     expect(isUsableWebsite("ask us")).toBe(false);
     expect(isUsableWebsite("facebook")).toBe(false);
+  });
+});
+
+describe("isUsableSocialLink", () => {
+  it("links a real page and ignores a placeholder facebook / instagram cell", () => {
+    expect(isUsableSocialLink("https://www.facebook.com/hellohoedspruit")).toBe(true);
+    expect(isUsableSocialLink("-")).toBe(false);
+    expect(isUsableSocialLink("N/A")).toBe(false);
+    expect(isUsableSocialLink("facebook")).toBe(false);
+    expect(isUsableSocialLink(null)).toBe(false);
   });
 });
 

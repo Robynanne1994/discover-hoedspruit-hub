@@ -54,6 +54,12 @@ export function isUsableWebsite(url: string | null | undefined): boolean {
   return /^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}(\/|\?|$)/i.test(v);
 }
 
+/**
+ * The facebook / instagram columns carry the same placeholders and notes as the
+ * website column, so they get the same "can this actually be linked to?" test.
+ */
+export const isUsableSocialLink = isUsableWebsite;
+
 /** Href for a website value, so a bare domain doesn't become a relative link. */
 export function websiteHref(url: string): string {
   const v = url.trim();
