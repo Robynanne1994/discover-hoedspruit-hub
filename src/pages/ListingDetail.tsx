@@ -1628,7 +1628,7 @@ const ListingDetail = () => {
               background: openStatus.state === "open" ? C.open : C.closed,
             }} />
             <span style={{
-              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 13, fontWeight: 600, letterSpacing: "0.01em",
               color: openStatus.state === "open" ? C.open : C.closed,
             }}>
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
