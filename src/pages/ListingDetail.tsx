@@ -1543,6 +1543,7 @@ const ListingDetail = () => {
           >
             <BackArrowIcon size={20} color={C.heading} />
           </button>
+          {/* Share / save / edit sit together in one white capsule */}
           <div style={{
             position: "absolute",
             top: "var(--overlay-top)",
@@ -1550,20 +1551,42 @@ const ListingDetail = () => {
             zIndex: 2,
             display: "flex",
             alignItems: "center",
-            gap: 8,
+            gap: 2,
+            background: "#FFFFFF",
+            borderRadius: 999,
+            padding: 4,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
           }}>
-            <button onClick={handleShare} aria-label="Share" style={floatBtn}>
-              <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+            <button onClick={handleShare} aria-label="Share" style={capsuleBtn}>
+              <Share2 size={19} strokeWidth={1.6} color={C.heading} />
             </button>
-            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-              <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
+            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={capsuleBtn}>
+              <Heart size={19} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
             </button>
             {isAdmin && (
-              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
+              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={capsuleBtn}>
                 <Pencil size={18} strokeWidth={1.6} color={C.heading} />
               </button>
             )}
           </div>
+          {/* Gallery counter — opens the lightbox on the first image */}
+          {hasGallery && (
+            <button
+              onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
+              aria-label={`View gallery, ${galleryImages.length} images`}
+              style={{
+                position: "absolute", right: 16, bottom: 44, zIndex: 4,
+                display: "inline-flex", alignItems: "center", gap: 7,
+                background: "#FFFFFF", border: "none", cursor: "pointer",
+                borderRadius: 999, padding: "8px 13px",
+                fontFamily: FONT, fontWeight: 500, fontSize: 13.5, color: C.heading,
+                boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+              }}
+            >
+              <Images size={15} strokeWidth={1.75} color={C.heading} />
+              <span>1 / {galleryImages.length}</span>
+            </button>
+          )}
         </div>
       ) : (
         <div style={{ position: "relative", paddingTop: "var(--safe-top)", background: C.surface }}>
