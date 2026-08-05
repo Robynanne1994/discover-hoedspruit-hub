@@ -8,6 +8,7 @@ import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
   Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
   ReceiptText, NotebookPen, Copy, ChevronRight,
+  Images,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -105,6 +106,13 @@ const floatBtn: React.CSSProperties = {
   background: "#FFFFFF", border: "none", cursor: "pointer",
   display: "flex", alignItems: "center", justifyContent: "center",
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+};
+// Icon button inside the white overlay capsule — no shadow of its own.
+const capsuleBtn: React.CSSProperties = {
+  width: 36, height: 36, borderRadius: 999,
+  background: "transparent", border: "none", cursor: "pointer",
+  display: "flex", alignItems: "center", justifyContent: "center",
+  padding: 0,
 };
 
 type TabKey = "about" | "details" | "contact" | "gallery" | "location";
