@@ -1039,7 +1039,7 @@ const EventDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.bg,
+        background: C.surface,
         borderRadius: "28px 28px 0 0",
         marginTop: -28,
         padding: "22px 20px 0",
@@ -1113,7 +1113,7 @@ const EventDetail = () => {
           <>
             <nav style={{
               position: "sticky", top: 0, zIndex: 30,
-              background: C.bg, borderBottom: "1px solid rgba(112,90,61,0.14)",
+              background: C.surface, borderBottom: "1px solid rgba(112,90,61,0.14)",
               display: "flex", padding: "12px 12px 0",
               overflowX: "auto",
             }}>
