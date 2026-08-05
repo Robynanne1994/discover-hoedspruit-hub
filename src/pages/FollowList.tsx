@@ -256,9 +256,15 @@ const RowWithMutation = ({
     : "Follow";
   const isSolid = label === "Follow" || label === "Follow Back";
 
+  const name = user.display_name?.trim() || handleOf(user);
+  const isPrivate = !!user.is_private;
+
   const handleToggle = () => {
     if (isAccepted) {
-      setConfirmOpen(true);
+      // Only private accounts get the confirmation: re-following them means
+      // sending a request and waiting for approval.
+      if (isPrivate) setConfirmOpen(true);
+      else unfollow.mutate();
     } else if (isPending) {
       unfollow.mutate();
     } else {
@@ -266,8 +272,6 @@ const RowWithMutation = ({
     }
   };
 
-  const name = user.display_name?.trim() || handleOf(user);
-  const isPrivate = !!user.is_private;
 
   return (
     <>
