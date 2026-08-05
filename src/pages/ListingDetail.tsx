@@ -1492,6 +1492,14 @@ const ListingDetail = () => {
     boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
   };
 
+  // Icon button inside the white overlay capsule — no shadow of its own.
+  const capsuleBtn: React.CSSProperties = {
+    width: 36, height: 36, borderRadius: 999,
+    background: "transparent", border: "none", cursor: "pointer",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    padding: 0,
+  };
+
   const heroImgUrl = (listing as any).detail_image_url || listing.image_url;
   const showHero = !!heroImgUrl && !heroImgError;
 
