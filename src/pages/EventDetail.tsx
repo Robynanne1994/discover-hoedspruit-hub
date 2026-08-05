@@ -1045,6 +1045,17 @@ const EventDetail = () => {
         marginTop: -28,
         padding: "22px 20px 0",
       }}>
+        {allTags.length > 0 && (
+          <div style={categoryLineStyle}>
+            {allTags.map((t, i) => (
+              <span key={i}>
+                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
+                {t.text}
+              </span>
+            ))}
+          </div>
+        )}
+
         <h1
           data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -1056,17 +1067,6 @@ const EventDetail = () => {
             ? <span data-no-title-case="true">{(event as any).title_override}</span>
             : event.title}
         </h1>
-
-        {allTags.length > 0 && (
-          <div style={categoryLineStyle}>
-            {allTags.map((t, i) => (
-              <span key={i}>
-                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
-                {t.text}
-              </span>
-            ))}
-          </div>
-        )}
 
         {dateDisplay && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
