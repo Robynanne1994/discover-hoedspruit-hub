@@ -1039,25 +1039,18 @@ const EventDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.bg,
+        background: C.ivory,
         borderRadius: "28px 28px 0 0",
         marginTop: -28,
         padding: "22px 20px 0",
       }}>
-        <h1
-          data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
-          style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
-            color: C.heading, letterSpacing: "0.01em",
-          }}
-        >
-          {(event as any).title_override?.trim()
-            ? <span data-no-title-case="true">{(event as any).title_override}</span>
-            : event.title}
-        </h1>
-
+        {/* Tag eyebrow — small uppercase label above the headline */}
         {allTags.length > 0 && (
-          <div style={categoryLineStyle}>
+          <div style={{
+            fontFamily: FONT, fontWeight: 500, fontSize: 10.5,
+            textTransform: "uppercase", letterSpacing: "0.18em",
+            color: C.primary, marginBottom: 8,
+          }}>
             {allTags.map((t, i) => (
               <span key={i}>
                 {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
@@ -1067,6 +1060,18 @@ const EventDetail = () => {
           </div>
         )}
 
+        <h1
+          data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 30, lineHeight: 1.12,
+            color: C.heading, letterSpacing: "-0.3px",
+          }}
+        >
+          {(event as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(event as any).title_override}</span>
+            : event.title}
+        </h1>
+
         {dateDisplay && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             <span style={{
@@ -1074,21 +1079,22 @@ const EventDetail = () => {
               background: isPast ? C.muted : "#2b7f3f",
             }} />
             <span style={{
-              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 14, fontWeight: 700, letterSpacing: "0.01em",
               color: isPast ? C.muted : "#2b7f3f",
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 13, color: C.dark }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 13.5, color: C.text }}>· {dateDisplay}</span>
           </div>
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
-            <Clock size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: C.text }}>
+            <Clock size={15} color={C.text} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
+
 
         {event.location && (
           <a
