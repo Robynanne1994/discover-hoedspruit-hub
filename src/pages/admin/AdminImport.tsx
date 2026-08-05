@@ -15,6 +15,7 @@ import {
   LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields, type FieldType,
 } from "@/lib/categoryFields";
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
+import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
@@ -187,7 +188,7 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; removed_from_category: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; removed_from_category: number; google_locked: string[]; errors: string[] } | null>(null);
   const [importStatus, setImportStatus] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
@@ -273,7 +274,12 @@ const AdminImport = () => {
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = { created: 0, updated: 0, deleted: 0, removed_from_category: 0, errors: [] as string[] };
+      const results = {
+        created: 0, updated: 0, deleted: 0, removed_from_category: 0,
+        // Listings whose CSV rating cells were ignored because the Google sync owns them.
+        google_locked: [] as string[],
+        errors: [] as string[],
+      };
       const csvTitles = new Set<string>();
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
@@ -445,9 +451,23 @@ const AdminImport = () => {
           ...categoryFields,
         ];
 
+        // Once the nightly Google sync has successfully fetched this listing, its
+        // rating columns are live data and the CSV is a stale snapshot — so the CSV
+        // loses. For every other listing (never matched, match confidence too low,
+        // awaiting re-match) Google never writes anything, so the CSV is the only
+        // source and wins as normal.
+        const googleOwned = isUpdate && isGoogleOwned(existing);
+        let googleCellsIgnored = false;
+
         for (const fieldName of allFieldNames) {
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
+          if (googleOwned && isGoogleSyncedField(fieldName)) {
+            // Only flag it when the CSV actually carried a value to lose — a blank
+            // cell on update was going to be skipped anyway.
+            if ((row[fieldName] ?? "").trim() !== "") googleCellsIgnored = true;
+            continue;
+          }
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
           if (parsed.skip === true) continue;
           if (parsed.skip === false) {
@@ -455,6 +475,8 @@ const AdminImport = () => {
               fieldName === "km_from_town" ? normalizeKm(parsed.value) : parsed.value;
           }
         }
+
+        if (googleCellsIgnored) results.google_locked.push(title);
 
         // Remove undefined keys (defensive)
         Object.keys(payloadRecord).forEach((k) => { if (payloadRecord[k] === undefined) delete payloadRecord[k]; });
@@ -648,7 +670,10 @@ const AdminImport = () => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.removed_from_category} removed from category, ${results.deleted} deleted`);
+      const googleNote = results.google_locked.length > 0
+        ? `, ${results.google_locked.length} kept their live Google rating`
+        : "";
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.removed_from_category} removed from category, ${results.deleted} deleted${googleNote}`);
     },
     onError: (e) => { setImportStatus(""); toast.error(e.message); },
   });
@@ -831,6 +856,11 @@ const AdminImport = () => {
                 ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields are preserved."
                 : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
             </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              google_rating, google_reviews_count and google_reviews_url are only imported for
+              listings the nightly Google sync has never fetched. Where the sync is working, the
+              live numbers are kept and the CSV values for those three columns are ignored.
+            </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
         )}
@@ -905,6 +935,23 @@ const AdminImport = () => {
                 <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
             </div>
+            {importResult.google_locked.length > 0 && (
+              <div className="bg-muted border border-border rounded-lg p-4 space-y-1">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  Kept the live Google rating for {importResult.google_locked.length} listing(s)
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  These listings are synced from Google Places, so their google_rating,
+                  google_reviews_count and google_reviews_url came from the nightly sync and
+                  the CSV values were ignored. Every other column in those rows imported normally.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {importResult.google_locked.slice(0, 20).join(", ")}
+                  {importResult.google_locked.length > 20 && ` … and ${importResult.google_locked.length - 20} more`}
+                </p>
+              </div>
+            )}
             {importResult.errors.length > 0 && (
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 space-y-1">
                 <p className="text-sm font-medium text-destructive flex items-center gap-2">
