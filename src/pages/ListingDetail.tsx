@@ -8,7 +8,7 @@ import {
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint, Users, Banknote,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
-  CalendarDays, Images,
+  CalendarDays,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -989,12 +989,12 @@ const ListingDetail = () => {
         onClick={() => setTab(k)}
         style={{
           ...(scrollable
-            ? { flex: "0 0 auto", padding: "13px 12px" }
-            : { flex: 1, padding: "13px 4px" }),
+            ? { flex: "0 0 auto", padding: "14px 12px" }
+            : { flex: 1, padding: "14px 4px" }),
           background: "none", border: "none", cursor: "pointer",
-          fontFamily: FONT, fontWeight: active ? 700 : 500, fontSize: 16,
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
           letterSpacing: "0.005em",
-          color: active ? C.heading : "#6B6A5E",
+          color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
           whiteSpace: "nowrap",
@@ -1004,7 +1004,6 @@ const ListingDetail = () => {
       </button>
     );
   };
-
 
   // Card header: small icon + uppercase label, matching the About / Location cards.
   const CardHead = ({ Icon, children, right }: { Icon: IconComp; children: React.ReactNode; right?: React.ReactNode }) => (
@@ -1492,14 +1491,6 @@ const ListingDetail = () => {
     boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
   };
 
-  // Icon button inside the white overlay capsule — no shadow of its own.
-  const capsuleBtn: React.CSSProperties = {
-    width: 36, height: 36, borderRadius: 999,
-    background: "transparent", border: "none", cursor: "pointer",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    padding: 0,
-  };
-
   const heroImgUrl = (listing as any).detail_image_url || listing.image_url;
   const showHero = !!heroImgUrl && !heroImgError;
 
@@ -1551,7 +1542,6 @@ const ListingDetail = () => {
           >
             <BackArrowIcon size={20} color={C.heading} />
           </button>
-          {/* Share / save / edit sit together in one white capsule */}
           <div style={{
             position: "absolute",
             top: "var(--overlay-top)",
@@ -1559,42 +1549,20 @@ const ListingDetail = () => {
             zIndex: 2,
             display: "flex",
             alignItems: "center",
-            gap: 2,
-            background: "#FFFFFF",
-            borderRadius: 999,
-            padding: 4,
-            boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+            gap: 8,
           }}>
-            <button onClick={handleShare} aria-label="Share" style={capsuleBtn}>
-              <Share2 size={19} strokeWidth={1.6} color={C.heading} />
+            <button onClick={handleShare} aria-label="Share" style={floatBtn}>
+              <Share2 size={20} strokeWidth={1.6} color={C.heading} />
             </button>
-            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={capsuleBtn}>
-              <Heart size={19} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
+            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+              <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
             </button>
             {isAdmin && (
-              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={capsuleBtn}>
+              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
                 <Pencil size={18} strokeWidth={1.6} color={C.heading} />
               </button>
             )}
           </div>
-          {/* Gallery counter — opens the lightbox on the first image */}
-          {hasGallery && (
-            <button
-              onClick={() => { setLightboxIndex(0); setLightboxOpen(true); }}
-              aria-label={`View gallery, ${galleryImages.length} images`}
-              style={{
-                position: "absolute", right: 16, bottom: 44, zIndex: 4,
-                display: "inline-flex", alignItems: "center", gap: 7,
-                background: "#FFFFFF", border: "none", cursor: "pointer",
-                borderRadius: 999, padding: "8px 13px",
-                fontFamily: FONT, fontWeight: 500, fontSize: 13.5, color: C.heading,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
-              }}
-            >
-              <Images size={15} strokeWidth={1.75} color={C.heading} />
-              <span>1 / {galleryImages.length}</span>
-            </button>
-          )}
         </div>
       ) : (
         <div style={{ position: "relative", paddingTop: "var(--safe-top)", background: C.surface }}>
@@ -1623,18 +1591,26 @@ const ListingDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.ivory,
+        background: C.bg,
         borderRadius: showHero ? "28px 28px 0 0" : 0,
         marginTop: showHero ? -28 : 0,
         padding: "22px 20px 0",
       }}>
-        {/* Category eyebrow — small uppercase label above the headline */}
+        <h1
+          data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
+            color: C.heading, letterSpacing: "0.01em",
+          }}
+        >
+          {(listing as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(listing as any).title_override}</span>
+            : listing.title}
+        </h1>
+
+        {/* Categories — small brown text under the title, dot-separated */}
         {categoryChips.length > 0 && (
-          <div style={{
-            fontFamily: FONT, fontWeight: 500, fontSize: 10.5,
-            textTransform: "uppercase", letterSpacing: "0.18em",
-            color: C.primary, marginBottom: 8,
-          }}>
+          <div style={categoryLineStyle}>
             {categoryChips.map((t, i) => (
               <span key={t}>
                 {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
@@ -1644,18 +1620,6 @@ const ListingDetail = () => {
           </div>
         )}
 
-        <h1
-          data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
-          style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 30, lineHeight: 1.12,
-            color: C.heading, letterSpacing: "-0.3px",
-          }}
-        >
-          {(listing as any).title_override?.trim()
-            ? <span data-no-title-case="true">{(listing as any).title_override}</span>
-            : listing.title}
-        </h1>
-
         {hasHours && openStatus && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             <span style={{
@@ -1663,52 +1627,53 @@ const ListingDetail = () => {
               background: openStatus.state === "open" ? C.open : C.closed,
             }} />
             <span style={{
-              fontSize: 14, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
               color: openStatus.state === "open" ? C.open : C.closed,
             }}>
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (
-              <span style={{ fontSize: 13.5, color: C.text }}>· Never Closes</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Never Closes</span>
             )}
             {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 13.5, color: C.text }}>· Closes {openStatus.closes}</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Closes {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13.5, color: C.text }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
             )}
             {todayHoliday && (
-              <span style={{ fontSize: 13.5, color: C.text }}>· {todayHoliday.name} — hours might differ</span>
+              <span style={{ fontSize: 13, color: C.dark }}>· {todayHoliday.name} — hours might differ</span>
             )}
           </div>
         )}
 
         {(l.google_rating != null || kmFromTown) && (
-          <div style={{ marginTop: 12, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 20 }}>
+          <div style={{ marginTop: 14, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
             {l.google_rating != null && (() => {
               const reviewsHref: string | null = l.google_reviews_url || null;
-              const row: React.CSSProperties = {
-                display: "inline-flex", alignItems: "center", gap: 6,
-                fontFamily: FONT, fontSize: 14, color: C.heading, textDecoration: "none",
+              const pill: React.CSSProperties = {
+                display: "inline-flex", alignItems: "center", gap: 5,
+                background: C.surface, borderRadius: 999, padding: "5px 9px 5px 10px",
+                fontFamily: FONT, fontSize: 12.5, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
-                  <Star size={15} fill={C.heading} color={C.heading} strokeWidth={0} />
+                  <Star size={13} fill={C.accent} color={C.accent} strokeWidth={0} />
                   <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
                   {l.google_reviews_count != null && (
-                    <span style={{ color: "#6B6A5E" }}>({l.google_reviews_count.toLocaleString("en-ZA")})</span>
+                    <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
                   )}
-                  {reviewsHref && <ChevronRight size={15} strokeWidth={2} color="#6B6A5E" />}
+                  {reviewsHref && <ChevronRight size={13} strokeWidth={2} color={C.muted} />}
                 </>
               );
               return reviewsHref
-                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={row}>{inner}</a>
-                : <div style={row}>{inner}</div>;
+                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={pill}>{inner}</a>
+                : <div style={pill}>{inner}</div>;
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: C.text }}>
-                <MapPin size={15} strokeWidth={1.75} color={C.text} style={{ flexShrink: 0 }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
+                <MapPin size={14} strokeWidth={1.75} color={C.dark} style={{ flexShrink: 0 }} />
                 <span>{kmFromTown}</span>
               </div>
             )}
@@ -1716,17 +1681,16 @@ const ListingDetail = () => {
         )}
       </div>
 
-      {/* Sticky tab bar — attached to the title sheet */}
+      {/* Sticky tab bar */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 30,
-        background: C.ivory, borderBottom: `1px solid rgba(26,26,26,0.10)`,
+        background: C.bg, borderBottom: `1px solid rgba(112,90,61,0.14)`,
         display: "flex",
-        padding: "14px 12px 0",
+        padding: "12px 12px 0",
         overflowX: "auto",
       }} className="scrollbar-hide">
         {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} scrollable={visibleTabs.length > 4} />)}
       </nav>
-
 
       {/* Tab content */}
       <section style={{ background: C.bg }}>

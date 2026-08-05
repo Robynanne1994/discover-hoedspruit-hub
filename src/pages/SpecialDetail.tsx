@@ -92,13 +92,6 @@ const floatBtn: React.CSSProperties = {
   display: "flex", alignItems: "center", justifyContent: "center",
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
-// Icon button inside the white overlay capsule — no shadow of its own.
-const capsuleBtn: React.CSSProperties = {
-  width: 36, height: 36, borderRadius: 999,
-  background: "transparent", border: "none", cursor: "pointer",
-  display: "flex", alignItems: "center", justifyContent: "center",
-  padding: 0,
-};
 
 const formatPrice = (raw?: string | null) => {
   if (!raw) return null;
@@ -322,10 +315,10 @@ const SpecialDetail = () => {
         onClick={() => setTab(k)}
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
-          padding: "13px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 500, fontSize: 16,
+          padding: "14px 4px",
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
           letterSpacing: "0.005em",
-          color: active ? C.heading : "#6B6A5E",
+          color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
@@ -673,7 +666,6 @@ const SpecialDetail = () => {
         >
           <BackArrowIcon size={20} color={C.heading} />
         </button>
-        {/* Share / save / edit sit together in one white capsule */}
         <div style={{
           position: "absolute",
           top: "var(--overlay-top)",
@@ -681,20 +673,16 @@ const SpecialDetail = () => {
           zIndex: 2,
           display: "flex",
           alignItems: "center",
-          gap: 2,
-          background: "#FFFFFF",
-          borderRadius: 999,
-          padding: 4,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+          gap: 8,
         }}>
-          <button onClick={handleShare} aria-label="Share" style={capsuleBtn}>
-            <Share2 size={19} strokeWidth={1.6} color={C.heading} />
+          <button onClick={handleShare} aria-label="Share" style={floatBtn}>
+            <Share2 size={20} strokeWidth={1.6} color={C.heading} />
           </button>
-          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={capsuleBtn}>
-            <Heart size={19} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+            <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
           </button>
           {isAdmin && (
-            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={capsuleBtn}>
+            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={floatBtn}>
               <Pencil size={18} strokeWidth={1.6} color={C.heading} />
             </button>
           )}
@@ -705,18 +693,25 @@ const SpecialDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.ivory,
+        background: C.bg,
         borderRadius: "28px 28px 0 0",
         marginTop: -28,
         padding: "22px 20px 0",
       }}>
-        {/* Deal eyebrow — small uppercase label above the headline */}
+        <h1
+          data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
+            color: C.heading, letterSpacing: "0.01em",
+          }}
+        >
+          {(special as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(special as any).title_override}</span>
+            : special.title}
+        </h1>
+
         {allTags.length > 0 && (
-          <div style={{
-            fontFamily: FONT, fontWeight: 500, fontSize: 10.5,
-            textTransform: "uppercase", letterSpacing: "0.18em",
-            color: C.primary, marginBottom: 8,
-          }}>
+          <div style={categoryLineStyle}>
             {allTags.map((t, i) => (
               <span key={i}>
                 {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
@@ -726,36 +721,23 @@ const SpecialDetail = () => {
           </div>
         )}
 
-        <h1
-          data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
-          style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 30, lineHeight: 1.12,
-            color: C.heading, letterSpacing: "-0.3px",
-          }}
-        >
-          {(special as any).title_override?.trim()
-            ? <span data-no-title-case="true">{(special as any).title_override}</span>
-            : special.title}
-        </h1>
-
-        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
-          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
-          <span style={{ fontSize: 13.5, color: C.text }}>· {datesText}</span>
-        </div>
-
         {special.business_name && (
-          <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: C.text }}>
-            <Store size={15} color={C.text} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
+            <Store size={14} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: C.text, textDecoration: "none" }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: C.dark, textDecoration: "none" }}>
                 {special.business_name}
               </Link>
             ) : <span>{special.business_name}</span>}
           </div>
         )}
-      </div>
 
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
+          <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
+          <span style={{ fontSize: 13, color: C.dark }}>· {datesText}</span>
+        </div>
+      </div>
 
       {/* Sticky tab bar */}
       {(() => {
@@ -785,8 +767,8 @@ const SpecialDetail = () => {
           <>
             <nav style={{
               position: "sticky", top: 0, zIndex: 30,
-              background: C.ivory, borderBottom: "1px solid rgba(26,26,26,0.10)",
-              display: "flex", padding: "14px 12px 0",
+              background: C.bg, borderBottom: "1px solid rgba(112,90,61,0.14)",
+              display: "flex", padding: "12px 12px 0",
             }}>
               {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}

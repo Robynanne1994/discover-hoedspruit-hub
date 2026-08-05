@@ -8,7 +8,6 @@ import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
   Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
   ReceiptText, NotebookPen, Copy, ChevronRight,
-  Images,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -106,13 +105,6 @@ const floatBtn: React.CSSProperties = {
   background: "#FFFFFF", border: "none", cursor: "pointer",
   display: "flex", alignItems: "center", justifyContent: "center",
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
-};
-// Icon button inside the white overlay capsule — no shadow of its own.
-const capsuleBtn: React.CSSProperties = {
-  width: 36, height: 36, borderRadius: 999,
-  background: "transparent", border: "none", cursor: "pointer",
-  display: "flex", alignItems: "center", justifyContent: "center",
-  padding: 0,
 };
 
 type TabKey = "about" | "details" | "contact" | "gallery" | "location";
@@ -450,10 +442,10 @@ const EventDetail = () => {
         onClick={() => setTab(k)}
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
-          padding: "13px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 500, fontSize: 16,
+          padding: "14px 4px",
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
           letterSpacing: "0.005em",
-          color: active ? C.heading : "#6B6A5E",
+          color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
@@ -1020,7 +1012,6 @@ const EventDetail = () => {
         >
           <BackArrowIcon size={20} color={C.heading} />
         </button>
-        {/* Share / save / edit sit together in one white capsule */}
         <div style={{
           position: "absolute",
           top: "var(--overlay-top)",
@@ -1028,60 +1019,45 @@ const EventDetail = () => {
           zIndex: 2,
           display: "flex",
           alignItems: "center",
-          gap: 2,
-          background: "#FFFFFF",
-          borderRadius: 999,
-          padding: 4,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+          gap: 8,
         }}>
-          <button onClick={handleShare} aria-label="Share" style={capsuleBtn}>
-            <Share2 size={19} strokeWidth={1.6} color={C.heading} />
+          <button onClick={handleShare} aria-label="Share" style={floatBtn}>
+            <Share2 size={20} strokeWidth={1.6} color={C.heading} />
           </button>
-          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={capsuleBtn}>
-            <Heart size={19} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+            <Heart size={20} strokeWidth={2} color={isFavourited ? "#715a3d" : C.primary} fill={isFavourited ? "#715a3d" : "none"} />
           </button>
           {isAdmin && (
-            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={capsuleBtn}>
+            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={floatBtn}>
               <Pencil size={18} strokeWidth={1.6} color={C.heading} />
             </button>
           )}
         </div>
-        {/* Gallery counter */}
-        {galleryImages.length > 0 && (
-          <button
-            onClick={() => setTab("gallery")}
-            aria-label={`View gallery, ${galleryImages.length} images`}
-            style={{
-              position: "absolute", right: 16, bottom: 44, zIndex: 4,
-              display: "inline-flex", alignItems: "center", gap: 7,
-              background: "#FFFFFF", border: "none", cursor: "pointer",
-              borderRadius: 999, padding: "8px 13px",
-              fontFamily: FONT, fontWeight: 500, fontSize: 13.5, color: C.heading,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
-            }}
-          >
-            <Images size={15} strokeWidth={1.75} color={C.heading} />
-            <span>1 / {galleryImages.length}</span>
-          </button>
-        )}
       </div>
 
       {/* Title sheet — overlaps the hero with a rounded top edge */}
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.ivory,
+        background: C.bg,
         borderRadius: "28px 28px 0 0",
         marginTop: -28,
         padding: "22px 20px 0",
       }}>
-        {/* Tag eyebrow — small uppercase label above the headline */}
+        <h1
+          data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
+            color: C.heading, letterSpacing: "0.01em",
+          }}
+        >
+          {(event as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(event as any).title_override}</span>
+            : event.title}
+        </h1>
+
         {allTags.length > 0 && (
-          <div style={{
-            fontFamily: FONT, fontWeight: 500, fontSize: 10.5,
-            textTransform: "uppercase", letterSpacing: "0.18em",
-            color: C.primary, marginBottom: 8,
-          }}>
+          <div style={categoryLineStyle}>
             {allTags.map((t, i) => (
               <span key={i}>
                 {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
@@ -1091,18 +1067,6 @@ const EventDetail = () => {
           </div>
         )}
 
-        <h1
-          data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
-          style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 30, lineHeight: 1.12,
-            color: C.heading, letterSpacing: "-0.3px",
-          }}
-        >
-          {(event as any).title_override?.trim()
-            ? <span data-no-title-case="true">{(event as any).title_override}</span>
-            : event.title}
-        </h1>
-
         {dateDisplay && (
           <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
             <span style={{
@@ -1110,22 +1074,21 @@ const EventDetail = () => {
               background: isPast ? C.muted : "#2b7f3f",
             }} />
             <span style={{
-              fontSize: 14, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
               color: isPast ? C.muted : "#2b7f3f",
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 13.5, color: C.text }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 13, color: C.dark }}>· {dateDisplay}</span>
           </div>
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 10, display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: C.text }}>
-            <Clock size={15} color={C.text} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
+            <Clock size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
-
 
         {event.location && (
           <a
@@ -1133,11 +1096,11 @@ const EventDetail = () => {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              marginTop: 10, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 14, color: C.text, textDecoration: "none",
+              marginTop: 8, display: "flex", alignItems: "center", gap: 6,
+              fontSize: 13, color: C.dark, textDecoration: "none",
             }}
           >
-            <MapPin size={15} color={C.text} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
@@ -1150,8 +1113,8 @@ const EventDetail = () => {
           <>
             <nav style={{
               position: "sticky", top: 0, zIndex: 30,
-              background: C.ivory, borderBottom: "1px solid rgba(26,26,26,0.10)",
-              display: "flex", padding: "14px 12px 0",
+              background: C.bg, borderBottom: "1px solid rgba(112,90,61,0.14)",
+              display: "flex", padding: "12px 12px 0",
               overflowX: "auto",
             }}>
               {hasAboutContent && <TabBtn k="about" label="About" />}
