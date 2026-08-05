@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
+import { Upload, FileSpreadsheet, CheckCircle, AlertCircle, RefreshCw } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import {
@@ -23,6 +23,13 @@ import {
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 
 const ALL_CATEGORIES_VALUE = "__all__";
+
+// Listings a manual sync run fetches. Below the function's own 200 cap, because
+// this one is awaited in the browser: each listing costs a Google call plus a
+// deliberate pause, so a bigger batch risks running past the request timeout.
+// Whatever is left over stays queued, and the button reports what's still due.
+const MANUAL_SYNC_LIMIT = 150;
+
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
 type ListingPayload = Database["public"]["Tables"]["listings"]["Insert"];
 
@@ -216,6 +223,54 @@ const AdminImport = () => {
     queryFn: async () => {
       const { data } = await supabase.from("subcategories").select("id, title, category_id").order("sort_order");
       return data ?? [];
+    },
+  });
+
+  // What the ratings sync still has to get through. This is the answer to "why
+  // hasn't this listing's rating updated yet", which is almost always either
+  // "it's queued behind the per-run limit" or "it has no Place ID".
+  const { data: syncQueue } = useQuery({
+    queryKey: ["admin-google-sync-queue"],
+    queryFn: async () => {
+      // A `from()` each: two filter chains off one builder is only safe because
+      // the current postgrest-js clones its request state, which is not a
+      // guarantee worth resting a count on.
+      const [{ count: awaitingFirstFetch }, { count: missingPlaceId }] = await Promise.all([
+        supabase.from("listings").select("id", { count: "exact", head: true })
+          .not("google_place_id", "is", null)
+          .is("google_synced_at", null),
+        supabase.from("listings").select("id", { count: "exact", head: true })
+          .is("google_place_id", null),
+      ]);
+      return {
+        awaitingFirstFetch: awaitingFirstFetch ?? 0,
+        missingPlaceId: missingPlaceId ?? 0,
+      };
+    },
+  });
+
+  // Runs the same job as the 4am cron, on demand — so a batch of Place IDs just
+  // imported can be fetched now instead of waiting for the night's run.
+  const syncMutation = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("refresh-google-ratings", {
+        body: { mode: "refresh", limit: MANUAL_SYNC_LIMIT },
+      });
+      if (error) throw error;
+      const result = data as { error?: string; processed: number; succeeded: number; failedCount: number };
+      if (result?.error) throw new Error(result.error);
+      return result;
+    },
+    onSuccess: (result) => {
+      toast.success(
+        `Google sync: ${result.succeeded} of ${result.processed} listing(s) updated` +
+          (result.failedCount > 0 ? `, ${result.failedCount} failed` : ""),
+      );
+      qc.invalidateQueries({ queryKey: ["admin-google-sync-queue"] });
+      qc.invalidateQueries({ queryKey: ["admin-listings"] });
+    },
+    onError: (e: unknown) => {
+      toast.error(e instanceof Error ? e.message : "Could not run the Google sync");
     },
   });
 
@@ -849,6 +904,37 @@ const AdminImport = () => {
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
         <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-foreground">Import / Export Listings</h1>
+      </div>
+
+      {/* Google ratings sync — independent of the category selection below */}
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 mb-6 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="font-medium text-foreground">Google ratings sync</h2>
+            <p className="text-xs text-muted-foreground mt-1">
+              Runs the same job as the nightly 4am one, for up to {MANUAL_SYNC_LIMIT} listings at a
+              time. Worth pressing straight after importing a batch of Place IDs — it takes about a
+              minute.
+            </p>
+          </div>
+          <Button
+            onClick={() => syncMutation.mutate()}
+            disabled={syncMutation.isPending}
+            className="gap-2 shrink-0"
+          >
+            <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
+            {syncMutation.isPending ? "Syncing..." : "Sync now"}
+          </Button>
+        </div>
+        {syncQueue && (
+          <p className="text-xs text-muted-foreground">
+            {syncQueue.awaitingFirstFetch > 0
+              ? `${syncQueue.awaitingFirstFetch} listing(s) with a Place ID are waiting for their first fetch — until then they show whatever rating the CSV last put there. Press Sync now again if more are still queued afterwards.`
+              : "Every listing with a Place ID has been fetched at least once."}
+            {syncQueue.missingPlaceId > 0 &&
+              ` ${syncQueue.missingPlaceId} listing(s) have no Place ID at all, so the sync can't reach them — fill in the google_place_id column for those.`}
+          </p>
+        )}
       </div>
 
       <div className="bg-card border border-border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">

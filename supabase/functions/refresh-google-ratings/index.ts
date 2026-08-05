@@ -12,7 +12,13 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-const DEFAULT_LIMIT = 32;
+// Listings fetched per run. The nightly cron sends no body, so this is what it
+// gets. It has to clear more than the refresh windows generate or the sync falls
+// behind for good: at 133 high-priority listings on a 6-day window and 379
+// normal ones on 25 days, the steady state is already ~37 a night, and it climbs
+// with every listing added. The headroom also drains a backlog of newly matched
+// or hand-entered Place IDs in a few nights rather than a fortnight.
+const DEFAULT_LIMIT = 100;
 const HIGH_PRIORITY_DAYS = 6;
 const NORMAL_PRIORITY_DAYS = 25;
 const CALL_DELAY_MS = 100;
