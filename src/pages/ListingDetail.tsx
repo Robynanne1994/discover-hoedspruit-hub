@@ -1591,7 +1591,7 @@ const ListingDetail = () => {
       <div style={{
         position: "relative",
         zIndex: 3,
-        background: C.bg,
+        background: C.surface,
         borderRadius: showHero ? "28px 28px 0 0" : 0,
         marginTop: showHero ? -28 : 0,
         padding: "22px 20px 0",
@@ -1685,7 +1685,7 @@ const ListingDetail = () => {
       {/* Sticky tab bar */}
       <nav style={{
         position: "sticky", top: 0, zIndex: 30,
-        background: C.bg, borderBottom: `1px solid rgba(112,90,61,0.14)`,
+        background: C.surface, borderBottom: `1px solid rgba(112,90,61,0.14)`,
         display: "flex",
         padding: "12px 12px 0",
         overflowX: "auto",
