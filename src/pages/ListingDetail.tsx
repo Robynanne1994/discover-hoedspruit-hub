@@ -1649,37 +1649,37 @@ const ListingDetail = () => {
         )}
 
         {(l.google_rating != null || kmFromTown) && (
-          <div style={{ marginTop: 14, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 14 }}>
+          <div style={{ marginTop: 12, display: "flex", alignItems: "flex-start", flexWrap: "wrap", gap: "10px 18px" }}>
             {l.google_rating != null && (() => {
               const reviewsHref: string | null = l.google_reviews_url || null;
-              const pill: React.CSSProperties = {
+              const row: React.CSSProperties = {
                 display: "inline-flex", alignItems: "center", gap: 5,
-                background: C.surface, borderRadius: 999, padding: "5px 9px 5px 10px",
-                fontFamily: FONT, fontSize: 12.5, color: C.heading, textDecoration: "none",
+                fontFamily: FONT, fontSize: 14, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
-                  <Star size={13} fill={C.accent} color={C.accent} strokeWidth={0} />
+                  <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
                   <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
                   {l.google_reviews_count != null && (
                     <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
                   )}
-                  {reviewsHref && <ChevronRight size={13} strokeWidth={2} color={C.muted} />}
+                  {reviewsHref && <ChevronRight size={14} strokeWidth={2} color={C.muted} />}
                 </>
               );
               return reviewsHref
-                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={pill}>{inner}</a>
-                : <div style={pill}>{inner}</div>;
+                ? <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={row}>{inner}</a>
+                : <div style={row}>{inner}</div>;
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "#6B6A5E" }}>
                 <MapPin size={14} strokeWidth={1.75} color="#6B6A5E" style={{ flexShrink: 0 }} />
                 <span>{kmFromTown}</span>
               </div>
             )}
           </div>
         )}
+
       </div>
 
       {/* Sticky tab bar */}
