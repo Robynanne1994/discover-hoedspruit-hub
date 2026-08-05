@@ -37,3 +37,7 @@ Bring the top section (under the hero image, above the tab content) and the tab 
 
 - All three pages already use local `C` colour maps, a `floatBtn` style and a local `TabBtn`. The edits stay inside those, reusing existing tokens only — no new colours, fonts or radii.
 - Existing tab keys, visibility conditions and content renderers are untouched, so which tabs appear and what they show does not change.
+
+## Fix first: existing build error
+
+`src/pages/admin/AdminEvents.tsx` (lines 274, 279, 284) reads `hosted_by_listing_id`, `_2` and `_3` directly off the typed event row, but those columns are not in the generated database types (the table only has `hosted_by_link`). This currently fails the typecheck. Fix by reading them through the same `(ev as any)` cast used by the neighbouring host fields.
