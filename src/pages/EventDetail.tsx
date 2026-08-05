@@ -443,7 +443,7 @@ const EventDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 16,
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
           letterSpacing: "0.005em",
           color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
