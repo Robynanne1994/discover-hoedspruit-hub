@@ -1672,7 +1672,7 @@ const ListingDetail = () => {
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "#6B6A5E" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
                 <MapPin size={14} strokeWidth={1.75} color="#6B6A5E" style={{ flexShrink: 0 }} />
                 <span>{kmFromTown}</span>
               </div>
