@@ -775,8 +775,8 @@ const SpecialDetail = () => {
           <>
             <nav style={{
               position: "sticky", top: 0, zIndex: 30,
-              background: C.bg, borderBottom: "1px solid rgba(112,90,61,0.14)",
-              display: "flex", padding: "12px 12px 0",
+              background: C.ivory, borderBottom: "1px solid rgba(26,26,26,0.10)",
+              display: "flex", padding: "14px 12px 0",
             }}>
               {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}
