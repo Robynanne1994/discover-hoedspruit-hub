@@ -271,17 +271,17 @@ const AdminEvents = () => {
       hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
       hosted_by_image_url: (ev as any).hosted_by_image_url ?? "",
       hosted_by_link: ev.hosted_by_link ?? "",
-      hosted_by_listing_id: ev.hosted_by_listing_id ?? "",
+      hosted_by_listing_id: (ev as any).hosted_by_listing_id ?? "",
       hosted_by_name_2: (ev as any).hosted_by_name_2 ?? "",
       hosted_by_subtitle_2: (ev as any).hosted_by_subtitle_2 ?? "",
       hosted_by_image_url_2: (ev as any).hosted_by_image_url_2 ?? "",
       hosted_by_link_2: ev.hosted_by_link_2 ?? "",
-      hosted_by_listing_id_2: ev.hosted_by_listing_id_2 ?? "",
+      hosted_by_listing_id_2: (ev as any).hosted_by_listing_id_2 ?? "",
       hosted_by_name_3: (ev as any).hosted_by_name_3 ?? "",
       hosted_by_subtitle_3: (ev as any).hosted_by_subtitle_3 ?? "",
       hosted_by_image_url_3: (ev as any).hosted_by_image_url_3 ?? "",
       hosted_by_link_3: ev.hosted_by_link_3 ?? "",
-      hosted_by_listing_id_3: ev.hosted_by_listing_id_3 ?? "",
+      hosted_by_listing_id_3: (ev as any).hosted_by_listing_id_3 ?? "",
     });
     setOpen(true);
   };
