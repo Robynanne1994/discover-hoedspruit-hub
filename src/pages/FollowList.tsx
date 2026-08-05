@@ -317,10 +317,10 @@ const RowWithMutation = ({
                 marginTop: 4,
               }}
             >
-              {isPrivate
-                ? `Their profile is private, so you'll have to request to follow ${name} again and wait for them to approve it.`
-                : `You can follow ${name} again at any time.`}
+              Their profile is private, so you'll have to request to follow{" "}
+              {name} again and wait for them to approve it.
             </AlertDialogDescription>
+
           </AlertDialogHeader>
           <AlertDialogFooter
             style={{
