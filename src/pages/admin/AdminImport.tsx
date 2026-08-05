@@ -21,6 +21,7 @@ import {
   GOOGLE_PLACE_ID_FIELD, normalizeGooglePlaceId, placeIdImportUpdate, isPlaceIdRepointed,
 } from "@/lib/googlePlaceId";
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
+import { isImageCsvColumn } from "@/lib/csvImageColumns";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 
@@ -557,6 +558,8 @@ const AdminImport = () => {
 
         for (const fieldName of allFieldNames) {
           if (fieldName === GOOGLE_PLACE_ID_FIELD) continue;   // handled above
+          // Images are managed in the backend editor only: never written from CSV.
+          if (isImageCsvColumn(fieldName)) continue;
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
           if (googleOwned && isGoogleSyncedField(fieldName)) {
