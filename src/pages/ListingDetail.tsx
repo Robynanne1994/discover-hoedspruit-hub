@@ -989,12 +989,12 @@ const ListingDetail = () => {
         onClick={() => setTab(k)}
         style={{
           ...(scrollable
-            ? { flex: "0 0 auto", padding: "14px 12px" }
-            : { flex: 1, padding: "14px 4px" }),
+            ? { flex: "0 0 auto", padding: "13px 12px" }
+            : { flex: 1, padding: "13px 4px" }),
           background: "none", border: "none", cursor: "pointer",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 16,
+          fontFamily: FONT, fontWeight: active ? 700 : 500, fontSize: 16,
           letterSpacing: "0.005em",
-          color: active ? C.heading : C.muted,
+          color: active ? C.heading : "#6B6A5E",
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
           whiteSpace: "nowrap",
@@ -1004,6 +1004,7 @@ const ListingDetail = () => {
       </button>
     );
   };
+
 
   // Card header: small icon + uppercase label, matching the About / Location cards.
   const CardHead = ({ Icon, children, right }: { Icon: IconComp; children: React.ReactNode; right?: React.ReactNode }) => (
