@@ -43,6 +43,7 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   detail_image_url: "single image URL",
   google_maps_link: "URL",
   google_reviews_url: "URL",
+  google_place_id: "back-office only, never shown in the app: the listing's Google Place ID (e.g. ChIJN1t_tDeuEmsRUsoyG83frY4), which is what the nightly sync fetches the rating and review count with. Leave blank to let the sync find it itself; fill it in for listings it can't match. A full Places URL is fine too, the ID is read out of it",
   facebook: "URL",
   instagram: "URL",
   website: "URL",

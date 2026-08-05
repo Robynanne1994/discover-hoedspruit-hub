@@ -4,6 +4,8 @@
 // for every editable column on `listings`, with type metadata so import & export
 // can serialize / parse every field consistently.
 
+import { GOOGLE_PLACE_ID_FIELD } from "@/lib/googlePlaceId";
+
 export type FieldType =
   | "str"             // plain text (null when empty)
   | "int"             // integer
@@ -56,6 +58,8 @@ export const LISTING_FIELD_SPECS = {
   google_rating: { type: "float" },
   google_reviews_count: { type: "int" },
   google_reviews_url: { type: "str" },
+  // Back-office only: the handle the ratings sync fetches by. Never rendered.
+  google_place_id: { type: "str" },
 
   // ---------- Universal: misc ----------
   is_featured: { type: "bool_default_false" },
@@ -288,6 +292,8 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
     }
   };
   push(UNIVERSAL_FIELDS);
+  // Deliberately not in UNIVERSAL_FIELDS: google_place_id has to come out last,
+  // after the category columns, and it is appended at the end of this function.
   if (categoryTitle && isRestaurantCategory(categoryTitle)) push(RESTAURANT_ONLY_FIELDS);
   if (categoryTitle && isShoppingCategory(categoryTitle)) push(SHOPPING_ONLY_FIELDS);
   if (categoryTitle && isAccommodationCategory(categoryTitle)) push(ACCOMMODATION_ONLY_FIELDS);
@@ -297,7 +303,14 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
   out.push("categories", "subcategories");
+  out.push(GOOGLE_PLACE_ID_FIELD);
   return out;
+}
+
+// Headers for the "All Categories (Universal)" CSV: universals only, with the
+// Place ID last so every export ends on the same column.
+export function getUniversalCSVHeaders(): string[] {
+  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
 }
 
 
@@ -319,7 +332,9 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 }
 
 // Return the universal DB fields (excludes virtual `categories` / `subcategories`).
+// google_place_id rides along here so every import writes it, whichever category
+// the CSV was exported for.
 export function getUniversalDbFields(): string[] {
-  return [...UNIVERSAL_FIELDS];
+  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
 }
 

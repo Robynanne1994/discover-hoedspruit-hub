@@ -459,6 +459,35 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
 
 
 
+// Rows awaiting a stricter re-match must never be written to. Spelled as an OR
+// rather than .neq() because in PostgREST `google_sync_status != 'needs_match'`
+// is NULL — and so excluded — for every row whose status was never set, which is
+// exactly what a hand-entered Place ID from an older CSV looks like.
+const NOT_AWAITING_MATCH = "google_sync_status.is.null,google_sync_status.neq.needs_match";
+
+/**
+ * Listings holding a Place ID that has never been fetched — the newly matched,
+ * and every ID typed into the CSV by hand. They come first in a run: a listing
+ * with no rating at all gains more from a fetch than one whose rating is a few
+ * days old, and a hand-entered ID otherwise waits behind the whole stale queue.
+ */
+async function selectNeverFetched(admin: ReturnType<typeof createClient>, limit: number) {
+  if (limit <= 0) return [] as Listing[];
+  const { data, error } = await admin
+    .from("listings")
+    .select("id, title, google_place_id")
+    .not("google_place_id", "is", null)
+    .or(NOT_AWAITING_MATCH)
+    .is("google_synced_at", null)
+    // High priority first, then oldest listings, so the ordering is stable
+    // across runs and a backlog drains in a predictable order.
+    .order("refresh_priority", { ascending: true })
+    .order("created_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Listing[];
+}
+
 async function selectDue(
   admin: ReturnType<typeof createClient>,
   priority: "high" | "normal",
@@ -472,8 +501,7 @@ async function selectDue(
     .select("id, title, google_place_id")
     .eq("refresh_priority", priority)
     .not("google_place_id", "is", null)
-    // Rows awaiting a stricter re-match must never be written to.
-    .neq("google_sync_status", "needs_match")
+    .or(NOT_AWAITING_MATCH)
     .or(`google_synced_at.is.null,google_synced_at.lt.${cutoff}`)
     .order("google_synced_at", { ascending: true, nullsFirst: true })
     .limit(limit);
@@ -482,10 +510,21 @@ async function selectDue(
 }
 
 async function runRefresh(admin: ReturnType<typeof createClient>, limit: number) {
-  const high = await selectDue(admin, "high", HIGH_PRIORITY_DAYS, limit);
-  const normal = await selectDue(admin, "normal", NORMAL_PRIORITY_DAYS, limit - high.length);
-  // Hard cap: the run never touches more than `limit` listings.
-  const work = [...high, ...normal].slice(0, limit);
+  const fresh = await selectNeverFetched(admin, limit);
+  const high = await selectDue(admin, "high", HIGH_PRIORITY_DAYS, limit - fresh.length);
+  const normal = await selectDue(admin, "normal", NORMAL_PRIORITY_DAYS, limit - fresh.length - high.length);
+
+  // The three queries overlap (a never-fetched row is also a due row), so dedupe
+  // by id before spending a Google call on the same listing twice.
+  const seen = new Set<string>();
+  const work: Listing[] = [];
+  for (const listing of [...fresh, ...high, ...normal]) {
+    if (seen.has(listing.id)) continue;
+    seen.add(listing.id);
+    work.push(listing);
+    // Hard cap: the run never touches more than `limit` listings.
+    if (work.length >= limit) break;
+  }
 
   let succeeded = 0;
   const failed: string[] = [];
@@ -529,7 +568,16 @@ async function runRefresh(admin: ReturnType<typeof createClient>, limit: number)
     await sleep(CALL_DELAY_MS);
   }
 
-  return { mode: "refresh", processed: work.length, succeeded, failedCount: failed.length, failed };
+  return {
+    mode: "refresh",
+    processed: work.length,
+    // How much of this run went to listings getting their first ever fetch —
+    // the newly matched and the hand-entered Place IDs from the CSV.
+    neverFetched: fresh.length,
+    succeeded,
+    failedCount: failed.length,
+    failed,
+  };
 }
 
 Deno.serve(async (req) => {

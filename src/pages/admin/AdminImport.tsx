@@ -10,12 +10,16 @@ import { Label } from "@/components/ui/label";
 import {
   getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory,
   isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory,
-  UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS,
+  RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS,
   NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
-  LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields, type FieldType,
+  LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields,
+  getUniversalCSVHeaders, type FieldType,
 } from "@/lib/categoryFields";
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
 import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
+import {
+  GOOGLE_PLACE_ID_FIELD, normalizeGooglePlaceId, placeIdImportUpdate, isPlaceIdRepointed,
+} from "@/lib/googlePlaceId";
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 
 const ALL_CATEGORIES_VALUE = "__all__";
@@ -218,7 +222,7 @@ const AdminImport = () => {
   const isAllCategories = selectedCategoryId === ALL_CATEGORIES_VALUE;
   const selectedCategory = categories?.find((c) => c.id === selectedCategoryId);
   const selectedCategoryTitle = isAllCategories ? null : (selectedCategory?.title ?? null);
-  const csvHeaders = isAllCategories ? [...UNIVERSAL_FIELDS] : getCSVHeadersForCategory(selectedCategoryTitle);
+  const csvHeaders = isAllCategories ? getUniversalCSVHeaders() : getCSVHeadersForCategory(selectedCategoryTitle);
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
   const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
   const isAccommodation = selectedCategoryTitle ? isAccommodationCategory(selectedCategoryTitle) : false;
@@ -462,15 +466,42 @@ const AdminImport = () => {
           ...categoryFields,
         ];
 
+        // The Place ID cell drives the ratings sync rather than the listing's
+        // content, so it is parsed up front: it decides who owns the rating
+        // columns below, and it writes the sync bookkeeping alongside itself.
+        const placeIdCell = parseField(row[GOOGLE_PLACE_ID_FIELD], "str", isUpdate);
+        let incomingPlaceId: string | null | undefined;
+        if (placeIdCell.skip === true) {
+          incomingPlaceId = undefined;          // blank on update: leave whatever is stored
+        } else if (placeIdCell.value === null) {
+          incomingPlaceId = null;               // "-" (or blank on create): no ID for this listing
+        } else {
+          incomingPlaceId = normalizeGooglePlaceId(placeIdCell.value);
+          if (incomingPlaceId === null) {
+            // An unreadable ID is dropped rather than stored: a wrong ID would
+            // point the sync at somebody else's business and import their rating.
+            results.errors.push(
+              `Row ${i + 2}: google_place_id "${String(placeIdCell.value).slice(0, 40)}" is not a Google Place ID, left unchanged`,
+            );
+            incomingPlaceId = undefined;
+          }
+        }
+
         // Once the nightly Google sync has successfully fetched this listing, its
         // rating columns are live data and the CSV is a stale snapshot — so the CSV
         // loses. For every other listing (never matched, match confidence too low,
         // awaiting re-match) Google never writes anything, so the CSV is the only
         // source and wins as normal.
-        const googleOwned = isUpdate && isGoogleOwned(existing);
+        //
+        // Re-pointing the listing at a different Place ID is the exception: what
+        // the sync fetched belongs to the old place, so it is no longer live and
+        // the CSV takes the rating columns back until the next run.
+        const googleOwned =
+          isUpdate && isGoogleOwned(existing) && !isPlaceIdRepointed(incomingPlaceId ?? null, existing);
         let googleCellsIgnored = false;
 
         for (const fieldName of allFieldNames) {
+          if (fieldName === GOOGLE_PLACE_ID_FIELD) continue;   // handled above
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
           if (googleOwned && isGoogleSyncedField(fieldName)) {
@@ -488,6 +519,11 @@ const AdminImport = () => {
         }
 
         if (googleCellsIgnored) results.google_locked.push(title);
+
+        // Writes google_place_id plus the sync bookkeeping it implies (status,
+        // confidence, and — on a changed ID — a cleared fetch stamp so the next
+        // run replaces the old place's rating straight away).
+        Object.assign(payloadRecord, placeIdImportUpdate(incomingPlaceId, existing));
 
         // Remove undefined keys (defensive)
         Object.keys(payloadRecord).forEach((k) => { if (payloadRecord[k] === undefined) delete payloadRecord[k]; });
@@ -876,6 +912,13 @@ const AdminImport = () => {
               google_rating, google_reviews_count and google_reviews_url are only imported for
               listings the nightly Google sync has never fetched. Where the sync is working, the
               live numbers are kept and the CSV values for those three columns are ignored.
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              google_place_id is the last column and is back-office only — it never shows anywhere
+              in the app. It's how the nightly sync finds a listing on Google, so filling it in for
+              listings the sync couldn't match gets their rating and review count updating too.
+              Export first: every ID the sync has already matched comes down pre-filled, so you
+              only need to fill the blanks.
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
