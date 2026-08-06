@@ -63,16 +63,20 @@ const DAY = 24 * 60 * 60 * 1000;
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 const daysAway = (iso?: string | null) => {
   if (!iso) return null;
-  const t = startOfDay(new Date(iso));
-  if (Number.isNaN(t)) return null;
+  const parsed = new Date(iso);
+  if (Number.isNaN(parsed.getTime())) return null;
+  const t = startOfDay(parsed);
   return Math.round((t - startOfDay(new Date())) / DAY);
 };
-const shortDate = (iso?: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" }) : null;
-const weekdayDate = (iso?: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }) : null;
-const weekday = (iso?: string | null) =>
-  iso ? new Date(iso).toLocaleDateString("en-GB", { weekday: "long" }) : null;
+const fmt = (iso: string | null | undefined, opts: Intl.DateTimeFormatOptions) => {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-GB", opts);
+};
+const shortDate = (iso?: string | null) => fmt(iso, { day: "numeric", month: "short" });
+const weekdayDate = (iso?: string | null) => fmt(iso, { weekday: "short", day: "numeric", month: "short" });
+const weekday = (iso?: string | null) => fmt(iso, { weekday: "long" });
 
 type CardType = "listing" | "event" | "special" | "resource";
 
@@ -111,7 +115,7 @@ const buildContent = (it: any, type: CardType) => {
   }
 
   if (type === "event") {
-    const dateLabel = weekdayDate(it.start_date || it.date);
+    const dateLabel = weekdayDate(it.start_date) || weekdayDate(it.date) || it.date || null;
     const time = to12h(it.start_time);
     const first = [dateLabel, time].filter(Boolean).join(" · ");
     lines.push(first ? { icon: Calendar, text: first } : null);
