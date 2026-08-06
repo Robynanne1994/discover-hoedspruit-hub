@@ -1,9 +1,12 @@
 import { describe, it, expect } from "vitest";
 import {
   CATEGORY_CARD_LABEL_FIELD,
+  CATEGORY_MEMBERSHIP_FIELD,
+  CATEGORY_SUBCATEGORY_FIELD,
   getCSVHeadersForCategory,
   getUniversalCSVHeaders,
   getUniversalContentFields,
+  getUniversalDbFields,
 } from "./categoryFields";
 import { isImageCsvColumn } from "./csvImageColumns";
 
@@ -90,6 +93,46 @@ describe("card_primary_subcategory as a CSV column", () => {
       const headers = getCSVHeadersForCategory(category);
       expect(headers.filter((h) => h === CATEGORY_CARD_LABEL_FIELD)).toHaveLength(1);
     }
+  });
+});
+
+describe("categories vs subcategories as CSV columns", () => {
+  it("asks for the listing's category set on the universal sheet alone", () => {
+    // Which categories a listing belongs to is one answer for the whole listing,
+    // so it is given once. A category sheet already knows its own category.
+    expect(getUniversalCSVHeaders()).toContain(CATEGORY_MEMBERSHIP_FIELD);
+    for (const category of [...CATEGORIES, null]) {
+      expect(
+        getCSVHeadersForCategory(category),
+        `${category} CSV repeats the categories column`,
+      ).not.toContain(CATEGORY_MEMBERSHIP_FIELD);
+    }
+  });
+
+  it("asks for subcategories on the category sheets alone", () => {
+    // Subcategories are per category — "Nurseries" under Home & Garden and
+    // "Builders" under Building & Renovation — so the universal sheet, which has
+    // no category to scope them to, never asks.
+    for (const category of [...CATEGORIES, null]) {
+      expect(getCSVHeadersForCategory(category)).toContain(CATEGORY_SUBCATEGORY_FIELD);
+    }
+    expect(getUniversalCSVHeaders()).not.toContain(CATEGORY_SUBCATEGORY_FIELD);
+  });
+
+  it("keeps both junction columns out of the DB field list", () => {
+    // They are junction tables, not columns on `listings`: writing either into a
+    // listings payload would fail the upsert.
+    const dbFields = getUniversalDbFields();
+    expect(dbFields).not.toContain(CATEGORY_MEMBERSHIP_FIELD);
+    expect(dbFields).not.toContain(CATEGORY_SUBCATEGORY_FIELD);
+  });
+
+  it("makes a category upload read past a leftover categories column", () => {
+    // An older category export still carries one. It is reported and ignored
+    // rather than written, so the universal sheet stays the only thing that can
+    // move a listing between categories.
+    expect(getUniversalContentFields()).toContain(CATEGORY_MEMBERSHIP_FIELD);
+    expect(getUniversalContentFields()).not.toContain(CATEGORY_SUBCATEGORY_FIELD);
   });
 });
 
