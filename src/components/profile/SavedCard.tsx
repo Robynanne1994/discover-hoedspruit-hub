@@ -53,7 +53,7 @@ const to12h = (raw?: string | null) => {
   const suffix = h >= 12 ? "PM" : "AM";
   if (h === 0) h = 12;
   else if (h > 12) h -= 12;
-  return `${h}:${mm} ${suffix}`;
+  return `${h}:${mm}${suffix}`;
 };
 
 const closesAt = (hours: Record<string, string> | null | undefined) => {
