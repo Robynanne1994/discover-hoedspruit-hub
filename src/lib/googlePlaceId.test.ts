@@ -111,20 +111,19 @@ describe("placeIdImportUpdate", () => {
 });
 
 describe("google_place_id as a CSV column", () => {
-  it("is the very last column of a category CSV, after categories/subcategories", () => {
+  it("is the very last column of the universal CSV", () => {
+    const headers = getUniversalCSVHeaders();
+    expect(headers[headers.length - 1]).toBe(GOOGLE_PLACE_ID_FIELD);
+    expect(headers.filter((h) => h === GOOGLE_PLACE_ID_FIELD)).toHaveLength(1);
+  });
+
+  it("is off the category sheets, so there is one cell to fill in per listing", () => {
     for (const category of ["Restaurants & Cafés", "Accommodation", "Shopping", "NGOs & Volunteering", null]) {
-      const headers = getCSVHeadersForCategory(category);
-      expect(headers[headers.length - 1]).toBe(GOOGLE_PLACE_ID_FIELD);
-      expect(headers.filter((h) => h === GOOGLE_PLACE_ID_FIELD)).toHaveLength(1);
+      expect(getCSVHeadersForCategory(category)).not.toContain(GOOGLE_PLACE_ID_FIELD);
     }
   });
 
-  it("is the very last column of the universal CSV too", () => {
-    const headers = getUniversalCSVHeaders();
-    expect(headers[headers.length - 1]).toBe(GOOGLE_PLACE_ID_FIELD);
-  });
-
-  it("is imported whichever category the CSV was exported for", () => {
+  it("is written by the universal import", () => {
     expect(getUniversalDbFields()).toContain(GOOGLE_PLACE_ID_FIELD);
   });
 });

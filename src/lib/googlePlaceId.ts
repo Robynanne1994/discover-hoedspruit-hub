@@ -11,7 +11,11 @@
 // The ID is plumbing, not content. It is never rendered anywhere in the app; it
 // exists so the sync can find the place.
 
-/** CSV column name. Always the last column, after categories / subcategories. */
+/**
+ * CSV column name. It sits on the universal ("All Categories") sheet only, as
+ * its last column — like every other universal field, keeping it off the
+ * category sheets means there is only ever one cell to fill in per listing.
+ */
 export const GOOGLE_PLACE_ID_FIELD = "google_place_id";
 
 /**
