@@ -655,11 +655,11 @@ const Events = () => {
         <div
           ref={filterBarRef}
           style={{
-            marginTop: 18,
+            marginTop: 16,
             paddingLeft: 20,
             paddingRight: 20,
             display: "flex",
-            gap: 10,
+            gap: 8,
             alignItems: "center",
             overflowX: "auto",
             scrollbarWidth: "none",
@@ -676,14 +676,14 @@ const Events = () => {
                 onClick={() => handleFilterPill(f.value)}
                 style={{
                   background: active ? "#423324" : "#FFFFFF",
-                  border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.10)"}`,
+                  border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
                   borderRadius: 999,
-                  padding: "6px 14px",
+                  padding: "7px 14px",
                   cursor: "pointer",
                   fontFamily: SANS,
-                  fontSize: 13,
-                  fontWeight: active ? 600 : 400,
-                  letterSpacing: "0.02em",
+                  fontSize: 12.5,
+                  fontWeight: active ? 700 : 500,
+                  letterSpacing: "0.01em",
                   lineHeight: 1,
                   color: active ? "#FFFFFF" : "#1A1A1A",
                   whiteSpace: "nowrap",
