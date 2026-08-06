@@ -406,8 +406,9 @@ const UserSaved = () => {
                       "resource",
                       href,
                       <>
-                        {metaParts.length > 1 && <span>{metaParts.join(" · ")}</span>}
-                        {metaParts.length === 1 && <span>{metaParts[0]}</span>}
+                        {metaParts.map((m, i) => (
+                          <span key={i} style={{ display: "block" }}>{m}</span>
+                        ))}
                       </>,
                     );
                   })}
