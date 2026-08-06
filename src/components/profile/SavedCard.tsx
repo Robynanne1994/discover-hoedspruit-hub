@@ -113,7 +113,7 @@ const buildContent = (it: any, type: CardType) => {
       if (isAlwaysOpen(todayHours(hours))) status = { text: "Open 24 Hours", tone: SAGE };
       else if (isOpenNow(hours)) {
         const until = closesAt(hours);
-        status = { text: until ? `Open until ${until}` : "Open Now", tone: SAGE };
+        status = { text: until ? `Open Until ${until}` : "Open Now", tone: SAGE };
       } else {
         const opens = to12h(opensAt(hours));
         status = { text: opens ? `Closed · Opens ${opens}` : "Closed", tone: CLAY };
