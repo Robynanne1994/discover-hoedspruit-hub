@@ -258,7 +258,7 @@ const UserProfile = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating, google_reviews_count, opening_hours, categories(title)")
+        .select("id, title, title_override, image_url, location, google_rating, google_reviews_count, opening_hours, categories(title)")
         .in("id", ids);
       const map = Object.fromEntries(
         (listings || []).map((l: any) => [l.id, l]),
@@ -282,7 +282,7 @@ const UserProfile = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: events } = await supabase
         .from("events")
-        .select("id, title, image_url, location, start_date, end_date, start_time, date")
+        .select("id, title, title_override, image_url, location, start_date, end_date, start_time, date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e: any) => e.id);
@@ -302,7 +302,7 @@ const UserProfile = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, image_url, business_name, valid_until, deal_label, card_footer_text, price, price_label, original_price, savings")
+        .select("id, title, title_override, image_url, business_name, valid_until, deal_label, card_footer_text, price, price_label, original_price, savings")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s: any) => s.id);
