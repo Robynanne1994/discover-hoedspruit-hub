@@ -300,9 +300,10 @@ export function isWellnessBeautyCategory(t: string): boolean { return WELLNESS_B
 // De-duplicates because some category groups overlap (e.g. wheelchair_friendly).
 //
 // A category CSV carries only what belongs to that category: the card label, the
-// category's own fields, its memberships, and the back-office Place ID. The
-// universal content fields (location, contacts, descriptions, opening hours …)
-// are owned by the universal CSV and are not editable here — see the import.
+// category's own fields, and its memberships. Every universal column (location,
+// contacts, descriptions, opening hours, the back-office Place ID …) is owned by
+// the universal CSV and is not editable here — see the import. Nothing appears on
+// both sheets, so there is never a second copy of a column to keep in step.
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
@@ -313,8 +314,6 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   };
   // `title` is how a row finds its listing, so it travels on every CSV.
   push(["title", CATEGORY_CARD_LABEL_FIELD]);
-  // Deliberately last, after the category columns: google_place_id is appended
-  // at the end of this function.
   if (categoryTitle && isRestaurantCategory(categoryTitle)) push(RESTAURANT_ONLY_FIELDS);
   if (categoryTitle && isShoppingCategory(categoryTitle)) push(SHOPPING_ONLY_FIELDS);
   if (categoryTitle && isAccommodationCategory(categoryTitle)) push(ACCOMMODATION_ONLY_FIELDS);
@@ -324,7 +323,6 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
   out.push("categories", "subcategories");
-  out.push(GOOGLE_PLACE_ID_FIELD);
   return out;
 }
 
@@ -356,18 +354,19 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 }
 
 // Return the universal DB fields (excludes virtual `categories` / `subcategories`).
-// google_place_id rides along here so every import writes it, whichever category
-// the CSV was exported for.
+// google_place_id rides along here because the universal sheet is the one place
+// it can be filled in.
 export function getUniversalDbFields(): string[] {
   return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
 }
 
 // The universal columns a category upload refuses to write, so that the
 // universal sheet (or the backend editor) stays the only thing that can change
-// them. `title` is left out because it is the row's match key rather than a
-// value, and google_place_id because it is back-office plumbing the sync needs
-// and is deliberately fillable from whichever sheet is open.
+// them. `title` is the one exception: it is the row's match key rather than a
+// value, so a category sheet still carries it. google_place_id is in here like
+// any other universal — a copy left on an older category export is read past
+// rather than written.
 export function getUniversalContentFields(): string[] {
-  return UNIVERSAL_FIELDS.filter((f) => f !== "title");
+  return [...UNIVERSAL_FIELDS.filter((f) => f !== "title"), GOOGLE_PLACE_ID_FIELD];
 }
 

@@ -5,6 +5,7 @@ import {
   getUniversalCSVHeaders,
   getUniversalContentFields,
 } from "./categoryFields";
+import { isImageCsvColumn } from "./csvImageColumns";
 
 // A sample of the universal content columns: name, contacts, location, hours.
 // These are what a category upload must never be able to change.
@@ -21,6 +22,8 @@ const CATEGORIES = [
   "NGOs & Volunteering",
   "Home & Garden",
   "Weddings & Events",
+  "Trades & Services",
+  "Wellness & Beauty",
 ];
 
 describe("universal vs category CSV columns", () => {
@@ -42,6 +45,23 @@ describe("universal vs category CSV columns", () => {
   it("puts the universal content fields on the universal sheet", () => {
     const headers = getUniversalCSVHeaders();
     for (const field of UNIVERSAL_SAMPLE) expect(headers).toContain(field);
+  });
+
+  it("shares no column but title between a category sheet and the universal one", () => {
+    // `title` is the row's match key, so both sheets need it. Every other column
+    // belongs to exactly one sheet — nothing is filled in twice.
+    const universal = new Set(getUniversalCSVHeaders());
+    for (const category of [...CATEGORIES, null]) {
+      const shared = getCSVHeadersForCategory(category).filter((h) => universal.has(h));
+      expect(shared, `${category} CSV repeats universal columns`).toEqual(["title"]);
+    }
+  });
+
+  it("keeps image columns off every sheet — images are set in the backend only", () => {
+    for (const category of [...CATEGORIES, null]) {
+      expect(getCSVHeadersForCategory(category).filter(isImageCsvColumn)).toEqual([]);
+    }
+    expect(getUniversalCSVHeaders().filter(isImageCsvColumn)).toEqual([]);
   });
 
   it("carries the category's own fields on its sheet only", () => {
@@ -78,8 +98,8 @@ describe("getUniversalContentFields", () => {
     expect(getUniversalContentFields()).not.toContain("title");
   });
 
-  it("leaves out google_place_id, which any sheet may fill in for the sync", () => {
-    expect(getUniversalContentFields()).not.toContain("google_place_id");
-    expect(getCSVHeadersForCategory("Shopping")).toContain("google_place_id");
+  it("covers google_place_id, which the universal sheet alone fills in", () => {
+    expect(getUniversalContentFields()).toContain("google_place_id");
+    expect(getCSVHeadersForCategory("Shopping")).not.toContain("google_place_id");
   });
 });

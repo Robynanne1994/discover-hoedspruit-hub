@@ -566,8 +566,8 @@ const AdminImport = () => {
         }
 
         // Universal mode writes the universal columns; a category upload writes
-        // only the fields that category owns. google_place_id sits outside both
-        // lists and is handled on its own below, from whichever sheet carries it.
+        // only the fields that category owns. google_place_id rides in the
+        // universal list but is handled on its own below, not in the loop.
         const allFieldNames: string[] = isAllCategories
           ? getUniversalDbFields().filter((f) => f !== "title")
           : getCategorySpecificFields(selectedCategoryTitle);
@@ -586,21 +586,27 @@ const AdminImport = () => {
         // The Place ID cell drives the ratings sync rather than the listing's
         // content, so it is parsed up front: it decides who owns the rating
         // columns below, and it writes the sync bookkeeping alongside itself.
-        const placeIdCell = parseField(row[GOOGLE_PLACE_ID_FIELD], "str", isUpdate);
+        //
+        // The column lives on the universal sheet alone, so a category upload
+        // leaves the stored ID alone — a stale copy on an older category export
+        // is reported with the other universal columns rather than written back.
         let incomingPlaceId: string | null | undefined;
-        if (placeIdCell.skip === true) {
-          incomingPlaceId = undefined;          // blank on update: leave whatever is stored
-        } else if (placeIdCell.value === null) {
-          incomingPlaceId = null;               // "-" (or blank on create): no ID for this listing
-        } else {
-          incomingPlaceId = normalizeGooglePlaceId(placeIdCell.value);
-          if (incomingPlaceId === null) {
-            // An unreadable ID is dropped rather than stored: a wrong ID would
-            // point the sync at somebody else's business and import their rating.
-            results.errors.push(
-              `Row ${i + 2}: google_place_id "${String(placeIdCell.value).slice(0, 40)}" is not a Google Place ID, left unchanged`,
-            );
-            incomingPlaceId = undefined;
+        if (isAllCategories) {
+          const placeIdCell = parseField(row[GOOGLE_PLACE_ID_FIELD], "str", isUpdate);
+          if (placeIdCell.skip === true) {
+            incomingPlaceId = undefined;          // blank on update: leave whatever is stored
+          } else if (placeIdCell.value === null) {
+            incomingPlaceId = null;               // "-" (or blank on create): no ID for this listing
+          } else {
+            incomingPlaceId = normalizeGooglePlaceId(placeIdCell.value);
+            if (incomingPlaceId === null) {
+              // An unreadable ID is dropped rather than stored: a wrong ID would
+              // point the sync at somebody else's business and import their rating.
+              results.errors.push(
+                `Row ${i + 2}: google_place_id "${String(placeIdCell.value).slice(0, 40)}" is not a Google Place ID, left unchanged`,
+              );
+              incomingPlaceId = undefined;
+            }
           }
         }
 
