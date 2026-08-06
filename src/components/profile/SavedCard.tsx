@@ -282,7 +282,7 @@ const SavedCard = ({
         )}
 
         {/* Type capsule */}
-        <div style={{ position: "absolute", top: 8, left: 8 }}>
+        <div style={{ position: "absolute", top: PILL_INSET, left: PILL_INSET }}>
           <Chip>
             <span
               style={{
