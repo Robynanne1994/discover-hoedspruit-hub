@@ -209,7 +209,7 @@ const SavedCard = ({
   const [pressed, setPressed] = useState(false);
   const [isLogo, setIsLogo] = useState(false);
   const src = it.saved_image_url || it.image_url;
-  const { lines, status, badge } = buildContent(it, type);
+  const { lines, status, badge, ratingChip } = buildContent(it, type);
   const title = titleCase(it.title);
 
   return (
