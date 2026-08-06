@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
+import { toast } from "sonner";
 import { residencyBadge } from "@/lib/residencyBadge";
 
 
@@ -171,6 +172,7 @@ const MyProfile = () => {
     e.preventDefault();
     e.stopPropagation();
     removeFavourite.mutate({ item_id, item_type });
+    toast("Removed from saved");
   };
 
   const { data: profile, isLoading } = useQuery({
@@ -941,7 +943,7 @@ const MyProfile = () => {
                   marginTop: 14,
                   // Dimmed so the two groups stay legible as separate things
                   // even once you've scrolled past the divider.
-                  opacity: 0.65,
+                  opacity: 0.62,
                 }}
               >
                 {past.map((it) => (
