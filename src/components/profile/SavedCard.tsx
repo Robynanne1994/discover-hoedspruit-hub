@@ -300,7 +300,7 @@ const SavedCard = ({
 
         {/* Rating pill (listings) */}
         {ratingChip && !badge && (
-          <div style={{ position: "absolute", bottom: 8, left: 8 }}>
+          <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
               <span style={{ fontSize: 9.5, fontWeight: 600, color: META, whiteSpace: "nowrap" }}>
                 {ratingChip}
