@@ -7,9 +7,10 @@ import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { format } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
+import SpecialValueBar from "@/components/specials/SpecialValueBar";
+import { isEndingSoon, savingValue } from "@/lib/specialValue";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -38,9 +39,6 @@ const SLIDE_GAP = 12;
 const SLIDE_PEEK = 22;
 const PAGE_PAD = 20;
 
-// Deals ending within this many days are "ending soon" (and get the urgent treatment).
-const ENDING_SOON_DAYS = 7;
-
 const ENDING_SOON_TAB = "__ending_soon__";
 const ALL_TAB = "All Specials";
 
@@ -65,77 +63,6 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "biggest_saving", label: "Biggest Savings" },
   { key: "newest", label: "Newest (Added)" },
 ];
-
-// Extract the first numeric value from a price/savings string (e.g. "Save R200" -> 200)
-const parseNum = (v: any): number | null => {
-  if (v == null) return null;
-  const m = String(v).replace(/[, ]/g, "").match(/-?\d+(\.\d+)?/);
-  return m ? parseFloat(m[0]) : null;
-};
-
-// Best-effort saving amount: explicit savings, else original − discounted price
-const savingValue = (s: any): number => {
-  const sv = parseNum(s.savings);
-  if (sv != null) return sv;
-  const orig = parseNum(s.original_price);
-  const price = parseNum(s.price);
-  if (orig != null && price != null) return orig - price;
-  return -Infinity;
-};
-
-// Whole days between today and the deal's last valid day. Null = ongoing.
-const daysRemaining = (s: any): number | null => {
-  if (!s.valid_until) return null;
-  const end = new Date(s.valid_until);
-  if (isNaN(end.getTime())) return null;
-  const today = new Date();
-  const a = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  return Math.round((b.getTime() - a.getTime()) / 86400000);
-};
-
-const isEndingSoon = (s: any): boolean => {
-  const d = daysRemaining(s);
-  return d != null && d >= 0 && d <= ENDING_SOON_DAYS;
-};
-
-// Short countdown shown on the card footer — "3 days left", "Ongoing", "Ends 12 Aug".
-const countdownLabel = (s: any): string => {
-  const d = daysRemaining(s);
-  if (d == null) return "Ongoing";
-  if (d < 0) return "Ended";
-  if (d === 0) return "Last day";
-  if (d === 1) return "1 day left";
-  if (d <= ENDING_SOON_DAYS) return `${d} days left`;
-  return `Ends ${format(new Date(s.valid_until), "d MMM")}`;
-};
-
-interface ValidityLines {
-  primary: string;
-  secondary: string;
-}
-
-const formatValidTill = (s: any): ValidityLines => {
-  const from = s.valid_from ? new Date(s.valid_from) : null;
-  const until = s.valid_until ? new Date(s.valid_until) : null;
-  if (from && until) {
-    const sameDay =
-      from.getFullYear() === until.getFullYear() &&
-      from.getMonth() === until.getMonth() &&
-      from.getDate() === until.getDate();
-    if (sameDay) return { primary: "Valid for", secondary: format(until, "d MMMM yyyy") };
-  }
-  if (until) return { primary: "Valid until", secondary: format(until, "d MMMM yyyy") };
-  return { primary: "Ongoing", secondary: "No expiry" };
-};
-
-// One-line schedule for the featured card footer — the business's own wording wins.
-const scheduleLine = (s: any): string => {
-  const own = (s.card_footer_text || "").toString().trim();
-  if (own) return own;
-  const { primary, secondary } = formatValidTill(s);
-  return primary === "Ongoing" ? "Ongoing" : `${primary} ${secondary}`;
-};
 
 // Percentage/discount style labels read louder in red; loyalty and package deals sit back in olive.
 const DISCOUNT_LABEL = /(%|\boff\b|\bsave\b|\bsavings?\b|\bhalf\b|\d\s*for\s*\d|\bbuy\s*\d|\bbogof\b)/i;
@@ -841,7 +768,6 @@ const FeaturedSection = ({
 };
 
 const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | null; onClick: () => void }) => {
-  const priceValue = special.price || special.savings || special.original_price;
   const image = special.image_url || special.detail_image_url || special.homepage_image_url;
   const meta = special.business_name || "";
 
@@ -930,54 +856,8 @@ const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | nul
         </div>
       </div>
 
-      {/* Footer strip — schedule left, price right */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-          padding: "12px 14px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-          <Clock size={14} strokeWidth={1.7} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: 13,
-              color: COLOR.ink,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {scheduleLine(special)}
-          </span>
-        </div>
-        {priceValue ? (
-          <span
-            style={{
-              flexShrink: 0,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: 30,
-              padding: "0 14px",
-              borderRadius: 999,
-              background: COLOR.pricePill,
-              color: "#FFFFFF",
-              fontFamily: SANS,
-              fontSize: 12.5,
-              fontWeight: 700,
-              letterSpacing: "0.02em",
-              lineHeight: 1,
-            }}
-          >
-            {priceValue}
-          </span>
-        ) : null}
-      </div>
+      {/* Value bar — money left, time right */}
+      <SpecialValueBar special={special} detail="full" padding="12px 16px" />
     </article>
   );
 };
@@ -987,11 +867,8 @@ const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | nul
 /* ------------------------------------------------------------------ */
 
 const DealCard = ({ special, km, onClick }: { special: any; km: string | null; onClick: () => void }) => {
-  const priceValue = special.price || special.savings || special.original_price;
   const image = special.image_url || special.detail_image_url || special.homepage_image_url;
   const meta = special.business_name || "";
-  const countdown = countdownLabel(special);
-  const urgent = isEndingSoon(special);
 
   return (
     <article
@@ -1041,7 +918,7 @@ const DealCard = ({ special, km, onClick }: { special: any; km: string | null; o
         )}
       </div>
 
-      <div style={{ padding: "10px 11px 12px 11px", display: "flex", flexDirection: "column", flex: 1 }}>
+      <div style={{ padding: "10px 11px 11px 11px", display: "flex", flexDirection: "column", flex: 1 }}>
         <h3
           {...noTitleCaseProps(special)}
           className="line-clamp-2"
@@ -1072,49 +949,10 @@ const DealCard = ({ special, km, onClick }: { special: any; km: string | null; o
             {meta}
           </div>
         )}
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-between",
-            gap: 8,
-            marginTop: "auto",
-            paddingTop: 10,
-          }}
-        >
-          {priceValue ? (
-            <span
-              style={{
-                fontFamily: SANS,
-                fontSize: 12.5,
-                fontWeight: 700,
-                color: COLOR.price,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                minWidth: 0,
-              }}
-            >
-              {priceValue}
-            </span>
-          ) : (
-            <span />
-          )}
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: 11.5,
-              fontWeight: urgent ? 700 : 400,
-              color: urgent ? COLOR.urgent : COLOR.mutedInk,
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            {countdown}
-          </span>
-        </div>
       </div>
+
+      {/* Value bar — full-bleed so a column of cards reads as one column of offers */}
+      <SpecialValueBar special={special} />
     </article>
   );
 };
