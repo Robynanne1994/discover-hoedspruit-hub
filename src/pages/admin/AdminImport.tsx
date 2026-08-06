@@ -13,7 +13,8 @@ import {
   RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS,
   NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
   LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields,
-  getUniversalCSVHeaders, type FieldType,
+  getUniversalCSVHeaders, getUniversalContentFields, CATEGORY_CARD_LABEL_FIELD,
+  type FieldType,
 } from "@/lib/categoryFields";
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
 import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
@@ -115,6 +116,7 @@ const ngoFieldSet = new Set<string>(NGO_ONLY_FIELDS);
 const tradesFieldSet = new Set<string>(TRADES_ONLY_FIELDS);
 const homeGardenFieldSet = new Set<string>(HOME_GARDEN_ONLY_FIELDS);
 const weddingsEventsFieldSet = new Set<string>(WEDDINGS_EVENTS_ONLY_FIELDS);
+const universalContentFieldSet = new Set<string>(getUniversalContentFields());
 
 // ---- Schema-driven CSV (de)serialization ----
 
@@ -207,7 +209,13 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; removed_from_category: number; google_locked: string[]; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{
+    created: number; updated: number; deleted: number; removed_from_category: number;
+    google_locked: string[];
+    universal_ignored: { columns: string[]; rows: number };
+    card_labels: number;
+    errors: string[];
+  } | null>(null);
   const [importStatus, setImportStatus] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
@@ -325,6 +333,17 @@ const AdminImport = () => {
         warn("Trades", tradesFieldSet, isTrades);
         warn("Home & Garden", homeGardenFieldSet, isHomeGarden);
         warn("Weddings & Events", weddingsEventsFieldSet, isWeddingsEvents);
+
+        // Universal columns left over from an older category export (or copied
+        // across from the universal sheet). They are read past rather than
+        // written, so the universal upload stays the one thing that can change
+        // a listing's name, contacts, location or hours.
+        const universalExtras = result.headers.filter((h) => universalContentFieldSet.has(h));
+        if (universalExtras.length > 0) {
+          toast.warning(
+            `Universal columns found and will be ignored (edit these on the All Categories sheet): ${universalExtras.join(", ")}`,
+          );
+        }
       }
 
       setParsed(result);
@@ -345,9 +364,21 @@ const AdminImport = () => {
         created: 0, updated: 0, deleted: 0, removed_from_category: 0,
         // Listings whose CSV rating cells were ignored because the Google sync owns them.
         google_locked: [] as string[],
+        // Universal cells a category upload read past (the universal sheet owns them).
+        universal_ignored: { columns: [] as string[], rows: 0 },
+        // Rows that set or cleared this category's card label.
+        card_labels: 0,
         errors: [] as string[],
       };
       const csvTitles = new Set<string>();
+
+      // Universal columns this file carries that a category upload won't write.
+      // Counted per row so the result panel can say how much was actually
+      // skipped rather than just which columns were present.
+      const universalColumnsInFile = isAllCategories
+        ? []
+        : parsed.headers.filter((h) => universalContentFieldSet.has(h));
+      const universalColumnsUsed = new Set<string>();
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
       const fetchAllListings = async () => {
@@ -413,7 +444,18 @@ const AdminImport = () => {
         resolvedCatIds: string[];
         resolvedSubIds: string[];
         isUpdate: boolean;
+        // The card label for the selected category: a string to set it, null to
+        // clear it back to automatic, undefined to leave whatever is stored.
+        cardLabel?: string | null;
       }[] = [];
+
+      // Subcategory titles belonging to the selected category — the labels a card
+      // in this category is allowed to show, alongside the category title itself.
+      const categorySubTitles = new Set(
+        (subcategories ?? [])
+          .filter((s) => s.category_id === selectedCategoryId)
+          .map((s) => s.title.trim().toLowerCase()),
+      );
 
       // Detect duplicate titles in CSV (title-based matching is risky otherwise)
       const titleSeen = new Map<string, number>();
@@ -500,11 +542,19 @@ const AdminImport = () => {
         const listingId = existing?.id ?? crypto.randomUUID();
 
         // Schema-driven payload build.
-        // - Universal fields are always written.
+        // - The universal upload writes the universal fields, and only it does:
+        //   a category upload reads past them entirely, so the two sheets can
+        //   never disagree about a listing's name, contacts, location or hours.
         // - Category-specific fields are written only when the selected category owns them.
         // - On UPDATE, an empty CSV cell preserves the existing value (skip the key).
         //   A literal "-" explicitly clears to null.
-        const payload: ListingPayload = { id: listingId, title };
+        //
+        // The universal sheet owns the title too, down to its casing: a category
+        // row matches on the title but never rewrites it.
+        const payload: ListingPayload = {
+          id: listingId,
+          title: !isAllCategories && existing ? existing.title : title,
+        };
         const payloadRecord = payload as Record<string, unknown>;
 
         // Always link the listing to the (primary) selected category via the legacy column,
@@ -515,12 +565,23 @@ const AdminImport = () => {
           payloadRecord.category_id = resolvedCatIds[0];
         }
 
-        const universalDbFields = getUniversalDbFields();
-        const categoryFields = isAllCategories ? [] : getCategorySpecificFields(selectedCategoryTitle);
-        const allFieldNames: string[] = [
-          ...universalDbFields.filter((f) => f !== "title"),
-          ...categoryFields,
-        ];
+        // Universal mode writes the universal columns; a category upload writes
+        // only the fields that category owns. google_place_id sits outside both
+        // lists and is handled on its own below, from whichever sheet carries it.
+        const allFieldNames: string[] = isAllCategories
+          ? getUniversalDbFields().filter((f) => f !== "title")
+          : getCategorySpecificFields(selectedCategoryTitle);
+
+        // Note in the results which universal cells this row was carrying, so an
+        // ignored value is reported rather than silently dropped.
+        let rowHadUniversalValue = false;
+        for (const column of universalColumnsInFile) {
+          const cell = row[column];
+          if (cell === undefined || cell.trim() === "") continue;
+          rowHadUniversalValue = true;
+          universalColumnsUsed.add(column);
+        }
+        if (rowHadUniversalValue) results.universal_ignored.rows++;
 
         // The Place ID cell drives the ratings sync rather than the listing's
         // content, so it is parsed up front: it decides who owns the rating
@@ -588,7 +649,36 @@ const AdminImport = () => {
 
 
 
-        importItems.push({ rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds, isUpdate });
+        // The card label for this category. It is stored on the listing's
+        // `listing_categories` row, not on the listing, so the same business can
+        // read "Nurseries" on Home & Garden and "Builders" on Building &
+        // Renovation. The universal sheet has no category to answer for, so it
+        // never carries the column.
+        let cardLabel: string | null | undefined;
+        if (!isAllCategories) {
+          const cell = parseField(row[CATEGORY_CARD_LABEL_FIELD], "str", isUpdate);
+          if (cell.skip === true) {
+            cardLabel = undefined;                       // blank on update: leave it alone
+          } else {
+            const trimmed = typeof cell.value === "string" ? cell.value.trim() : "";
+            cardLabel = trimmed || null;                 // "-" (or blank on create): back to automatic
+            if (cardLabel) {
+              // A label the card can't render is worth flagging: it still gets
+              // stored (the subcategory may be added later), but until then the
+              // card falls back to its first populated subcategory.
+              const matchesCategory =
+                (selectedCategoryTitle ?? "").trim().toLowerCase() === cardLabel.toLowerCase();
+              if (!matchesCategory && !categorySubTitles.has(cardLabel.toLowerCase())) {
+                results.errors.push(
+                  `Row ${i + 2}: card_primary_subcategory "${cardLabel}" is neither "${selectedCategoryTitle}" nor one of its subcategories — the card will fall back to the first populated subcategory`,
+                );
+              }
+            }
+            results.card_labels++;
+          }
+        }
+
+        importItems.push({ rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds, isUpdate, cardLabel });
       }
 
       setImportStatus(`Saving ${importItems.length} listings in batches...`);
@@ -615,8 +705,31 @@ const AdminImport = () => {
         (subcategories ?? []).map((s) => [s.id, s.category_id]),
       );
 
+      // Category links each imported listing already has. Universal mode uses
+      // this to remove only the categories the CSV dropped, instead of wiping
+      // every link and re-inserting: the junction row also carries that
+      // category's card label, which the universal sheet has no column for and
+      // must therefore not be able to destroy.
+      const existingCatLinks = new Map<string, string[]>();
+      if (isAllCategories && successfulIds.length > 0) {
+        for (const idBatch of chunkArray(successfulIds, 200)) {
+          const { data, error } = await supabase
+            .from("listing_categories").select("listing_id, category_id").in("listing_id", idBatch);
+          if (error) {
+            results.errors.push(`Category lookup failed - ${error.message}`);
+            continue;
+          }
+          (data ?? []).forEach((l) => {
+            const arr = existingCatLinks.get(l.listing_id) ?? [];
+            arr.push(l.category_id);
+            existingCatLinks.set(l.listing_id, arr);
+          });
+        }
+      }
+
       // Per-listing junction sync.
-      // - In "All Categories" mode we still do a full rewrite (explicit "rewrite everything" path).
+      // - In "All Categories" mode the CSV owns the whole category set, applied as a
+      //   difference so the surviving rows keep the card labels they carry.
       // - In category-scoped mode we ONLY touch the selected category's link and the
       //   subcategory links that belong to the selected category. This preserves a listing's
       //   memberships in other categories (e.g. importing Shopping CSV must not unlink
@@ -627,19 +740,30 @@ const AdminImport = () => {
         if (idx % 50 === 0) setImportStatus(`Syncing categories ${idx + 1}/${successfulItems.length}...`);
 
         if (isAllCategories) {
-          // Full rewrite (legacy behavior, intentional for universal mode)
-          const { error: catDelErr } = await supabase
-            .from("listing_categories").delete().eq("listing_id", item.listingId);
-          if (catDelErr) {
-            results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
-            continue;
-          }
+          // The CSV still owns the listing's full category set, but it is applied
+          // as a difference rather than a wipe-and-reinsert: a category the CSV
+          // kept keeps its junction row, and with it the card label that row holds.
           const uniqueCatIds = Array.from(new Set(item.resolvedCatIds));
           if (uniqueCatIds.length > 0) {
             const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
             const { error: catInsErr } = await supabase
               .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
-            if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+            if (catInsErr) {
+              results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+              continue;
+            }
+          }
+          const staleCatIds = (existingCatLinks.get(item.listingId) ?? [])
+            .filter((catId) => !uniqueCatIds.includes(catId));
+          if (staleCatIds.length > 0) {
+            const { error: catDelErr } = await supabase
+              .from("listing_categories").delete()
+              .eq("listing_id", item.listingId)
+              .in("category_id", staleCatIds);
+            if (catDelErr) {
+              results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
+              continue;
+            }
           }
           const { error: subDelErr } = await supabase
             .from("listing_subcategories").delete().eq("listing_id", item.listingId);
@@ -658,9 +782,42 @@ const AdminImport = () => {
         } else {
           // Category-scoped mode: upsert links additively for the selected category +
           // any extras in the CSV's "categories" column. Never delete links for other categories.
-          const uniqueCatIds = Array.from(new Set(item.resolvedCatIds));
-          const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
-          if (catRows.length > 0) {
+          //
+          // The selected category's row goes up on its own because it is the one
+          // carrying card_primary_subcategory. Omitting that key (blank cell on
+          // an update) leaves the stored label alone, which is what makes an
+          // empty cell mean "keep it" here as everywhere else.
+          const selectedRow: Database["public"]["Tables"]["listing_categories"]["Insert"] = {
+            listing_id: item.listingId, category_id: selectedCategoryId,
+          };
+          if (item.cardLabel !== undefined) selectedRow.card_primary_subcategory = item.cardLabel;
+          const { error: selCatErr } = await supabase
+            .from("listing_categories")
+            .upsert([selectedRow], { onConflict: "listing_id,category_id" });
+          if (selCatErr) {
+            // Label column missing from the API schema cache (migration not
+            // applied yet) — save the membership so the rest of the row lands.
+            const missingLabelColumn =
+              item.cardLabel !== undefined &&
+              (selCatErr.code === "PGRST204" || selCatErr.message?.includes(CATEGORY_CARD_LABEL_FIELD));
+            if (!missingLabelColumn) {
+              results.errors.push(`Row ${item.rowNumber}: category link failed - ${selCatErr.message}`);
+            } else {
+              const { error: retryErr } = await supabase
+                .from("listing_categories")
+                .upsert([{ listing_id: item.listingId, category_id: selectedCategoryId }], { onConflict: "listing_id,category_id" });
+              results.errors.push(retryErr
+                ? `Row ${item.rowNumber}: category link failed - ${retryErr.message}`
+                : `Row ${item.rowNumber}: card_primary_subcategory could not be saved — the per-category label column is missing, run the latest migration`);
+            }
+          }
+
+          // Any other categories named in the CSV: membership only. Their card
+          // labels belong to their own category's upload.
+          const extraCatIds = Array.from(new Set(item.resolvedCatIds))
+            .filter((catId) => catId !== selectedCategoryId);
+          if (extraCatIds.length > 0) {
+            const catRows = extraCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
             const { error: catInsErr } = await supabase
               .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
             if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
@@ -768,6 +925,8 @@ const AdminImport = () => {
         }
       }
 
+      results.universal_ignored.columns = Array.from(universalColumnsUsed);
+
       return results;
     },
     onSuccess: (results) => {
@@ -778,7 +937,10 @@ const AdminImport = () => {
       const googleNote = results.google_locked.length > 0
         ? `, ${results.google_locked.length} kept their live Google rating`
         : "";
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.removed_from_category} removed from category, ${results.deleted} deleted${googleNote}`);
+      const universalNote = results.universal_ignored.rows > 0
+        ? `, ${results.universal_ignored.rows} kept their universal fields`
+        : "";
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.removed_from_category} removed from category, ${results.deleted} deleted${googleNote}${universalNote}`);
     },
     onError: (e) => { setImportStatus(""); toast.error(e.message); },
   });
@@ -833,6 +995,21 @@ const AdminImport = () => {
 
     if (!listings?.length) { toast.error("No listings to export"); return; }
 
+    // The card label is per category, so it comes off this category's junction
+    // rows rather than off the listing. Falls back to an empty column if the
+    // label migration hasn't been applied yet.
+    const cardLabelByListing = new Map<string, string>();
+    if (!isAllCategories) {
+      const { data: labelRows } = await supabase
+        .from("listing_categories")
+        .select("listing_id, card_primary_subcategory")
+        .eq("category_id", selectedCategoryId);
+      (labelRows ?? []).forEach((r) => {
+        const label = (r.card_primary_subcategory ?? "").trim();
+        if (label) cardLabelByListing.set(r.listing_id, label);
+      });
+    }
+
     // Fetch junctions for categories & subcategories
     const { data: allCatJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
     const catNameMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
@@ -874,9 +1051,15 @@ const AdminImport = () => {
       }
       fieldMap.subcategories = (listingSubMap.get(l.id) ?? []).join("|");
 
+      // Per-category column, not a listing column: read it off the junction so
+      // exporting Home & Garden shows the label chosen there, not the one
+      // chosen for the same listing under Building & Renovation.
+      if (!isAllCategories) fieldMap[CATEGORY_CARD_LABEL_FIELD] = cardLabelByListing.get(l.id) ?? "";
+
       // Schema-driven serialization for every other header
       for (const h of headers) {
         if (h === "categories" || h === "subcategories") continue;
+        if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
         fieldMap[h] = serializeField(lr[h], spec.type);
@@ -958,8 +1141,8 @@ const AdminImport = () => {
           {selectedCategoryId && (
             <p className="text-xs text-muted-foreground mt-2">
               {isAllCategories
-                ? "Universal fields only across ALL listings. Category-specific fields are preserved during updates."
-                : `Imports universal + ${selectedCategoryTitle}-specific fields. A listing's data and links in other categories are never touched.`}
+                ? "The source of truth for every universal field, across ALL listings. Category-specific fields, and the card label each category holds, are left untouched."
+                : `Imports ${selectedCategoryTitle}-specific fields plus this category's card label. Universal fields (name, contacts, location, hours…) aren't on this sheet — the All Categories upload owns those. A listing's data and links in other categories are never touched.`}
             </p>
           )}
         </div>
@@ -989,9 +1172,30 @@ const AdminImport = () => {
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {isAllCategories
-                ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields are preserved."
+                ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields and per-category card labels are preserved."
                 : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
             </p>
+            {isAllCategories ? (
+              <p className="text-xs text-muted-foreground mt-1">
+                This sheet is where universal fields are set. Category uploads can't change
+                them, so what's here (or what you've edited in the backend) is what the app shows.
+              </p>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Universal columns aren't on this sheet, and any left over in an older file
+                  are read past rather than imported — title, contacts, location, opening
+                  hours and the rest come from the All Categories upload or the backend editor.
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  card_primary_subcategory is per category: the label set here is the eyebrow
+                  shown on the card on the {selectedCategoryTitle} page only, so the same
+                  listing can read differently in each category it belongs to. Use this
+                  category's name or one of its subcategories; leave it blank to keep the
+                  stored label, or "-" to go back to picking automatically.
+                </p>
+              </>
+            )}
             <p className="text-xs text-muted-foreground mt-1">
               Leave a cell blank to keep whatever the listing already has. Put a "-" in it
               to clear that field — a website column with "-" means the listing has no
@@ -1083,6 +1287,28 @@ const AdminImport = () => {
                 <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
             </div>
+            {importResult.card_labels > 0 && (
+              <p className="text-xs text-muted-foreground">
+                <strong className="text-foreground">{importResult.card_labels}</strong> card
+                label(s) set for {displayLabel} — these apply to this category's page only.
+              </p>
+            )}
+            {importResult.universal_ignored.rows > 0 && (
+              <div className="bg-muted border border-border rounded-lg p-4 space-y-1">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  Ignored universal values in {importResult.universal_ignored.rows} row(s)
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Universal fields are owned by the All Categories upload and the backend
+                  editor, so a category upload never writes them — whatever is already stored
+                  was kept. Everything else in those rows imported normally.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Columns ignored: {importResult.universal_ignored.columns.join(", ")}
+                </p>
+              </div>
+            )}
             {importResult.google_locked.length > 0 && (
               <div className="bg-muted border border-border rounded-lg p-4 space-y-1">
                 <p className="text-sm font-medium text-foreground flex items-center gap-2">

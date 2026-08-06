@@ -186,8 +186,11 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 
 // ----- Field groupings used for CSV header selection per category -----
 
+// The universal CSV owns these. A category CSV never writes them — see
+// CATEGORY_CARD_LABEL_FIELD below and the import in AdminImport.tsx.
+// `card_primary_subcategory` is deliberately not here: it is per-category.
 export const UNIVERSAL_FIELDS = [
-  "title", "title_override", "card_primary_subcategory", "long_description",
+  "title", "title_override", "long_description",
   "good_to_know",
   // Images (image_url, detail_image_url, gallery_images) are deliberately absent:
   // they are managed in the backend editor only and never travel via CSV.
@@ -209,6 +212,16 @@ export const UNIVERSAL_FIELDS = [
 
 ] as const;
 
+
+// The card eyebrow label, chosen per category rather than per listing.
+//
+// A listing can sit in both "Home & Garden" and "Building & Renovation" and
+// should read "Nurseries" on one category page and "Builders" on the other, so
+// the value belongs to the listing's row in `listing_categories`, not to the
+// listing. That is why it is a column on every category CSV and on none of the
+// universal one: which label is right depends on which category you're looking
+// at, and the universal sheet has no category to answer for.
+export const CATEGORY_CARD_LABEL_FIELD = "card_primary_subcategory";
 
 export const RESTAURANT_ONLY_FIELDS = [
   "show_attributes",
@@ -285,6 +298,11 @@ export function isWellnessBeautyCategory(t: string): boolean { return WELLNESS_B
 
 // Get all CSV headers (including virtual `categories` / `subcategories`) for a category.
 // De-duplicates because some category groups overlap (e.g. wheelchair_friendly).
+//
+// A category CSV carries only what belongs to that category: the card label, the
+// category's own fields, its memberships, and the back-office Place ID. The
+// universal content fields (location, contacts, descriptions, opening hours …)
+// are owned by the universal CSV and are not editable here — see the import.
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
@@ -293,9 +311,10 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
       if (!seen.has(f)) { seen.add(f); out.push(f); }
     }
   };
-  push(UNIVERSAL_FIELDS);
-  // Deliberately not in UNIVERSAL_FIELDS: google_place_id has to come out last,
-  // after the category columns, and it is appended at the end of this function.
+  // `title` is how a row finds its listing, so it travels on every CSV.
+  push(["title", CATEGORY_CARD_LABEL_FIELD]);
+  // Deliberately last, after the category columns: google_place_id is appended
+  // at the end of this function.
   if (categoryTitle && isRestaurantCategory(categoryTitle)) push(RESTAURANT_ONLY_FIELDS);
   if (categoryTitle && isShoppingCategory(categoryTitle)) push(SHOPPING_ONLY_FIELDS);
   if (categoryTitle && isAccommodationCategory(categoryTitle)) push(ACCOMMODATION_ONLY_FIELDS);
@@ -311,6 +330,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
 
 // Headers for the "All Categories (Universal)" CSV: universals only, with the
 // Place ID last so every export ends on the same column.
+//
+// This sheet is the source of truth for every field on it. Nothing here appears
+// on a category CSV, so the two uploads can never disagree about a listing.
 export function getUniversalCSVHeaders(): string[] {
   return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
 }
@@ -338,5 +360,14 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 // the CSV was exported for.
 export function getUniversalDbFields(): string[] {
   return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
+}
+
+// The universal columns a category upload refuses to write, so that the
+// universal sheet (or the backend editor) stays the only thing that can change
+// them. `title` is left out because it is the row's match key rather than a
+// value, and google_place_id because it is back-office plumbing the sync needs
+// and is deliberately fillable from whichever sheet is open.
+export function getUniversalContentFields(): string[] {
+  return UNIVERSAL_FIELDS.filter((f) => f !== "title");
 }
 

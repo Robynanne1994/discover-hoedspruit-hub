@@ -30,7 +30,7 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   // Virtual / categorical
   categories: "pipe-separated category names, e.g. Restaurants & Cafes | Family Friendly",
   subcategories: "pipe-separated subcategory names",
-  card_primary_subcategory: "default single label shown on the listing card; leave blank to auto-pick the first populated subcategory. Per-category overrides are set in the admin listing editor",
+  card_primary_subcategory: "the single label shown on the listing card on THIS category's page only — this category's name, or one of its subcategories. Leave blank to keep the stored label, \"-\" to auto-pick the first populated subcategory",
 
   // Universal scalars with notable formats
   price_level: "integer 1–4 (1 = $, 4 = $$$$)",
