@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { Heart, MapPin } from "lucide-react";
-import SpecialValueBar from "@/components/specials/SpecialValueBar";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
@@ -138,9 +137,6 @@ const SavedCard = ({
             </div>
           )}
     </div>
-
-    {/* Saved deals carry the same value bar as the specials grid */}
-    {type === "special" && <SpecialValueBar special={it} />}
   </Link>
 );
 
