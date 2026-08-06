@@ -448,7 +448,7 @@ export default function MyNotifications() {
         })}
 
         {isEmpty && (
-          <div style={{ padding: "16px 20px 40px" }}>
+          <div style={{ padding: "16px 0 40px" }}>
             <div
               style={{
                 background: CARD,
