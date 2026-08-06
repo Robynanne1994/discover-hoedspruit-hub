@@ -51,8 +51,9 @@ const HomeSpecials = () => {
       <HomeSectionHead primary="Active Specials" actionHref="/specials" />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
         <div style={{ display: "flex", gap: 12, paddingRight: 20 }}>
-          {specials.map((s) => {
-            const avatar = s.homepage_image_url || s.image_url || s.detail_image_url;
+          {specials.map((s, i) => {
+            const image = s.homepage_image_url || s.image_url || s.detail_image_url;
+            const value = specialValue(s);
             return (
               <Link
                 key={s.id}
@@ -73,25 +74,50 @@ const HomeSpecials = () => {
                   boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
                 }}
               >
-                <div style={{ padding: 16, display: "flex", flexDirection: "column", flex: 1 }}>
+                {/* Image with the deal badge sitting on it */}
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "1 / 1",
+                    background: "#F4EFE3",
+                  }}
+                >
+                  {image && (
+                    <img
+                      src={image}
+                      alt={s.business_name}
+                      loading="lazy"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
                   {s.deal_label && (
-                    <div
+                    <span
                       style={{
+                        position: "absolute",
+                        top: 12,
+                        left: 12,
+                        maxWidth: "calc(100% - 24px)",
+                        padding: "7px 14px",
+                        borderRadius: 999,
+                        background: i % 2 === 1 ? "#423324" : "#B4522E",
+                        color: "#FFFFFF",
                         fontFamily: HN,
                         fontSize: 11,
                         fontWeight: 700,
                         letterSpacing: "0.08em",
                         textTransform: "uppercase",
-                        color: "#B42318",
-                        marginBottom: 6,
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                       }}
                     >
                       {s.deal_label}
-                    </div>
+                    </span>
                   )}
+                </div>
+
+                <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 4 }}>
                   <div
                     {...noTitleCaseProps(s)}
                     style={{
@@ -107,49 +133,67 @@ const HomeSpecials = () => {
                   >
                     {getDisplayTitle(s)}
                   </div>
-                  <div style={{ height: 1, background: "rgba(26,26,26,0.10)", margin: "12px 0" }} />
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div
+                    style={{
+                      fontFamily: HN,
+                      fontSize: 14,
+                      color: "#6B6A5E",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {s.business_name}
+                  </div>
+
+                  {/* The offer, in plain words under the business */}
+                  {value.kind !== "none" && (
                     <div
                       style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                        background: "#F4EFE3",
-                        flexShrink: 0,
+                        marginTop: 8,
+                        display: "flex",
+                        alignItems: "baseline",
+                        gap: 6,
+                        minWidth: 0,
                       }}
                     >
-                      {avatar && (
-                        <img
-                          src={avatar}
-                          alt={s.business_name}
-                          loading="lazy"
-                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        />
+                      <span
+                        style={{
+                          fontFamily: HN,
+                          fontSize: 16,
+                          fontWeight: 700,
+                          color: "#1A1A1A",
+                          letterSpacing: "-0.2px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {value.kind === "price" ? value.price : value.text}
+                      </span>
+                      {value.kind === "price" && (value.note || value.original) && (
+                        <span
+                          style={{
+                            fontFamily: HN,
+                            fontSize: 13,
+                            color: "#6B6A5E",
+                            textDecoration: value.original ? "line-through" : "none",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            minWidth: 0,
+                          }}
+                        >
+                          {value.original || value.note}
+                        </span>
                       )}
                     </div>
-                    <span
-                      className="line-clamp-2"
-                      style={{
-                        flex: 1,
-                        minWidth: 0,
-                        fontFamily: HN,
-                        fontSize: 14,
-                        fontWeight: 700,
-                        color: "#1A1A1A",
-                        lineHeight: 1.25,
-                      }}
-                    >
-                      {s.business_name}
-                    </span>
-                  </div>
+                  )}
                 </div>
-
-                {/* Value bar — the offer and its validity, same strip as the specials grid */}
-                <SpecialValueBar special={s} detail="full" padding="11px 16px" />
               </Link>
             );
           })}
+
         </div>
       </div>
     </section>
