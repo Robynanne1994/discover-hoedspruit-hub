@@ -432,8 +432,6 @@ const SavedCard = ({
                   overflow: "hidden",
                   overflowWrap: line.clamp === 1 ? "normal" : "break-word",
                   wordBreak: line.clamp === 1 ? "normal" : undefined,
-                  overflow: "hidden",
-                  overflowWrap: "break-word",
                 }}
               >
                 {line.lead ? `${line.lead} ` : ""}
