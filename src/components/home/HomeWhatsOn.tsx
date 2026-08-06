@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getEventDates } from "@/lib/eventDates";
+import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -18,10 +19,34 @@ function formatTime(t?: string | null) {
 
 const MONTHS_SHORT = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
+const COLUMNS =
+  "id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url, is_featured";
+const TARGET = 6;
+
 const HomeWhatsOn = () => {
   const { data: events } = useQuery({
     queryKey: ["home-whats-on"],
     queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayIso = today.toISOString().slice(0, 10);
+      const stillOn = (rows: any[] | null) =>
+        (rows || []).filter((e) => {
+          const { start, end } = getEventDates(e);
+          const effectiveEnd = end ?? start;
+          return effectiveEnd ? effectiveEnd >= today : true;
+        });
+
+      // Featured events headline the row, ahead of the admin's curated picks.
+      const { data: featuredRows } = await supabase
+        .from("events")
+        .select(COLUMNS)
+        .eq("is_featured", true)
+        .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
+        .order("start_date", { ascending: true, nullsFirst: false })
+        .limit(TARGET);
+      const featured = stillOn(featuredRows);
+
       const { data: siteContent } = await supabase
         .from("site_content")
         .select("content")
@@ -32,31 +57,22 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url")
+          .select(COLUMNS)
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
-        return ids
+        const curated = ids
           .map((id) => map.get(id))
-          .filter((e): e is NonNullable<typeof e> => Boolean(e))
-          .slice(0, 6);
+          .filter((e): e is NonNullable<typeof e> => Boolean(e));
+        return mergeFeaturedFirst([featured, curated], TARGET);
       }
 
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayIso = today.toISOString().slice(0, 10);
       const { data } = await supabase
         .from("events")
-        .select("id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url")
+        .select(COLUMNS)
         .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
-      return (data || [])
-        .filter((e) => {
-          const { start, end } = getEventDates(e);
-          const effectiveEnd = end ?? start;
-          return effectiveEnd ? effectiveEnd >= today : true;
-        })
-        .slice(0, 6);
+      return mergeFeaturedFirst([featured, stillOn(data)], TARGET);
     },
   });
 
