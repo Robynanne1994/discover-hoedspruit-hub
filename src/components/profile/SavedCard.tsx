@@ -53,7 +53,7 @@ const to12h = (raw?: string | null) => {
   const suffix = h >= 12 ? "PM" : "AM";
   if (h === 0) h = 12;
   else if (h > 12) h -= 12;
-  return `${h}:${mm} ${suffix}`;
+  return `${h}:${mm}${suffix}`;
 };
 
 const closesAt = (hours: Record<string, string> | null | undefined) => {
@@ -113,7 +113,7 @@ const buildContent = (it: any, type: CardType) => {
       if (isAlwaysOpen(todayHours(hours))) status = { text: "Open 24 Hours", tone: SAGE };
       else if (isOpenNow(hours)) {
         const until = closesAt(hours);
-        status = { text: until ? `Open until ${until}` : "Open Now", tone: SAGE };
+        status = { text: until ? `Open Until ${until}` : "Open Now", tone: SAGE };
       } else {
         const opens = to12h(opensAt(hours));
         status = { text: opens ? `Closed · Opens ${opens}` : "Closed", tone: CLAY };
