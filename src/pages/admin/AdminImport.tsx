@@ -787,7 +787,7 @@ const AdminImport = () => {
           // carrying card_primary_subcategory. Omitting that key (blank cell on
           // an update) leaves the stored label alone, which is what makes an
           // empty cell mean "keep it" here as everywhere else.
-          const selectedRow: Database["public"]["Tables"]["listing_categories"]["Insert"] = {
+          const selectedRow: any = {
             listing_id: item.listingId, category_id: selectedCategoryId,
           };
           if (item.cardLabel !== undefined) selectedRow.card_primary_subcategory = item.cardLabel;
@@ -1004,7 +1004,7 @@ const AdminImport = () => {
         .from("listing_categories")
         .select("listing_id, card_primary_subcategory")
         .eq("category_id", selectedCategoryId);
-      (labelRows ?? []).forEach((r) => {
+      ((labelRows ?? []) as any[]).forEach((r: any) => {
         const label = (r.card_primary_subcategory ?? "").trim();
         if (label) cardLabelByListing.set(r.listing_id, label);
       });
