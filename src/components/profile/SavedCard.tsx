@@ -135,10 +135,10 @@ const buildContent = (it: any, type: CardType) => {
     else {
       const d = daysAway(it.start_date || it.date);
       if (d != null) {
-        if (d <= 0) status = { text: "Today", tone: SAGE };
-        else if (d === 1) status = { text: "Tomorrow", tone: SAGE };
-        else if (d < 7) status = { text: `This ${weekday(it.start_date || it.date)}`, tone: SAGE };
-        else status = { text: `In ${d} Days`, tone: SAGE };
+        if (d <= 0) status = { items: [{ text: "Today", tone: SAGE }] };
+        else if (d === 1) status = { items: [{ text: "Tomorrow", tone: SAGE }] };
+        else if (d < 7) status = { items: [{ text: `This ${weekday(it.start_date || it.date)}`, tone: SAGE }] };
+        else status = { items: [{ text: `In ${d} Days`, tone: SAGE }] };
       }
     }
   }
