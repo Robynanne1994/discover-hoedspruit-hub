@@ -499,7 +499,7 @@ export default function MyNotifications() {
                     margin: 0,
                   }}
                 >
-                  Nothing new right now. When something happens in town, you'll find it here.
+                  Nothing new right now. When something happens, you'll find it here.
                 </p>
               </div>
             </div>
