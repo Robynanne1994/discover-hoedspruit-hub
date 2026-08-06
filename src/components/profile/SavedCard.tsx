@@ -214,7 +214,8 @@ const SavedCard = ({
   const [isLogo, setIsLogo] = useState(false);
   const src = it.saved_image_url || it.image_url;
   const { lines, status, badge, ratingChip } = buildContent(it, type);
-  const title = titleCase(it.title);
+  const override = (it.title_override ?? "").toString().trim();
+  const title = override || titleCase(it.title);
 
   return (
     <Link
