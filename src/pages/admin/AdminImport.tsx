@@ -14,6 +14,7 @@ import {
   NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
   LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields,
   getUniversalCSVHeaders, getUniversalContentFields, CATEGORY_CARD_LABEL_FIELD,
+  CATEGORY_MEMBERSHIP_FIELD, CATEGORY_SUBCATEGORY_FIELD,
   type FieldType,
 } from "@/lib/categoryFields";
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
@@ -344,6 +345,12 @@ const AdminImport = () => {
             `Universal columns found and will be ignored (edit these on the All Categories sheet): ${universalExtras.join(", ")}`,
           );
         }
+      } else if (result.headers.includes(CATEGORY_SUBCATEGORY_FIELD)) {
+        // Subcategories are per category, so this sheet has no way to tell which
+        // category a name belongs to. Read past rather than guessed at.
+        toast.warning(
+          "A subcategories column was found and will be ignored — fill subcategories in on each category's own sheet.",
+        );
       }
 
       setParsed(result);
@@ -444,6 +451,12 @@ const AdminImport = () => {
         resolvedCatIds: string[];
         resolvedSubIds: string[];
         isUpdate: boolean;
+        // Universal rows only: whether the row named categories, and so gets to
+        // rewrite the listing's category set. False leaves the links as they are.
+        ownsCategorySet: boolean;
+        // Category rows only: whether the subcategories cell was filled in, and
+        // so gets to rewrite this category's subcategory links.
+        subsProvided: boolean;
         // The card label for the selected category: a string to set it, null to
         // clear it back to automatic, undefined to leave whatever is stored.
         cardLabel?: string | null;
@@ -477,69 +490,104 @@ const AdminImport = () => {
         }
         csvTitles.add(title.toLowerCase());
 
-        // Resolve categories from CSV (pipe-separated, case/whitespace insensitive)
-        const catField = isBlankPlaceholder(row.categories) ? "" : row.categories.trim();
-        const catNames = catField
-          ? catField.split("|").map((s) => s.trim()).filter((s) => s && !isBlankPlaceholder(s))
-          : [];
+        const existing = existingMap.get(title.toLowerCase());
+        const isUpdate = !!existing;
+        const listingId = existing?.id ?? crypto.randomUUID();
+
+        // ---- Which categories the listing belongs to ----
+        //
+        // One answer for the whole listing, so it is given once, on the
+        // universal sheet. A category upload already knows the category it was
+        // run for and adds that membership by itself; a `categories` column left
+        // over on an older category export is reported with the other universal
+        // columns rather than obeyed, so the two sheets can't disagree about
+        // where a listing sits.
         const resolvedCatIds: string[] = [];
+        // Whether this row's category cell is authoritative enough to rewrite the
+        // listing's category set (see the junction sync below).
+        let ownsCategorySet = false;
 
         if (!isAllCategories) {
           resolvedCatIds.push(selectedCategoryId);
-        }
+        } else {
+          const catCell = row[CATEGORY_MEMBERSHIP_FIELD];
+          // Blank means "not saying" here as everywhere else: the listing keeps
+          // the categories it has. A cleared cell ("-") is reported instead of
+          // obeyed — a listing in no category at all can't be reached anywhere
+          // in the app, and dropping one category is done by editing the list.
+          const catProvided = typeof catCell === "string" && catCell.trim() !== "";
+          const catNames = catProvided && !isBlankPlaceholder(catCell)
+            ? catCell.split("|").map((s) => s.trim()).filter((s) => s && !isBlankPlaceholder(s))
+            : [];
+          if (catProvided && catNames.length === 0) {
+            results.errors.push(
+              `Row ${i + 2}: categories was cleared — a listing has to sit in at least one category to appear in the app, so its current categories were kept`,
+            );
+          }
+          if (!catProvided && !isUpdate) {
+            results.errors.push(
+              `Row ${i + 2}: no categories given for a new listing — it will be created but won't appear on any category page until one is set`,
+            );
+          }
 
-        for (const catName of catNames) {
-          const key = catName.toLowerCase();
-          const catId = catMap.get(key) ?? null;
-          if (catId) {
-            if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
-          } else {
-            const { data: newCat, error: catErr } = await supabase
-              .from("categories").insert({ title: catName }).select("id").single();
-            if (!catErr && newCat) {
-              catMap.set(key, newCat.id);
-              resolvedCatIds.push(newCat.id);
+          for (const catName of catNames) {
+            const key = catName.toLowerCase();
+            const catId = catMap.get(key) ?? null;
+            if (catId) {
+              if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
             } else {
-              results.errors.push(`Row ${i + 2}: Could not match or create category "${catName}"`);
+              const { data: newCat, error: catErr } = await supabase
+                .from("categories").insert({ title: catName }).select("id").single();
+              if (!catErr && newCat) {
+                catMap.set(key, newCat.id);
+                resolvedCatIds.push(newCat.id);
+              } else {
+                results.errors.push(`Row ${i + 2}: Could not match or create category "${catName}"`);
+              }
             }
           }
+          // Only a row that actually named categories rewrites the set. A row
+          // whose names all failed to resolve is left alone rather than being
+          // read as "belongs to nothing".
+          ownsCategorySet = resolvedCatIds.length > 0;
         }
 
-        // Resolve subcategories. In category-scoped imports, only resolve under the selected category
-        // (so we never touch another category's subcategory links).
-        const subNames = isBlankPlaceholder(row.subcategories)
+        // ---- Subcategories for THIS category ----
+        //
+        // The column belongs to the category sheets, and each one carries only
+        // its own category's subcategories: the same listing is a "Nursery" on
+        // the Home & Garden sheet and a "Builder" on the Building & Renovation
+        // one, and each sheet fills in — and syncs — only its own half. The
+        // universal sheet has no category to scope them to, so it doesn't ask.
+        const subNames = isAllCategories || isBlankPlaceholder(row[CATEGORY_SUBCATEGORY_FIELD])
           ? []
-          : row.subcategories.split("|").map((s) => s.trim()).filter((s) => s && !isBlankPlaceholder(s));
+          : row[CATEGORY_SUBCATEGORY_FIELD].split("|").map((s) => s.trim()).filter((s) => s && !isBlankPlaceholder(s));
+        // Blank on update means "keep this category's subcategories", matching
+        // every other column; "-" clears them (an empty list that still syncs).
+        const subsProvided = !isAllCategories && (
+          (row[CATEGORY_SUBCATEGORY_FIELD] ?? "").trim() !== "" || !isUpdate
+        );
         const resolvedSubIdsRaw: string[] = [];
-        const subResolutionCatIds = isAllCategories ? resolvedCatIds : [selectedCategoryId];
         for (const subName of subNames) {
-          let found = false;
-          for (const cId of subResolutionCatIds) {
-            const key = `${cId}::${subName.toLowerCase()}`;
-            const subId = subMap.get(key);
-            if (subId) { resolvedSubIdsRaw.push(subId); found = true; break; }
-          }
-          if (!found && subResolutionCatIds.length > 0) {
-            const parentCatId = subResolutionCatIds[0];
-            const { data: newSub, error: subErr } = await supabase
-              .from("subcategories").insert({ title: subName, category_id: parentCatId }).select("id").single();
-            if (!subErr && newSub) {
-              resolvedSubIdsRaw.push(newSub.id);
-              subMap.set(`${parentCatId}::${subName.toLowerCase()}`, newSub.id);
-            } else {
-              results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
-            }
+          const key = `${selectedCategoryId}::${subName.toLowerCase()}`;
+          const subId = subMap.get(key);
+          if (subId) { resolvedSubIdsRaw.push(subId); continue; }
+          // Unknown name: create it under the category this sheet is for, which
+          // is the only category whose subcategories this sheet may touch.
+          const { data: newSub, error: subErr } = await supabase
+            .from("subcategories").insert({ title: subName, category_id: selectedCategoryId }).select("id").single();
+          if (!subErr && newSub) {
+            resolvedSubIdsRaw.push(newSub.id);
+            subMap.set(key, newSub.id);
+            categorySubTitles.add(subName.trim().toLowerCase());
+          } else {
+            results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
           }
         }
         const resolvedSubIds = Array.from(new Set(resolvedSubIdsRaw));
 
-
         // Images are managed exclusively via the Lovable editor — CSV image_url and
         // gallery_images cells are honored only when explicitly provided.
-
-        const existing = existingMap.get(title.toLowerCase());
-        const isUpdate = !!existing;
-        const listingId = existing?.id ?? crypto.randomUUID();
 
         // Schema-driven payload build.
         // - The universal upload writes the universal fields, and only it does:
@@ -684,7 +732,10 @@ const AdminImport = () => {
           }
         }
 
-        importItems.push({ rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds, isUpdate, cardLabel });
+        importItems.push({
+          rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds,
+          isUpdate, ownsCategorySet, subsProvided, cardLabel,
+        });
       }
 
       setImportStatus(`Saving ${importItems.length} listings in batches...`);
@@ -733,31 +784,34 @@ const AdminImport = () => {
         }
       }
 
-      // Per-listing junction sync.
+      // Per-listing junction sync — one sheet per half.
       // - In "All Categories" mode the CSV owns the whole category set, applied as a
-      //   difference so the surviving rows keep the card labels they carry.
+      //   difference so the surviving rows keep the card labels and subcategory
+      //   links they carry. Subcategories are never set here.
       // - In category-scoped mode we ONLY touch the selected category's link and the
       //   subcategory links that belong to the selected category. This preserves a listing's
-      //   memberships in other categories (e.g. importing Shopping CSV must not unlink
-      //   "Woodlands Garden Centre" from "Home & Garden").
+      //   memberships and subcategories in other categories (e.g. importing Shopping CSV
+      //   must not unlink "Woodlands Garden Centre" from "Home & Garden", nor clear the
+      //   Home & Garden subcategories it was given on that sheet).
       setImportStatus(`Syncing categories for ${successfulItems.length} listings...`);
       for (let idx = 0; idx < successfulItems.length; idx++) {
         const item = successfulItems[idx];
         if (idx % 50 === 0) setImportStatus(`Syncing categories ${idx + 1}/${successfulItems.length}...`);
 
         if (isAllCategories) {
-          // The CSV still owns the listing's full category set, but it is applied
-          // as a difference rather than a wipe-and-reinsert: a category the CSV
-          // kept keeps its junction row, and with it the card label that row holds.
+          // The CSV owns the listing's full category set, but only for the rows
+          // that actually named categories — a blank cell leaves the links alone.
+          // It is applied as a difference rather than a wipe-and-reinsert, so a
+          // category the CSV kept keeps its junction row, and with it the card
+          // label and subcategory links that belong to that category.
+          if (!item.ownsCategorySet) continue;
           const uniqueCatIds = Array.from(new Set(item.resolvedCatIds));
-          if (uniqueCatIds.length > 0) {
-            const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
-            const { error: catInsErr } = await supabase
-              .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
-            if (catInsErr) {
-              results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
-              continue;
-            }
+          const catRows = uniqueCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+          const { error: catInsErr } = await supabase
+            .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+          if (catInsErr) {
+            results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+            continue;
           }
           const staleCatIds = (existingCatLinks.get(item.listingId) ?? [])
             .filter((catId) => !uniqueCatIds.includes(catId));
@@ -770,24 +824,28 @@ const AdminImport = () => {
               results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
               continue;
             }
-          }
-          const { error: subDelErr } = await supabase
-            .from("listing_subcategories").delete().eq("listing_id", item.listingId);
-          if (subDelErr) {
-            results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
-            continue;
-          }
-          const uniqueSubIds = Array.from(new Set(item.resolvedSubIds));
-          if (uniqueSubIds.length > 0) {
-            const subRows = uniqueSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
-            const { error: subInsErr } = await supabase
-              .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
-            if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+            // A subcategory outlives its category only as an orphan: dropping
+            // "Home & Garden" has to take "Nurseries" with it, or the listing
+            // keeps a subcategory under a category it no longer belongs to.
+            // Every surviving category's subcategories are untouched — those are
+            // that category's sheet to fill in, not this one's.
+            const staleSubIds = (subcategories ?? [])
+              .filter((s) => staleCatIds.includes(s.category_id))
+              .map((s) => s.id);
+            if (staleSubIds.length > 0) {
+              const { error: subDelErr } = await supabase
+                .from("listing_subcategories").delete()
+                .eq("listing_id", item.listingId)
+                .in("subcategory_id", staleSubIds);
+              if (subDelErr) results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+            }
           }
 
         } else {
-          // Category-scoped mode: upsert links additively for the selected category +
-          // any extras in the CSV's "categories" column. Never delete links for other categories.
+          // Category-scoped mode: upsert the selected category's link additively —
+          // being a row on this sheet is what puts the listing in this category.
+          // No other category's link is added or removed here; the listing's full
+          // category set is the universal sheet's to state.
           //
           // The selected category's row goes up on its own because it is the one
           // carrying card_primary_subcategory. Omitting that key (blank cell on
@@ -818,20 +876,18 @@ const AdminImport = () => {
             }
           }
 
-          // Any other categories named in the CSV: membership only. Their card
-          // labels belong to their own category's upload.
-          const extraCatIds = Array.from(new Set(item.resolvedCatIds))
-            .filter((catId) => catId !== selectedCategoryId);
-          if (extraCatIds.length > 0) {
-            const catRows = extraCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
-            const { error: catInsErr } = await supabase
-              .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
-            if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
-          }
-
-          // Subcategories: delete only this listing's existing subcategory links that
-          // belong to the selected category, then insert the resolved subs (which are
-          // already scoped to the selected category — see resolution step above).
+          // Subcategories: delete only this listing's existing subcategory links
+          // that belong to the selected category, then insert the resolved subs
+          // (which are already scoped to the selected category — see the
+          // resolution step above). The listing's subcategories under every
+          // other category are that category's sheet to fill in, and are left
+          // exactly as they are — which is what lets the same listing be a
+          // "Nursery" here and a "Builder" on the next sheet.
+          //
+          // A blank cell on an update says nothing, so this category's stored
+          // subcategories are kept; a "-" resolves to an empty list and clears
+          // them.
+          if (!item.subsProvided) continue;
           const { data: existingSubLinks, error: subFetchErr } = await supabase
             .from("listing_subcategories").select("id, subcategory_id").eq("listing_id", item.listingId);
           if (subFetchErr) {
@@ -1016,30 +1072,44 @@ const AdminImport = () => {
       });
     }
 
-    // Fetch junctions for categories & subcategories
-    const { data: allCatJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
+    // The listing's category set: a universal-sheet column, so it is only
+    // fetched for that sheet. A category export doesn't repeat it — the file
+    // you're in already says which category these rows are for.
     const catNameMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const listingCatMap = new Map<string, string[]>();
-    (allCatJunction ?? []).forEach((j) => {
-      const name = catNameMap.get(j.category_id);
-      if (name) {
-        const arr = listingCatMap.get(j.listing_id) ?? [];
-        arr.push(name);
-        listingCatMap.set(j.listing_id, arr);
-      }
-    });
+    if (isAllCategories) {
+      const { data: allCatJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
+      (allCatJunction ?? []).forEach((j) => {
+        const name = catNameMap.get(j.category_id);
+        if (name) {
+          const arr = listingCatMap.get(j.listing_id) ?? [];
+          arr.push(name);
+          listingCatMap.set(j.listing_id, arr);
+        }
+      });
+    }
 
-    const { data: subJunction } = await supabase.from("listing_subcategories").select("listing_id, subcategory_id");
-    const subNameMap = new Map((subcategories ?? []).map((s) => [s.id, s.title]));
+    // Subcategories, scoped to the sheet's own category. Exporting Home &
+    // Garden lists this listing's Home & Garden subcategories and nothing else,
+    // so the column you edit is the column that comes back — its Building &
+    // Renovation subcategories belong to that sheet and stay there.
     const listingSubMap = new Map<string, string[]>();
-    (subJunction ?? []).forEach((j) => {
-      const name = subNameMap.get(j.subcategory_id);
-      if (name) {
-        const arr = listingSubMap.get(j.listing_id) ?? [];
-        arr.push(name);
-        listingSubMap.set(j.listing_id, arr);
-      }
-    });
+    if (!isAllCategories) {
+      const subNameMap = new Map(
+        (subcategories ?? [])
+          .filter((s) => s.category_id === selectedCategoryId)
+          .map((s) => [s.id, s.title]),
+      );
+      const { data: subJunction } = await supabase.from("listing_subcategories").select("listing_id, subcategory_id");
+      (subJunction ?? []).forEach((j) => {
+        const name = subNameMap.get(j.subcategory_id);
+        if (name) {
+          const arr = listingSubMap.get(j.listing_id) ?? [];
+          arr.push(name);
+          listingSubMap.set(j.listing_id, arr);
+        }
+      });
+    }
 
     const headers = csvHeaders;
 
@@ -1047,15 +1117,18 @@ const AdminImport = () => {
       const fieldMap: Record<string, string> = {};
       const lr = l as unknown as Record<string, unknown>;
 
-      // Virtual columns: categories / subcategories pipe-joined
-      const fromJunction = listingCatMap.get(l.id) ?? [];
-      if (fromJunction.length === 0 && l.category_id) {
-        const legacy = catNameMap.get(l.category_id);
-        fieldMap.categories = legacy ?? "";
+      // Virtual (junction) columns, each on the one sheet that owns it.
+      if (isAllCategories) {
+        const fromJunction = listingCatMap.get(l.id) ?? [];
+        if (fromJunction.length === 0 && l.category_id) {
+          const legacy = catNameMap.get(l.category_id);
+          fieldMap[CATEGORY_MEMBERSHIP_FIELD] = legacy ?? "";
+        } else {
+          fieldMap[CATEGORY_MEMBERSHIP_FIELD] = fromJunction.join("|");
+        }
       } else {
-        fieldMap.categories = fromJunction.join("|");
+        fieldMap[CATEGORY_SUBCATEGORY_FIELD] = (listingSubMap.get(l.id) ?? []).join("|");
       }
-      fieldMap.subcategories = (listingSubMap.get(l.id) ?? []).join("|");
 
       // Per-category column, not a listing column: read it off the junction so
       // exporting Home & Garden shows the label chosen there, not the one
@@ -1064,7 +1137,7 @@ const AdminImport = () => {
 
       // Schema-driven serialization for every other header
       for (const h of headers) {
-        if (h === "categories" || h === "subcategories") continue;
+        if (h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
@@ -1147,8 +1220,8 @@ const AdminImport = () => {
           {selectedCategoryId && (
             <p className="text-xs text-muted-foreground mt-2">
               {isAllCategories
-                ? "The source of truth for every universal field, across ALL listings. Category-specific fields, and the card label each category holds, are left untouched."
-                : `Imports ${selectedCategoryTitle}-specific fields plus this category's card label. Universal fields (name, contacts, location, hours…) aren't on this sheet — the All Categories upload owns those. A listing's data and links in other categories are never touched.`}
+                ? "The source of truth for every universal field, and for which categories each listing belongs to, across ALL listings. Category-specific fields, subcategories, and the card label each category holds are left untouched."
+                : `Imports ${selectedCategoryTitle}-specific fields, this category's subcategories, and its card label. Universal fields (name, contacts, location, hours…) and the listing's category set aren't on this sheet — the All Categories upload owns those. A listing's data and links in other categories are never touched.`}
             </p>
           )}
         </div>
@@ -1178,20 +1251,37 @@ const AdminImport = () => {
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {isAllCategories
-                ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields and per-category card labels are preserved."
+                ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields, per-category subcategories and per-category card labels are preserved."
                 : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
             </p>
             {isAllCategories ? (
-              <p className="text-xs text-muted-foreground mt-1">
-                This sheet is where universal fields are set. Category uploads can't change
-                them, so what's here (or what you've edited in the backend) is what the app shows.
-              </p>
+              <>
+                <p className="text-xs text-muted-foreground mt-1">
+                  This sheet is where universal fields are set. Category uploads can't change
+                  them, so what's here (or what you've edited in the backend) is what the app shows.
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  categories is the full list of categories a listing belongs to, and this is
+                  the only sheet that asks for it — a listing in both Home &amp; Garden and
+                  Building &amp; Renovation reads "Home &amp; Garden | Building &amp; Renovation"
+                  here and then appears on both of those category sheets. Leave the cell blank to
+                  keep the categories it already has. Subcategories aren't set here: they're
+                  filled in per category, on each category's own sheet.
+                </p>
+              </>
             ) : (
               <>
                 <p className="text-xs text-muted-foreground mt-1">
                   Universal columns aren't on this sheet, and any left over in an older file
                   are read past rather than imported — title, contacts, location, opening
-                  hours and the rest come from the All Categories upload or the backend editor.
+                  hours, the listing's categories and the rest come from the All Categories
+                  upload or the backend editor.
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  subcategories on this sheet means {selectedCategoryTitle} subcategories only.
+                  A listing that also sits in another category has its subcategories there filled
+                  in on that category's sheet, and nothing you put here touches them. Leave the
+                  cell blank to keep this category's stored subcategories, or "-" to clear them.
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   card_primary_subcategory is per category: the label set here is the eyebrow

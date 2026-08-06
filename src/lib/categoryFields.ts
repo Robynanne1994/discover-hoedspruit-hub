@@ -223,6 +223,22 @@ export const UNIVERSAL_FIELDS = [
 // at, and the universal sheet has no category to answer for.
 export const CATEGORY_CARD_LABEL_FIELD = "card_primary_subcategory";
 
+// ----- The two junction columns, split the same way -----
+
+// Which categories a listing belongs to. One answer for the whole listing, so
+// it is asked once, on the universal sheet. A category sheet never carries it:
+// being a row on the Home & Garden sheet IS that listing's Home & Garden
+// membership, and asking it to also re-state "Home & Garden | Building &
+// Renovation" in a column is a second copy of the same fact to keep in step.
+export const CATEGORY_MEMBERSHIP_FIELD = "categories";
+
+// Which subcategories a listing has — per category, like the card label. A
+// listing in both Home & Garden and Building & Renovation has "Nurseries" under
+// one and "Builders" under the other, and neither list makes sense on the other
+// sheet. So each category CSV carries only its own category's subcategories,
+// and the universal sheet carries none: it has no category to scope them to.
+export const CATEGORY_SUBCATEGORY_FIELD = "subcategories";
+
 export const RESTAURANT_ONLY_FIELDS = [
   "show_attributes",
   "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level",
@@ -296,14 +312,15 @@ export function isHomeGardenCategory(t: string): boolean { return HOME_GARDEN_CA
 export function isWeddingsEventsCategory(t: string): boolean { return WEDDINGS_EVENTS_CATEGORY_PATTERN.test(t); }
 export function isWellnessBeautyCategory(t: string): boolean { return WELLNESS_BEAUTY_CATEGORY_PATTERN.test(t); }
 
-// Get all CSV headers (including virtual `categories` / `subcategories`) for a category.
+// Get all CSV headers (including the virtual `subcategories`) for a category.
 // De-duplicates because some category groups overlap (e.g. wheelchair_friendly).
 //
 // A category CSV carries only what belongs to that category: the card label, the
-// category's own fields, and its memberships. Every universal column (location,
-// contacts, descriptions, opening hours, the back-office Place ID …) is owned by
-// the universal CSV and is not editable here — see the import. Nothing appears on
-// both sheets, so there is never a second copy of a column to keep in step.
+// category's own fields, and its own subcategories. Every universal column
+// (location, contacts, descriptions, opening hours, the listing's category set,
+// the back-office Place ID …) is owned by the universal CSV and is not editable
+// here — see the import. Nothing appears on both sheets, so there is never a
+// second copy of a column to keep in step.
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
@@ -322,17 +339,20 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) push(HOME_GARDEN_ONLY_FIELDS);
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
-  out.push("categories", "subcategories");
+  // Subcategories only, and only this category's own — the listing's category
+  // set is the universal sheet's answer to give.
+  out.push(CATEGORY_SUBCATEGORY_FIELD);
   return out;
 }
 
-// Headers for the "All Categories (Universal)" CSV: universals only, with the
-// Place ID last so every export ends on the same column.
+// Headers for the "All Categories (Universal)" CSV: universals plus the
+// listing's category set, with the Place ID last so every export ends on the
+// same column.
 //
 // This sheet is the source of truth for every field on it. Nothing here appears
 // on a category CSV, so the two uploads can never disagree about a listing.
 export function getUniversalCSVHeaders(): string[] {
-  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
+  return [...UNIVERSAL_FIELDS, CATEGORY_MEMBERSHIP_FIELD, GOOGLE_PLACE_ID_FIELD];
 }
 
 
@@ -365,8 +385,12 @@ export function getUniversalDbFields(): string[] {
 // them. `title` is the one exception: it is the row's match key rather than a
 // value, so a category sheet still carries it. google_place_id is in here like
 // any other universal — a copy left on an older category export is read past
-// rather than written.
+// rather than written, and so is a leftover `categories` column.
 export function getUniversalContentFields(): string[] {
-  return [...UNIVERSAL_FIELDS.filter((f) => f !== "title"), GOOGLE_PLACE_ID_FIELD];
+  return [
+    ...UNIVERSAL_FIELDS.filter((f) => f !== "title"),
+    CATEGORY_MEMBERSHIP_FIELD,
+    GOOGLE_PLACE_ID_FIELD,
+  ];
 }
 

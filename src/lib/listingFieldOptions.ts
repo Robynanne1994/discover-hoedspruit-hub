@@ -28,8 +28,8 @@ const VENUE_INDOOR_OUTDOOR_OPTIONS = ["Indoor", "Outdoor", "Both"];
 // generic reference for its FieldType (see `formatReferenceForType`).
 const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   // Virtual / categorical
-  categories: "pipe-separated category names, e.g. Restaurants & Cafes | Family Friendly",
-  subcategories: "pipe-separated subcategory names",
+  categories: "pipe-separated category names — every category this listing belongs to, e.g. Home & Garden | Building & Renovation. Set here only: the category sheets never ask again. Leave blank to keep the stored ones",
+  subcategories: "pipe-separated subcategory names for THIS category only, e.g. Nurseries | Landscaping — the same listing's subcategories under its other categories are filled in on those categories' sheets. Leave blank to keep the stored ones, \"-\" to clear them",
   card_primary_subcategory: "the single label shown on the listing card on THIS category's page only — this category's name, or one of its subcategories. Leave blank to keep the stored label, \"-\" to auto-pick the first populated subcategory",
 
   // Universal scalars with notable formats
