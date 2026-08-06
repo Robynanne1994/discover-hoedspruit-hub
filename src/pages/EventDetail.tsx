@@ -95,9 +95,9 @@ const categoryLineStyle: React.CSSProperties = {
   marginBottom: 8,
   fontFamily: FONT,
   fontSize: 10,
-  fontWeight: 400,
-  lineHeight: 1.45,
-  letterSpacing: "0.18em",
+  fontWeight: 450,
+  lineHeight: 1.4,
+  letterSpacing: "0.08em",
   color: "#715A3D",
   textTransform: "uppercase",
 };
@@ -1075,18 +1075,18 @@ const EventDetail = () => {
               background: isPast ? C.muted : "#2b7f3f",
             }} />
             <span style={{
-              fontSize: 13, fontWeight: 700, letterSpacing: "0.01em",
+              fontSize: 13, fontWeight: 600, letterSpacing: "0.01em",
               color: isPast ? C.muted : "#2b7f3f",
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 13, color: C.dark }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 13, color: "#6B6A5E" }}>· {dateDisplay}</span>
           </div>
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
-            <Clock size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
+            <Clock size={14} color="#6B6A5E" strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
@@ -1098,10 +1098,10 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 8, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 13, color: C.dark, textDecoration: "none",
+              fontSize: 12.5, color: "#6B6A5E", textDecoration: "none",
             }}
           >
-            <MapPin size={13} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={14} color="#6B6A5E" strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
