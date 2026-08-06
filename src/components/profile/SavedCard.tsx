@@ -85,6 +85,8 @@ type Meta = {
   /** Rendered before the text without an icon — used for the rating star. */
   lead?: string;
   text: string;
+  /** Max lines before truncating with an ellipsis. Defaults to 2. */
+  clamp?: number;
 };
 
 const buildContent = (it: any, type: CardType) => {
