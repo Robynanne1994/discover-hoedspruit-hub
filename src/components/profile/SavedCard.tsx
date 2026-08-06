@@ -427,8 +427,11 @@ const SavedCard = ({
               <span
                 style={{
                   display: "-webkit-box",
-                  WebkitLineClamp: 2,
+                  WebkitLineClamp: line.clamp ?? 2,
                   WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                  overflowWrap: line.clamp === 1 ? "normal" : "break-word",
+                  wordBreak: line.clamp === 1 ? "normal" : undefined,
                   overflow: "hidden",
                   overflowWrap: "break-word",
                 }}
