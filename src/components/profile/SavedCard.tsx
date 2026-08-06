@@ -95,7 +95,7 @@ type Meta = {
 
 const buildContent = (it: any, type: CardType) => {
   const lines: (Meta | null)[] = [];
-  let status: { text: string; tone: string } | null = null;
+  let status: { items: { text: string; tone: string }[] } | null = null;
   let badge: { text: string; tone: "deal" | "ended" } | null = null;
   let ratingChip: string | null = null;
 
@@ -110,13 +110,14 @@ const buildContent = (it: any, type: CardType) => {
 
     const hours = it.opening_hours as Record<string, string> | null | undefined;
     if (hours) {
-      if (isAlwaysOpen(todayHours(hours))) status = { text: "Open 24 Hours", tone: SAGE };
-      else if (isOpenNow(hours)) {
+      if (isAlwaysOpen(todayHours(hours))) {
+        status = { items: [{ text: "Open Now", tone: SAGE }, { text: "Always Open", tone: MUTED }] };
+      } else if (isOpenNow(hours)) {
         const until = closesAt(hours);
-        status = { text: until ? `Open Until ${until}` : "Open Now", tone: SAGE };
+        status = { items: [{ text: until ? `Open Until ${until}` : "Open Now", tone: SAGE }] };
       } else {
         const opens = to12h(opensAt(hours));
-        status = { text: opens ? `Closed · Opens ${opens}` : "Closed", tone: CLAY };
+        status = { items: [{ text: opens ? `Closed · Opens ${opens}` : "Closed", tone: CLAY }] };
       }
     }
   }
@@ -134,10 +135,10 @@ const buildContent = (it: any, type: CardType) => {
     else {
       const d = daysAway(it.start_date || it.date);
       if (d != null) {
-        if (d <= 0) status = { text: "Today", tone: SAGE };
-        else if (d === 1) status = { text: "Tomorrow", tone: SAGE };
-        else if (d < 7) status = { text: `This ${weekday(it.start_date || it.date)}`, tone: SAGE };
-        else status = { text: `In ${d} Days`, tone: SAGE };
+        if (d <= 0) status = { items: [{ text: "Today", tone: SAGE }] };
+        else if (d === 1) status = { items: [{ text: "Tomorrow", tone: SAGE }] };
+        else if (d < 7) status = { items: [{ text: `This ${weekday(it.start_date || it.date)}`, tone: SAGE }] };
+        else status = { items: [{ text: `In ${d} Days`, tone: SAGE }] };
       }
     }
   }
@@ -154,10 +155,10 @@ const buildContent = (it: any, type: CardType) => {
     if (!expired && it.valid_until) {
       const d = daysAway(it.valid_until);
       if (d != null) {
-        if (d <= 0) status = { text: "Ends today", tone: CLAY };
-        else if (d === 1) status = { text: "Ends tomorrow", tone: CLAY };
-        else if (d <= 8) status = { text: `Ends in ${d} days`, tone: CLAY };
-        else status = { text: `Ends ${shortDate(it.valid_until)}`, tone: CLAY };
+        if (d <= 0) status = { items: [{ text: "Ends today", tone: CLAY }] };
+        else if (d === 1) status = { items: [{ text: "Ends tomorrow", tone: CLAY }] };
+        else if (d <= 8) status = { items: [{ text: `Ends in ${d} days`, tone: CLAY }] };
+        else status = { items: [{ text: `Ends ${shortDate(it.valid_until)}`, tone: CLAY }] };
       }
     }
   }
@@ -447,30 +448,33 @@ const SavedCard = ({
         )}
 
         {status && (
-          <div
-            style={{
-              marginTop: "auto",
-              paddingTop: 6,
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              fontFamily: SANS,
-              fontSize: 11,
-              fontWeight: 600,
-              color: status.tone,
-              lineHeight: 1.2,
-            }}
-          >
-            <span
-              style={{
-                width: 5,
-                height: 5,
-                borderRadius: 9999,
-                background: status.tone,
-                flexShrink: 0,
-              }}
-            />
-            {status.text}
+          <div style={{ marginTop: "auto", paddingTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
+            {status.items.map((s, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontFamily: SANS,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: s.tone,
+                  lineHeight: 1.2,
+                }}
+              >
+                <span
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: 9999,
+                    background: s.tone,
+                    flexShrink: 0,
+                  }}
+                />
+                {s.text}
+              </div>
+            ))}
           </div>
         )}
       </div>
