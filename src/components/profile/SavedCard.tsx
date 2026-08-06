@@ -17,6 +17,10 @@ const MONO = "#A79E88";
 
 const CHIP_BG = "rgba(255,255,255,0.94)";
 const CHIP_SHADOW = "0 1px 4px rgba(0,5,5,0.14)";
+// Inset from the image edge for the floating pills. The top-left type capsule
+// and the bottom-left rating/deal pills all share this same inset so the
+// padding above and below the image stays visually equal.
+const PILL_INSET = 8;
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
