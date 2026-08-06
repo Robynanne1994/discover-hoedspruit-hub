@@ -388,6 +388,7 @@ const SavedCard = ({
         }}
       >
         <h3
+          {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
             fontFamily: SANS,
             fontSize: 15,
