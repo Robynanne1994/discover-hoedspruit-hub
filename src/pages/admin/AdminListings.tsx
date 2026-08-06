@@ -104,6 +104,9 @@ const AdminListings = () => {
   const [returnTo, setReturnTo] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
+  // Card label chosen per category (category_id -> label). Lets a listing that
+  // belongs to several categories show a different eyebrow on each category page.
+  const [catCardLabels, setCatCardLabels] = useState<Record<string, string>>({});
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
   const [selectedSubSubIds, setSelectedSubSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -296,16 +299,23 @@ const AdminListings = () => {
   });
 
 
-  // Fetch listing_categories for the editing listing
-  const { data: editingCatIds } = useQuery({
+  // Fetch listing_categories for the editing listing, along with the per-category
+  // card label. The label column may not exist yet (migration not applied), so
+  // fall back to the plain category list rather than failing the edit dialog.
+  const { data: editingCatRows } = useQuery({
     queryKey: ["listing-categories", editing?.id],
     queryFn: async () => {
+      const withLabels = await supabase
+        .from("listing_categories")
+        .select("category_id, card_primary_subcategory")
+        .eq("listing_id", editing!.id);
+      if (!withLabels.error) return withLabels.data as any[];
       const { data, error } = await supabase
         .from("listing_categories")
         .select("category_id")
         .eq("listing_id", editing!.id);
       if (error) throw error;
-      return data.map((r: any) => r.category_id as string);
+      return data as any[];
     },
     enabled: !!editing,
   });
@@ -339,8 +349,15 @@ const AdminListings = () => {
   });
 
   useEffect(() => {
-    if (editingCatIds) setSelectedCatIds(editingCatIds);
-  }, [editingCatIds]);
+    if (!editingCatRows) return;
+    setSelectedCatIds(editingCatRows.map((r: any) => r.category_id as string));
+    const labels: Record<string, string> = {};
+    editingCatRows.forEach((r: any) => {
+      const label = (r.card_primary_subcategory || "").trim();
+      if (label) labels[r.category_id as string] = label;
+    });
+    setCatCardLabels(labels);
+  }, [editingCatRows]);
 
   useEffect(() => {
     if (editingSubIds) setSelectedSubIds(editingSubIds);
@@ -372,7 +389,13 @@ const AdminListings = () => {
       const payload: any = {
         title: values.title,
         title_override: values.title_override?.trim() || null,
-        card_primary_subcategory: values.card_primary_subcategory?.trim() || null,
+        // Legacy listing-wide label, kept in sync with the first selected
+        // category's choice so non-category surfaces still have a sensible value.
+        card_primary_subcategory:
+          (selectedCatIds.length > 0
+            ? catCardLabels[selectedCatIds[0]] || ""
+            : values.card_primary_subcategory || ""
+          ).trim() || null,
         description: null,
         // One cover image everywhere: listing cards, detail page and saved cards
         image_url: (values.detail_image_url || values.image_url) || null,
@@ -545,12 +568,26 @@ const AdminListings = () => {
         }
       }
 
-      // Sync categories junction
+      // Sync categories junction, carrying the per-category card label
       await supabase.from("listing_categories").delete().eq("listing_id", listingId);
       if (selectedCatIds.length > 0) {
-        const rows = selectedCatIds.map((catId) => ({ listing_id: listingId, category_id: catId }));
+        const rows = selectedCatIds.map((catId) => ({
+          listing_id: listingId,
+          category_id: catId,
+          card_primary_subcategory: (catCardLabels[catId] || "").trim() || null,
+        }));
         const { error: catErr } = await supabase.from("listing_categories").insert(rows);
-        if (catErr) throw catErr;
+        if (catErr) {
+          // Label column missing from the API schema cache — save the categories
+          // themselves so the rest of the listing isn't blocked.
+          const missingLabelColumn =
+            catErr.code === "PGRST204" || /card_primary_subcategory/.test(catErr.message ?? "");
+          if (!missingLabelColumn) throw catErr;
+          const { error: retryErr } = await supabase
+            .from("listing_categories")
+            .insert(rows.map(({ card_primary_subcategory, ...rest }) => rest));
+          if (retryErr) throw retryErr;
+        }
       }
 
       // Auto-include parent subcategories for any selected sub-subcategories
@@ -604,7 +641,7 @@ const AdminListings = () => {
     onError: (e) => toast.error(e.message),
   });
 
-  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setSelectedSubSubIds([]); setCustomRowsVisible(0); setOpen(false); };
+  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setCatCardLabels({}); setSelectedSubIds([]); setSelectedSubSubIds([]); setCustomRowsVisible(0); setOpen(false); };
 
   const openEdit = (l: Listing) => {
     setEditing(l);
@@ -757,9 +794,18 @@ const AdminListings = () => {
   };
 
   const toggleCat = (catId: string) => {
+    const removing = selectedCatIds.includes(catId);
     setSelectedCatIds((prev) =>
       prev.includes(catId) ? prev.filter((id) => id !== catId) : [...prev, catId]
     );
+    // Drop the card label for a category that's no longer assigned
+    if (removing) {
+      setCatCardLabels((prev) => {
+        if (!(catId in prev)) return prev;
+        const { [catId]: _removed, ...rest } = prev;
+        return rest;
+      });
+    }
   };
 
   const toggleSub = (subId: string) => {
@@ -955,32 +1001,57 @@ const AdminListings = () => {
                         <Plus className="h-3.5 w-3.5" /> Add subcategory
                       </Button>
                     )}
-                    {selectedSubIds.length > 0 && (() => {
-                      const selectedSubTitles = Array.from(new Set(
-                        (subcategories ?? []).filter((s) => selectedSubIds.includes(s.id)).map((s) => s.title),
-                      ));
-                      const currentPrimary = (form.card_primary_subcategory || "").trim();
-                      const matchedTitle = currentPrimary
-                        ? selectedSubTitles.find((t) => t.toLowerCase() === currentPrimary.toLowerCase())
-                        : undefined;
+                    {(() => {
+                      const selectedCats = (categories ?? []).filter((c) => selectedCatIds.includes(c.id));
+                      if (selectedCats.length === 0) return null;
                       return (
                         <div className="mt-3">
-                          <Label>Listing Card Primary Subcategory</Label>
-                          <Select
-                            value={matchedTitle ?? "__auto__"}
-                            onValueChange={(v) => setForm({ ...form, card_primary_subcategory: v === "__auto__" ? "" : v })}
-                          >
-                            <SelectTrigger className="border-gray-950 bg-slate-50">
-                              <SelectValue placeholder="Automatic (first selected)" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="__auto__">Automatic (first selected)</SelectItem>
-                              {selectedSubTitles.map((t) => (
-                                <SelectItem key={t} value={t}>{t}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <p className="text-xs text-muted-foreground mt-1">The single subcategory shown under the title on listing cards.</p>
+                          <Label>Listing Card Label</Label>
+                          <p className="text-xs text-muted-foreground mt-1 mb-2">
+                            The single line shown under the title on listing cards. Set it per category —
+                            a listing in more than one category can read differently depending on which
+                            category page it's being browsed from.
+                          </p>
+                          <div className="space-y-3">
+                            {selectedCats.map((cat) => {
+                              // Only this category's own selected subcategories are valid options,
+                              // plus the category title itself.
+                              const catSubTitles = Array.from(new Set(
+                                (subcategories ?? [])
+                                  .filter((s) => s.category_id === cat.id && selectedSubIds.includes(s.id))
+                                  .map((s) => s.title),
+                              ));
+                              const options = [cat.title, ...catSubTitles.filter((t) => t.toLowerCase() !== cat.title.toLowerCase())];
+                              const current = (catCardLabels[cat.id] || "").trim();
+                              const matched = current
+                                ? options.find((t) => t.toLowerCase() === current.toLowerCase())
+                                : undefined;
+                              const autoLabel = catSubTitles[0] || cat.title;
+                              return (
+                                <div key={cat.id}>
+                                  <Label className="text-xs font-normal text-muted-foreground">
+                                    On the {cat.title} page
+                                  </Label>
+                                  <Select
+                                    value={matched ?? "__auto__"}
+                                    onValueChange={(v) =>
+                                      setCatCardLabels((prev) => ({ ...prev, [cat.id]: v === "__auto__" ? "" : v }))
+                                    }
+                                  >
+                                    <SelectTrigger className="border-gray-950 bg-slate-50">
+                                      <SelectValue placeholder={`Automatic (${autoLabel})`} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="__auto__">Automatic ({autoLabel})</SelectItem>
+                                      {options.map((t) => (
+                                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       );
                     })()}
