@@ -20,6 +20,7 @@ import {
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { pinFeatured } from "@/lib/featuredFirst";
 import Seo from "@/components/Seo";
 
 
@@ -537,10 +538,7 @@ const Events = () => {
     }
     // date-asc is already the default order from sortedEvents
     // Featured events always pin to the top, keeping the chosen sort within groups
-    return [
-      ...sorted.filter((e: any) => e.is_featured),
-      ...sorted.filter((e: any) => !e.is_featured),
-    ];
+    return pinFeatured(sorted);
 
   }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 

@@ -13,6 +13,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { formatEventDateRange } from "@/lib/eventDates";
+import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -528,12 +529,16 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
 
 /* -------------------- Results: Listings -------------------- */
 
+const SEARCH_COLUMNS = "id, title, title_override, location, image_url, is_featured";
+const SUGGESTED_LIMIT = 15;
+
 const ListingsResults = ({ query }: { query: string }) => {
   const term = query.trim();
   const { data, isError, refetch, isFetching } = useQuery({
     queryKey: ["search-listings", term],
     queryFn: async () => {
-      // When there's no query, prefer admin-curated suggestions if any.
+      // When there's no query, prefer admin-curated suggestions if any —
+      // but featured listings still take the top slots ahead of them.
       if (!term) {
         const { data: curated } = await supabase
           .from("site_content")
@@ -542,21 +547,30 @@ const ListingsResults = ({ query }: { query: string }) => {
           .maybeSingle();
         const ids = Array.isArray(curated?.content) ? (curated!.content as string[]) : [];
         if (ids.length) {
-          const { data, error } = await supabase
-            .from("listings")
-            .select("id, title, title_override, location, image_url, is_featured")
-            .in("id", ids);
+          const [{ data, error }, { data: featured }] = await Promise.all([
+            supabase
+              .from("listings")
+              .select(SEARCH_COLUMNS)
+              .in("id", ids),
+            supabase
+              .from("listings")
+              .select(SEARCH_COLUMNS)
+              .eq("is_featured", true)
+              .order("created_at", { ascending: false })
+              .limit(SUGGESTED_LIMIT),
+          ]);
           if (error) throw error;
           const map = new Map((data || []).map((l) => [l.id, l]));
-          return ids.map((id) => map.get(id)).filter(Boolean) as any[];
+          const curatedListings = ids.map((id) => map.get(id)).filter(Boolean) as any[];
+          return mergeFeaturedFirst([featured, curatedListings], SUGGESTED_LIMIT);
         }
       }
       let q = supabase
         .from("listings")
-        .select("id, title, title_override, location, image_url, is_featured")
+        .select(SEARCH_COLUMNS)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
-        .limit(term ? 50 : 15);
+        .limit(term ? 50 : SUGGESTED_LIMIT);
       if (term) q = q.ilike("title", `%${term}%`);
       const { data, error } = await q;
       if (error) throw error;
@@ -593,8 +607,10 @@ const EventsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, title_override, location, image_url, date, start_date, end_date")
+        .select("id, title, title_override, location, image_url, date, start_date, end_date, is_featured")
         .or(`start_date.is.null,start_date.gte.${today}`)
+        // Featured events pin to the top, then the soonest first
+        .order("is_featured", { ascending: false })
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
@@ -633,9 +649,11 @@ const SpecialsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("specials")
-        .select("id, title, title_override, business_name, image_url, deal_label, valid_until")
+        .select("id, title, title_override, business_name, image_url, deal_label, valid_until, is_featured")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
+        // Featured deals pin to the top, then the most recently added
+        .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);

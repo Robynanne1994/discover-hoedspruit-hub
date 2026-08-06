@@ -14,6 +14,7 @@ import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { isOpenNow } from "@/lib/openHours";
 import Seo from "@/components/Seo";
@@ -577,15 +578,17 @@ const CategoryPage = () => {
     });
 
 
-    if (sortBy === "name_asc") return [...result].sort((a, b) => a.title.localeCompare(b.title));
-    if (sortBy === "name_desc") return [...result].sort((a, b) => b.title.localeCompare(a.title));
+    // Featured listings pin to the top of every sort, including the ones the
+    // visitor picks — the chosen sort still orders within each group.
+    if (sortBy === "name_asc") return pinFeatured([...result].sort((a, b) => a.title.localeCompare(b.title)));
+    if (sortBy === "name_desc") return pinFeatured([...result].sort((a, b) => b.title.localeCompare(a.title)));
     if (sortBy === "distance") {
       const kmOf = (l: any) => {
         const raw = l.km_from_town;
         const n = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
         return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
       };
-      return [...result].sort((a, b) => kmOf(a) - kmOf(b));
+      return pinFeatured([...result].sort((a, b) => kmOf(a) - kmOf(b)));
     }
     if (sortBy === "rating") {
       // Score is internal to sorting only — never displayed.
@@ -595,15 +598,15 @@ const CategoryPage = () => {
           ratingNumber(l.google_reviews_count),
           categoryRatingMean,
         );
-      return [...result].sort((a, b) => {
+      return pinFeatured([...result].sort((a, b) => {
         const byScore = scoreFor(b) - scoreFor(a);
         if (byScore !== 0) return byScore;
         const byCount = ratingNumber(b.google_reviews_count) - ratingNumber(a.google_reviews_count);
         if (byCount !== 0) return byCount;
         return (a.title || "").localeCompare(b.title || "");
-      });
+      }));
     }
-    return result;
+    return pinFeatured(result);
 
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 

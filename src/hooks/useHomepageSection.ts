@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { mergeFeaturedFirst } from "@/lib/featuredFirst";
+
+const COLUMNS =
+  "id, title, title_override, image_url, google_rating, google_reviews_count, location, is_featured";
 
 export const useHomepageSection = (
   sectionKey: string,
@@ -22,24 +26,18 @@ export const useHomepageSection = (
           ? (siteContent.content as string[])
           : [];
 
-      const pinFeatured = (rows: any[]) => [
-        ...rows.filter((l) => l?.is_featured),
-        ...rows.filter((l) => !l?.is_featured),
-      ];
-
       let curatedListings: any[] = [];
       if (curatedIds.length > 0) {
         const { data } = await supabase
           .from("listings")
-          .select("id, title, title_override, image_url, google_rating, google_reviews_count, location, is_featured")
+          .select(COLUMNS)
           .in("id", curatedIds);
         const map = new Map((data || []).map((l) => [l.id, l]));
         curatedListings = curatedIds.map((id) => map.get(id)).filter(Boolean);
       }
 
-      if (curatedListings.length >= TARGET) return pinFeatured(curatedListings).slice(0, TARGET);
-
-      // 2. Fill remaining slots from category auto-picks
+      // 2. Resolve the section's category — needed both for the featured pins
+      //    and for the auto-picks that fill any leftover slots.
       let categoryQuery;
       if (Array.isArray(categorySearch)) {
         categoryQuery = supabase
@@ -56,7 +54,7 @@ export const useHomepageSection = (
       }
 
       const { data: categories } = await categoryQuery;
-      if (!categories?.length) return pinFeatured(curatedListings);
+      if (!categories?.length) return mergeFeaturedFirst([curatedListings], TARGET);
 
       const categoryId = categories[0].id;
 
@@ -66,19 +64,29 @@ export const useHomepageSection = (
         .eq("category_id", categoryId);
 
       const ids = linkedIds?.map((l) => l.listing_id) || [];
+      const inCategory = `category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`;
 
+      // 3. Featured listings in this category outrank the curated picks: they
+      //    take the top slots even when the admin has filled the row by hand.
+      const { data: featured } = await supabase
+        .from("listings")
+        .select(COLUMNS)
+        .or(inCategory)
+        .eq("is_featured", true)
+        .limit(TARGET);
+
+      const pinned = mergeFeaturedFirst([featured, curatedListings], TARGET);
+      if (pinned.length >= TARGET) return pinned;
+
+      // 4. Anything still empty falls back to automatic category picks.
       const { data: autoPicks } = await supabase
         .from("listings")
-        .select("id, title, title_override, image_url, google_rating, google_reviews_count, location, is_featured")
-        .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
+        .select(COLUMNS)
+        .or(inCategory)
         .order("is_featured", { ascending: false })
         .limit(TARGET + curatedIds.length);
 
-      const curatedIdSet = new Set(curatedListings.map((l) => l.id));
-      const fillers = (autoPicks || []).filter((l) => !curatedIdSet.has(l.id));
-
-      // Featured listings always surface first in the homepage row
-      return pinFeatured([...curatedListings, ...fillers]).slice(0, TARGET);
+      return mergeFeaturedFirst([featured, curatedListings, autoPicks], TARGET);
 
     },
 

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { pinFeatured } from "@/lib/featuredFirst";
 import { isOpenNow } from "@/lib/openHours";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -212,14 +213,14 @@ const Categories = () => {
       const escaped = debouncedSearch.replace(/[%,]/g, " ");
       const titleQ = supabase
         .from("listings")
-        .select("id, title, title_override, image_url, location, category_id")
+        .select("id, title, title_override, image_url, location, category_id, is_featured")
         .ilike("title", `%${escaped}%`)
         .limit(20);
 
       const catDirectQ = matchingCategoryIds.length
         ? supabase
             .from("listings")
-            .select("id, title, title_override, image_url, location, category_id")
+            .select("id, title, title_override, image_url, location, category_id, is_featured")
             .in("category_id", matchingCategoryIds)
             .limit(50)
         : null;
@@ -244,11 +245,12 @@ const Categories = () => {
       if (missingIds.length) {
         const { data: extra } = await supabase
           .from("listings")
-          .select("id, title, title_override, image_url, location, category_id")
+          .select("id, title, title_override, image_url, location, category_id, is_featured")
           .in("id", missingIds);
         (extra || []).forEach((l) => map.set(l.id, l));
       }
-      return Array.from(map.values()).slice(0, 30);
+      // Featured listings head up the results, whatever they matched on.
+      return pinFeatured(Array.from(map.values())).slice(0, 30);
     },
     enabled: debouncedSearch.length >= 2,
   });
