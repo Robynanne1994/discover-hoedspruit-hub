@@ -325,16 +325,36 @@ const CategoryPage = () => {
       }
 
 
-      // Fetch all categories per listing (junction + legacy category_id)
+      // Fetch all categories per listing (junction + legacy category_id).
+      // The junction also carries the card label chosen for this listing *in this
+      // category*, so a listing in several categories can read differently on
+      // each category page.
+      const fetchJunction = async () => {
+        const res = await supabase
+          .from("listing_categories")
+          .select("listing_id, category_id, card_primary_subcategory")
+          .in("listing_id", listingIds);
+        // The per-category label column may not exist yet (migration not applied);
+        // fall back to the plain junction rather than breaking the whole page.
+        if (res.error) {
+          return supabase.from("listing_categories").select("listing_id, category_id").in("listing_id", listingIds);
+        }
+        return res;
+      };
+
       const [{ data: allJunction }, { data: allCats }, { data: catSubs }] = await Promise.all([
-        supabase.from("listing_categories").select("listing_id, category_id").in("listing_id", listingIds),
+        fetchJunction(),
         supabase.from("categories").select("id, title"),
         supabase.from("subcategories").select("id, title").eq("category_id", id!),
       ]);
       const catTitleById = new Map<string, string>();
       (allCats || []).forEach((c: any) => catTitleById.set(c.id, c.title));
       const listingToCats = new Map<string, Set<string>>();
+      const listingToCategoryLabel = new Map<string, string>();
       (allJunction || []).forEach((r: any) => {
+        if (r.category_id === id && r.card_primary_subcategory) {
+          listingToCategoryLabel.set(r.listing_id, r.card_primary_subcategory);
+        }
         const title = catTitleById.get(r.category_id);
         if (!title) return;
         if (!listingToCats.has(r.listing_id)) listingToCats.set(r.listing_id, new Set());
@@ -368,6 +388,7 @@ const CategoryPage = () => {
         }
         l._allCategories = Array.from(set);
         l._subTitles = listingToSubs.get(l.id) || [];
+        l._categoryCardLabel = listingToCategoryLabel.get(l.id) || null;
       });
 
 
@@ -1103,23 +1124,32 @@ const CategoryPage = () => {
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
 
             const allCats: string[] = (l as any)._allCategories || [];
-            let subTitles: string[] = (l as any)._subTitles || [];
-            subTitles = subTitles.filter((s) => {
+            const rawSubTitles: string[] = (l as any)._subTitles || [];
+            const subTitles = rawSubTitles.filter((s) => {
               const sLower = s.trim().toLowerCase();
-              return !subTitles.some((other) => {
+              return !rawSubTitles.some((other) => {
                 if (other === s) return false;
                 const oLower = other.trim().toLowerCase();
                 return oLower !== sLower && oLower.endsWith(" " + sLower);
               });
             });
-            // Show a single subcategory: the admin-chosen primary when it matches one of
-            // this listing's populated subs, otherwise the first populated sub, otherwise
-            // fall back to the category title.
-            const chosenPrimary = ((l as any).card_primary_subcategory || "").trim().toLowerCase();
-            const primarySub = chosenPrimary
-              ? subTitles.find((s) => s.trim().toLowerCase() === chosenPrimary) || subTitles[0]
+            // Show a single label under the title. A listing can sit in several
+            // categories, so the label chosen for *this* category wins — that's what
+            // lets the same listing read "Nurseries" on Home & Garden and "Builders"
+            // on Building & Renovation. Falls back to the listing-wide choice, then
+            // the first populated sub, then the category title.
+            const chosenLabel = (
+              (l as any)._categoryCardLabel ||
+              (l as any).card_primary_subcategory ||
+              ""
+            ).trim();
+            const chosenLower = chosenLabel.toLowerCase();
+            const primaryLabel = chosenLower
+              ? chosenLower === categoryTitle.trim().toLowerCase()
+                ? categoryTitle
+                : rawSubTitles.find((s) => s.trim().toLowerCase() === chosenLower) || subTitles[0]
               : subTitles[0];
-            const eyebrow = primarySub || categoryTitle;
+            const eyebrow = primaryLabel || categoryTitle;
 
             return (
               <article
