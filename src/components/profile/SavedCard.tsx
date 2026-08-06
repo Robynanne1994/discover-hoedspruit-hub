@@ -85,21 +85,24 @@ type Meta = {
   /** Rendered before the text without an icon — used for the rating star. */
   lead?: string;
   text: string;
+  /** Max lines before truncating with an ellipsis. Defaults to 2. */
+  clamp?: number;
 };
 
 const buildContent = (it: any, type: CardType) => {
   const lines: (Meta | null)[] = [];
   let status: { text: string; tone: string } | null = null;
   let badge: { text: string; tone: "deal" | "ended" } | null = null;
+  let ratingChip: string | null = null;
 
   if (type === "listing") {
     const rating = it.google_rating ? Number(it.google_rating).toFixed(1).replace(/\.0$/, "") : null;
     const reviews = it.google_reviews_count ? ` (${it.google_reviews_count})` : "";
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
-    const first = [rating ? `${rating}${reviews}` : null, category].filter(Boolean).join(" · ");
-    if (first) lines.push({ lead: rating ? "★" : undefined, text: first });
-    else lines.push(null);
-    lines.push(it.location ? { icon: MapPin, text: it.location } : null);
+    if (rating) ratingChip = `★ ${rating}${reviews}`;
+    lines.push(category ? { text: category } : null);
+    lines.push(it.location ? { icon: MapPin, text: it.location, clamp: 1 } : null);
+
 
     const hours = it.opening_hours as Record<string, string> | null | undefined;
     if (hours) {
@@ -163,7 +166,7 @@ const buildContent = (it: any, type: CardType) => {
     lines.push(it.meta_2 ? { text: it.meta_2 } : null);
   }
 
-  return { lines, status, badge };
+  return { lines, status, badge, ratingChip };
 };
 
 const Chip = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
@@ -206,7 +209,7 @@ const SavedCard = ({
   const [pressed, setPressed] = useState(false);
   const [isLogo, setIsLogo] = useState(false);
   const src = it.saved_image_url || it.image_url;
-  const { lines, status, badge } = buildContent(it, type);
+  const { lines, status, badge, ratingChip } = buildContent(it, type);
   const title = titleCase(it.title);
 
   return (
@@ -291,7 +294,19 @@ const SavedCard = ({
           </Chip>
         </div>
 
+        {/* Rating pill (listings) */}
+        {ratingChip && !badge && (
+          <div style={{ position: "absolute", bottom: 8, left: 8 }}>
+            <Chip style={{ height: 18, padding: "0 6px" }}>
+              <span style={{ fontSize: 9.5, fontWeight: 600, color: META, whiteSpace: "nowrap" }}>
+                {ratingChip}
+              </span>
+            </Chip>
+          </div>
+        )}
+
         {/* Deal / ended badge */}
+
         {badge && (
           <div style={{ position: "absolute", bottom: 8, left: 8 }}>
             <Chip
@@ -412,10 +427,11 @@ const SavedCard = ({
               <span
                 style={{
                   display: "-webkit-box",
-                  WebkitLineClamp: 2,
+                  WebkitLineClamp: line.clamp ?? 2,
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
-                  overflowWrap: "break-word",
+                  overflowWrap: line.clamp === 1 ? "normal" : "break-word",
+                  wordBreak: line.clamp === 1 ? "normal" : undefined,
                 }}
               >
                 {line.lead ? `${line.lead} ` : ""}
