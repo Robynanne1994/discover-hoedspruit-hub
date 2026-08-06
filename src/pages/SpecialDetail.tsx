@@ -78,13 +78,15 @@ const cardStyle: React.CSSProperties = {
   border: "none",
 };
 const categoryLineStyle: React.CSSProperties = {
-  marginTop: 8,
+  marginTop: 0,
+  marginBottom: 8,
   fontFamily: FONT,
-  fontSize: 14,
+  fontSize: 10,
   fontWeight: 450,
-  lineHeight: 1.45,
-  letterSpacing: "0.005em",
-  color: "#423324",
+  lineHeight: 1.4,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: "#715A3D",
 };
 const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
