@@ -122,7 +122,8 @@ const HomeLocalChannels = () => {
       />
       <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
         {resources.map((r: any) => {
-          const sub = [r.meta || r.platform, r.meta_2].filter(Boolean).join(" · ");
+          const eyebrow = r.meta || r.platform;
+          const meta = r.meta_2;
           return (
             <div
               key={r.id}
@@ -132,19 +133,20 @@ const HomeLocalChannels = () => {
                 borderRadius: 16,
                 display: "flex",
                 alignItems: "stretch",
-                textDecoration: "none",
+                gap: 12,
+                paddingRight: 10,
                 border: "none",
+                boxShadow: "0 1px 4px -1px rgba(0,0,0,0.04)",
                 textAlign: "left",
                 cursor: "pointer",
                 width: "100%",
-                position: "relative",
                 overflow: "hidden",
               }}
             >
               <div
                 style={{
-                  width: 96,
-                  minHeight: 96,
+                  width: 90,
+                  minHeight: 90,
                   alignSelf: "stretch",
                   background: "#F4EFE3",
                   flexShrink: 0,
@@ -169,57 +171,59 @@ const HomeLocalChannels = () => {
               <div
                 style={{
                   flex: 1,
-                  minWidth: 1,
+                  minWidth: 0,
                   alignSelf: "center",
-                  padding: "12px 8px 12px 14px",
+                  padding: "10px 0",
                 }}
               >
+                {eyebrow && (
+                  <div
+                    style={{
+                      fontFamily: HN,
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "#6B6A5E",
+                      lineHeight: 1.2,
+                      marginBottom: 4,
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {eyebrow}
+                  </div>
+                )}
                 <div
                   style={{
                     fontFamily: HN,
                     fontSize: 15,
-                    fontWeight: 400,
+                    fontWeight: 500,
                     color: "#1A1A1A",
                     lineHeight: 1.25,
-                    marginBottom: 4,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    marginBottom: 6,
+                    textTransform: "capitalize",
                   }}
                 >
                   {r.title_override?.trim() || r.title}
                 </div>
-                {sub && (
+                {meta && (
                   <div
                     style={{
                       fontFamily: HN,
-                      fontSize: 13,
-                      fontWeight: 400,
-                      color: "#423324",
+                      fontSize: 12,
+                      fontWeight: 500,
+                      color: "#6B6A5E",
                       lineHeight: 1.2,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      textTransform: "capitalize",
                     }}
                   >
-                    {sub}
+                    {meta}
                   </div>
                 )}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  paddingRight: 14,
-                  flexShrink: 0,
-                }}
-              >
-                <ArrowUpRight size={20} strokeWidth={2} color="#715A3D" />
               </div>
             </div>
           );
         })}
       </div>
+
 
     </section>
   );
