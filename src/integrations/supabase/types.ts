@@ -1016,19 +1016,16 @@ export type Database = {
       }
       listing_categories: {
         Row: {
-          card_primary_subcategory: string | null
           category_id: string
           id: string
           listing_id: string
         }
         Insert: {
-          card_primary_subcategory?: string | null
           category_id: string
           id?: string
           listing_id: string
         }
         Update: {
-          card_primary_subcategory?: string | null
           category_id?: string
           id?: string
           listing_id?: string
