@@ -312,7 +312,7 @@ const SavedCard = ({
         {/* Deal / ended badge */}
 
         {badge && (
-          <div style={{ position: "absolute", bottom: 8, left: 8 }}>
+          <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip
               style={
                 badge.tone === "deal"
