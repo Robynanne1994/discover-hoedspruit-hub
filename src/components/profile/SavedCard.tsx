@@ -155,10 +155,10 @@ const buildContent = (it: any, type: CardType) => {
     if (!expired && it.valid_until) {
       const d = daysAway(it.valid_until);
       if (d != null) {
-        if (d <= 0) status = { text: "Ends today", tone: CLAY };
-        else if (d === 1) status = { text: "Ends tomorrow", tone: CLAY };
-        else if (d <= 8) status = { text: `Ends in ${d} days`, tone: CLAY };
-        else status = { text: `Ends ${shortDate(it.valid_until)}`, tone: CLAY };
+        if (d <= 0) status = { items: [{ text: "Ends today", tone: CLAY }] };
+        else if (d === 1) status = { items: [{ text: "Ends tomorrow", tone: CLAY }] };
+        else if (d <= 8) status = { items: [{ text: `Ends in ${d} days`, tone: CLAY }] };
+        else status = { items: [{ text: `Ends ${shortDate(it.valid_until)}`, tone: CLAY }] };
       }
     }
   }
