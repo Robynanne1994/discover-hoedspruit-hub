@@ -448,30 +448,33 @@ const SavedCard = ({
         )}
 
         {status && (
-          <div
-            style={{
-              marginTop: "auto",
-              paddingTop: 6,
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              fontFamily: SANS,
-              fontSize: 11,
-              fontWeight: 600,
-              color: status.tone,
-              lineHeight: 1.2,
-            }}
-          >
-            <span
-              style={{
-                width: 5,
-                height: 5,
-                borderRadius: 9999,
-                background: status.tone,
-                flexShrink: 0,
-              }}
-            />
-            {status.text}
+          <div style={{ marginTop: "auto", paddingTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
+            {status.items.map((s, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontFamily: SANS,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: s.tone,
+                  lineHeight: 1.2,
+                }}
+              >
+                <span
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: 9999,
+                    background: s.tone,
+                    flexShrink: 0,
+                  }}
+                />
+                {s.text}
+              </div>
+            ))}
           </div>
         )}
       </div>
