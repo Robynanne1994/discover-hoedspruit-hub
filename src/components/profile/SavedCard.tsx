@@ -95,7 +95,7 @@ type Meta = {
 
 const buildContent = (it: any, type: CardType) => {
   const lines: (Meta | null)[] = [];
-  let status: { text: string; tone: string } | null = null;
+  let status: { items: { text: string; tone: string }[] } | null = null;
   let badge: { text: string; tone: "deal" | "ended" } | null = null;
   let ratingChip: string | null = null;
 
