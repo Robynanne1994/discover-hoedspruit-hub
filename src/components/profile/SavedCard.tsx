@@ -91,15 +91,16 @@ const buildContent = (it: any, type: CardType) => {
   const lines: (Meta | null)[] = [];
   let status: { text: string; tone: string } | null = null;
   let badge: { text: string; tone: "deal" | "ended" } | null = null;
+  let ratingChip: string | null = null;
 
   if (type === "listing") {
     const rating = it.google_rating ? Number(it.google_rating).toFixed(1).replace(/\.0$/, "") : null;
     const reviews = it.google_reviews_count ? ` (${it.google_reviews_count})` : "";
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
-    const first = [rating ? `${rating}${reviews}` : null, category].filter(Boolean).join(" · ");
-    if (first) lines.push({ lead: rating ? "★" : undefined, text: first });
-    else lines.push(null);
-    lines.push(it.location ? { icon: MapPin, text: it.location } : null);
+    if (rating) ratingChip = `★ ${rating}${reviews}`;
+    lines.push(category ? { text: category } : null);
+    lines.push(it.location ? { icon: MapPin, text: it.location, clamp: 1 } : null);
+
 
     const hours = it.opening_hours as Record<string, string> | null | undefined;
     if (hours) {
