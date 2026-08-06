@@ -137,7 +137,7 @@ const buildContent = (it: any, type: CardType) => {
         if (d <= 0) status = { text: "Today", tone: SAGE };
         else if (d === 1) status = { text: "Tomorrow", tone: SAGE };
         else if (d < 7) status = { text: `This ${weekday(it.start_date || it.date)}`, tone: SAGE };
-        else status = { text: `In ${d} days`, tone: SAGE };
+        else status = { text: `In ${d} Days`, tone: SAGE };
       }
     }
   }
