@@ -448,52 +448,61 @@ export default function MyNotifications() {
         })}
 
         {isEmpty && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: "60px 24px 80px",
-            }}
-          >
+          <div style={{ padding: "16px 20px 40px" }}>
             <div
               style={{
-                width: 120,
-                height: 120,
-                borderRadius: 999,
                 background: CARD,
+                borderRadius: 16,
+                border: "1px solid rgba(26,26,26,0.06)",
+                boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                padding: "18px 20px",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                marginBottom: 40,
+                alignItems: "flex-start",
+                gap: 14,
               }}
             >
-              <Bell size={48} strokeWidth={1.5} color={MUTED} />
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 999,
+                  background: "#F5F0E8",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Bell size={18} strokeWidth={1.8} color={INK} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: '"Nohemi", ' + SANS,
+                    fontWeight: 550,
+                    fontSize: 20,
+                    lineHeight: "20px",
+                    letterSpacing: "-0.02em",
+                    color: INK,
+                    margin: "0 0 6px",
+                  }}
+                >
+                  You're all caught up
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontWeight: 400,
+                    fontSize: 14,
+                    lineHeight: 1.45,
+                    color: MUTED,
+                    margin: 0,
+                  }}
+                >
+                  Nothing new right now. When something happens in town, you'll find it here.
+                </p>
+              </div>
             </div>
-            <p
-              style={{
-                fontFamily: SANS,
-                fontWeight: 700,
-                fontSize: 26,
-                color: INK,
-                margin: "0 0 14px",
-                textAlign: "center",
-                letterSpacing: "-0.3px",
-              }}
-            >
-              No Notifications
-            </p>
-            <p
-              style={{
-                fontFamily: SANS,
-                fontSize: 17,
-                color: MUTED,
-                textAlign: "center",
-                margin: 0,
-              }}
-            >
-              When you receive notifications, they will appear here.
-            </p>
           </div>
         )}
       </div>

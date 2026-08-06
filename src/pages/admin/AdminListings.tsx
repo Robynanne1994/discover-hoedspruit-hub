@@ -576,7 +576,7 @@ const AdminListings = () => {
           category_id: catId,
           card_primary_subcategory: (catCardLabels[catId] || "").trim() || null,
         }));
-        const { error: catErr } = await supabase.from("listing_categories").insert(rows);
+        const { error: catErr } = await supabase.from("listing_categories").insert(rows as any);
         if (catErr) {
           // Label column missing from the API schema cache — save the categories
           // themselves so the rest of the listing isn't blocked.
