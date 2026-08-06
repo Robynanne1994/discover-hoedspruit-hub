@@ -17,6 +17,10 @@ const MONO = "#A79E88";
 
 const CHIP_BG = "rgba(255,255,255,0.94)";
 const CHIP_SHADOW = "0 1px 4px rgba(0,5,5,0.14)";
+// Inset from the image edge for the floating pills. The top-left type capsule
+// and the bottom-left rating/deal pills all share this same inset so the
+// padding above and below the image stays visually equal.
+const PILL_INSET = 8;
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
@@ -278,7 +282,7 @@ const SavedCard = ({
         )}
 
         {/* Type capsule */}
-        <div style={{ position: "absolute", top: 8, left: 8 }}>
+        <div style={{ position: "absolute", top: PILL_INSET, left: PILL_INSET }}>
           <Chip>
             <span
               style={{
@@ -296,7 +300,7 @@ const SavedCard = ({
 
         {/* Rating pill (listings) */}
         {ratingChip && !badge && (
-          <div style={{ position: "absolute", bottom: 8, left: 8 }}>
+          <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
               <span style={{ fontSize: 9.5, fontWeight: 600, color: META, whiteSpace: "nowrap" }}>
                 {ratingChip}
@@ -308,7 +312,7 @@ const SavedCard = ({
         {/* Deal / ended badge */}
 
         {badge && (
-          <div style={{ position: "absolute", bottom: 8, left: 8 }}>
+          <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip
               style={
                 badge.tone === "deal"
