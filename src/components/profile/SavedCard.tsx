@@ -110,13 +110,14 @@ const buildContent = (it: any, type: CardType) => {
 
     const hours = it.opening_hours as Record<string, string> | null | undefined;
     if (hours) {
-      if (isAlwaysOpen(todayHours(hours))) status = { text: "Open 24 Hours", tone: SAGE };
-      else if (isOpenNow(hours)) {
+      if (isAlwaysOpen(todayHours(hours))) {
+        status = { items: [{ text: "Open Now", tone: SAGE }, { text: "Always Open", tone: MUTED }] };
+      } else if (isOpenNow(hours)) {
         const until = closesAt(hours);
-        status = { text: until ? `Open Until ${until}` : "Open Now", tone: SAGE };
+        status = { items: [{ text: until ? `Open Until ${until}` : "Open Now", tone: SAGE }] };
       } else {
         const opens = to12h(opensAt(hours));
-        status = { text: opens ? `Closed · Opens ${opens}` : "Closed", tone: CLAY };
+        status = { items: [{ text: opens ? `Closed · Opens ${opens}` : "Closed", tone: CLAY }] };
       }
     }
   }
