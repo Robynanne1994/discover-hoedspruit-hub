@@ -78,13 +78,15 @@ const cardStyle: React.CSSProperties = {
   border: "none",
 };
 const categoryLineStyle: React.CSSProperties = {
-  marginTop: 8,
+  marginTop: 0,
+  marginBottom: 8,
   fontFamily: FONT,
-  fontSize: 14,
+  fontSize: 10,
   fontWeight: 450,
-  lineHeight: 1.45,
-  letterSpacing: "0.005em",
-  color: "#423324",
+  lineHeight: 1.4,
+  letterSpacing: "0.08em",
+  textTransform: "uppercase",
+  color: "#715A3D",
 };
 const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
@@ -698,6 +700,17 @@ const SpecialDetail = () => {
         marginTop: -28,
         padding: "22px 20px 0",
       }}>
+        {allTags.length > 0 && (
+          <div style={categoryLineStyle}>
+            {allTags.map((t, i) => (
+              <span key={i}>
+                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
+                {t.text}
+              </span>
+            ))}
+          </div>
+        )}
+
         <h1
           data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -710,34 +723,24 @@ const SpecialDetail = () => {
             : special.title}
         </h1>
 
-        {allTags.length > 0 && (
-          <div style={categoryLineStyle}>
-            {allTags.map((t, i) => (
-              <span key={i}>
-                {i > 0 && <span style={{ color: C.accent, margin: "0 6px" }}>·</span>}
-                {t.text}
-              </span>
-            ))}
-          </div>
-        )}
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
+          <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
+          <span style={{ fontSize: 13, color: "#6B6A5E" }}>· {datesText}</span>
+        </div>
 
         {special.business_name && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: C.dark }}>
-            <Store size={14} color={C.dark} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
+            <Store size={14} color="#6B6A5E" strokeWidth={1.75} style={{ flexShrink: 0 }} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: C.dark, textDecoration: "none" }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: "#6B6A5E", textDecoration: "none" }}>
                 {special.business_name}
               </Link>
             ) : <span>{special.business_name}</span>}
           </div>
         )}
-
-        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
-          <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
-          <span style={{ fontSize: 13, color: C.dark }}>· {datesText}</span>
-        </div>
       </div>
+
 
       {/* Sticky tab bar */}
       {(() => {
