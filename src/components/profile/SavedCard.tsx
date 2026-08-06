@@ -166,7 +166,7 @@ const buildContent = (it: any, type: CardType) => {
     lines.push(it.meta_2 ? { text: it.meta_2 } : null);
   }
 
-  return { lines, status, badge };
+  return { lines, status, badge, ratingChip };
 };
 
 const Chip = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
