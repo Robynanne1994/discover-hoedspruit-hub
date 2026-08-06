@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import SpecialValueBar from "@/components/specials/SpecialValueBar";
+import { specialValue } from "@/lib/specialValue";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
