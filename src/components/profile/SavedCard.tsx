@@ -112,9 +112,11 @@ const buildContent = (it: any, type: CardType) => {
     const rating = it.google_rating ? Number(it.google_rating).toFixed(1).replace(/\.0$/, "") : null;
     const reviews = it.google_reviews_count ? ` (${it.google_reviews_count})` : "";
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
-    if (rating) ratingChip = `★ ${rating}${reviews}`;
+    if (rating) ratingChip = `${rating}${reviews}`;
     lines.push(category ? { text: category } : null);
-    lines.push(it.location ? { icon: MapPin, text: it.location, clamp: 1 } : null);
+    // Location clamp is decided at render time from the measured title height:
+    // one-line titles leave room for two lines of location, two-line titles do not.
+    lines.push(it.location ? { icon: MapPin, text: it.location } : null);
 
 
     const hours = it.opening_hours as Record<string, string> | null | undefined;
