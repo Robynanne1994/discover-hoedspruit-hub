@@ -1771,7 +1771,7 @@ const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
       </h3>
     </div>
     <p style={{ ...type.body, margin: 0 }}>
-      Hours, numbers and prices change. Tell us and we'll check it.
+      Hours, numbers and prices change. Let us know if you spot anything out of date and we will review and fix accordingly.
     </p>
     <button onClick={onClick} style={{
       marginTop: 14, background: "none", border: "none", cursor: "pointer", padding: 0,
