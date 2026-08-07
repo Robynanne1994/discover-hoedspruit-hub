@@ -39,31 +39,29 @@ const BottomNav = () => {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 74, gap: 4 }}>
-        {navItems.map((item) => {
+        {(() => {
           const path = location.pathname;
-          let isActive = false;
-          if (item.href === "/") {
-            isActive = path === "/" || path === "/search";
-          } else if (item.href === "/categories") {
-            isActive =
-              path.startsWith("/categories") ||
-              path.startsWith("/category") ||
-              path.startsWith("/listing");
-          } else if (item.href === "/specials") {
-            isActive = path.startsWith("/specials");
-          } else if (item.href === "/events") {
-            isActive = path.startsWith("/events");
-          } else if (item.href === "/my-profile" || item.href === "/my-profile-guest") {
-            isActive =
-              path.startsWith("/my-profile") ||
-              path.startsWith("/my-account") ||
-              path.startsWith("/account-settings") ||
-              path.startsWith("/my-notifications") ||
-              path.startsWith("/notification-preferences") ||
-              path.startsWith("/notifications/categories") ||
-              path.startsWith("/follow-requests");
+          const starts = (...prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(p + "/"));
+
+          // Every route maps to exactly one tab. Anything unmatched falls back
+          // to Profile, so the bar is never fully inactive.
+          let activeHref: string;
+          if (path === "/" || starts("/search", "/local-channels", "/lowdown", "/lowveld-lowdown", "/directories", "/quiz", "/quizzes", "/about", "/advertise")) {
+            activeHref = "/";
+          } else if (starts("/categories", "/category", "/listing", "/explore")) {
+            activeHref = "/categories";
+          } else if (starts("/specials")) {
+            activeHref = "/specials";
+          } else if (starts("/events")) {
+            activeHref = "/events";
+          } else {
+            activeHref = user ? "/my-profile" : "/my-profile-guest";
           }
-          const Icon = item.icon;
+
+          return navItems.map((item) => {
+            const isActive = item.href === activeHref;
+            const Icon = item.icon;
+
 
           return (
             <Link
@@ -104,7 +102,8 @@ const BottomNav = () => {
               )}
             </Link>
           );
-        })}
+          });
+        })()}
       </div>
     </nav>
   );
