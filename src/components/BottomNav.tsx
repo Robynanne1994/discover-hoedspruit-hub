@@ -43,7 +43,7 @@ const BottomNav = () => {
           const path = location.pathname;
           let isActive = false;
           if (item.href === "/") {
-            isActive = path === "/";
+            isActive = path === "/" || path === "/search";
           } else if (item.href === "/categories") {
             isActive =
               path.startsWith("/categories") ||
