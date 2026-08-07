@@ -81,7 +81,7 @@ describe("specialMeta", () => {
     });
   });
 
-  it("falls back to the countdown when there is no footer wording", () => {
-    expect(specialMeta({ valid_until: null })).toEqual({ text: "Ongoing", urgent: false });
+  it("says nothing when there is no footer wording and no dates", () => {
+    expect(specialMeta({ valid_until: null })).toEqual({ text: "", urgent: false });
   });
 });
