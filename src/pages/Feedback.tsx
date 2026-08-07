@@ -62,6 +62,8 @@ const titleCaseSubject = (s: string | null | undefined) => {
   }).join("");
 };
 
+const MAX_IMAGES = 5;
+
 type Reply = {
   id: string;
   subject: string | null;
