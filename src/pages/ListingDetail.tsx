@@ -1670,8 +1670,8 @@ const ListingDetail = () => {
             })()}
 
             {kmFromTown && (
-              <div style={{ ...metaRow, ...type.meta }}>
-                <MapPin size={14} strokeWidth={1.75} color={MUTED} style={metaIcon()} />
+              <div style={{ ...metaRow, ...type.meta, alignItems: "center" }}>
+                <MapPin size={14} strokeWidth={1.75} color={MUTED} style={{ ...metaIcon(), alignSelf: "center", transform: "none" }} />
                 <span>{kmFromTown}</span>
               </div>
             )}
