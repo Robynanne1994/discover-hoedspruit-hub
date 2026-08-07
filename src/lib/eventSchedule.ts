@@ -270,7 +270,7 @@ export function getEventOccurrences(
   }
 
   // 2) Recurring
-  const rule = parseRecurrenceRule(e.recurrence ?? null);
+  const rule = resolveRecurrenceRule(e);
   if (rule) {
     const { start } = getEventDates(e);
     const anchor = start ?? from;
@@ -310,7 +310,7 @@ export function getNextOccurrence(e: EventScheduleLike, now: Date = new Date()):
     return null;
   }
 
-  const rule = parseRecurrenceRule(e.recurrence ?? null);
+  const rule = resolveRecurrenceRule(e);
   if (rule) {
     const { start } = getEventDates(e);
     const anchor = start ?? now;
