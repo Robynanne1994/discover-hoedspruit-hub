@@ -12,7 +12,8 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 };
 
 const EXPECTED_HEADERS = [
-  "title", "title_override", "deal_label", "business_name", "business_id", "description",
+  "title", "title_override", "badge_override", "deal_type", "day_of_week",
+  "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "business_id", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until", "card_footer_text",
   "price", "price_label", "original_price", "savings",
@@ -103,7 +104,13 @@ const AdminSpecialsImport = () => {
         const payload: Record<string, any> = {
           title,
           title_override: row.title_override || null,
-          deal_label: row.deal_label || "Special",
+          badge_override: row.badge_override || null,
+          deal_type: row.deal_type || null,
+          day_of_week: row.day_of_week || null,
+          discount_type: row.discount_type || null,
+          discount_value: row.discount_value ? Number(row.discount_value) : null,
+          freebie_text: row.freebie_text || null,
+          redemption_note: row.redemption_note || null,
           business_name: row.business_name || "",
           business_id: row.business_id || null,
           description: row.description || null,
@@ -192,7 +199,8 @@ const AdminSpecialsImport = () => {
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.title ?? "", s.title_override ?? "", s.deal_label ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
+      s.title ?? "", s.title_override ?? "", s.badge_override ?? "", s.deal_type ?? "", s.day_of_week ?? "",
+      s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "", s.card_footer_text ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "", s.savings ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
