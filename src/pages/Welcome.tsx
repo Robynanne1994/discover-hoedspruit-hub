@@ -47,7 +47,7 @@ const AppleIcon = () => (
 
 
 const SIGNIN_LABEL_STYLE: React.CSSProperties = {
-  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
   fontWeight: 400,
   fontSize: 12,
   lineHeight: "14.4px",
@@ -59,7 +59,7 @@ const SIGNIN_LABEL_STYLE: React.CSSProperties = {
 };
 
 const CREATE_LABEL_STYLE: React.CSSProperties = {
-  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
   fontWeight: 700,
   fontSize: 14,
   lineHeight: "16.8px",
@@ -603,7 +603,7 @@ const Welcome = () => {
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
           <h1
             style={{
-              fontFamily: "'Nohemi', 'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+              fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
               color: "#423324",
               fontSize: 22,
               lineHeight: 1.2,

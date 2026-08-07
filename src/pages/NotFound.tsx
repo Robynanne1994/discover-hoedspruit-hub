@@ -8,7 +8,6 @@ const OLIVE_DEEP = "#454C36";
 const CREAM = "#EEE8DA";
 const INK = "#2A2A24";
 const HELV = '"Helvetica Neue", Helvetica, Arial, sans-serif';
-const PLAYFAIR = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 
 const NotFound = () => {
   const location = useLocation();
@@ -169,7 +168,7 @@ const NotFound = () => {
         <div
           style={{
             marginTop: 14,
-            fontFamily: PLAYFAIR,
+            fontFamily: HELV,
             fontStyle: "normal",
             fontWeight: 400,
             fontSize: 108,
@@ -186,7 +185,7 @@ const NotFound = () => {
           style={{
             marginTop: 8,
             marginBottom: 0,
-            fontFamily: PLAYFAIR,
+            fontFamily: HELV,
             fontStyle: "italic",
             fontWeight: 550,
             fontSize: 48,
@@ -207,7 +206,7 @@ const NotFound = () => {
             marginTop: 22,
             marginBottom: 0,
             maxWidth: 280,
-            fontFamily: PLAYFAIR,
+            fontFamily: HELV,
             fontStyle: "italic",
             fontWeight: 400,
             fontSize: 17,

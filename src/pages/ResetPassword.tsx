@@ -39,7 +39,7 @@ const LINK = "#715a3d";
 const REDEEM_GRACE_MS = 20000;
 
 const LABEL_STYLE: React.CSSProperties = {
-  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
   fontWeight: 700,
   fontSize: 14,
   lineHeight: "16.8px",
