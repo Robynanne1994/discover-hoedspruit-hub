@@ -451,7 +451,7 @@ const SpecialDetail = () => {
     });
     whatsapps.forEach((w, i) => {
       const clean = w.replace(/[^0-9]/g, "");
-      rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
+      rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
     });
     const email = contactEmail;
     if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
@@ -722,15 +722,19 @@ const SpecialDetail = () => {
             : special.title}
         </h1>
 
-        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6 }}>
+          <span style={{ width: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor }} />
+          </span>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
           <span style={{ fontSize: 13, color: MUTED }}>· {datesText}</span>
         </div>
 
         {special.business_name && (
           <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, ...type.meta }}>
-            <Store size={14} color={MUTED} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <span style={{ width: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <Store size={14} color={MUTED} strokeWidth={1.75} />
+            </span>
             {special.business_id ? (
               <Link to={`/listing/${special.business_id}`} style={{ color: MUTED, textDecoration: "none" }}>
                 {special.business_name}
@@ -738,6 +742,7 @@ const SpecialDetail = () => {
             ) : <span>{special.business_name}</span>}
           </div>
         )}
+
       </div>
 
 
