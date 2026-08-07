@@ -119,13 +119,14 @@ export const specialValue = (s: SpecialLike): SpecialValue => {
     };
   }
   // No price set — a structured discount or the savings line becomes the value.
-  // original_price on its own is a data-entry slip, but it's still a number
-  // worth showing.
   const pct = s.discount_type === "percent_off" ? numeric(s.discount_value) : null;
   if (pct != null) return { kind: "deal", text: `${pct}% off` };
   const amt = s.discount_type === "amount_off" ? numeric(s.discount_value) : null;
   if (amt != null) return { kind: "deal", text: `Save R${amt}` };
-  const deal = str(s.savings) || str(s.original_price) || str(s.freebie_text);
+  // A written offer beats a bare original_price: "Free breakfast" is the deal,
+  // whereas a lone original_price is a data-entry slip — still a number worth
+  // showing, but only when there is nothing better.
+  const deal = str(s.savings) || str(s.freebie_text) || str(s.original_price);
   if (deal) return { kind: "deal", text: deal };
   return { kind: "none" };
 };

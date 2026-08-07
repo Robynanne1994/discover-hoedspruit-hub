@@ -5,33 +5,24 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import { specialValue } from "@/lib/specialValue";
-import { getSpecialBadge } from "@/lib/specialBadge";
+import { specialImage, type SpecialCardLike } from "@/lib/specialCard";
+import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
+import SpecialValueBar from "@/components/specials/SpecialValueBar";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-interface Special {
+// The columns every specials surface reads. Kept in one place so the select
+// below and the card model can't drift apart.
+const SPECIAL_CARD_COLUMNS =
+  "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, saved_image_url, " +
+  "badge_override, day_of_week, discount_type, discount_value, freebie_text, card_footer_text, " +
+  "valid_from, valid_until, price, price_label, original_price, savings, is_featured, created_at";
+
+interface Special extends SpecialCardLike {
   id: string;
   title: string;
   title_override?: string | null;
   business_name: string;
-  image_url: string | null;
-  detail_image_url: string | null;
-  homepage_image_url: string | null;
-  badge_override: string | null;
-  day_of_week: string | null;
-  discount_type: string | null;
-  discount_value: number | null;
-  freebie_text: string | null;
-  valid_from: string | null;
-  card_footer_text: string | null;
-  sub_tag_1: string | null;
-  sub_tag_2: string | null;
-  valid_until: string | null;
-  price: string | null;
-  price_label: string | null;
-  original_price: string | null;
-  savings: string | null;
 }
 
 const clamp = (lines: number) => ({
@@ -64,14 +55,12 @@ const HomeSpecials = () => {
       const today = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("specials")
-        .select(
-          "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, badge_override, day_of_week, discount_type, discount_value, freebie_text, redemption_note, card_footer_text, sub_tag_1, sub_tag_2, valid_from, valid_until, price, price_label, original_price, savings, is_featured, created_at",
-        )
+        .select(SPECIAL_CARD_COLUMNS)
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
-      return (data || []) as Special[];
+      return (data || []) as unknown as Special[];
     },
   });
 
@@ -90,88 +79,22 @@ const HomeSpecials = () => {
       (e.currentTarget.style.transform = "scale(1)"),
   };
 
-  const valueLine = (s: Special) => {
-    const value = specialValue(s);
-    if (value.kind === "none") return null;
-    if (value.kind === "price") {
-      return (
-        <div style={{ marginTop: "auto", paddingTop: 10 }}>
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              height: 32,
-              padding: "0 12px",
-              borderRadius: 999,
-              background: "#6B7C5C",
-              color: "#FFFFFF",
-              fontFamily: HN,
-              fontSize: 12,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {value.price}
-          </span>
-        </div>
-      );
-    }
-    return (
-      <div
-        style={{
-          marginTop: "auto",
-          paddingTop: 10,
-          fontFamily: HN,
-          fontSize: 13,
-          fontWeight: 700,
-          color: "#423324",
-          lineHeight: 1.3,
-          ...clamp(2),
-        }}
-      >
-        {value.text}
-      </div>
-    );
-  };
-
-  const businessRow = (s: Special, withLogo: boolean) =>
+  const businessRow = (s: Special) =>
     s.business_name ? (
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
+          fontFamily: HN,
+          fontSize: 12,
+          fontWeight: 400,
+          color: "#6B6A5E",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
           minWidth: 0,
           marginTop: 4,
         }}
       >
-        {withLogo ? (
-          <span
-            style={{
-              width: 26,
-              height: 26,
-              borderRadius: 999,
-              background: "#EEE8DA",
-              flexShrink: 0,
-            }}
-          />
-        ) : null}
-        <span
-          style={{
-            fontFamily: HN,
-            fontSize: 12,
-            fontWeight: 400,
-            color: "#6B6A5E",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            minWidth: 0,
-          }}
-        >
-          {s.business_name}
-        </span>
+        {s.business_name}
       </div>
     ) : null;
 
@@ -210,80 +133,45 @@ const HomeSpecials = () => {
         }}
       >
         {specials.map((s) => {
-          const image = s.homepage_image_url || s.image_url || s.detail_image_url;
-
-          if (!image) {
-            return (
-              <Link key={s.id} to={`/specials/${s.id}`} {...press} style={cardStyle}>
-                <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
-                  {getSpecialBadge(s) && (
-                    <div
-                      style={{
-                        fontFamily: HN,
-                        fontSize: 10,
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.16em",
-                        color: "#C0392B",
-                        marginBottom: 6,
-                      }}
-                    >
-                      {getSpecialBadge(s)}
-                    </div>
-                  )}
-                  {title(s)}
-                  {businessRow(s, true)}
-                  <div style={{ height: 1, background: "#EAE4D5", marginTop: 10 }} />
-                  {valueLine(s)}
-                </div>
-              </Link>
-            );
-          }
+          const image = specialImage(s, "home");
 
           return (
             <Link key={s.id} to={`/specials/${s.id}`} {...press} style={cardStyle}>
-              <div
-                style={{
-                  position: "relative",
-                  width: "100%",
-                  aspectRatio: "1 / 1",
-                  background: "#F4EFE3",
-                }}
-              >
-                <img
-                  src={image}
-                  alt={s.business_name || getDisplayTitle(s)}
-                  loading="lazy"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-                {getSpecialBadge(s) && (
-                  <span
-                    style={{
-                      position: "absolute",
-                      top: 10,
-                      left: 10,
-                      background: "#C0392B",
-                      color: "#FFFFFF",
-                      fontFamily: HN,
-                      fontSize: 10,
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.04em",
-                      padding: "5px 10px",
-                      borderRadius: 999,
-                      whiteSpace: "nowrap",
-                      lineHeight: 1,
-                    }}
-                  >
-                    {getSpecialBadge(s)}
-                  </span>
-                )}
-              </div>
+              {image ? (
+                <div
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    aspectRatio: "1 / 1",
+                    background: "#F4EFE3",
+                  }}
+                >
+                  <img
+                    src={image}
+                    alt={s.business_name || getDisplayTitle(s)}
+                    loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                  <SpecialBadgePill
+                    special={s}
+                    style={{ position: "absolute", top: 10, left: 10, maxWidth: "calc(100% - 20px)" }}
+                  />
+                </div>
+              ) : null}
+
               <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
+                {/* No art to hang the pill on, so it leads the copy instead. */}
+                {!image && (
+                  <div style={{ marginBottom: 6 }}>
+                    <SpecialBadgePill special={s} />
+                  </div>
+                )}
                 {title(s)}
-                {businessRow(s, false)}
-                {valueLine(s)}
+                {businessRow(s)}
               </div>
+
+              {/* Same value strip as the specials page — money left, time right */}
+              <SpecialValueBar special={s} />
             </Link>
           );
         })}

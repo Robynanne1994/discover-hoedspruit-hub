@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Star } from "lucide-react";
@@ -10,8 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
+import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
-import { getSpecialBadge } from "@/lib/specialBadge";
+import { specialImage } from "@/lib/specialCard";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -26,13 +27,7 @@ const COLOR = {
   pillInactiveBg: "#FFFFFF",
   pillActiveBg: "#423324",
   pillActiveFg: "#FFFFFF",
-  badge: "#C0392B",
-  badgeAlt: "#4F4A38",
-  badgeFg: "#FFFFFF",
-  price: "#B4522E",
-  pricePill: "#6B7C5C",
   urgent: "#C0392B",
-  priceStrike: "#9C9387",
 };
 
 // Horizontal gap between featured slides, and how much of the next slide peeks in.
@@ -64,17 +59,6 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "biggest_saving", label: "Biggest Savings" },
   { key: "newest", label: "Newest (Added)" },
 ];
-
-// Percentage/discount style labels read louder in red; loyalty and package deals sit back in olive.
-const DISCOUNT_LABEL = /(%|\boff\b|\bsave\b|\bsavings?\b|\bhalf\b|\d\s*for\s*\d|\bbuy\s*\d|\bbogof\b)/i;
-const badgeColor = (label?: string | null) => (DISCOUNT_LABEL.test((label || "").toString()) ? COLOR.badge : COLOR.badgeAlt);
-
-const formatKm = (raw: any): string | null => {
-  if (raw == null || String(raw).trim() === "") return null;
-  const n = parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
-  if (!Number.isFinite(n)) return null;
-  return `${Math.round(n * 10) / 10}km`;
-};
 
 const Specials = () => {
   const navigate = useNavigate();
@@ -119,32 +103,6 @@ const Specials = () => {
       return data || [];
     },
   });
-
-  // Distance from town comes off the linked listing, not the special itself.
-  const businessIds = useMemo(() => {
-    const ids = new Set<string>();
-    for (const s of (specials as any[]) || []) if (s.business_id) ids.add(s.business_id);
-    return Array.from(ids).sort();
-  }, [specials]);
-
-  const { data: kmByBusiness } = useQuery({
-    queryKey: ["specials-listing-km", businessIds],
-    enabled: businessIds.length > 0,
-    queryFn: async () => {
-      const { data } = await supabase.from("listings").select("id, km_from_town").in("id", businessIds);
-      const map: Record<string, string> = {};
-      for (const l of (data as any[]) || []) {
-        const km = formatKm(l.km_from_town);
-        if (km) map[l.id] = km;
-      }
-      return map;
-    },
-  });
-
-  const kmFor = useCallback(
-    (s: any): string | null => (s.business_id ? kmByBusiness?.[s.business_id] ?? null : null),
-    [kmByBusiness]
-  );
 
   const collectTags = (s: any): string[] => {
     const tags: string[] = [];
@@ -436,11 +394,7 @@ const Specials = () => {
         ) : filteredSpecials.length > 0 ? (
           <>
             {featured.length > 0 && (
-              <FeaturedSection
-                items={featured}
-                kmFor={kmFor}
-                onSelect={(s) => navigate(`/specials/${s.id}`)}
-              />
+              <FeaturedSection items={featured} onSelect={(s) => navigate(`/specials/${s.id}`)} />
             )}
 
             {rest.length > 0 && (
@@ -451,7 +405,7 @@ const Specials = () => {
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {rest.map((s: any) => (
-                    <DealCard key={s.id} special={s} km={kmFor(s)} onClick={() => navigate(`/specials/${s.id}`)} />
+                    <DealCard key={s.id} special={s} onClick={() => navigate(`/specials/${s.id}`)} />
                   ))}
                 </div>
               </>
@@ -661,11 +615,9 @@ const SectionHead = ({
 
 const FeaturedSection = ({
   items,
-  kmFor,
   onSelect,
 }: {
   items: any[];
-  kmFor: (s: any) => string | null;
   onSelect: (s: any) => void;
 }) => {
   const isCarousel = items.length > 1;
@@ -735,7 +687,7 @@ const FeaturedSection = ({
                   scrollSnapAlign: "start",
                 }}
               >
-                <FeaturedCard special={s} km={kmFor(s)} onClick={() => onSelect(s)} />
+                <FeaturedCard special={s} onClick={() => onSelect(s)} />
               </div>
             ))}
           </div>
@@ -762,14 +714,14 @@ const FeaturedSection = ({
           </div>
         </>
       ) : (
-        <FeaturedCard special={items[0]} km={kmFor(items[0])} onClick={() => onSelect(items[0])} />
+        <FeaturedCard special={items[0]} onClick={() => onSelect(items[0])} />
       )}
     </section>
   );
 };
 
-const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | null; onClick: () => void }) => {
-  const image = special.image_url || special.detail_image_url || special.homepage_image_url;
+const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
+  const image = specialImage(special, "list");
   const meta = special.business_name || "";
 
   return (
@@ -804,26 +756,11 @@ const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | nul
               "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.42) 38%, rgba(0,0,0,0.06) 68%, rgba(0,0,0,0) 100%)",
           }}
         />
-        {getSpecialBadge(special) && (
-          <div
-            style={{
-              position: "absolute",
-              top: 12,
-              left: 12,
-              background: badgeColor(getSpecialBadge(special)),
-              color: COLOR.badgeFg,
-              padding: "6px 12px",
-              borderRadius: 999,
-              fontFamily: SANS,
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-            }}
-          >
-            {getSpecialBadge(special)}
-          </div>
-        )}
+        <SpecialBadgePill
+          special={special}
+          size="md"
+          style={{ position: "absolute", top: 12, left: 12, maxWidth: "calc(100% - 24px)" }}
+        />
         <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
           <h3
             {...noTitleCaseProps(special)}
@@ -867,8 +804,8 @@ const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | nul
 /* Grid card                                                           */
 /* ------------------------------------------------------------------ */
 
-const DealCard = ({ special, km, onClick }: { special: any; km: string | null; onClick: () => void }) => {
-  const image = special.image_url || special.detail_image_url || special.homepage_image_url;
+const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
+  const image = specialImage(special, "list");
   const meta = special.business_name || "";
 
   return (
@@ -893,30 +830,10 @@ const DealCard = ({ special, km, onClick }: { special: any; km: string | null; o
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
-        {getSpecialBadge(special) && (
-          <div
-            style={{
-              position: "absolute",
-              top: 8,
-              left: 8,
-              maxWidth: "calc(100% - 16px)",
-              background: badgeColor(getSpecialBadge(special)),
-              color: COLOR.badgeFg,
-              padding: "4px 9px",
-              borderRadius: 999,
-              fontFamily: SANS,
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {getSpecialBadge(special)}
-          </div>
-        )}
+        <SpecialBadgePill
+          special={special}
+          style={{ position: "absolute", top: 8, left: 8, maxWidth: "calc(100% - 16px)" }}
+        />
       </div>
 
       <div style={{ padding: "10px 11px 11px 11px", display: "flex", flexDirection: "column", flex: 1 }}>
