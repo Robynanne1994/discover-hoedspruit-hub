@@ -77,7 +77,7 @@ const Feedback = () => {
   const [type, setType] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [replyByEmail, setReplyByEmail] = useState(false);
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
