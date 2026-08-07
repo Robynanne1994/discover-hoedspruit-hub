@@ -101,6 +101,19 @@ function fmtTime(t: string | null | undefined): string {
   return `${dh}:${String(min).padStart(2, "0")} ${ampm}`;
 }
 
+const WEEKDAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const NTH_NAMES: Record<number, string> = { 1: "First", 2: "Second", 3: "Third", 4: "Fourth", 5: "Last" };
+
+function recurrenceLabel(rule: any): string | null {
+  if (!rule) return null;
+  if (rule.kind === "daily") return "Every Day";
+  if (rule.kind === "weekly") return `Every ${WEEKDAY_NAMES[rule.weekday] ?? ""}`.trim();
+  if (rule.kind === "monthly-day") return `Monthly On The ${rule.day}${rule.day === 1 ? "st" : rule.day === 2 ? "nd" : rule.day === 3 ? "rd" : "th"}`;
+  if (rule.kind === "monthly-nth") return `Every ${NTH_NAMES[rule.n] ?? ""} ${WEEKDAY_NAMES[rule.weekday] ?? ""}`.replace(/\s+/g, " ").trim();
+  return null;
+}
+
+
 function eventDateLine(e: any): string {
   if (hasPerformances(e)) {
     const next = getNextOccurrence(e);
