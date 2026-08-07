@@ -454,7 +454,7 @@ const SavedCard = ({
             color: INK,
             lineHeight: 1.22,
             margin: 0,
-            minHeight: titleLines > 1 || type === "resource" ? 37 : undefined,
+            minHeight: shiftUp ? undefined : 37,
             overflowWrap: "break-word",
             display: "-webkit-box",
             WebkitLineClamp: type === "resource" ? 3 : 2,
