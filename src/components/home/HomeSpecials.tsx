@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
@@ -50,6 +51,7 @@ const cardStyle: React.CSSProperties = {
 };
 
 const HomeSpecials = () => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const { data: specials } = useQuery({
     queryKey: ["home-specials"],
     queryFn: async () => {
@@ -66,6 +68,10 @@ const HomeSpecials = () => {
       return (data || []) as Special[];
     },
   });
+
+  useEffect(() => {
+    if (scrollerRef.current) scrollerRef.current.scrollLeft = 0;
+  }, [specials]);
 
   if (!specials || specials.length === 0) return null;
 
@@ -185,10 +191,13 @@ const HomeSpecials = () => {
     <section>
       <HomeSectionHead primary="Active Specials" actionHref="/specials" />
       <div
+        ref={scrollerRef}
         className="scrollbar-hide"
         style={{
           overflowX: "auto",
           scrollSnapType: "x mandatory",
+          scrollPaddingLeft: 20,
+          scrollPaddingRight: 20,
           padding: "0 20px",
           display: "flex",
           alignItems: "stretch",
