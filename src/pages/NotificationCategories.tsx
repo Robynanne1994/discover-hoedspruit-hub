@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useNotificationOptions } from "@/hooks/useNotificationOptions";
 import { toast } from "sonner";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   FILTER_TYPE_META,
   NotificationFilterType,
@@ -17,7 +18,7 @@ const COLORS = {
   bg: "#E6E0CC",
   card: "#FFFFFF",
   ink: "#1A1A1A",
-  muted: "#7A6E5C",
+  muted: TOKEN_MUTED,
   line: "#E2DAC6",
   rust: "#423324",
   toggleOn: "#2E2418",

@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Compass, Tag, Calendar, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { type } from "@/lib/type";
 
 const BAR_BG = "#F5F0E8";
 const ACTIVE_BG = "#423324";
@@ -91,11 +92,8 @@ const BottomNav = () => {
               {isActive && (
                 <span
                   style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 11,
-                    fontWeight: 500,
+                    ...type.navLabel,
                     color: "#ffffff",
-                    letterSpacing: "0.01em",
                     whiteSpace: "nowrap",
                   }}
                 >

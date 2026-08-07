@@ -1,4 +1,5 @@
 import { specialCard, type SpecialCardLike } from "@/lib/specialCard";
+import { MUTED } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -6,7 +7,7 @@ const BAR = {
   bg: "#F7F2E6",
   border: "#EEE7D4",
   ink: "#1A1A1A",
-  muted: "#6B6A5E",
+  muted: MUTED,
   strike: "#9C9387",
   accent: "#B4522E",
   urgent: "#C0392B",
@@ -118,7 +119,7 @@ const SpecialValueBar = ({
           <span
             style={{
               fontFamily: SANS,
-              fontSize: full ? 14 : 12.5,
+              fontSize: full ? 14 : 12,
               fontWeight: 700,
               color: BAR.accent,
               letterSpacing: "-0.1px",

@@ -18,6 +18,7 @@ import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { isOpenNow } from "@/lib/openHours";
 import Seo from "@/components/Seo";
+import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
@@ -33,8 +34,8 @@ const C = {
   olive: "#5C6446",
   cream: "#EEE8DA",
   softCream: "#F4EFE3",
-  ink: "#2A2A24",
-  mutedInk: "#6B6A5E",
+  ink: BODY_INK,
+  mutedInk: TOKEN_MUTED,
   line: "#D9D2C0",
   rust: "#9B5A3C",
   gold: "#D9C36B",
@@ -645,8 +646,7 @@ const CategoryPage = () => {
 
 
   const sectionEyebrow: React.CSSProperties = {
-    fontSize: 11,
-    fontWeight: 400,
+    ...type.label,
     color: "rgba(238,232,218,0.7)",
     textTransform: "uppercase",
     letterSpacing: "2px",
@@ -659,7 +659,7 @@ const CategoryPage = () => {
   const PAGE_BG = "#E6E0CC";
   const CARD_BG = "#FFFFFF";
   const INK = "#1A1A1A";
-  const MUTED = "#6B6A5E";
+  const MUTED = TOKEN_MUTED;
   const PILL_DARK = "#423324";
   const OPEN_COLOR = "#2b7f3f";
   const CLOSED_COLOR = "#C0392B";
@@ -708,16 +708,16 @@ const CategoryPage = () => {
       <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
         <PageHeader title="Explore" />
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 550, color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ ...type.sectionTitle, margin: "0 0 10px" }}>
             Something went wrong
           </h2>
-          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+          <p style={{ ...type.body, color: MUTED, margin: "0 0 24px" }}>
             We couldn't load this category. Please check your connection and try again.
           </p>
           <button
             onClick={() => refetchCategory()}
             disabled={categoryFetching}
-            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: categoryFetching ? "default" : "pointer", opacity: categoryFetching ? 0.6 : 1 }}
+            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", ...type.button, cursor: categoryFetching ? "default" : "pointer", opacity: categoryFetching ? 0.6 : 1 }}
           >
             {categoryFetching ? "Trying…" : "Try again"}
           </button>
@@ -731,17 +731,17 @@ const CategoryPage = () => {
       <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
         <PageHeader title="Explore" />
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 550, color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ ...type.sectionTitle, margin: "0 0 10px" }}>
             Category not found
           </h2>
-          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+          <p style={{ ...type.body, color: MUTED, margin: "0 0 24px" }}>
             This category doesn't exist or the link is out of date.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 260, margin: "0 auto" }}>
-            <button onClick={() => navigate("/categories")} style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 24px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+            <button onClick={() => navigate("/categories")} style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 24px", ...type.button, cursor: "pointer" }}>
               Back to Explore
             </button>
-            <button onClick={() => navigate("/")} style={{ background: "transparent", color: INK, border: "1px solid #E8E4DF", borderRadius: 999, height: 48, padding: "0 24px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+            <button onClick={() => navigate("/")} style={{ background: "transparent", color: INK, border: "1px solid #E8E4DF", borderRadius: 999, height: 48, padding: "0 24px", ...type.button, cursor: "pointer" }}>
               Back to home
             </button>
           </div>
@@ -770,14 +770,7 @@ const CategoryPage = () => {
         title={displayTitle}
         subtitle={
           <div
-            style={{
-              fontFamily: sans,
-              fontSize: 11,
-              fontWeight: 500,
-              color: MUTED,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
+            style={type.label}
           >
             {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
           </div>
@@ -1097,16 +1090,16 @@ const CategoryPage = () => {
         </div>
       ) : listingsError ? (
         <div style={{ textAlign: "center", padding: "60px 24px 80px" }}>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, fontWeight: 550, color: INK, margin: "0 0 10px" }}>
+          <h2 style={{ ...type.sectionTitle, margin: "0 0 10px" }}>
             Something went wrong
           </h2>
-          <p style={{ fontFamily: sans, fontSize: 14, color: MUTED, margin: "0 0 24px", lineHeight: 1.5 }}>
+          <p style={{ ...type.body, color: MUTED, margin: "0 0 24px" }}>
             We couldn't load these listings. Please check your connection and try again.
           </p>
           <button
             onClick={() => refetchListings()}
             disabled={listingsFetching}
-            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", fontFamily: sans, fontSize: 14, fontWeight: 500, cursor: listingsFetching ? "default" : "pointer", opacity: listingsFetching ? 0.6 : 1 }}
+            style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 48, padding: "0 28px", ...type.button, cursor: listingsFetching ? "default" : "pointer", opacity: listingsFetching ? 0.6 : 1 }}
           >
             {listingsFetching ? "Trying…" : "Try again"}
           </button>
@@ -1208,9 +1201,7 @@ const CategoryPage = () => {
                   <h3
                     {...noTitleCaseProps(l)}
                     style={{
-                      fontFamily: sans,
-                      fontSize: 15,
-                      fontWeight: 700,
+                      ...type.cardTitleM,
                       color: INK,
                       lineHeight: 1.2,
                       margin: 0,
@@ -1245,7 +1236,7 @@ const CategoryPage = () => {
                   )}
 
                   {l.location && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: sans, fontSize: 12, color: MUTED, lineHeight: 1.3, minWidth: 0 }}>
+                    <div style={{ ...type.meta, display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
                       <MapPin size={12} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
                       <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.location}</span>
                     </div>
@@ -1286,10 +1277,10 @@ const CategoryPage = () => {
           >
             <MapPin size={42} strokeWidth={1.6} color={MUTED} />
           </div>
-          <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 26, fontWeight: 550, color: INK, margin: "0 0 14px", letterSpacing: "-0.3px" }}>
+          <h2 style={{ ...type.sectionTitle, margin: "0 0 14px" }}>
             {isSearchEmpty ? "No matches found." : "Nothing here yet."}
           </h2>
-          <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 400, lineHeight: 1.5, color: MUTED, margin: 0 }}>
+          <p style={{ ...type.body, color: MUTED, margin: 0 }}>
             {isSearchEmpty ? "Try clearing your filters or search." : "Check back soon as new places join the app."}
           </p>
           {isSearchEmpty && (

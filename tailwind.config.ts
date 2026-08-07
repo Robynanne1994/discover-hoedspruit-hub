@@ -13,11 +13,14 @@ export default {
       },
     },
     extend: {
+      // Kept in step with src/lib/type.ts and the --font-heading / --font-body
+      // CSS variables. `heading` previously pointed at Helvetica Neue while
+      // --font-heading pointed at Nohemi, so the same token name gave two
+      // different answers depending on how a component reached for it.
       fontFamily: {
-        heading: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        heading: ['Nohemi', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         body: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         sans: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
-        
       },
       colors: {
         border: "hsl(var(--border))",

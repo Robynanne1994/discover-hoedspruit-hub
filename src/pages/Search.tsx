@@ -21,6 +21,7 @@ import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
+import { MUTED as TOKEN_MUTED, type } from "@/lib/type";
 
 
 
@@ -30,7 +31,7 @@ const PAGE_BG = "#E6E0CC";
 const WHITE = "#FFFFFF";
 const DARK = "#423324";
 const DARK_FG = "hsl(40 25% 98%)";
-const MUTED = "hsl(25 8% 48%)";
+const MUTED = TOKEN_MUTED;
 const ROW_DIVIDER = "hsl(37 20% 93%)";
 const CHEVRON = "hsl(35 15% 72%)";
 const AVATAR_BG = "hsl(37 39% 92%)";
@@ -174,8 +175,7 @@ const Search = () => {
               borderRadius: 24,
               background: WHITE,
               padding: "0 42px",
-              fontFamily: FONT,
-              fontSize: 15,
+              ...type.cardTitleM,
               color: INK,
               outline: "none",
               boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
@@ -242,9 +242,7 @@ const Search = () => {
                 borderRadius: 20,
                 background: active ? DARK : WHITE,
                 color: active ? DARK_FG : INK,
-                fontFamily: FONT,
-                fontSize: 13,
-                fontWeight: 600,
+                ...type.meta,
                 whiteSpace: "nowrap",
                 cursor: "pointer",
                 boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
@@ -264,10 +262,7 @@ const Search = () => {
         <p
           style={{
             margin: "6px 2px 2px",
-            fontFamily: FONT,
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: "0.12em",
+            ...type.eyebrow,
             textTransform: "uppercase",
             color: MUTED,
           }}
@@ -302,7 +297,7 @@ const Search = () => {
 /* -------------------- Card states -------------------- */
 
 const LoadingRow = () => (
-  <div style={{ padding: "32px 20px", textAlign: "center", fontFamily: FONT, fontSize: 13, color: MUTED }}>
+  <div style={{ ...type.meta, padding: "32px 20px", textAlign: "center" }}>
     Loading…
   </div>
 );
@@ -311,10 +306,10 @@ const EmptyState = ({ query, fallback }: { query: string; fallback: string }) =>
   const term = query.trim();
   return (
     <div style={{ padding: "32px 20px", textAlign: "center", display: "flex", flexDirection: "column", gap: 6 }}>
-      <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, color: INK }}>
+      <span style={type.cardTitleM}>
         {term ? <>No results for &ldquo;{term}&rdquo;</> : fallback}
       </span>
-      <span style={{ fontFamily: FONT, fontSize: 13, color: MUTED }}>
+      <span style={type.meta}>
         Try a different word, or switch to another tab above.
       </span>
     </div>
@@ -323,13 +318,13 @@ const EmptyState = ({ query, fallback }: { query: string; fallback: string }) =>
 
 const ErrorRow = ({ onRetry, isFetching }: { onRetry: () => void; isFetching?: boolean }) => (
   <div style={{ padding: "28px 20px", textAlign: "center" }}>
-    <p style={{ fontFamily: FONT, fontSize: 14, color: "rgba(18,18,20,0.7)", margin: "0 0 14px", lineHeight: 1.5 }}>
+    <p style={{ ...type.body, margin: "0 0 14px" }}>
       Something went wrong. Please check your connection and try again.
     </p>
     <button
       onClick={onRetry}
       disabled={isFetching}
-      style={{ background: DARK, color: "#fff", border: "none", borderRadius: 999, height: 40, padding: "0 22px", fontFamily: FONT, fontSize: 13, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
+      style={{ background: DARK, color: "#fff", border: "none", borderRadius: 999, height: 40, padding: "0 22px", ...type.button, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
     >
       {isFetching ? "Trying…" : "Try again"}
     </button>
@@ -383,9 +378,7 @@ const RowFollowButton = ({ targetUserId }: { targetUserId: string }) => {
         height: 32,
         padding: "0 14px",
         borderRadius: 999,
-        fontFamily: FONT,
-        fontSize: 12,
-        fontWeight: 600,
+        ...type.meta,
         cursor: "pointer",
         transition: "transform 0.12s ease",
         background: outlined ? "transparent" : DARK,
@@ -447,9 +440,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, 
         ) : initials ? (
           <span
             style={{
-              fontFamily: FONT,
-              fontSize: 13,
-              fontWeight: 700,
+              ...type.cardTitleS,
               color: dark ? DARK_FG : AVATAR_FG,
               textTransform: "uppercase",
             }}
@@ -465,9 +456,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, 
         <span
           {...(hasOverride ? { "data-no-title-case": "true" } : {})}
           style={{
-            fontFamily: FONT,
-            fontSize: 15,
-            fontWeight: 700,
+            ...type.cardTitleM,
             color: INK,
             whiteSpace: "nowrap",
             overflow: "hidden",
@@ -479,8 +468,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, 
         {subtitle && (
           <span
             style={{
-              fontFamily: FONT,
-              fontSize: 12,
+              ...type.meta,
               color: MUTED,
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -513,9 +501,7 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
       borderRadius: 9999,
       background: DARK,
       color: "#FFFFFF",
-      fontFamily: FONT,
-      fontSize: 15,
-      fontWeight: 600,
+      ...type.cardTitleM,
       textDecoration: "none",
       transition: "transform 0.12s ease, opacity 0.12s ease",
     }}

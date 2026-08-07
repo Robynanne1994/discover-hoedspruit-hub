@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { UtensilsCrossed, ShoppingBag, BedDouble, Mountain, Siren, PartyPopper, Sparkles, Stethoscope } from "lucide-react";
+import { BODY_INK, type } from "@/lib/type";
 
 export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials";
 
-const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const TILES = [
   { label: "Emergencies", icon: Siren, href: "/category/8d2d6a71-d5ee-4119-9fb4-dd24ff66a6d6" },
@@ -53,7 +53,7 @@ const HomeCategoryChips = (_props: Props) => {
             }}
           >
             <Icon size={26} color="#1A1A1A" strokeWidth={1.4} />
-            <span style={{ fontFamily: HN, fontSize: 12, color: "#2b2420", letterSpacing: "0.01em" }}>
+            <span style={{ ...type.meta, color: BODY_INK }}>
               {label}
             </span>
           </Link>

@@ -12,10 +12,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const INK = "#2A2A24";
 const CREAM = "#EEE8DA";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const LINE = "#D9D2C0";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";

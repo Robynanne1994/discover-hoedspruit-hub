@@ -27,6 +27,8 @@ import {
   verifySignupCode,
 } from "@/lib/emailVerification";
 import { friendlyOAuthError } from "@/lib/authProviders";
+import { MUTED, type } from "@/lib/type";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const GoogleIcon = () => (
   <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -47,23 +49,14 @@ const AppleIcon = () => (
 
 
 const SIGNIN_LABEL_STYLE: React.CSSProperties = {
-  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
-  fontWeight: 400,
-  fontSize: 12,
-  lineHeight: "14.4px",
-  letterSpacing: "0.24px",
+  ...type.meta,
   textTransform: "none",
-  color: "#8A8480",
   display: "block",
   marginBottom: 6,
 };
 
 const CREATE_LABEL_STYLE: React.CSSProperties = {
-  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
-  fontWeight: 700,
-  fontSize: 14,
-  lineHeight: "16.8px",
-  letterSpacing: 0,
+  ...type.eyebrow,
   textTransform: "none",
   color: "#1A1A1A",
   display: "block",
@@ -405,13 +398,13 @@ const Welcome = () => {
         <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
           <h1
             style={{
-              fontFamily: HEAD, fontSize: 32, fontWeight: 550, letterSpacing: "-0.02em",
+              ...type.pageTitle,
               color: "#1A1A1A", lineHeight: 1.1, margin: "0 0 10px",
             }}
           >
             Check your email
           </h1>
-          <p style={{ fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 24px" }}>
+          <p style={{ ...type.body, color: MUTED, margin: "0 0 24px" }}>
             {verifyReason === "signin"
               ? "This account hasn't confirmed its email address yet. We've sent a "
               : "We've sent a "}
@@ -447,13 +440,13 @@ const Welcome = () => {
           <Button
             onClick={() => handleVerifyCode()}
             className="w-full h-12 font-medium rounded-full mt-6"
-            style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+            style={{ background: "#423324", color: "#FFFFFF", ...type.button }}
             disabled={!ready}
           >
             {verifying ? "Verifying..." : "Verify Email"}
           </Button>
 
-          <p style={{ fontSize: 13, lineHeight: 1.55, color: "#6B6255", marginTop: 16, textAlign: "center" }}>
+          <p style={{ ...type.body, color: MUTED, marginTop: 16, textAlign: "center" }}>
             The code works for {VERIFICATION_CODE_TTL_MINUTES} minutes, so there's no rush.
             Nothing in your inbox after a minute or two? Check your spam or junk folder —
             it comes from hello@hellohoedspruit.co.
@@ -476,7 +469,7 @@ const Welcome = () => {
             </button>
           </p>
 
-          <p className="text-center text-sm mt-3" style={{ color: "#6B6255" }}>
+          <p className="text-center text-sm mt-3" style={{ color: TOKEN_MUTED }}>
             Typed the wrong address?{" "}
             <button
               type="button"
@@ -500,7 +493,7 @@ const Welcome = () => {
         <div className="flex-1 px-6 pb-12 pt-6 flex flex-col">
           {mode === "forgot" ? (
             <>
-              <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 20px" }}>
+              <p style={{ ...type.body, color: MUTED, margin: "0 0 20px" }}>
                 Enter the email address for your account and we'll send you a secure
                 link to choose a new password. The link works for {RESET_LINK_TTL_MINUTES}{" "}
                 minutes.
@@ -525,7 +518,7 @@ const Welcome = () => {
                 <Button
                   type="submit"
                   className="w-full h-12 font-medium rounded-full mt-6"
-                  style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+                  style={{ background: "#423324", color: "#FFFFFF", ...type.button }}
                   disabled={loading || resetCooldown.waiting}
                 >
                   {loading
@@ -549,7 +542,7 @@ const Welcome = () => {
             </>
           ) : (
             <>
-              <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 20px" }}>
+              <p style={{ ...type.body, color: MUTED, margin: "0 0 20px" }}>
                 If an account exists for{" "}
                 <span style={{ color: "#1A1A1A", fontWeight: 600 }}>{email.trim()}</span>
                 , we've sent it a password reset link. Open it within{" "}
@@ -559,7 +552,7 @@ const Welcome = () => {
               <Button
                 onClick={() => setMode("signin")}
                 className="w-full h-12 font-medium rounded-full"
-                style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
+                style={{ background: "#423324", color: "#FFFFFF", ...type.button }}
               >
                 Back to Log In
               </Button>
@@ -603,12 +596,10 @@ const Welcome = () => {
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
           <h1
             style={{
-              fontFamily: "'Nohemi', 'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+              ...type.sectionTitle,
               color: "#423324",
               fontSize: 22,
               lineHeight: 1.2,
-              fontWeight: 550,
-              letterSpacing: "0.01em",
               marginTop: 16,
               textAlign: "center",
             }}
@@ -703,7 +694,7 @@ const Welcome = () => {
   const hintStyle: React.CSSProperties = {
     fontFamily: FF,
     fontSize: 12.5,
-    color: "#6B6A5E",
+    color: TOKEN_MUTED,
     margin: "6px 0 0",
   };
 
@@ -790,7 +781,7 @@ const Welcome = () => {
                 <div className="relative">
                   <span
                     className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px]"
-                    style={{ color: "#8A8480" }}
+                    style={{ color: TOKEN_MUTED }}
                   >
                     @
                   </span>
@@ -816,7 +807,7 @@ const Welcome = () => {
                         ? "#B42318"
                         : usernameStatus === "available"
                           ? "#3F6B3F"
-                          : "#6B6A5E",
+                          : TOKEN_MUTED,
                   }}
                 >
                   {usernameStatus === "checking"
@@ -1096,7 +1087,7 @@ const Welcome = () => {
         </form>
 
         {mode === "signup" && (
-          <p style={{ fontFamily: FF, fontSize: 13, color: "#6B6255", margin: "12px 0 0", textAlign: "center" }}>
+          <p style={{ fontFamily: FF, fontSize: 13, color: TOKEN_MUTED, margin: "12px 0 0", textAlign: "center" }}>
             By creating an account you agree to our{" "}
             <a
               href="https://hellohoedspruit.co/legal/terms-of-use"
@@ -1122,7 +1113,7 @@ const Welcome = () => {
         {/* OR divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "22px 0 16px" }}>
           <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
-          <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: "#6B6A5E" }}>OR</span>
+          <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: TOKEN_MUTED }}>OR</span>
           <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
         </div>
 

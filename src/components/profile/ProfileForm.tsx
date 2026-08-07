@@ -7,11 +7,12 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
 const DEEP = "#2A2A24";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const LINE = "#D9D2C0";
 const RUST = "#9B5A3C";
 

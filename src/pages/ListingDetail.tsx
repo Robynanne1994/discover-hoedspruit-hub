@@ -39,6 +39,7 @@ import { renderListingRichText } from "@/lib/listingRichText";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
+import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -72,7 +73,7 @@ const C = {
   divider: "#EDE9E3",
   heading: "#1A1A1A",
   text: "#2b2420",
-  muted: "#8A8480",
+  muted: MUTED,
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
@@ -970,8 +971,7 @@ const ListingDetail = () => {
           background: a.filled ? C.dark : C.surface,
           border: "none",
           color: fg, textDecoration: "none",
-          fontFamily: FONT, fontWeight: 700, fontSize: 12.5,
-          letterSpacing: "0.01em",
+          ...type.tabActive,
           boxShadow: a.filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
           transition: "transform 150ms ease-out",
         }}
@@ -993,9 +993,8 @@ const ListingDetail = () => {
             ? { flex: "0 0 auto", padding: "14px 12px" }
             : { flex: 1, padding: "14px 4px" }),
           background: "none", border: "none", cursor: "pointer",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
-          letterSpacing: "0.005em",
-          color: active ? C.heading : "#6B6A5E",
+          ...tabStyle(active),
+          color: active ? C.heading : MUTED,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
           whiteSpace: "nowrap",
@@ -1012,8 +1011,7 @@ const ListingDetail = () => {
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <Icon size={17} strokeWidth={1.75} color={C.primary} />
         <h3 style={{
-          margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
-          letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
+          ...type.eyebrow, margin: 0,
         }}>{children}</h3>
       </div>
       {right}
@@ -1046,7 +1044,7 @@ const ListingDetail = () => {
               onClick={() => setDescExpanded(!descExpanded)}
               style={{
                 marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer",
-                fontFamily: FONT, fontSize: 14.5, fontWeight: 700, color: C.primary,
+                fontFamily: FONT, fontSize: 15, fontWeight: 700, color: C.primary,
               }}
             >
               {descExpanded ? "Read Less" : "Read More"}
@@ -1124,7 +1122,7 @@ const ListingDetail = () => {
                   padding: "13px 0",
                 }}>
                   <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                    <span style={{ fontSize: 14.5, color: isToday ? C.heading : C.muted, fontWeight: isToday ? 700 : 400 }}>
+                    <span style={{ fontSize: 15, color: isToday ? C.heading : C.muted, fontWeight: isToday ? 700 : 400 }}>
                       {day}
                     </span>
                     {isToday && (
@@ -1137,7 +1135,7 @@ const ListingDetail = () => {
                     )}
                   </span>
                   <span style={{ display: "flex", alignItems: "center", gap: 10, whiteSpace: "nowrap" }}>
-                    <span style={{ fontSize: 14.5, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
+                    <span style={{ fontSize: 15, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
                       {displayValue}
                     </span>
                   </span>
@@ -1146,7 +1144,7 @@ const ListingDetail = () => {
                   <div style={{
                     display: "flex", alignItems: "center", gap: 7,
                     padding: "8px 12px", marginBottom: 12, background: C.ivory, borderRadius: 10,
-                    fontSize: 12.5, color: C.text, lineHeight: 1.35,
+                    fontSize: 12, color: C.text, lineHeight: 1.4,
                   }}>
                     <CalendarDays size={13} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
                     <span>{holidayHoursNote(holiday)}</span>
@@ -1285,7 +1283,7 @@ const ListingDetail = () => {
                         {on
                           ? <Check size={16} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
                           : <XIcon size={16} strokeWidth={2} color={C.muted} style={{ flexShrink: 0 }} />}
-                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4 }}>
+                        <span style={{ fontSize: 13, color: on ? C.text : C.muted, lineHeight: 1.4 }}>
                           {s.key === "accom-distance" || s.key === "accom-pricing" || s.key === "accom-capacity" ? f.label : formatDetailLabel(f.label)}
                         </span>
                       </div>
@@ -1318,11 +1316,11 @@ const ListingDetail = () => {
         {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />}
       </div>
       <div style={{ flex: 1, minWidth: 0, padding: "12px 14px 12px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-        <div style={{ fontFamily: FONT, fontSize: 14, color: C.heading, lineHeight: 1.3, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
+        <div style={{ ...type.cardTitleM, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
           {item.title}
         </div>
         {item.subtitle && (
-          <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted }}>{item.subtitle}</div>
+          <div style={type.meta}>{item.subtitle}</div>
         )}
         {item.badge && (
           <div style={{ marginTop: 6, alignSelf: "flex-start", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
@@ -1416,8 +1414,7 @@ const ListingDetail = () => {
           </span>
           <span style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
             <span style={{
-              display: "block", fontFamily: FONT, fontSize: 10.5, fontWeight: 700,
-              letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, marginBottom: 3,
+              ...type.label, display: "block", marginBottom: 3,
             }}>
               {label}
             </span>
@@ -1459,7 +1456,7 @@ const ListingDetail = () => {
               </div>
               <div style={{ padding: "14px 10px 6px" }}>
                 {listing.location && (
-                  <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, color: C.heading, lineHeight: 1.35 }}>
+                  <div style={type.cardTitleL}>
                     {listing.location}
                   </div>
                 )}
@@ -1612,8 +1609,7 @@ const ListingDetail = () => {
         <h1
           data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
           style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
-            color: C.heading, letterSpacing: "0.01em",
+            ...type.pageTitle, margin: 0,
           }}
         >
           {(listing as any).title_override?.trim()
@@ -1635,16 +1631,16 @@ const ListingDetail = () => {
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (
-              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· Never Closes</span>
+              <span style={{ fontSize: 13, color: MUTED }}>· Never Closes</span>
             )}
             {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· Closes {openStatus.closes}</span>
+              <span style={{ fontSize: 13, color: MUTED }}>· Closes {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13, color: MUTED }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
             )}
             {todayHoliday && (
-              <span style={{ fontSize: 13, color: "#6B6A5E" }}>· {todayHoliday.name} — hours might differ</span>
+              <span style={{ fontSize: 13, color: MUTED }}>· {todayHoliday.name} — hours might differ</span>
             )}
           </div>
         )}
@@ -1655,7 +1651,7 @@ const ListingDetail = () => {
               const reviewsHref: string | null = l.google_reviews_url || null;
               const row: React.CSSProperties = {
                 display: "inline-flex", alignItems: "center", gap: 5,
-                fontFamily: FONT, fontSize: 12.5, color: C.heading, textDecoration: "none",
+                ...type.meta, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
@@ -1673,8 +1669,8 @@ const ListingDetail = () => {
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
-                <MapPin size={14} strokeWidth={1.75} color="#6B6A5E" style={{ flexShrink: 0 }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 6, ...type.meta }}>
+                <MapPin size={14} strokeWidth={1.75} color={MUTED} style={{ flexShrink: 0 }} />
                 <span>{kmFromTown}</span>
               </div>
             )}
@@ -1740,13 +1736,10 @@ const ListingDetail = () => {
 // ----- Shared inline styles -----
 const headStyle: React.CSSProperties = {
   margin: "0 0 10px",
-  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
-  letterSpacing: 0, textTransform: "none",
-  color: C.heading,
+  ...type.sectionTitle, textTransform: "none",
 };
 const paraStyle: React.CSSProperties = {
-  fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
-  color: C.text, margin: "0 0 10px",
+  ...type.body, margin: "0 0 10px",
 };
 const iconBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
@@ -1757,12 +1750,8 @@ const iconBtn: React.CSSProperties = {
 // Small brown category line sitting directly under the listing title.
 const categoryLineStyle: React.CSSProperties = {
   marginTop: 8,
-  fontFamily: FONT,
-  fontSize: 10,
-  fontWeight: 450,
+  ...type.label,
   lineHeight: 1.4,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
   color: "#715A3D",
 };
 
@@ -1776,18 +1765,17 @@ const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
       <Flag size={16} strokeWidth={1.75} color={C.primary} />
       <h3 style={{
-        margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 12,
-        letterSpacing: "0.1em", textTransform: "uppercase", color: C.heading,
+        ...type.eyebrow, margin: 0,
       }}>
         Something out of date?
       </h3>
     </div>
-    <p style={{ margin: 0, fontFamily: FONT, fontSize: 15, lineHeight: 1.5, color: C.text }}>
+    <p style={{ ...type.body, margin: 0 }}>
       Hours, numbers and prices change. Tell us and we'll check it.
     </p>
     <button onClick={onClick} style={{
       marginTop: 14, background: "none", border: "none", cursor: "pointer", padding: 0,
-      fontFamily: FONT, fontSize: 15, fontWeight: 700, color: C.primary,
+      ...type.button, fontWeight: 700, color: C.primary,
     }}>
       Suggest an Edit →
     </button>
@@ -1796,15 +1784,14 @@ const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
 
 // ----- Suggest edit sheet -----
 const suggestInputStyle: React.CSSProperties = {
-  fontFamily: FONT, fontWeight: 400, fontSize: 15, color: C.heading,
+  ...type.input,
   background: "#fff", border: `2px solid #C5C0BA`, borderRadius: 12,
   padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
   lineHeight: 1.4,
 };
 
 const suggestLabelStyle: React.CSSProperties = {
-  fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
-  textTransform: "uppercase", color: "#423324", marginBottom: 6, display: "block",
+  ...type.eyebrow, color: "#423324", marginBottom: 6, display: "block",
 };
 
 const SuggestEditSheet = ({
@@ -1864,7 +1851,7 @@ const SuggestEditSheet = ({
             <XIcon size={20} color={C.heading} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: HEAD, fontWeight: 550, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an Edit</h2>
+        <h2 style={{ ...type.sectionTitle, margin: "0 0 8px" }}>Suggest an Edit</h2>
         <p style={{ fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
           Spotted something out of date or inaccurate on <strong style={{ color: C.heading, fontWeight: 700 }}>{listingTitle}</strong>? Please let us know and we will get it updated.
         </p>

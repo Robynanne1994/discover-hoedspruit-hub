@@ -4,6 +4,7 @@ import { ChevronDown, Loader2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const REASONS = [
   "Harassment or bullying",
@@ -32,7 +33,7 @@ const guestSchema = baseSchema.extend({
 // Match the Local Channels "Suggest a Channel" sheet styling exactly
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
-const MUTED = "#7A6E5C";
+const MUTED = TOKEN_MUTED;
 
 const inputStyle: CSSProperties = {
   fontFamily: HN,

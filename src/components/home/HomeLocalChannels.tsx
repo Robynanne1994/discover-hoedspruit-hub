@@ -5,8 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 
 import { toast } from "sonner";
 import HomeSectionHead from "./HomeSectionHead";
+import { MUTED, type } from "@/lib/type";
 
-const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const PLATFORM_INITIAL: Record<string, string> = {
   Facebook: "f",
@@ -153,9 +153,8 @@ const HomeLocalChannels = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontFamily: HN,
-                  fontSize: 22,
-                  color: "#6B6A5E",
+                  ...type.sectionTitle,
+                  color: MUTED,
                 }}
               >
                 {(r.homepage_image_url || r.image_url) ? (
@@ -179,11 +178,7 @@ const HomeLocalChannels = () => {
                 {eyebrow && (
                   <div
                     style={{
-                      fontFamily: HN,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: "#6B6A5E",
-                      lineHeight: 1.2,
+                      ...type.meta,
                       marginBottom: 4,
                       textTransform: "capitalize",
                     }}
@@ -193,11 +188,7 @@ const HomeLocalChannels = () => {
                 )}
                 <div
                   style={{
-                    fontFamily: HN,
-                    fontSize: 15,
-                    fontWeight: 500,
-                    color: "#1A1A1A",
-                    lineHeight: 1.25,
+                    ...type.cardTitleL,
                     marginBottom: 6,
                     textTransform: "capitalize",
                   }}
@@ -206,14 +197,7 @@ const HomeLocalChannels = () => {
                 </div>
                 {meta && (
                   <div
-                    style={{
-                      fontFamily: HN,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: "#6B6A5E",
-                      lineHeight: 1.2,
-                      textTransform: "capitalize",
-                    }}
+                    style={{ ...type.meta, textTransform: "capitalize" }}
                   >
                     {meta}
                   </div>

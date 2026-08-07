@@ -16,6 +16,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useShare } from "@/hooks/useShare";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,7 +34,7 @@ const COLOR = {
   cream: "#F5F0E4",
   ink: "#1A1A1A",
   muted: "#8A8275",
-  subtle: "rgba(26,26,26,0.55)",
+  subtle: TOKEN_MUTED,
   line: "rgba(26,26,26,0.10)",
   pillBorder: "#E8E4DF",
   brown: "#423324",

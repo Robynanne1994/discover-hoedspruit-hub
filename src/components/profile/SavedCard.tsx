@@ -4,12 +4,13 @@ import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCirc
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
 const META = "#2b2420";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const BROWN = "#715A3D";
 const HEART = "#5b4632";
 const SAGE = "#6B7C5C";
@@ -293,8 +294,7 @@ const SavedCard = ({
           <Chip>
             <span
               style={{
-                fontSize: 9.5,
-                fontWeight: 700,
+                ...t.label,
                 textTransform: "uppercase",
                 letterSpacing: "0.16em",
                 color: BROWN,
@@ -309,7 +309,7 @@ const SavedCard = ({
         {ratingChip && !badge && (
           <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
-              <span style={{ fontSize: 9.5, fontWeight: 600, color: META, whiteSpace: "nowrap" }}>
+              <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
                 {ratingChip}
               </span>
             </Chip>
@@ -334,8 +334,7 @@ const SavedCard = ({
             >
               <span
                 style={{
-                  fontSize: badge.tone === "ended" ? 9.5 : 10,
-                  fontWeight: 700,
+                  ...t.label,
                   textTransform: "uppercase",
                   letterSpacing: badge.tone === "ended" ? "0.1em" : "0.06em",
                   color: badge.tone === "ended" ? MUTED : "#FFFFFF",
@@ -403,8 +402,7 @@ const SavedCard = ({
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
             fontFamily: SANS,
-            fontSize: 15,
-            fontWeight: 700,
+            ...t.cardTitleM,
             color: INK,
             lineHeight: 1.22,
             margin: 0,
@@ -428,8 +426,7 @@ const SavedCard = ({
                 alignItems: "flex-start",
                 gap: 5,
                 fontFamily: SANS,
-                fontSize: i === 0 ? 12.5 : 11.5,
-                fontWeight: i === 0 ? 500 : 400,
+                ...t.meta,
                 color: i === 0 ? META : MUTED,
                 lineHeight: i === 0 ? 1.3 : 1.35,
                 minWidth: 0,
@@ -470,8 +467,7 @@ const SavedCard = ({
                   alignItems: "center",
                   gap: 5,
                   fontFamily: SANS,
-                  fontSize: 11,
-                  fontWeight: 600,
+                  ...t.meta,
                   color: s.tone,
                   lineHeight: 1.2,
                 }}

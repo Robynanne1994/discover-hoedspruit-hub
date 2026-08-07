@@ -7,10 +7,11 @@ import { useIsFollowing } from "@/hooks/useFollows";
 import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const PAGE_BG = "#E6E0CC";
 const INK = "#1A1A1A";
-const SUBTLE = "rgba(26,26,26,0.55)";
+const SUBTLE = TOKEN_MUTED;
 const LINE = "rgba(26,26,26,0.10)";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 

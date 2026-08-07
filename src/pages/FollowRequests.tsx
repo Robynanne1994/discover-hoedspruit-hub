@@ -5,11 +5,12 @@ import PageHeader from "@/components/PageHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequests, useRespondToFollowRequest } from "@/hooks/useFollows";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const MUTED = "rgba(26,26,26,0.55)";
+const MUTED = TOKEN_MUTED;
 const LINE = "rgba(26,26,26,0.10)";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const WHITE = "#FFFFFF";

@@ -13,6 +13,7 @@ import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
+import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -21,7 +22,7 @@ const COLOR = {
   pageBg: "#E6E0CC",
   cardBg: "#FFFFFF",
   ink: "#1A1A1A",
-  mutedInk: "#6B6A5E",
+  mutedInk: MUTED,
   divider: "#EAE4D5",
   pillBorder: "#E2DAC6",
   pillInactiveBg: "#FFFFFF",
@@ -415,9 +416,7 @@ const Specials = () => {
           <div style={{ textAlign: "center", padding: "60px 20px" }}>
             <p
               style={{
-                fontFamily: SANS,
-                fontSize: 12,
-                letterSpacing: "2.4px",
+                ...type.eyebrow,
                 textTransform: "uppercase",
                 color: COLOR.mutedInk,
                 margin: 0,
@@ -426,7 +425,7 @@ const Specials = () => {
             >
               No deals match
             </p>
-            <p style={{ fontFamily: SANS, fontSize: 14, color: COLOR.ink, opacity: 0.7, margin: 0, maxWidth: 280, marginInline: "auto" }}>
+            <p style={{ ...type.body, margin: 0, maxWidth: 280, marginInline: "auto" }}>
               Try a different category. New deals are added all the time.
             </p>
           </div>
@@ -483,7 +482,7 @@ const Specials = () => {
               .filter((c) => (categoryCounts.get(c) || 0) > 0);
             const total = Array.from(categoryCounts.values()).reduce((a, b) => a + b, 0);
             if (visible.length === 0) {
-              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>;
+              return <p style={{ ...type.meta, margin: 0 }}>No categories available.</p>;
             }
             return (
               <div>
@@ -552,9 +551,7 @@ const FilterPill = ({
       padding: "7px 14px",
       cursor: "pointer",
       fontFamily: SANS,
-      fontSize: 12.5,
-      fontWeight: active ? 700 : 500,
-      letterSpacing: "0.01em",
+      ...tabStyle(active),
       lineHeight: 1,
       color: active ? COLOR.pillActiveFg : accent ? COLOR.urgent : COLOR.ink,
       whiteSpace: "nowrap",
@@ -592,9 +589,7 @@ const SectionHead = ({
       <span
         style={{
           fontFamily: SANS,
-          fontSize: 11,
-          fontWeight: 700,
-          letterSpacing: "1.6px",
+          ...type.label,
           textTransform: "uppercase",
           color: COLOR.pillActiveBg,
         }}
@@ -603,7 +598,7 @@ const SectionHead = ({
       </span>
     </span>
     {right ? (
-      <span style={{ fontFamily: SANS, fontSize: 11.5, color: COLOR.mutedInk, flexShrink: 0 }}>{right}</span>
+      <span style={{ ...type.meta, flexShrink: 0 }}>{right}</span>
     ) : null}
   </div>
 );
@@ -766,8 +761,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             {...noTitleCaseProps(special)}
             style={{
               fontFamily: SANS,
-              fontSize: 22,
-              fontWeight: 700,
+              ...type.sectionTitle,
               lineHeight: 1.2,
               letterSpacing: "-0.3px",
               color: "#FFFFFF",
@@ -780,7 +774,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             <div
               style={{
                 fontFamily: SANS,
-                fontSize: 12.5,
+                ...type.meta,
                 color: "rgba(255,255,255,0.80)",
                 marginTop: 4,
                 whiteSpace: "nowrap",
@@ -842,8 +836,7 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
           className="line-clamp-2"
           style={{
             fontFamily: SANS,
-            fontSize: 14.5,
-            fontWeight: 700,
+            ...type.cardTitleM,
             lineHeight: 1.25,
             letterSpacing: "-0.15px",
             color: COLOR.ink,
@@ -856,7 +849,7 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
           <div
             style={{
               fontFamily: SANS,
-              fontSize: 11.5,
+              ...type.meta,
               color: COLOR.mutedInk,
               marginTop: 3,
               whiteSpace: "nowrap",

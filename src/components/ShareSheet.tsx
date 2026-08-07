@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Check, Link2, Mail, MessageSquare, X as XIcon } from "lucide-react";
 import { toast } from "sonner";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   copyToClipboard,
   openShareTarget,
@@ -18,7 +19,7 @@ const C = {
   surface: "#ffffff",
   heading: "#1A1A1A",
   text: "#2b2420",
-  muted: "#8A8480",
+  muted: TOKEN_MUTED,
   cream: "#f5f0e8",
   line: "#E7E2DA",
   dark: "#423324",

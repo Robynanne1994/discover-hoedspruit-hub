@@ -1,5 +1,6 @@
 import { forwardRef, InputHTMLAttributes, Ref } from "react";
 import { Search } from "lucide-react";
+import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
 type Variant = "light" | "cream";
 
@@ -13,12 +14,11 @@ export interface SearchBarProps
   inputRef?: Ref<HTMLInputElement>;
 }
 
-const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const TEXT = "#2b2420";
+const TEXT = BODY_INK;
 
 const VARIANTS: Record<Variant, { bg: string; icon: string }> = {
   light: { bg: "#FFFFFF", icon: "#1A1A1A" },
-  cream: { bg: "rgba(238, 232, 218, 0.92)", icon: "#6B6A5E" },
+  cream: { bg: "rgba(238, 232, 218, 0.92)", icon: TOKEN_MUTED },
 };
 
 const SearchBar = forwardRef<HTMLDivElement, SearchBarProps>(function SearchBar(
@@ -68,14 +68,14 @@ const SearchBar = forwardRef<HTMLDivElement, SearchBarProps>(function SearchBar(
           onKeyDown={onKeyDown}
           className="hh-searchbar-input"
           style={{
+            // type.input is 16px: Safari zooms the viewport whenever a
+            // focused field is smaller than that.
+            ...type.input,
             flex: 1,
             minWidth: 0,
             background: "transparent",
             border: "none",
             outline: "none",
-            fontFamily: FF,
-            fontWeight: 400,
-            fontSize: 14,
             color: TEXT,
             textIndent: 4,
           }}

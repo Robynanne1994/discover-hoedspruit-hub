@@ -260,9 +260,27 @@ body {
   }
 
 
+  /* ---------------------------------------------------------------
+     Element defaults, kept in step with src/lib/type.ts.
+
+     Almost every screen styles its headings with an inline `style` object
+     built from the tokens in that module, so these rules mostly cover bare
+     headings. They are here so the stylesheet describes the same app the
+     components do — previously h1 was declared at 40px, a size that
+     nothing in the app actually rendered.
+
+     h1  -> type.pageTitle      h4 -> type.cardTitleM
+     h2  -> type.sectionTitle   h5 -> type.cardTitleS
+     h3  -> type.cardTitleL     h6 -> type.meta
+
+     text-transform is deliberately left as it was: it is currently the only
+     thing title-casing titles that come straight from the database.
+     --------------------------------------------------------------- */
   h1,
   h2 {
     font-family: "Nohemi", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 550;
+    letter-spacing: -0.02em;
     color: #1A1A1A;
   }
   h3,
@@ -270,17 +288,14 @@ body {
   h5,
   h6 {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-weight: 400;
     letter-spacing: -0.02em;
     text-transform: capitalize;
     color: #1A1A1A;
   }
 
   h1 {
-    font-size: 40px;
-    line-height: 1;
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-size: 28px;
+    line-height: 1.1;
     text-transform: capitalize;
   }
   h1.title-cap {
@@ -288,26 +303,24 @@ body {
   }
   h2 {
     font-size: 24px;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.02em;
+    line-height: 1.15;
     text-transform: none;
   }
   h3 {
-    @apply text-[22px] leading-[1];
+    @apply text-[16px] font-bold leading-[1.25];
   }
   h4 {
-    @apply text-[18px] leading-[1.15];
+    @apply text-[15px] font-bold leading-[1.25];
   }
   h5 {
-    @apply text-[16px] leading-[1.2];
+    @apply text-[13px] font-semibold leading-[1.25];
   }
   h6 {
-    @apply text-[14px] leading-[1.2];
+    @apply text-[12px] font-normal leading-[1.4];
   }
 
   body {
-    @apply text-[16px] leading-[1.45];
+    @apply text-[15px] leading-[1.55];
   }
 
   a {

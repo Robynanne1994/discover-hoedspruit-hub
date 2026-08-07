@@ -5,6 +5,7 @@ import HomeWhatsOn from "@/components/home/HomeWhatsOn";
 import HomeListings from "@/components/home/HomeListings";
 import HomeLocalChannels from "@/components/home/HomeLocalChannels";
 import Seo from "@/components/Seo";
+import { HN } from "@/lib/type";
 
 const SECTION_GAP = 44;
 
@@ -43,7 +44,7 @@ const Index = () => {
         minHeight: "100vh",
         background: "#E6E0CC",
         paddingBottom: 100,
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontFamily: HN,
       }}
     >
       <HomeMasthead />

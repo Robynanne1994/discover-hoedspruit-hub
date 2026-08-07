@@ -12,8 +12,8 @@ const TONE_BG = {
 // `sm` for the narrow cards (2-col grid, homepage rail), `md` for the featured
 // hero. Nothing else varies — same wording, same colours, same shape.
 const SIZE = {
-  sm: { fontSize: 9.5, padding: "4px 9px" },
-  md: { fontSize: 10.5, padding: "6px 12px" },
+  sm: { fontSize: 10, padding: "4px 9px" },
+  md: { fontSize: 10, padding: "6px 12px" },
 } as const;
 
 const SpecialBadgePill = ({

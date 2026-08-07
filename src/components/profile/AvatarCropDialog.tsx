@@ -2,10 +2,11 @@ import { CSSProperties, useCallback, useEffect, useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import { Minus, Plus, RotateCw } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
-const MUTED = "#7A6E5C";
+const MUTED = TOKEN_MUTED;
 const BROWN = "#423324";
 const CREAM = "#E6E0CC";
 

@@ -22,6 +22,7 @@ import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
+import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import {
   resolveLocation,
   HOEDSPRUIT_CENTRE,
@@ -42,7 +43,7 @@ const C = {
   divider: "#EDE9E3",
   heading: "#1A1A1A",
   text: "#2b2420",
-  muted: "#8A8480",
+  muted: MUTED,
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
@@ -65,13 +66,10 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
-  letterSpacing: 0, textTransform: "none",
-  color: C.heading,
+  ...type.sectionTitle, textTransform: "none",
 };
 const paraStyle: React.CSSProperties = {
-  fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
-  color: C.text, margin: "0 0 10px",
+  ...type.body, margin: "0 0 10px",
 };
 const cardStyle: React.CSSProperties = {
   background: C.surface,
@@ -81,12 +79,8 @@ const cardStyle: React.CSSProperties = {
 const categoryLineStyle: React.CSSProperties = {
   marginTop: 0,
   marginBottom: 8,
-  fontFamily: FONT,
-  fontSize: 10,
-  fontWeight: 450,
+  ...type.label,
   lineHeight: 1.4,
-  letterSpacing: "0.08em",
-  textTransform: "uppercase",
   color: "#715A3D",
 };
 const floatBtn: React.CSSProperties = {
@@ -296,8 +290,7 @@ const SpecialDetail = () => {
       background: filled ? C.dark : C.surface,
       border: "none",
       color: fg, textDecoration: "none",
-      fontFamily: FONT, fontWeight: 700, fontSize: 12.5,
-      letterSpacing: "0.01em",
+      ...type.tabActive,
       boxShadow: filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
       transition: "transform 150ms ease-out",
     };
@@ -325,9 +318,8 @@ const SpecialDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
-          letterSpacing: "0.005em",
-          color: active ? C.heading : "#6B6A5E",
+          ...tabStyle(active),
+          color: active ? C.heading : MUTED,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
@@ -546,8 +538,7 @@ const SpecialDetail = () => {
           </span>
           <span style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
             <span style={{
-              display: "block", fontFamily: FONT, fontSize: 10.5, fontWeight: 700,
-              letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, marginBottom: 3,
+              ...type.label, display: "block", marginBottom: 3,
             }}>
               {label}
             </span>
@@ -589,7 +580,7 @@ const SpecialDetail = () => {
               </div>
               <div style={{ padding: "14px 10px 6px" }}>
                 {locText && (
-                  <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, color: C.heading, lineHeight: 1.35 }}>
+                  <div style={type.cardTitleL}>
                     {locText}
                   </div>
                 )}
@@ -632,7 +623,7 @@ const SpecialDetail = () => {
                       flexShrink: 0, width: 6, height: 6, borderRadius: 999,
                       background: C.primary, marginTop: 8,
                     }} />
-                    <span style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5, color: C.text, flex: 1, minWidth: 0 }}>
+                    <span style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13, color: C.text, flex: 1, minWidth: 0 }}>
                       {t}
                     </span>
                   </div>
@@ -723,8 +714,7 @@ const SpecialDetail = () => {
         <h1
           data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
           style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
-            color: C.heading, letterSpacing: "0.01em",
+            ...type.pageTitle, margin: 0,
           }}
         >
           {(special as any).title_override?.trim()
@@ -737,16 +727,16 @@ const SpecialDetail = () => {
             <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor }} />
           </span>
           <span style={{ fontSize: 13, fontWeight: 600, letterSpacing: "0.01em", color: dotColor }}>{statusLabel}</span>
-          <span style={{ fontSize: 13, color: "#6B6A5E" }}>· {datesText}</span>
+          <span style={{ fontSize: 13, color: MUTED }}>· {datesText}</span>
         </div>
 
         {special.business_name && (
-          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, ...type.meta }}>
             <span style={{ width: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <Store size={14} color="#6B6A5E" strokeWidth={1.75} />
+              <Store size={14} color={MUTED} strokeWidth={1.75} />
             </span>
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: "#6B6A5E", textDecoration: "none" }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: MUTED, textDecoration: "none" }}>
                 {special.business_name}
               </Link>
             ) : <span>{special.business_name}</span>}

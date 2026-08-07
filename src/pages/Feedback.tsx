@@ -18,6 +18,7 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 
 // Each topic maps to a friendly label + icon. The label is stored (lowercased)
@@ -36,7 +37,7 @@ const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const MUTED = "#7A6E5C";
+const MUTED = TOKEN_MUTED;
 const SUBMIT_BG = "#423324";
 const RED = "#C0432B";
 
@@ -538,7 +539,7 @@ const Feedback = () => {
               style={{
                 width: "100%", marginTop: 10,
                 background: isEmpty ? "#C9C0AC" : SUBMIT_BG,
-                color: isEmpty ? "#7A6E5C" : "#fff",
+                color: isEmpty ? TOKEN_MUTED : "#fff",
                 border: "none",
                 borderRadius: 999, height: 48,
                 fontFamily: FF, fontSize: 16, fontWeight: 600,

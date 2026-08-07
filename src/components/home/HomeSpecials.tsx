@@ -8,8 +8,8 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { specialImage, type SpecialCardLike } from "@/lib/specialCard";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
+import { type } from "@/lib/type";
 
-const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 // The columns every specials surface reads. Kept in one place so the select
 // below and the card model can't drift apart.
@@ -83,10 +83,7 @@ const HomeSpecials = () => {
     s.business_name ? (
       <div
         style={{
-          fontFamily: HN,
-          fontSize: 12,
-          fontWeight: 400,
-          color: "#6B6A5E",
+          ...type.meta,
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
@@ -101,15 +98,7 @@ const HomeSpecials = () => {
   const title = (s: Special) => (
     <div
       {...noTitleCaseProps(s)}
-      style={{
-        fontFamily: HN,
-        fontSize: 15,
-        fontWeight: 700,
-        lineHeight: 1.25,
-        letterSpacing: "-0.2px",
-        color: "#1A1A1A",
-        ...clamp(1),
-      }}
+      style={{ ...type.cardTitleM, ...clamp(1) }}
     >
       {getDisplayTitle(s)}
     </div>

@@ -22,6 +22,7 @@ import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parse
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import Seo from "@/components/Seo";
+import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -33,7 +34,7 @@ const C = {
   white: "#ffffff",
   ink: "#1A1A1A",
   body: "#2b2420",
-  muted: "#6b6a5e",
+  muted: MUTED,
   dark: "#48484a",
   tag: "#e8e1d4",
 };
@@ -213,9 +214,7 @@ const EventCard = ({ event }: { event: any }) => {
                 style={{
                   flex: 1,
                   minWidth: 0,
-                  fontFamily: SANS,
-                  fontWeight: 700,
-                  fontSize: 10.5,
+                  ...type.eyebrow,
                   lineHeight: 1.2,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
@@ -231,9 +230,7 @@ const EventCard = ({ event }: { event: any }) => {
             {price && (
               <span
                 style={{
-                  fontFamily: SANS,
-                  fontWeight: 700,
-                  fontSize: 13,
+                  ...type.cardTitleS,
                   lineHeight: 1.2,
                   color: "#715A3D",
                   whiteSpace: "nowrap",
@@ -247,9 +244,7 @@ const EventCard = ({ event }: { event: any }) => {
           <h3
             {...noTitleCaseProps(event)}
             style={{
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 16,
+              ...type.cardTitleL,
               lineHeight: 1.22,
               color: C.ink,
               margin: 0,
@@ -266,8 +261,7 @@ const EventCard = ({ event }: { event: any }) => {
           </h3>
           <p
             style={{
-              fontFamily: SANS,
-              fontSize: 13,
+              ...type.meta,
               lineHeight: 1.35,
               color: C.body,
               margin: 0,
@@ -291,8 +285,7 @@ const EventCard = ({ event }: { event: any }) => {
           {location && (
             <p
               style={{
-                fontFamily: SANS,
-                fontSize: 13,
+                ...type.meta,
                 lineHeight: 1.35,
                 color: C.body,
                 margin: 0,
@@ -680,10 +673,7 @@ const Events = () => {
                   borderRadius: 999,
                   padding: "7px 14px",
                   cursor: "pointer",
-                  fontFamily: SANS,
-                  fontSize: 12.5,
-                  fontWeight: active ? 700 : 500,
-                  letterSpacing: "0.01em",
+                  ...tabStyle(active),
                   lineHeight: 1,
                   color: active ? "#FFFFFF" : "#1A1A1A",
                   whiteSpace: "nowrap",
@@ -715,13 +705,13 @@ const Events = () => {
           </div>
         ) : isError ? (
           <div style={{ background: C.white, borderRadius: 16, padding: "32px 20px", textAlign: "center" }}>
-            <p style={{ fontFamily: SANS, fontSize: 14, color: C.body, margin: "0 0 14px" }}>
+            <p style={{ ...type.body, margin: "0 0 14px" }}>
               Something went wrong loading events. Please check your connection and try again.
             </p>
             <button
               onClick={() => refetch()}
               disabled={isFetching}
-              style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 44, padding: "0 24px", fontFamily: SANS, fontSize: 14, fontWeight: 500, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
+              style={{ background: "#423324", color: "#fff", border: "none", borderRadius: 999, height: 44, padding: "0 24px", ...type.button, cursor: isFetching ? "default" : "pointer", opacity: isFetching ? 0.6 : 1 }}
             >
               {isFetching ? "Trying…" : "Try again"}
             </button>
@@ -735,7 +725,7 @@ const Events = () => {
               textAlign: "center",
             }}
           >
-            <p style={{ fontFamily: SANS, fontSize: 14, color: C.body, margin: 0 }}>
+            <p style={{ ...type.body, margin: 0 }}>
               No events match your filters.
             </p>
             {(tagFilter || activeFilter !== "all" || search) && (
@@ -828,7 +818,7 @@ const Events = () => {
             const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0);
             const totalVisible = Array.from(tagCounts.values()).reduce((a, b) => a + b, 0);
             if (visibleTags.length === 0) {
-              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories yet.</p>;
+              return <p style={{ ...type.meta, margin: 0 }}>No categories yet.</p>;
             }
             return (
               <div>
