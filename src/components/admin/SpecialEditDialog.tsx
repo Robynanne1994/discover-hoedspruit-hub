@@ -15,6 +15,8 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
+import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
+
 
 interface Props {
   open: boolean;

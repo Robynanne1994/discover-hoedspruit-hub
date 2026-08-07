@@ -15,6 +15,8 @@ import { sanitizeContactArray } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getSpecialBadge } from "@/lib/specialBadge";
+import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
+
 
 interface Special {
   id: string;
