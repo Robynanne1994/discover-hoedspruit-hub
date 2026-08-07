@@ -2,18 +2,20 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
-import { getSpecialBadge } from "@/lib/specialBadge";
-import { type as t } from "@/lib/type";
+import { specialCard } from "@/lib/specialCard";
+import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
 const META = "#2b2420";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const BROWN = "#715A3D";
 const HEART = "#5b4632";
 const SAGE = "#6B7C5C";
 const CLAY = "#C0392B";
+const OLIVE = "#4F4A38";
 const IMAGE_BG = "#F4EFE3";
 const MONO = "#A79E88";
 
@@ -80,7 +82,6 @@ const fmt = (iso: string | null | undefined, opts: Intl.DateTimeFormatOptions) =
   if (Number.isNaN(d.getTime())) return null;
   return d.toLocaleDateString("en-GB", opts);
 };
-const shortDate = (iso?: string | null) => fmt(iso, { day: "numeric", month: "short" });
 const weekdayDate = (iso?: string | null) => fmt(iso, { weekday: "short", day: "numeric", month: "short" });
 const weekday = (iso?: string | null) => fmt(iso, { weekday: "long" });
 
@@ -98,7 +99,9 @@ type Meta = {
 const buildContent = (it: any, type: CardType) => {
   const lines: (Meta | null)[] = [];
   let status: { items: { text: string; tone: string }[] } | null = null;
-  let badge: { text: string; tone: "deal" | "ended" } | null = null;
+  // "deal" is the loud discount voice, "quiet" the olive one (day/season
+  // labels), "ended" the greyed-out chip. Tones match SpecialBadgePill.
+  let badge: { text: string; tone: "deal" | "quiet" | "ended" } | null = null;
   let ratingChip: string | null = null;
 
   if (type === "listing") {
@@ -153,17 +156,16 @@ const buildContent = (it: any, type: CardType) => {
 
     const ends = it.valid_until ? new Date(it.valid_until).getTime() : null;
     const expired = ends != null && ends < Date.now();
+    const card = specialCard(it);
     if (expired) badge = { text: "Ended", tone: "ended" };
-    else badge = { text: getSpecialBadge(it), tone: "deal" };
+    else badge = { text: card.badge.text, tone: card.badge.tone === "discount" ? "deal" : "quiet" };
 
+    // Same countdown wording and the same 7-day urgency threshold as the
+    // specials list and the homepage rail, so a deal never reads as "ending
+    // soon" on one screen and calm on another.
     if (!expired && it.valid_until) {
-      const d = daysAway(it.valid_until);
-      if (d != null) {
-        if (d <= 0) status = { items: [{ text: "Ends today", tone: CLAY }] };
-        else if (d === 1) status = { items: [{ text: "Ends tomorrow", tone: CLAY }] };
-        else if (d <= 8) status = { items: [{ text: `Ends in ${d} days`, tone: CLAY }] };
-        else status = { items: [{ text: `Ends ${shortDate(it.valid_until)}`, tone: CLAY }] };
-      }
+      const urgent = isEndingSoon(it);
+      status = { items: [{ text: countdownLabel(it), tone: urgent ? CLAY : SAGE }] };
     }
   }
 
@@ -307,7 +309,7 @@ const SavedCard = ({
         {ratingChip && !badge && (
           <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
-              <span style={{ ...t.label, whiteSpace: "nowrap" }}>
+              <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
                 {ratingChip}
               </span>
             </Chip>
@@ -317,22 +319,28 @@ const SavedCard = ({
         {/* Deal / ended badge */}
 
         {badge && (
-          <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
+          <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET, maxWidth: "calc(100% - 16px)" }}>
             <Chip
               style={
-                badge.tone === "deal"
-                  ? { background: CLAY, backdropFilter: "none", WebkitBackdropFilter: "none" }
-                  : undefined
+                badge.tone === "ended"
+                  ? undefined
+                  : {
+                      background: badge.tone === "deal" ? CLAY : OLIVE,
+                      backdropFilter: "none",
+                      WebkitBackdropFilter: "none",
+                      maxWidth: "100%",
+                    }
               }
             >
               <span
                 style={{
-                  fontSize: badge.tone === "deal" ? 10 : 9.5,
-                  fontWeight: 700,
+                  ...t.label,
                   textTransform: "uppercase",
-                  letterSpacing: badge.tone === "deal" ? "0.06em" : "0.1em",
-                  color: badge.tone === "deal" ? "#FFFFFF" : MUTED,
+                  letterSpacing: badge.tone === "ended" ? "0.1em" : "0.06em",
+                  color: badge.tone === "ended" ? MUTED : "#FFFFFF",
                   whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
                 }}
               >
                 {badge.text}
@@ -393,6 +401,7 @@ const SavedCard = ({
         <h3
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
+            fontFamily: SANS,
             ...t.cardTitleM,
             color: INK,
             lineHeight: 1.22,
@@ -416,6 +425,7 @@ const SavedCard = ({
                 display: "flex",
                 alignItems: "flex-start",
                 gap: 5,
+                fontFamily: SANS,
                 ...t.meta,
                 color: i === 0 ? META : MUTED,
                 lineHeight: i === 0 ? 1.3 : 1.35,
@@ -456,6 +466,7 @@ const SavedCard = ({
                   display: "flex",
                   alignItems: "center",
                   gap: 5,
+                  fontFamily: SANS,
                   ...t.meta,
                   color: s.tone,
                   lineHeight: 1.2,

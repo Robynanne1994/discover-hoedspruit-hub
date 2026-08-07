@@ -119,16 +119,20 @@ export const specialValue = (s: SpecialLike): SpecialValue => {
     };
   }
   // No price set — a structured discount or the savings line becomes the value.
-  // original_price on its own is a data-entry slip, but it's still a number
-  // worth showing.
   const pct = s.discount_type === "percent_off" ? numeric(s.discount_value) : null;
-  if (pct != null) return { kind: "deal", text: `${pct}% off` };
+  if (pct != null) return { kind: "deal", text: `${pct}% Off` };
   const amt = s.discount_type === "amount_off" ? numeric(s.discount_value) : null;
   if (amt != null) return { kind: "deal", text: `Save R${amt}` };
-  const deal = str(s.savings) || str(s.original_price) || str(s.freebie_text);
-  if (deal) return { kind: "deal", text: deal };
+  // A written offer beats a bare original_price: "Free breakfast" is the deal,
+  // whereas a lone original_price is a data-entry slip — still a number worth
+  // showing, but only when there is nothing better.
+  const deal = str(s.savings) || str(s.freebie_text) || str(s.original_price);
+  if (deal) return { kind: "deal", text: capitaliseOff(deal) };
   return { kind: "none" };
 };
+
+// Legacy savings copy arrives as "20% off"; cards read "20% Off".
+const capitaliseOff = (text: string) => text.replace(/\boff\b/g, "Off");
 
 // "20" from 20, "20.5" from 20.5, null when unusable.
 const numeric = (v: unknown): string | null => {

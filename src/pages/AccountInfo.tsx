@@ -40,6 +40,7 @@ import {
   verifySignupCode,
 } from "@/lib/emailVerification";
 import { hasPasswordIdentity, signInMethodLabel } from "@/lib/authProviders";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   clearEmailChangeParams,
   forgetEmailChangeLink,
@@ -972,7 +973,7 @@ const AccountInfo = () => {
 
               <Row label="Username">
                 <div style={{ display: "flex", alignItems: "center", gap: 2, width: "100%" }}>
-                  <span style={{ ...rowInputStyle, width: "auto", flex: "0 0 auto", color: "#6B6A5E" }}>
+                  <span style={{ ...rowInputStyle, width: "auto", flex: "0 0 auto", color: TOKEN_MUTED }}>
                     @
                   </span>
                   <input

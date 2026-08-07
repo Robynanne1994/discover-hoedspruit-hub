@@ -1,4 +1,5 @@
-import { specialValue, savingLabel, specialMeta, type SpecialLike } from "@/lib/specialValue";
+import { specialCard, type SpecialCardLike } from "@/lib/specialCard";
+import { MUTED } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -6,7 +7,7 @@ const BAR = {
   bg: "#F7F2E6",
   border: "#EEE7D4",
   ink: "#1A1A1A",
-  muted: "#6B6A5E",
+  muted: MUTED,
   strike: "#9C9387",
   accent: "#B4522E",
   urgent: "#C0392B",
@@ -15,22 +16,22 @@ const BAR = {
 // The offer gets its own full-bleed strip at the foot of the card. Money left,
 // time right — so scrolling a grid means reading one column of value lines.
 //
-// `detail`: "compact" for the 2-col grid (no room for the savings accent next
-// to a strikethrough — the strike already says it), "full" for the featured
-// card and the homepage rail, which are wide enough for the whole ledger.
+// `detail`: "compact" for the narrow cards — the 2-col grid and the homepage
+// rail — where there is no room for the savings accent next to a strikethrough
+// (the strike already says it); "full" for the featured hero, which is wide
+// enough for the whole ledger.
 const SpecialValueBar = ({
   special,
   detail = "compact",
   padding = "9px 11px",
 }: {
-  special: SpecialLike;
+  special: SpecialCardLike;
   detail?: "compact" | "full";
   padding?: string;
 }) => {
-  const value = specialValue(special);
-  const meta = specialMeta(special);
+  const { value, meta, saving: savingAccent } = specialCard(special);
   const full = detail === "full";
-  const saving = value.kind === "price" && full ? savingLabel(special) : null;
+  const saving = full ? savingAccent : null;
   const priceSize = full ? 15 : 13.5;
   const metaSize = full ? 12 : 11;
 
@@ -118,7 +119,7 @@ const SpecialValueBar = ({
           <span
             style={{
               fontFamily: SANS,
-              fontSize: full ? 14 : 12.5,
+              fontSize: full ? 14 : 12,
               fontWeight: 700,
               color: BAR.accent,
               letterSpacing: "-0.1px",

@@ -15,6 +15,8 @@ import { sanitizeContactArray } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getSpecialBadge } from "@/lib/specialBadge";
+import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
+
 
 interface Special {
   id: string;
@@ -148,6 +150,7 @@ const AdminSpecials = () => {
         additional_emails: sanitizeContactArray(form.additional_emails),
         additional_phones: sanitizeContactArray(form.additional_phones),
         additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
+        title_override: (form.title_override || "").trim() || null,
       };
       if (editing) {
         const { error } = await supabase
@@ -259,17 +262,19 @@ const AdminSpecials = () => {
           <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <Checkbox
+              <Switch
                 id="special-use-title-override"
-                checked={!!(form.title_override && form.title_override.trim())}
+                checked={!!(form.title_override && String(form.title_override).trim())}
                 onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : null })}
               />
               <Label htmlFor="special-use-title-override" className="text-sm cursor-pointer font-normal">
                 Use custom title (overrides auto-capitalisation)
               </Label>
             </div>
-            {!!(form.title_override && form.title_override.trim()) && (
-              <Input
+            {!!(form.title_override && String(form.title_override).trim()) && (
+              <Textarea
+                rows={2}
+                className="resize-none"
                 placeholder="Custom title — rendered exactly as typed"
                 value={form.title_override || ""}
                 onChange={(e) => setForm({ ...form, title_override: e.target.value })}
@@ -306,23 +311,51 @@ const AdminSpecials = () => {
               <select
                 className={SELECT_CLS}
                 value={form.discount_type || ""}
-                onChange={(e) => setForm({ ...form, discount_type: e.target.value || null })}
+                onChange={(e) => {
+                  const next = e.target.value || null;
+                  setForm({
+                    ...form,
+                    discount_type: next,
+                    discount_value: discountTypeUsesValue(next) ? form.discount_value : null,
+                  });
+                }}
               >
                 <option value="">None</option>
                 {DISCOUNT_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               </select>
+              {discountTypeHint(form.discount_type) && (
+                <p className="text-xs text-muted-foreground mt-1">{discountTypeHint(form.discount_type)}</p>
+              )}
             </div>
-            <div>
-              <Label>Discount Value</Label>
-              <Input
-                type="number"
-                value={form.discount_value ?? ""}
-                onChange={(e) => setForm({ ...form, discount_value: e.target.value === "" ? null : Number(e.target.value) })}
-              />
-            </div>
+            {discountTypeUsesValue(form.discount_type) && (
+              <div>
+                <Label>{form.discount_type === "percent_off" ? "Percent off" : "Amount off"}</Label>
+                <div className="relative">
+                  {form.discount_type === "amount_off" && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R</span>
+                  )}
+                  <Input
+                    type="number"
+                    className={form.discount_type === "amount_off" ? "pl-7" : "pr-7"}
+                    value={form.discount_value ?? ""}
+                    onChange={(e) => setForm({ ...form, discount_value: e.target.value === "" ? null : Number(e.target.value) })}
+                  />
+                  {form.discount_type === "percent_off" && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-          <div><Label>Freebie Text</Label><Input value={form.freebie_text || ""} onChange={(e) => setForm({ ...form, freebie_text: e.target.value || null })} placeholder="e.g. Free breakfast and game drive included" /></div>
+          <div>
+            <Label>Freebie Text</Label>
+            <Input value={form.freebie_text || ""} onChange={(e) => setForm({ ...form, freebie_text: e.target.value || null })} placeholder="e.g. Free breakfast and game drive included" />
+            {form.discount_type === "freebie" && (
+              <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
+            )}
+          </div>
           <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => setForm({ ...form, redemption_note: e.target.value || null })} placeholder="e.g. Book direct on their website" /></div>
+
           <div><Label>Badge override, leave blank to auto-generate</Label><Input value={form.badge_override || ""} onChange={(e) => setForm({ ...form, badge_override: e.target.value || null })} /></div>
           <div><Label>Business Name *</Label><Input value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} /></div>
           <div>

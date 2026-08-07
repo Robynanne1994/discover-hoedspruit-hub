@@ -281,7 +281,7 @@ const CompleteProfile = () => {
               <div className="relative">
                 <span
                   className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[15px]"
-                  style={{ color: "#6B6A5E" }}
+                  style={{ color: TOKEN_MUTED }}
                 >
                   @
                 </span>
@@ -307,7 +307,7 @@ const CompleteProfile = () => {
                       ? "#B42318"
                       : usernameStatus === "available"
                         ? "#3F6B3F"
-                        : "#6B6A5E",
+                        : TOKEN_MUTED,
                 }}
               >
                 {usernameStatus === "checking"

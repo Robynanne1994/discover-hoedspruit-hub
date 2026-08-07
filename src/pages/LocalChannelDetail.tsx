@@ -9,6 +9,7 @@ import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useShare } from "@/hooks/useShare";
 import Seo from "@/components/Seo";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 
 
@@ -19,7 +20,7 @@ const CARD = "#ffffff";
 const IVORY = "#f5f0e8";
 const INK = "#1A1A1A";
 const BODY = "#2b2420";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const LINE = "#E2DAC6";
 const BORDER = "#E8E4DF";
 const DIVIDER = "#EDE9E3";

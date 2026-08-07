@@ -2,12 +2,13 @@ import { FileText, Shield, Cookie, Users, ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const MUTED_INK = "#6B6A5E";
+const MUTED_INK = TOKEN_MUTED;
 const LINE = "#E2DAC6";
 
 const POLICIES = [

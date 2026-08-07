@@ -5,12 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import { ShieldAlert } from "lucide-react";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const LINE = "#EAE4D5";
 
 const ACTION_TITLES: Record<string, string> = {

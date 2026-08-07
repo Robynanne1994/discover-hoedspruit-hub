@@ -36,6 +36,13 @@ describe("specialValue", () => {
     expect(specialValue({ original_price: "R120" })).toEqual({ kind: "deal", text: "R120" });
   });
 
+  it("prefers a written offer over a stray original price", () => {
+    expect(specialValue({ freebie_text: "Free breakfast", original_price: "R450" })).toEqual({
+      kind: "deal",
+      text: "Free breakfast",
+    });
+  });
+
   it("reports nothing to show when every money field is empty", () => {
     expect(specialValue({ price: "  ", savings: null })).toEqual({ kind: "none" });
   });
@@ -43,7 +50,7 @@ describe("specialValue", () => {
 
 describe("savingLabel", () => {
   it("shows the business's own wording verbatim", () => {
-    expect(savingLabel({ price: "R70", original_price: "R95", savings: "50% off" })).toBe("50% off");
+    expect(savingLabel({ price: "R70", original_price: "R95", savings: "50% Off" })).toBe("50% Off");
   });
 
   it("derives the saving from the two prices", () => {

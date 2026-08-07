@@ -56,6 +56,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { toast } from "sonner";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   Dialog,
   DialogContent,
@@ -477,7 +478,7 @@ const MyAccount = () => {
   const BG = "#E6E0CC";
   const CARD = "#FFFFFF";
   const INK = "#1A1A1A";
-  const MUTED_INK = "#6B6A5E";
+  const MUTED_INK = TOKEN_MUTED;
   const LABEL = "#9A8E7A";
   const LINE = "#E2DAC6";
 

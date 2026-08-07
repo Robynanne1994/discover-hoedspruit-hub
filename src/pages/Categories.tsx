@@ -11,7 +11,7 @@ import { isOpenNow } from "@/lib/openHours";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
-import { MUTED, type } from "@/lib/type";
+import { MUTED, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -480,7 +480,7 @@ const Categories = () => {
             margin: "0 0 12px",
             ...type.eyebrow,
             textTransform: "uppercase",
-            color: "#6B6A5E",
+            color: TOKEN_MUTED,
           }}
         >
           Quick Filters

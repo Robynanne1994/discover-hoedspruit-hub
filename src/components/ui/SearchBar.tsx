@@ -1,6 +1,6 @@
 import { forwardRef, InputHTMLAttributes, Ref } from "react";
 import { Search } from "lucide-react";
-import { BODY_INK, type } from "@/lib/type";
+import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
 type Variant = "light" | "cream";
 
@@ -18,7 +18,7 @@ const TEXT = BODY_INK;
 
 const VARIANTS: Record<Variant, { bg: string; icon: string }> = {
   light: { bg: "#FFFFFF", icon: "#1A1A1A" },
-  cream: { bg: "rgba(238, 232, 218, 0.92)", icon: "#6B6A5E" },
+  cream: { bg: "rgba(238, 232, 218, 0.92)", icon: TOKEN_MUTED },
 };
 
 const SearchBar = forwardRef<HTMLDivElement, SearchBarProps>(function SearchBar(

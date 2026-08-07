@@ -18,7 +18,7 @@ import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { isOpenNow } from "@/lib/openHours";
 import Seo from "@/components/Seo";
-import { BODY_INK, type } from "@/lib/type";
+import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
@@ -35,7 +35,7 @@ const C = {
   cream: "#EEE8DA",
   softCream: "#F4EFE3",
   ink: BODY_INK,
-  mutedInk: "#6B6A5E",
+  mutedInk: TOKEN_MUTED,
   line: "#D9D2C0",
   rust: "#9B5A3C",
   gold: "#D9C36B",
@@ -659,7 +659,7 @@ const CategoryPage = () => {
   const PAGE_BG = "#E6E0CC";
   const CARD_BG = "#FFFFFF";
   const INK = "#1A1A1A";
-  const MUTED = "#6B6A5E";
+  const MUTED = TOKEN_MUTED;
   const PILL_DARK = "#423324";
   const OPEN_COLOR = "#2b7f3f";
   const CLOSED_COLOR = "#C0392B";

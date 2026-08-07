@@ -9,10 +9,11 @@ import { useFollowRequestActors, actorForNotif, isFollowActorKind } from "@/hook
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import { visibleNotifications } from "@/lib/notificationVisibility";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const INK = "#2A2A24";
 const CREAM = "#EEE8DA";
-const MUTED = "#6B6A5E";
+const MUTED = TOKEN_MUTED;
 const LINE = "#D9D2C0";
 const RUST = "#9B5A3C";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";

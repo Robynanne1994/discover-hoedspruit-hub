@@ -694,7 +694,7 @@ const Welcome = () => {
   const hintStyle: React.CSSProperties = {
     fontFamily: FF,
     fontSize: 12.5,
-    color: "#6B6A5E",
+    color: TOKEN_MUTED,
     margin: "6px 0 0",
   };
 
@@ -807,7 +807,7 @@ const Welcome = () => {
                         ? "#B42318"
                         : usernameStatus === "available"
                           ? "#3F6B3F"
-                          : "#6B6A5E",
+                          : TOKEN_MUTED,
                   }}
                 >
                   {usernameStatus === "checking"
@@ -1113,7 +1113,7 @@ const Welcome = () => {
         {/* OR divider */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "22px 0 16px" }}>
           <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
-          <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: "#6B6A5E" }}>OR</span>
+          <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: TOKEN_MUTED }}>OR</span>
           <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
         </div>
 
