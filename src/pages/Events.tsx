@@ -666,6 +666,16 @@ const Events = () => {
 
   }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
+  // Happening Soon — soonest dated events, excluding recurring ones
+  const happeningSoon = useMemo(() => {
+    const today = startOfToday();
+    return sortedEvents
+      .filter((e) => e._parsed && !isBefore(e._parsed, today) && !parseRecurrenceRule(e.recurrence))
+      .slice(0, 6);
+  }, [sortedEvents]);
+
+
+
 
   const handleFilterPill = (v: FilterType) => {
     updateParams({ f: activeFilter === v || v === "all" ? null : v });
