@@ -134,7 +134,7 @@ const SpecialDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select("id,title,location,google_maps_link,latitude,longitude,km_from_town")
+        .select("id,title,location,google_maps_link,latitude,longitude,km_from_town,phone,whatsapp,email")
         .eq("id", (special as any).business_id)
         .maybeSingle();
       if (error) throw error;
@@ -211,8 +211,14 @@ const SpecialDetail = () => {
   const sp: any = special;
   const fromDate = special.valid_from ? new Date(special.valid_from) : null;
   const untilDate = special.valid_until ? new Date(special.valid_until) : null;
-  const phoneClean = special.contact_phone?.replace(/\s/g, "");
-  const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
+  // Contact inheritance: a special's own details always win, but where they are
+  // blank we fall back to the linked business listing so the CTA still works.
+  const biz: any = business || null;
+  const contactPhone = (sp.contact_phone || "").trim() || (biz?.phone || "").trim() || "";
+  const contactWhatsapp = (sp.contact_whatsapp || "").trim() || (biz?.whatsapp || "").trim() || "";
+  const contactEmail = (sp.contact_email || "").trim() || (biz?.email || "").trim() || "";
+  const phoneClean = contactPhone.replace(/\s/g, "");
+  const waClean = contactWhatsapp.replace(/[^0-9]/g, "");
   const priceFmt = formatPrice(special.price);
   const originalFmt = formatPrice(special.original_price);
   const priceLabel = (sp.price_label || "").trim() || null;
@@ -256,7 +262,7 @@ const SpecialDetail = () => {
   }
 
   // Action pills
-  const emailClean = (special as any).contact_email?.trim();
+  const emailClean = contactEmail;
   const actions = [
     phoneClean && { key: "call", label: "Call", href: `tel:${phoneClean}`, Icon: Phone, ext: false },
     waClean && {
@@ -444,8 +450,8 @@ const SpecialDetail = () => {
 
   const renderContact = () => {
     const rows: { Icon: any; label: string; value: string; href: string; external?: boolean; internal?: boolean }[] = [];
-    const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
-    const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
+    const phones = collectContacts(contactPhone, (special as any).additional_phones);
+    const whatsapps = collectContacts(contactWhatsapp, (special as any).additional_whatsapps);
     phones.forEach((p, i) => {
       const clean = p.replace(/\s/g, "");
       rows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${clean}` });
@@ -454,7 +460,7 @@ const SpecialDetail = () => {
       const clean = w.replace(/[^0-9]/g, "");
       rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
     });
-    const email = (special as any).contact_email?.trim();
+    const email = contactEmail;
     if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
     if (special.business_id && special.business_name) rows.push({
       Icon: Store, label: "Business", value: special.business_name,
@@ -749,9 +755,9 @@ const SpecialDetail = () => {
         const hasAbout = !!(special.description?.trim()) ||
           detailRows.length > 0 ||
           !!special.promo_code;
-        const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
-        const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
-        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email || !!special.business_id;
+        const phones = collectContacts(contactPhone, (special as any).additional_phones);
+        const whatsapps = collectContacts(contactWhatsapp, (special as any).additional_whatsapps);
+        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!contactEmail || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
         const hasLocation = !!(business && ((business as any).location || mapPlace));
 
