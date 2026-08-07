@@ -273,7 +273,7 @@ const FAQs = () => {
         </p>
         <PrimaryButton
           fullWidth
-          onClick={() => navigate("/contact-us")}
+          onClick={() => navigate("/contact")}
           style={{ maxWidth: 320 }}
         >
           Contact Us
