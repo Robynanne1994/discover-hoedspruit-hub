@@ -13,6 +13,10 @@ export interface SpecialLike {
   card_footer_text?: string | null;
   valid_from?: string | null;
   valid_until?: string | null;
+  day_of_week?: string | null;
+  discount_type?: string | null;
+  discount_value?: number | string | null;
+  freebie_text?: string | null;
 }
 
 const str = (v: unknown): string | null => {
