@@ -151,13 +151,12 @@ const HomeSpecials = () => {
               flexShrink: 0,
             }}
           />
-        ) : (
-          <MapPin size={13} strokeWidth={1.6} color="#6B6A5E" style={{ flexShrink: 0 }} />
-        )}
+        ) : null}
         <span
           style={{
             fontFamily: HN,
-            fontSize: 13,
+            fontSize: 12,
+            fontWeight: 400,
             color: "#6B6A5E",
             whiteSpace: "nowrap",
             overflow: "hidden",
