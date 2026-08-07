@@ -241,26 +241,36 @@ const SavedCard = ({
   const [pressed, setPressed] = useState(false);
   const [isLogo, setIsLogo] = useState(false);
   const titleRef = useRef<HTMLSpanElement | null>(null);
+  const locRef = useRef<HTMLSpanElement | null>(null);
   const [titleLines, setTitleLines] = useState(1);
+  const [locLines, setLocLines] = useState(1);
   const src = it.saved_image_url || it.image_url;
   const { lines, status, badge, ratingChip } = buildContent(it, type);
   const override = (it.title_override ?? "").toString().trim();
   const title = override || titleCase(it.title);
 
-  // Measure how many lines the title actually renders on so the location line
-  // below it can take two lines only when there is room for it.
+  // Measure how many lines the title and the location actually render on. The
+  // title only gives up its reserved second line when the location needs two.
   useEffect(() => {
-    const el = titleRef.current;
-    if (!el) return;
+    const els: Array<[HTMLElement | null, (n: number) => void]> = [
+      [titleRef.current, setTitleLines],
+      [locRef.current, setLocLines],
+    ];
     const measure = () => {
-      const lh = parseFloat(getComputedStyle(el).lineHeight) || 1;
-      setTitleLines(Math.max(1, Math.round(el.scrollHeight / lh)));
+      els.forEach(([el, set]) => {
+        if (!el) return;
+        const lh = parseFloat(getComputedStyle(el).lineHeight) || 1;
+        set(Math.max(1, Math.round(el.scrollHeight / lh)));
+      });
     };
     measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(el);
+    els.forEach(([el]) => el && ro.observe(el));
     return () => ro.disconnect();
-  }, [title]);
+  }, [title, lines]);
+
+  const shiftUp = type === "listing" && titleLines === 1 && locLines > 1;
+
 
   return (
     <Link
