@@ -63,7 +63,6 @@ import TermsPolicies from "./pages/TermsPolicies.tsx";
 import FAQs from "./pages/FAQs.tsx";
 import HelpCentre from "./pages/HelpCentre.tsx";
 
-import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
 import MyNotifications from "./pages/MyNotifications.tsx";
 import NotificationCategories from "./pages/NotificationCategories.tsx";
@@ -290,7 +289,6 @@ const App = () => (
               <Route path="/help-centre" element={<HelpCentre />} />
               
               
-              <Route path="/feedback" element={<Feedback />} />
              <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
              <Route path="/my-notifications" element={<MyNotifications />} />
             <Route path="/notification-preferences" element={<Notifications />} />
