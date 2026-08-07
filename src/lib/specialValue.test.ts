@@ -50,7 +50,7 @@ describe("specialValue", () => {
 
 describe("savingLabel", () => {
   it("shows the business's own wording verbatim", () => {
-    expect(savingLabel({ price: "R70", original_price: "R95", savings: "50% off" })).toBe("50% off");
+    expect(savingLabel({ price: "R70", original_price: "R95", savings: "50% Off" })).toBe("50% Off");
   });
 
   it("derives the saving from the two prices", () => {
