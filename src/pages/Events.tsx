@@ -926,11 +926,50 @@ const Events = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {filtered.map((e) => (
-              <EventCard key={e.id} event={e} />
+            {groupedEvents.map((group) => (
+              <div key={group.key} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    marginTop: 18,
+                    marginBottom: 2,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: SANS,
+                      fontWeight: 700,
+                      fontSize: 12,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: C.muted,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {group.label}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: SANS,
+                      fontWeight: 400,
+                      fontSize: 12,
+                      color: C.muted,
+                    }}
+                  >
+                    {group.events.length}
+                  </span>
+                  <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.10)" }} />
+                </div>
+                {group.events.map((e) => (
+                  <EventCard key={e.id} event={e} />
+                ))}
+              </div>
             ))}
           </div>
         )}
+
       </div>
 
       <RefineDrawer
