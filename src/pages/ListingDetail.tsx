@@ -1027,7 +1027,7 @@ const ListingDetail = () => {
             ref={descRef}
             className="ld-richtext"
             style={
-              descExpanded
+              descExpanded || !descOverflows
                 ? undefined
                 : {
                     maxHeight: 148,
