@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
@@ -26,6 +26,10 @@ const CHIP_SHADOW = "0 1px 4px rgba(0,5,5,0.14)";
 // and the bottom-left rating/deal pills all share this same inset so the
 // padding above and below the image stays visually equal.
 const PILL_INSET = 8;
+// The heart button's 30px circle starts 4px from the image top, so the type
+// capsule sits at the same 4px to line the two tops up.
+const PILL_TOP = 4;
+const STAR = "#E9B417";
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
@@ -112,9 +116,11 @@ const buildContent = (it: any, type: CardType) => {
     const rating = it.google_rating ? Number(it.google_rating).toFixed(1).replace(/\.0$/, "") : null;
     const reviews = it.google_reviews_count ? ` (${it.google_reviews_count})` : "";
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
-    if (rating) ratingChip = `★ ${rating}${reviews}`;
+    if (rating) ratingChip = `${rating}${reviews}`;
     lines.push(category ? { text: category } : null);
-    lines.push(it.location ? { icon: MapPin, text: it.location, clamp: 1 } : null);
+    // Location clamp is decided at render time from the measured title height:
+    // one-line titles leave room for two lines of location, two-line titles do not.
+    lines.push(it.location ? { icon: MapPin, text: it.location } : null);
 
 
     const hours = it.opening_hours as Record<string, string> | null | undefined;
@@ -234,10 +240,27 @@ const SavedCard = ({
 }) => {
   const [pressed, setPressed] = useState(false);
   const [isLogo, setIsLogo] = useState(false);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const [titleLines, setTitleLines] = useState(1);
   const src = it.saved_image_url || it.image_url;
   const { lines, status, badge, ratingChip } = buildContent(it, type);
   const override = (it.title_override ?? "").toString().trim();
   const title = override || titleCase(it.title);
+
+  // Measure how many lines the title actually renders on so the location line
+  // below it can take two lines only when there is room for it.
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    const measure = () => {
+      const lh = parseFloat(getComputedStyle(el).lineHeight) || 1;
+      setTitleLines(Math.max(1, Math.round(el.scrollHeight / lh)));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [title]);
 
   return (
     <Link
@@ -305,7 +328,7 @@ const SavedCard = ({
         )}
 
         {/* Type capsule */}
-        <div style={{ position: "absolute", top: PILL_INSET, left: PILL_INSET }}>
+        <div style={{ position: "absolute", top: PILL_TOP, left: PILL_INSET }}>
           <Chip>
             <span
               style={{
@@ -325,7 +348,7 @@ const SavedCard = ({
           <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
               <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
-                {ratingChip}
+                <span style={{ color: STAR }}>★</span> {ratingChip}
               </span>
             </Chip>
           </div>
@@ -414,6 +437,7 @@ const SavedCard = ({
         }}
       >
         <h3
+          ref={titleRef}
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
             fontFamily: SANS,
@@ -432,8 +456,12 @@ const SavedCard = ({
           {title}
         </h3>
 
-        {lines.map((line, i) =>
-          line ? (
+        {lines.map((line, i) => {
+          if (!line) return null;
+          // Listing location: two lines when the title fits on one, otherwise one.
+          const clamp =
+            line.icon === MapPin && type === "listing" ? (titleLines > 1 ? 1 : 2) : line.clamp ?? 2;
+          return (
             <div
               key={i}
               style={{
@@ -458,19 +486,19 @@ const SavedCard = ({
               <span
                 style={{
                   display: "-webkit-box",
-                  WebkitLineClamp: line.clamp ?? 2,
+                  WebkitLineClamp: clamp,
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
-                  overflowWrap: line.clamp === 1 ? "normal" : "break-word",
-                  wordBreak: line.clamp === 1 ? "normal" : undefined,
+                  overflowWrap: clamp === 1 ? "normal" : "break-word",
+                  wordBreak: clamp === 1 ? "normal" : undefined,
                 }}
               >
                 {line.lead ? `${line.lead} ` : ""}
                 {line.text}
               </span>
             </div>
-          ) : null,
-        )}
+          );
+        })}
 
       </div>
 
