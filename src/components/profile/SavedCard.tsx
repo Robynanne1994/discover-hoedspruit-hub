@@ -571,32 +571,42 @@ const SavedCard = ({
             gap: 3,
           }}
         >
-          {status.items.map((s, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 5,
-                fontFamily: SANS,
-                ...t.meta,
-                fontWeight: 600,
-                color: s.tone,
-                lineHeight: 1.2,
-              }}
-            >
-              <span
+          {status.items.map((s, i) => {
+            // Listing open/closed rows read "Open · Closes 9:00 PM". Keep the
+            // leading state word bold (Open/Closed) but render the time detail
+            // at normal weight, matching the category listing cards.
+            const [head, ...tail] = s.text.split(" · ");
+            const detail = tail.join(" · ");
+            return (
+              <div
+                key={i}
                 style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: 9999,
-                  background: s.tone,
-                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  fontFamily: SANS,
+                  ...t.meta,
+                  fontWeight: 600,
+                  color: s.tone,
+                  lineHeight: 1.2,
                 }}
-              />
-              {s.text}
-            </div>
-          ))}
+              >
+                <span
+                  style={{
+                    width: 5,
+                    height: 5,
+                    borderRadius: 9999,
+                    background: s.tone,
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ fontWeight: 600 }}>{head}</span>
+                {detail && (
+                  <span style={{ fontWeight: 400 }}> · {detail}</span>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </Link>
