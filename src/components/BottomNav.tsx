@@ -76,7 +76,7 @@ const BottomNav = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 textDecoration: "none",
-                height: 46,
+                height: 40,
                 borderRadius: 999,
                 background: isActive ? ACTIVE_BG : "transparent",
                 gap: 8,
