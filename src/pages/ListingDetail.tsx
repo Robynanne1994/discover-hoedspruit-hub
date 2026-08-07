@@ -36,6 +36,7 @@ import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { getCustomIcon } from "@/lib/customIcons";
 import { renderListingRichText } from "@/lib/listingRichText";
+import { getSpecialBadge } from "@/lib/specialBadge";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
 
