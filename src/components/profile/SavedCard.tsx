@@ -437,7 +437,6 @@ const SavedCard = ({
         }}
       >
         <h3
-          ref={titleRef}
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
             fontFamily: SANS,
@@ -445,7 +444,7 @@ const SavedCard = ({
             color: INK,
             lineHeight: 1.22,
             margin: 0,
-            minHeight: 37,
+            minHeight: titleLines > 1 || type === "resource" ? 37 : undefined,
             overflowWrap: "break-word",
             display: "-webkit-box",
             WebkitLineClamp: type === "resource" ? 3 : 2,
@@ -453,8 +452,9 @@ const SavedCard = ({
             overflow: "hidden",
           }}
         >
-          {title}
+          <span ref={titleRef}>{title}</span>
         </h3>
+
 
         {lines.map((line, i) => {
           if (!line) return null;
