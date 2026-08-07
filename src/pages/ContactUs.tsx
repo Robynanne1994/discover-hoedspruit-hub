@@ -49,68 +49,47 @@ const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
 
 type RowProps = {
   icon: React.ReactNode;
-  eyebrow: string;
-  value: React.ReactNode;
+  label: string;
+  subtitle?: string;
   href?: string;
-  external?: boolean;
 };
 
-const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
+const Row = ({ icon, label, subtitle, href }: RowProps) => {
   const inner = (
     <div
       style={{
         display: "flex",
         alignItems: "center",
         gap: 14,
-        background: "transparent",
-        padding: "16px 18px",
+        minHeight: 56,
+        padding: "10px 16px",
         textDecoration: "none",
         color: "inherit",
       }}
     >
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: "50%",
-          background: ICON_BG,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
+      <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        {eyebrow && (
-          <div
-            style={{
-              fontFamily: FF,
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#423324",
-              marginBottom: 4,
-            }}
-          >
-            {eyebrow}
-          </div>
-        )}
         <div
           style={{
             fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
+            fontSize: 16,
+            fontWeight: 500,
+            letterSpacing: "-0.01em",
             color: INK,
-            lineHeight: 1.3,
+            lineHeight: 1.25,
           }}
         >
-          {value}
+          {label}
         </div>
+        {subtitle ? (
+          <div style={{ fontFamily: FF, fontSize: 12.5, fontWeight: 400, color: LABEL, lineHeight: 1.3, marginTop: 2 }}>
+            {subtitle}
+          </div>
+        ) : null}
       </div>
-      {href && <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />}
+      {href && <ArrowUpRight size={16} strokeWidth={2} color={TRAIL_ICON} style={{ flexShrink: 0 }} />}
     </div>
   );
 
@@ -118,8 +97,8 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
   return (
     <a
       href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
+      target="_blank"
+      rel="noopener noreferrer"
       style={{ textDecoration: "none", color: "inherit", display: "block" }}
     >
       {inner}
@@ -130,6 +109,7 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <p style={{ ...type.sectionEyebrow, marginTop: 0 }}>{children}</p>
 );
+
 
 const SocialTile = ({
   icon,
