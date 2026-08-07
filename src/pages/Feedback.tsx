@@ -219,7 +219,7 @@ const Feedback = () => {
       setSubject("");
       setMessage("");
       setType("");
-      setImageUrl("");
+      setImageUrls([]);
       setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
