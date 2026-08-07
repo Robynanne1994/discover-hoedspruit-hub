@@ -470,7 +470,9 @@ const SavedCard = ({
           if (!line) return null;
           // Listing location: two lines when the title fits on one, otherwise one.
           const clamp =
-            line.icon === MapPin && type === "listing" ? (titleLines > 1 ? 1 : 2) : line.clamp ?? 2;
+            (line.icon === MapPin && type === "listing") || (line.icon === Store && type === "special")
+              ? (titleLines > 1 ? 1 : 2)
+              : line.clamp ?? 2;
           return (
             <div
               key={i}
