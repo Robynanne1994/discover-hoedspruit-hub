@@ -175,18 +175,7 @@ const ShareSheet = ({ open, content, onClose }: ShareSheetProps) => {
           >
             {content.title}
           </p>
-          <p
-            style={{
-              margin: "4px 0 0",
-              fontSize: 12,
-              color: C.muted,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {url.replace(/^https?:\/\//, "")}
-          </p>
+        
         </div>
 
         {/* Share via… */}
