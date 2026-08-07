@@ -476,16 +476,15 @@ const SavedCard = ({
         {lines.map((line, i) => {
           if (!line) return null;
           // Listing location: two lines when the title fits on one, otherwise one.
-          const clamp =
-            (line.icon === MapPin && type === "listing") || (line.icon === Store && type === "special")
-              ? (titleLines > 1 ? 1 : 2)
-              : line.clamp ?? 2;
+          const isFlexLine =
+            (line.icon === MapPin && type === "listing") || (line.icon === Store && type === "special");
+          const clamp = isFlexLine ? (titleLines > 1 ? 1 : 2) : line.clamp ?? 2;
           return (
             <div
               key={i}
               style={{
                 display: "flex",
-                alignItems: "flex-start",
+                alignItems: isFlexLine ? "center" : "flex-start",
                 gap: 5,
                 fontFamily: SANS,
                 ...t.meta,
@@ -499,7 +498,7 @@ const SavedCard = ({
                   size={i === 0 ? 12 : 11}
                   strokeWidth={1.8}
                   color={MUTED}
-                  style={{ flexShrink: 0, marginTop: 1 }}
+                  style={{ flexShrink: 0, marginTop: isFlexLine ? 0 : 1 }}
                 />
               )}
               <span
