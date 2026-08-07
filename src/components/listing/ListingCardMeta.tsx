@@ -31,18 +31,23 @@ const closesAt = (hours: Record<string, string> | null | undefined) => {
 };
 
 // The open/closed footer bar, mirroring the saved cards on the profile page.
+// Returns a bold prefix ("Open"/"Closed") plus a lighter detail ("Opens X"/"Closes X").
 export const listingStatus = (
   hours: Record<string, string> | null | undefined
-): { text: string; tone: string } => {
+): { label: string; detail?: string; tone: string } => {
   const hasHours = !!hours && Object.values(hours).some((v) => typeof v === "string" && v.trim() !== "");
-  if (!hasHours) return { text: "Hours Unknown", tone: BROWN };
-  if (isAlwaysOpen(todayHours(hours))) return { text: "Always Open", tone: SAGE };
+  if (!hasHours) return { label: "Hours Unknown", tone: BROWN };
+  if (isAlwaysOpen(todayHours(hours))) return { label: "Always Open", tone: SAGE };
   if (isOpenNow(hours)) {
     const until = closesAt(hours);
-    return { text: until ? `Open · Closes ${until}` : "Open Now", tone: SAGE };
+    return until
+      ? { label: "Open", detail: `Closes ${until}`, tone: SAGE }
+      : { label: "Open Now", tone: SAGE };
   }
   const opens = to12h(opensAt(hours));
-  return { text: opens ? `Closed · Opens ${opens}` : "Closed Now", tone: CLAY };
+  return opens
+    ? { label: "Closed", detail: `Opens ${opens}`, tone: CLAY }
+    : { label: "Closed Now", tone: CLAY };
 };
 
 interface Props {
@@ -150,7 +155,10 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, hou
         }}
       >
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0 }} />
-        {status.text}
+        <span>{status.label}</span>
+        {status.detail ? (
+          <span style={{ fontWeight: 400 }}>· {status.detail}</span>
+        ) : null}
       </div>
     </>
   );
