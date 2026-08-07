@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
+import { getSpecialBadge } from "@/lib/specialBadge";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -152,7 +153,7 @@ const buildContent = (it: any, type: CardType) => {
     const ends = it.valid_until ? new Date(it.valid_until).getTime() : null;
     const expired = ends != null && ends < Date.now();
     if (expired) badge = { text: "Ended", tone: "ended" };
-    else if (it.deal_label) badge = { text: it.deal_label, tone: "deal" };
+    else badge = { text: getSpecialBadge(it), tone: "deal" };
 
     if (!expired && it.valid_until) {
       const d = daysAway(it.valid_until);

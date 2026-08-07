@@ -13,6 +13,10 @@ export interface SpecialLike {
   card_footer_text?: string | null;
   valid_from?: string | null;
   valid_until?: string | null;
+  day_of_week?: string | null;
+  discount_type?: string | null;
+  discount_value?: number | string | null;
+  freebie_text?: string | null;
 }
 
 const str = (v: unknown): string | null => {
@@ -114,11 +118,45 @@ export const specialValue = (s: SpecialLike): SpecialValue => {
       note: str(s.price_label),
     };
   }
-  // No price set — the savings line becomes the value. original_price on its
-  // own is a data-entry slip, but it's still a number worth showing.
-  const deal = str(s.savings) || str(s.original_price);
+  // No price set — a structured discount or the savings line becomes the value.
+  // original_price on its own is a data-entry slip, but it's still a number
+  // worth showing.
+  const pct = s.discount_type === "percent_off" ? numeric(s.discount_value) : null;
+  if (pct != null) return { kind: "deal", text: `${pct}% off` };
+  const amt = s.discount_type === "amount_off" ? numeric(s.discount_value) : null;
+  if (amt != null) return { kind: "deal", text: `Save R${amt}` };
+  const deal = str(s.savings) || str(s.original_price) || str(s.freebie_text);
   if (deal) return { kind: "deal", text: deal };
   return { kind: "none" };
+};
+
+// "20" from 20, "20.5" from 20.5, null when unusable.
+const numeric = (v: unknown): string | null => {
+  if (v == null || String(v).trim() === "") return null;
+  const n = Number(v);
+  if (!Number.isFinite(n)) return null;
+  return String(Math.round(n * 100) / 100);
+};
+
+// Human date line for a special: weekly day, date range, or nothing at all.
+export const specialDateLine = (s: SpecialLike): string | null => {
+  const day = str(s.day_of_week);
+  const from = s.valid_from ? new Date(s.valid_from) : null;
+  const until = s.valid_until ? new Date(s.valid_until) : null;
+  const validFrom = from && !isNaN(from.getTime()) ? from : null;
+  const validUntil = until && !isNaN(until.getTime()) ? until : null;
+
+  if (day && validUntil) return `${day}s until ${format(validUntil, "d MMM")}`;
+  if (day) return `Every ${day}`;
+  if (validFrom && validUntil) {
+    const sameMonth =
+      validFrom.getMonth() === validUntil.getMonth() && validFrom.getFullYear() === validUntil.getFullYear();
+    return sameMonth
+      ? `${format(validFrom, "d")} to ${format(validUntil, "d MMM")}`
+      : `${format(validFrom, "d MMM")} to ${format(validUntil, "d MMM")}`;
+  }
+  if (validUntil) return `Until ${format(validUntil, "d MMM")}`;
+  return null;
 };
 
 // Accent shown alongside a price. Explicit savings wording is used verbatim;
@@ -135,10 +173,15 @@ export const savingLabel = (s: SpecialLike): string | null => {
 };
 
 // Right slot of the value bar. Urgency always wins — "3 days left" is the most
-// conversion-relevant thing on a deals card — then the business's own wording.
+// conversion-relevant thing on a deals card — then the business's own wording,
+// then the schedule. Empty string means there is nothing to say, so callers
+// render no row at all rather than an empty one.
 export const specialMeta = (s: SpecialLike): { text: string; urgent: boolean } => {
   if (isEndingSoon(s)) return { text: countdownLabel(s), urgent: true };
   const own = str(s.card_footer_text);
   if (own) return { text: own, urgent: false };
-  return { text: countdownLabel(s), urgent: false };
+  const line = specialDateLine(s);
+  if (line) return { text: line, urgent: false };
+  if (s.valid_until) return { text: countdownLabel(s), urgent: false };
+  return { text: "", urgent: false };
 };

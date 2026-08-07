@@ -1984,6 +1984,7 @@ export type Database = {
           additional_emails: string[]
           additional_phones: string[]
           additional_whatsapps: string[]
+          badge_override: string | null
           booking_link: string | null
           booking_link_label: string | null
           booking_required: boolean
@@ -1994,9 +1995,13 @@ export type Database = {
           contact_phone: string | null
           contact_whatsapp: string | null
           created_at: string
-          deal_label: string
+          day_of_week: string | null
+          deal_type: string | null
           description: string | null
           detail_image_url: string | null
+          discount_type: string | null
+          discount_value: number | null
+          freebie_text: string | null
           homepage_image_url: string | null
           id: string
           image_url: string | null
@@ -2006,6 +2011,7 @@ export type Database = {
           price: string | null
           price_label: string | null
           promo_code: string | null
+          redemption_note: string | null
           saved_image_url: string | null
           savings: string | null
           sub_tag_1: string | null
@@ -2022,6 +2028,7 @@ export type Database = {
           additional_emails?: string[]
           additional_phones?: string[]
           additional_whatsapps?: string[]
+          badge_override?: string | null
           booking_link?: string | null
           booking_link_label?: string | null
           booking_required?: boolean
@@ -2032,9 +2039,13 @@ export type Database = {
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
-          deal_label: string
+          day_of_week?: string | null
+          deal_type?: string | null
           description?: string | null
           detail_image_url?: string | null
+          discount_type?: string | null
+          discount_value?: number | null
+          freebie_text?: string | null
           homepage_image_url?: string | null
           id?: string
           image_url?: string | null
@@ -2044,6 +2055,7 @@ export type Database = {
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
+          redemption_note?: string | null
           saved_image_url?: string | null
           savings?: string | null
           sub_tag_1?: string | null
@@ -2060,6 +2072,7 @@ export type Database = {
           additional_emails?: string[]
           additional_phones?: string[]
           additional_whatsapps?: string[]
+          badge_override?: string | null
           booking_link?: string | null
           booking_link_label?: string | null
           booking_required?: boolean
@@ -2070,9 +2083,13 @@ export type Database = {
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
-          deal_label?: string
+          day_of_week?: string | null
+          deal_type?: string | null
           description?: string | null
           detail_image_url?: string | null
+          discount_type?: string | null
+          discount_value?: number | null
+          freebie_text?: string | null
           homepage_image_url?: string | null
           id?: string
           image_url?: string | null
@@ -2082,6 +2099,7 @@ export type Database = {
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
+          redemption_note?: string | null
           saved_image_url?: string | null
           savings?: string | null
           sub_tag_1?: string | null

@@ -14,6 +14,7 @@ import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getSpecialBadge } from "@/lib/specialBadge";
 
 interface Special {
   id: string;
@@ -23,7 +24,13 @@ interface Special {
   business_name: string;
   business_id: string | null;
   image_url: string | null;
-  deal_label: string;
+  badge_override: string | null;
+  deal_type: string | null;
+  day_of_week: string | null;
+  discount_type: string | null;
+  discount_value: number | null;
+  freebie_text: string | null;
+  redemption_note: string | null;
   valid_until: string | null;
   valid_from: string | null;
   is_active: boolean;
@@ -47,6 +54,10 @@ interface Special {
   sub_tag_2: string | null;
 }
 
+const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm";
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const DISCOUNT_TYPES = ["percent_off","amount_off","fixed_price","buy_x_get_y","freebie"];
+
 const emptyForm: Omit<Special, "id"> = {
   title: "",
   title_override: null,
@@ -54,7 +65,13 @@ const emptyForm: Omit<Special, "id"> = {
   business_name: "",
   business_id: null,
   image_url: null,
-  deal_label: "",
+  badge_override: null,
+  deal_type: null,
+  day_of_week: null,
+  discount_type: null,
+  discount_value: null,
+  freebie_text: null,
+  redemption_note: null,
   valid_until: null,
   valid_from: null,
   is_active: true,
@@ -179,7 +196,13 @@ const AdminSpecials = () => {
       business_name: s.business_name,
       business_id: s.business_id,
       image_url: s.image_url,
-      deal_label: s.deal_label,
+      badge_override: (s as any).badge_override ?? null,
+      deal_type: (s as any).deal_type ?? null,
+      day_of_week: (s as any).day_of_week ?? null,
+      discount_type: (s as any).discount_type ?? null,
+      discount_value: (s as any).discount_value ?? null,
+      freebie_text: (s as any).freebie_text ?? null,
+      redemption_note: (s as any).redemption_note ?? null,
       valid_until: s.valid_until,
       valid_from: s.valid_from,
       is_active: s.is_active,
@@ -253,7 +276,54 @@ const AdminSpecials = () => {
               />
             )}
           </div>
-          <div><Label>Deal Label * (e.g. "20% OFF", "2 FOR 1")</Label><Input value={form.deal_label} onChange={(e) => setForm({ ...form, deal_label: e.target.value })} /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Deal Type</Label>
+              <select
+                className={SELECT_CLS}
+                value={form.deal_type || ""}
+                onChange={(e) => setForm({ ...form, deal_type: e.target.value || null })}
+              >
+                <option value="">None</option>
+                {["weekly", "date_range", "monthly", "ongoing"].map((v) => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label>Day Of Week</Label>
+              <select
+                className={SELECT_CLS}
+                value={form.day_of_week || ""}
+                onChange={(e) => setForm({ ...form, day_of_week: e.target.value || null })}
+              >
+                <option value="">None</option>
+                {DAYS.map((v) => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Discount Type</Label>
+              <select
+                className={SELECT_CLS}
+                value={form.discount_type || ""}
+                onChange={(e) => setForm({ ...form, discount_type: e.target.value || null })}
+              >
+                <option value="">None</option>
+                {DISCOUNT_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label>Discount Value</Label>
+              <Input
+                type="number"
+                value={form.discount_value ?? ""}
+                onChange={(e) => setForm({ ...form, discount_value: e.target.value === "" ? null : Number(e.target.value) })}
+              />
+            </div>
+          </div>
+          <div><Label>Freebie Text</Label><Input value={form.freebie_text || ""} onChange={(e) => setForm({ ...form, freebie_text: e.target.value || null })} placeholder="e.g. Free breakfast and game drive included" /></div>
+          <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => setForm({ ...form, redemption_note: e.target.value || null })} placeholder="e.g. Book direct on their website" /></div>
+          <div><Label>Badge override, leave blank to auto-generate</Label><Input value={form.badge_override || ""} onChange={(e) => setForm({ ...form, badge_override: e.target.value || null })} /></div>
           <div><Label>Business Name *</Label><Input value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} /></div>
           <div>
             <Label>Link to Listing (optional)</Label>
@@ -340,7 +410,7 @@ const AdminSpecials = () => {
           <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
 
           <div className="border-t border-border pt-4 mt-4 space-y-4">
-            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.deal_label || !form.business_name}>
+            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.business_name}>
               {editing ? "Update Special" : "Create Special"}
             </Button>
           </div>
@@ -387,7 +457,7 @@ const AdminSpecials = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-slate-950 truncate">{s.title}</span>
-                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold text-slate-950">{s.deal_label}</span>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold text-slate-950">{getSpecialBadge(s as any)}</span>
                         {!isSpecialActive(s) && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">Passed</span>}
                       </div>
                       <p className="text-sm text-muted-foreground">{s.business_name} · {s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</p>
