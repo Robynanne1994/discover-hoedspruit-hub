@@ -200,7 +200,7 @@ const buildContent = (it: any, type: CardType) => {
     if (memberText) status = { items: [{ text: memberText, tone: OLIVE }] };
   }
 
-  return { lines, status, badge, ratingChip };
+  return { lines, status, badge, ratingChip, reviewCount };
 };
 
 const Chip = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
