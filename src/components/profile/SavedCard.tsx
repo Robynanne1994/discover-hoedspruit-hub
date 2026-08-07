@@ -234,10 +234,30 @@ const SavedCard = ({
 }) => {
   const [pressed, setPressed] = useState(false);
   const [isLogo, setIsLogo] = useState(false);
+  const [titleLines, setTitleLines] = useState(1);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
   const src = it.saved_image_url || it.image_url;
   const { lines, status, badge, ratingChip } = buildContent(it, type);
   const override = (it.title_override ?? "").toString().trim();
   const title = override || titleCase(it.title);
+
+  // Measure how many lines the title actually renders on, so the location line
+  // below it can claim the leftover row.
+  useLayoutEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    const measure = () => {
+      const lh = parseFloat(getComputedStyle(el).lineHeight || "0");
+      if (!lh) return;
+      setTitleLines(Math.max(1, Math.round(el.scrollHeight / lh)));
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [title]);
+
 
   return (
     <Link
