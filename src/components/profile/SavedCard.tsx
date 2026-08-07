@@ -111,12 +111,14 @@ const buildContent = (it: any, type: CardType) => {
   // labels), "ended" the greyed-out chip. Tones match SpecialBadgePill.
   let badge: { text: string; tone: "deal" | "quiet" | "ended" } | null = null;
   let ratingChip: string | null = null;
+  let reviewCount: string | null = null;
 
   if (type === "listing") {
     const rating = it.google_rating ? Number(it.google_rating).toFixed(1).replace(/\.0$/, "") : null;
-    const reviews = it.google_reviews_count ? `\u2009(${it.google_reviews_count})` : "";
+    const reviews = it.google_reviews_count ? `${it.google_reviews_count}` : null;
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
-    if (rating) ratingChip = `${rating}${reviews}`;
+    if (rating) ratingChip = rating;
+    if (reviews) reviewCount = reviews;
     lines.push(category ? { text: category } : null);
     // Location clamp is decided at render time from the measured title height:
     // one-line titles leave room for two lines of location, two-line titles do not.
@@ -198,7 +200,7 @@ const buildContent = (it: any, type: CardType) => {
     if (memberText) status = { items: [{ text: memberText, tone: OLIVE }] };
   }
 
-  return { lines, status, badge, ratingChip };
+  return { lines, status, badge, ratingChip, reviewCount };
 };
 
 const Chip = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
@@ -245,7 +247,7 @@ const SavedCard = ({
   const [titleLines, setTitleLines] = useState(1);
   const [locLines, setLocLines] = useState(1);
   const src = it.saved_image_url || it.image_url;
-  const { lines, status, badge, ratingChip } = buildContent(it, type);
+  const { lines, status, badge, ratingChip, reviewCount } = buildContent(it, type);
   const override = (it.title_override ?? "").toString().trim();
   const title = override || titleCase(it.title);
 
@@ -359,6 +361,9 @@ const SavedCard = ({
             <Chip style={{ height: 18, padding: "0 6px" }}>
               <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
                 <span style={{ color: STAR }}>★</span> {ratingChip}
+                {reviewCount && (
+                  <span style={{ letterSpacing: "-0.03em" }}> ({reviewCount})</span>
+                )}
               </span>
             </Chip>
           </div>
