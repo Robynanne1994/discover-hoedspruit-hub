@@ -215,7 +215,7 @@ const AdminSubmissions = () => {
         status: "unread",
         title: "Admin has replied to your feedback",
         body: trimmed,
-        link: "/feedback?tab=replies",
+        link: null,
         ref_table: "feedback",
         ref_id: feedback.id,
       });

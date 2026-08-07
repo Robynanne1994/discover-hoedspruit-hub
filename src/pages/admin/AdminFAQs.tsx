@@ -61,7 +61,6 @@ const APP_LINK_OPTIONS: { group: string; items: { label: string; path: string }[
       { label: "Help Centre", path: "/help-centre" },
       { label: "FAQs", path: "/faqs" },
       { label: "Contact Us", path: "/contact" },
-      { label: "Feedback", path: "/feedback" },
       { label: "Terms & Policies", path: "/terms" },
     ],
   },

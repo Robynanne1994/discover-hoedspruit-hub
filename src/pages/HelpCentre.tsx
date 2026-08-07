@@ -24,7 +24,7 @@ const ROWS: RowItem[] = [
   { label: "FAQs", href: "/faqs", icon: HelpCircle },
   { label: "Terms & Policies", href: "/terms", icon: FileText },
   { label: "Contact Us", href: "/contact", icon: Mail },
-  { label: "Feedback", href: "/feedback", icon: MessageSquare },
+  { label: "Feedback", href: "https://hellohoedspruit.co/help/feedback", icon: MessageSquare, external: true },
 ];
 
 const ROW_STYLE: React.CSSProperties = {
