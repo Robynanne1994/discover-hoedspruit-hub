@@ -930,6 +930,8 @@ export type Database = {
           created_at: string
           feedback_type: string
           id: string
+          image_url: string | null
+          image_urls: string[] | null
           is_read: boolean
           message: string
           replied_at: string | null
@@ -942,6 +944,8 @@ export type Database = {
           created_at?: string
           feedback_type: string
           id?: string
+          image_url?: string | null
+          image_urls?: string[] | null
           is_read?: boolean
           message: string
           replied_at?: string | null
@@ -954,6 +958,8 @@ export type Database = {
           created_at?: string
           feedback_type?: string
           id?: string
+          image_url?: string | null
+          image_urls?: string[] | null
           is_read?: boolean
           message?: string
           replied_at?: string | null
