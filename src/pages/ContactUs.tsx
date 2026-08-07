@@ -35,7 +35,9 @@ const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const BODY = "#2b2420";
 const MUTED = "#9A8F7E";
-const ICON_BG = "#EFE7D4";
+const LABEL = "#6B6A5E";
+const TRAIL_ICON = "#B4AE9E";
+const LINE = "#E2DAC6";
 const BROWN = "#715a3d";
 
 const CONTACT_EMAIL = "admin@hellohoedspruit.co";
@@ -148,7 +150,7 @@ const ContactUs = () => {
       style={{
         minHeight: "100vh",
         background: BG,
-        paddingBottom: 120,
+        paddingBottom: 100,
         fontFamily: FF,
         overflowX: "hidden",
       }}
@@ -160,12 +162,17 @@ const ContactUs = () => {
       />
       <PageHeader title="Contact Us" />
 
-      <div style={{ padding: `20px ${SECTION_INSET}px 0` }}>
-        <SectionLabel>Reach Out</SectionLabel>
+      <div style={{ height: 24 }} />
+
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ padding: "0 24px" }}>
+          <SectionLabel>Reach Out</SectionLabel>
+        </div>
         <div
           style={{
             background: CARD,
-            borderRadius: 16,
+            borderRadius: 20,
+            margin: "0 24px",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
@@ -173,32 +180,30 @@ const ContactUs = () => {
         >
           <Row
             icon={<Mail size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Email"
-            value={CONTACT_EMAIL}
+            label="Email"
+            subtitle={CONTACT_EMAIL}
             href={`mailto:${CONTACT_EMAIL}`}
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
           <Row
             icon={<Phone size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Phone"
-            value={CONTACT_PHONE}
+            label="Phone"
+            subtitle={CONTACT_PHONE}
             href={`tel:${PHONE_DIGITS}`}
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
           <Row
             icon={<WhatsAppIcon size={20} color={BROWN} />}
-            eyebrow="WhatsApp"
-            value={CONTACT_PHONE}
+            label="WhatsApp"
+            subtitle={CONTACT_PHONE}
             href={WHATSAPP_URL}
-            external
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
           <Row
             icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Website"
-            value="Fill out our contact form"
+            label="Contact Form"
+            subtitle="Fill it in on our website"
             href={WEBSITE_CONTACT_URL}
-            external
           />
         </div>
       </div>
