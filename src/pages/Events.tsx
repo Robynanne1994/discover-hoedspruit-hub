@@ -833,6 +833,41 @@ const Events = () => {
       )}
       {search.trim() && <div style={{ height: 20 }} />}
 
+      {/* Happening Soon */}
+      {!search.trim() && activeFilter === "all" && !tagFilter && happeningSoon.length >= 2 && (
+        <div>
+          <h2
+            style={{
+              margin: "26px 0 14px",
+              padding: "0 20px",
+              fontFamily: HEAD,
+              fontSize: 24,
+              fontWeight: 550,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              color: C.ink,
+            }}
+          >
+            Happening Soon
+          </h2>
+          <div
+            className="no-scrollbar"
+            style={{
+              display: "flex",
+              gap: 6,
+              paddingLeft: 20,
+              overflowX: "auto",
+              scrollbarWidth: "none",
+            }}
+          >
+            {happeningSoon.map((e) => (
+              <PosterCard key={e.id} event={e} />
+            ))}
+          </div>
+        </div>
+      )}
+
+
 
 
       {/* List */}
