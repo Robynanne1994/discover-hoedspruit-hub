@@ -1088,10 +1088,11 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 8, ...metaRow,
+              alignItems: "center",
               ...type.meta, textDecoration: "none",
             }}
           >
-            <MapPin size={14} color={MUTED} strokeWidth={1.75} style={metaIcon()} />
+            <MapPin size={14} color={MUTED} strokeWidth={1.75} style={{ flexShrink: 0, alignSelf: "center" }} />
             <span>{event.location}</span>
           </a>
         )}
