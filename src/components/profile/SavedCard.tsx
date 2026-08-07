@@ -456,14 +456,21 @@ const SavedCard = ({
             margin: 0,
             minHeight: shiftUp ? undefined : 37,
             overflowWrap: "break-word",
-            display: "-webkit-box",
-            WebkitLineClamp: type === "resource" ? 3 : 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
           }}
         >
-          <span ref={titleRef}>{title}</span>
+          <span
+            ref={titleRef}
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: type === "resource" ? 3 : 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {title}
+          </span>
         </h3>
+
 
 
         {lines.map((line, i) => {
