@@ -344,8 +344,8 @@ const SavedCard = ({
               style={{
                 ...t.label,
                 textTransform: "uppercase",
-                letterSpacing: "0.16em",
-                color: BROWN,
+                letterSpacing: "0.08em",
+                color: "#1a1a1a",
               }}
             >
               {TYPE_LABEL[type]}
