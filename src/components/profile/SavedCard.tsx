@@ -494,6 +494,7 @@ const SavedCard = ({
                 />
               )}
               <span
+                ref={line.icon === MapPin && type === "listing" ? locRef : undefined}
                 style={{
                   display: "-webkit-box",
                   WebkitLineClamp: clamp,
