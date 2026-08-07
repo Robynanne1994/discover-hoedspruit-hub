@@ -209,7 +209,8 @@ const Feedback = () => {
         feedback_type: type.toLowerCase(),
         subject: subject.trim() || null,
         message: message.trim(),
-        image_url: imageUrl || null,
+        image_url: imageUrls[0] || null,
+        image_urls: imageUrls,
         reply_by_email: wantsEmail,
         reply_email: wantsEmail ? user?.email ?? null : null,
       } as any);
