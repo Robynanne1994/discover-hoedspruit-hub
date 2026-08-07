@@ -6,8 +6,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestCount } from "@/hooks/useFollows";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
-import { ArrowUpRight } from "lucide-react";
-import { SECTION_INSET, type } from "@/lib/type";
+import { Lock, UserCheck, Ban, Flag, FileText } from "lucide-react";
+import {
+  SettingsCard,
+  SettingsEyebrow,
+  SettingsSection,
+  type SettingsRowItem,
+} from "@/components/settings/SettingsList";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
