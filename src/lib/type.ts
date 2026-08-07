@@ -141,12 +141,12 @@ export const type = {
    * Distinct from `eyebrow` below, which labels content *inside* a card.
    */
   sectionEyebrow: {
-    fontFamily: NOHEMI,
-    fontSize: 13,
-    fontWeight: 550,
-    letterSpacing: "0.08em",
+    fontFamily: HN,
+    fontSize: 11,
+    fontWeight: 700,
+    letterSpacing: "0.1em",
     textTransform: "uppercase",
-    color: INK,
+    color: "#6B6A5E",
     marginBottom: 10,
   },
   /** Section-level uppercase heading, e.g. "GOOD TO KNOW". */
