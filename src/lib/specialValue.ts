@@ -120,7 +120,7 @@ export const specialValue = (s: SpecialLike): SpecialValue => {
   }
   // No price set — a structured discount or the savings line becomes the value.
   const pct = s.discount_type === "percent_off" ? numeric(s.discount_value) : null;
-  if (pct != null) return { kind: "deal", text: `${pct}% off` };
+  if (pct != null) return { kind: "deal", text: `${pct}% Off` };
   const amt = s.discount_type === "amount_off" ? numeric(s.discount_value) : null;
   if (amt != null) return { kind: "deal", text: `Save R${amt}` };
   // A written offer beats a bare original_price: "Free breakfast" is the deal,
