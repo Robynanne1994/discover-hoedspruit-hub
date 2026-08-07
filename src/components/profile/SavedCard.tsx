@@ -437,6 +437,7 @@ const SavedCard = ({
         }}
       >
         <h3
+          ref={titleRef}
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
             fontFamily: SANS,
@@ -455,8 +456,12 @@ const SavedCard = ({
           {title}
         </h3>
 
-        {lines.map((line, i) =>
-          line ? (
+        {lines.map((line, i) => {
+          if (!line) return null;
+          // Listing location: two lines when the title fits on one, otherwise one.
+          const clamp =
+            line.icon === MapPin && type === "listing" ? (titleLines > 1 ? 1 : 2) : line.clamp ?? 2;
+          return (
             <div
               key={i}
               style={{
@@ -481,12 +486,13 @@ const SavedCard = ({
               <span
                 style={{
                   display: "-webkit-box",
-                  WebkitLineClamp: line.clamp ?? 2,
+                  WebkitLineClamp: clamp,
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
-                  overflowWrap: line.clamp === 1 ? "normal" : "break-word",
-                  wordBreak: line.clamp === 1 ? "normal" : undefined,
+                  overflowWrap: clamp === 1 ? "normal" : "break-word",
+                  wordBreak: clamp === 1 ? "normal" : undefined,
                 }}
+              >
               >
                 {line.lead ? `${line.lead} ` : ""}
                 {line.text}
