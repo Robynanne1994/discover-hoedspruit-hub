@@ -127,9 +127,12 @@ export const specialValue = (s: SpecialLike): SpecialValue => {
   // whereas a lone original_price is a data-entry slip — still a number worth
   // showing, but only when there is nothing better.
   const deal = str(s.savings) || str(s.freebie_text) || str(s.original_price);
-  if (deal) return { kind: "deal", text: deal };
+  if (deal) return { kind: "deal", text: capitaliseOff(deal) };
   return { kind: "none" };
 };
+
+// Legacy savings copy arrives as "20% off"; cards read "20% Off".
+const capitaliseOff = (text: string) => text.replace(/\boff\b/g, "Off");
 
 // "20" from 20, "20.5" from 20.5, null when unusable.
 const numeric = (v: unknown): string | null => {

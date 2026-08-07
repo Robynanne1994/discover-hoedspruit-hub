@@ -91,7 +91,7 @@ const HomeSpecials = () => {
           overflow: "hidden",
           textOverflow: "ellipsis",
           minWidth: 0,
-          marginTop: 4,
+          marginTop: 2,
         }}
       >
         {s.business_name}
@@ -108,7 +108,7 @@ const HomeSpecials = () => {
         lineHeight: 1.25,
         letterSpacing: "-0.2px",
         color: "#1A1A1A",
-        ...clamp(2),
+        ...clamp(1),
       }}
     >
       {getDisplayTitle(s)}
@@ -159,7 +159,7 @@ const HomeSpecials = () => {
                 </div>
               ) : null}
 
-              <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
+              <div style={{ padding: "12px 12px 8px", display: "flex", flexDirection: "column", flex: 1 }}>
                 {/* No art to hang the pill on, so it leads the copy instead. */}
                 {!image && (
                   <div style={{ marginBottom: 6 }}>
