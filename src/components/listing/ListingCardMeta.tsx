@@ -160,7 +160,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, hou
           <span style={{ fontWeight: 400 }}>· {status.detail}</span>
         ) : null}
       </div>
-    </>;
+    </>
   );
 };
 
