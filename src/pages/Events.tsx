@@ -666,6 +666,25 @@ const Events = () => {
 
   }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
 
+  // Month groups (recurring events collected into "Every Week")
+  const groupedEvents = useMemo(() => {
+    const groups: { key: string; label: string; events: any[] }[] = [];
+    const recurring: any[] = [];
+    filtered.forEach((e) => {
+      if (parseRecurrenceRule(e.recurrence) && !hasPerformances(e)) {
+        recurring.push(e);
+        return;
+      }
+      const label = e._parsed ? format(e._parsed, "MMMM").toUpperCase() : "DATE TO BE CONFIRMED";
+      const key = e._parsed ? format(e._parsed, "yyyy-MM") : "tbc";
+      const existing = groups.find((g) => g.key === key);
+      if (existing) existing.events.push(e);
+      else groups.push({ key, label, events: [e] });
+    });
+    if (recurring.length) groups.push({ key: "every-week", label: "Every Week", events: recurring });
+    return groups;
+  }, [filtered]);
+
   // Happening Soon — soonest dated events, excluding recurring ones
   const happeningSoon = useMemo(() => {
     const today = startOfToday();
@@ -673,6 +692,7 @@ const Events = () => {
       .filter((e) => e._parsed && !isBefore(e._parsed, today) && !parseRecurrenceRule(e.recurrence))
       .slice(0, 6);
   }, [sortedEvents]);
+
 
 
 
@@ -926,11 +946,50 @@ const Events = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {filtered.map((e) => (
-              <EventCard key={e.id} event={e} />
+            {groupedEvents.map((group) => (
+              <div key={group.key} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    marginTop: 18,
+                    marginBottom: 2,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: SANS,
+                      fontWeight: 700,
+                      fontSize: 12,
+                      letterSpacing: "0.12em",
+                      textTransform: "uppercase",
+                      color: C.muted,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {group.label}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: SANS,
+                      fontWeight: 400,
+                      fontSize: 12,
+                      color: C.muted,
+                    }}
+                  >
+                    {group.events.length}
+                  </span>
+                  <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.10)" }} />
+                </div>
+                {group.events.map((e) => (
+                  <EventCard key={e.id} event={e} />
+                ))}
+              </div>
             ))}
           </div>
         )}
+
       </div>
 
       <RefineDrawer
