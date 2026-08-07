@@ -26,6 +26,10 @@ const CHIP_SHADOW = "0 1px 4px rgba(0,5,5,0.14)";
 // and the bottom-left rating/deal pills all share this same inset so the
 // padding above and below the image stays visually equal.
 const PILL_INSET = 8;
+// The heart button's 30px circle starts 4px from the image top, so the type
+// capsule sits at the same 4px to line the two tops up.
+const PILL_TOP = 4;
+const STAR = "#E9B417";
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
