@@ -493,13 +493,12 @@ const SavedCard = ({
                   wordBreak: clamp === 1 ? "normal" : undefined,
                 }}
               >
-              >
                 {line.lead ? `${line.lead} ` : ""}
                 {line.text}
               </span>
             </div>
-          ) : null,
-        )}
+          );
+        })}
 
       </div>
 
