@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
@@ -234,10 +234,30 @@ const SavedCard = ({
 }) => {
   const [pressed, setPressed] = useState(false);
   const [isLogo, setIsLogo] = useState(false);
+  const [titleLines, setTitleLines] = useState(1);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
   const src = it.saved_image_url || it.image_url;
   const { lines, status, badge, ratingChip } = buildContent(it, type);
   const override = (it.title_override ?? "").toString().trim();
   const title = override || titleCase(it.title);
+
+  // Measure how many lines the title actually renders on, so the location line
+  // below it can claim the leftover row.
+  useLayoutEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    const measure = () => {
+      const lh = parseFloat(getComputedStyle(el).lineHeight || "0");
+      if (!lh) return;
+      setTitleLines(Math.max(1, Math.round(el.scrollHeight / lh)));
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [title]);
+
 
   return (
     <Link
@@ -414,6 +434,7 @@ const SavedCard = ({
         }}
       >
         <h3
+          ref={titleRef}
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
             fontFamily: SANS,
@@ -432,8 +453,13 @@ const SavedCard = ({
           {title}
         </h3>
 
-        {lines.map((line, i) =>
-          line ? (
+        {lines.map((line, i) => {
+          if (!line) return null;
+          // Listings: a one-line title leaves room for the location to wrap to
+          // two lines; a two-line title keeps the location on one line.
+          const isListingLocation = type === "listing" && line.icon === MapPin;
+          const clamp = isListingLocation ? (titleLines >= 2 ? 1 : 2) : line.clamp ?? 2;
+          return (
             <div
               key={i}
               style={{
@@ -458,19 +484,20 @@ const SavedCard = ({
               <span
                 style={{
                   display: "-webkit-box",
-                  WebkitLineClamp: line.clamp ?? 2,
+                  WebkitLineClamp: clamp,
                   WebkitBoxOrient: "vertical",
                   overflow: "hidden",
-                  overflowWrap: line.clamp === 1 ? "normal" : "break-word",
-                  wordBreak: line.clamp === 1 ? "normal" : undefined,
+                  overflowWrap: clamp === 1 ? "normal" : "break-word",
+                  wordBreak: clamp === 1 ? "normal" : undefined,
                 }}
               >
                 {line.lead ? `${line.lead} ` : ""}
                 {line.text}
               </span>
             </div>
-          ) : null,
-        )}
+          );
+        })}
+
 
       </div>
 
