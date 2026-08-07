@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
+import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, Heart, Instagram, MapPin, MessageCircle, Mountain, ShoppingBag, Store, Tag, Utensils, Wrench } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
@@ -49,6 +49,36 @@ const PLATFORM_ICON: Record<string, typeof Globe> = {
   whatsapp: MessageCircle,
   websites: Globe,
   website: Globe,
+};
+
+// Category icon fallbacks. Mapped from the category title so the metadata
+// line carries a relevant icon; anything unmapped falls back to Tag.
+const CATEGORY_ICON: Record<string, typeof Tag> = {
+  restaurant: Utensils,
+  restaurants: Utensils,
+  "eat & drink": Utensils,
+  "restaurants & eateries": Utensils,
+  bar: Coffee,
+  cafe: Coffee,
+  coffee: Coffee,
+  accommodation: BedDouble,
+  "places to stay": BedDouble,
+  lodge: BedDouble,
+  hotel: BedDouble,
+  activities: Mountain,
+  "things to do": Mountain,
+  tours: Compass,
+  "tours & experiences": Compass,
+  wellness: Flower,
+  spa: Flower,
+  shopping: ShoppingBag,
+  "shops & boutiques": ShoppingBag,
+  services: Wrench,
+};
+const categoryIcon = (title?: string | null) => {
+  if (!title) return Tag;
+  const key = title.toLowerCase().trim();
+  return CATEGORY_ICON[key] || Tag;
 };
 
 // 24h "18:00" or "6:00" -> "6:00 PM"
@@ -119,7 +149,7 @@ const buildContent = (it: any, type: CardType) => {
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
     if (rating) ratingChip = rating;
     if (reviews) reviewCount = reviews;
-    lines.push(category ? { text: category } : null);
+    lines.push(category ? { icon: categoryIcon(it.categories?.title), text: category } : null);
     // Location clamp is decided at render time from the measured title height:
     // one-line titles leave room for two lines of location, two-line titles do not.
     lines.push(it.location ? { icon: MapPin, text: it.location } : null);
@@ -547,6 +577,7 @@ const SavedCard = ({
                 gap: 5,
                 fontFamily: SANS,
                 ...t.meta,
+                fontWeight: 600,
                 color: s.tone,
                 lineHeight: 1.2,
               }}
