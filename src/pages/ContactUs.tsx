@@ -129,7 +129,7 @@ const SocialTile = ({
     style={{
       flex: 1,
       background: CARD,
-      borderRadius: 16,
+      borderRadius: 20,
       padding: "18px 8px",
       display: "flex",
       flexDirection: "column",
@@ -208,7 +208,7 @@ const ContactUs = () => {
         </div>
       </div>
 
-      <div style={{ padding: `24px ${SECTION_INSET}px 0` }}>
+      <div style={{ padding: `0 ${SECTION_INSET}px`, marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: type.sectionEyebrow.marginBottom }}>
           <p style={{ ...type.sectionEyebrow, margin: 0 }}>Office Hours</p>
           {(() => {
@@ -228,14 +228,14 @@ const ContactUs = () => {
             );
           })()}
         </div>
-        <div style={{ background: CARD, borderRadius: 16, overflow: "hidden", padding: "4px 18px" }}>
+        <div style={{ background: CARD, borderRadius: 20, overflow: "hidden", padding: "0 16px" }}>
           {[
             { day: "Monday – Friday", hours: "09:00 – 17:00", closed: false },
             { day: "Saturday", hours: "09:00 – 12:00", closed: false },
             { day: "Sunday", hours: "Closed", closed: true },
           ].map((r, i, arr) => (
             <div key={r.day}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", minHeight: 56, padding: "10px 0" }}>
                 <span style={{ fontFamily: FF, fontSize: 15, fontWeight: r.closed ? 400 : 500, color: r.closed ? MUTED : INK }}>{r.day}</span>
                 <span style={{ fontFamily: FF, fontSize: 15, fontWeight: 400, color: r.closed ? MUTED : BODY }}>{r.hours}</span>
               </div>
@@ -246,7 +246,7 @@ const ContactUs = () => {
       </div>
 
 
-      <div style={{ padding: `24px ${SECTION_INSET}px 0` }}>
+      <div style={{ padding: `0 ${SECTION_INSET}px`, marginBottom: 28 }}>
         <SectionLabel>Follow Along</SectionLabel>
         <div style={{ display: "flex", gap: 8 }}>
           <SocialTile icon={<InstagramIcon size={22} color={INK} />} label="Instagram" href={INSTAGRAM_URL} />
