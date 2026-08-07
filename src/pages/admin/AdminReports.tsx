@@ -62,33 +62,35 @@ const editUrl = (kind: "listing" | "event" | "special", id: string) => {
 const REPORTS: ReportDef[] = [
   {
     id: "listings-broken-images",
-    title: "Listings — broken or missing images",
-    description: "Listings where cover or detail image is empty, or the URL fails to load.",
+    title: "Listings — no images",
+    description: "Listings with no image at all (cover, detail, card, homepage or saved all empty or unreachable).",
     run: async (setProgress) => {
-      const rows = await fetchAll<any>("listings", "id, title, image_url, detail_image_url");
-      const toCheck: { row: any; field: "image_url" | "detail_image_url"; url: string }[] = [];
+      const rows = await fetchAll<any>(
+        "listings",
+        "id, title, image_url, detail_image_url, card_image_url, homepage_image_url, saved_image_url",
+      );
+      const FIELDS = ["image_url", "detail_image_url", "card_image_url", "homepage_image_url", "saved_image_url"] as const;
+      const candidates: { row: any; urls: string[] }[] = [];
       const out: Record<string, unknown>[] = [];
       for (const r of rows) {
-        for (const field of ["image_url", "detail_image_url"] as const) {
-          const url = r[field];
-          if (isMissing(url)) {
-            out.push({ id: r.id, title: r.title, field, status: "missing", url: "", admin_edit_url: editUrl("listing", r.id) });
-          } else {
-            toCheck.push({ row: r, field, url });
-          }
+        const urls = FIELDS.map((f) => r[f]).filter((u: unknown) => !isMissing(u)) as string[];
+        if (urls.length === 0) {
+          out.push({ title: r.title, admin_edit_url: editUrl("listing", r.id) });
+        } else {
+          candidates.push({ row: r, urls });
         }
       }
+      const toCheck = candidates.flatMap((c) => c.urls.map((url) => ({ c, url })));
       setProgress({ done: 0, total: toCheck.length, label: "Checking image URLs" });
       const statuses = await checkImagesConcurrent(toCheck, (x) => x.url, (done, total) => setProgress({ done, total, label: "Checking image URLs" }));
-      for (const item of toCheck) {
-        const s = statuses.get(item);
-        if (s === "broken") {
-          out.push({ id: item.row.id, title: item.row.title, field: item.field, status: "broken", url: item.url, admin_edit_url: editUrl("listing", item.row.id) });
-        }
+      for (const c of candidates) {
+        const anyOk = toCheck.some((x) => x.c === c && statuses.get(x) === "ok");
+        if (!anyOk) out.push({ title: c.row.title, admin_edit_url: editUrl("listing", c.row.id) });
       }
-      return { rows: out, columns: ["id", "title", "field", "status", "url", "admin_edit_url"], filename: "listings-broken-images.csv" };
+      return { rows: out, columns: ["title", "admin_edit_url"], filename: "listings-no-images.csv" };
     },
   },
+
   {
     id: "events-broken-images",
     title: "Events — broken or missing images",
