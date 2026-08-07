@@ -63,13 +63,13 @@ const REPORTS: ReportDef[] = [
   {
     id: "listings-broken-images",
     title: "Listings — no images",
-    description: "Listings with no image at all (cover, detail, card, homepage or saved all empty or unreachable).",
+    description: "Listings with no image at all (cover, detail, card or saved all empty or unreachable).",
     run: async (setProgress) => {
       const rows = await fetchAll<any>(
         "listings",
-        "id, title, image_url, detail_image_url, card_image_url, homepage_image_url, saved_image_url",
+        "id, title, image_url, detail_image_url, card_image_url, saved_image_url",
       );
-      const FIELDS = ["image_url", "detail_image_url", "card_image_url", "homepage_image_url", "saved_image_url"] as const;
+      const FIELDS = ["image_url", "detail_image_url", "card_image_url", "saved_image_url"] as const;
       const candidates: { row: any; urls: string[] }[] = [];
       const out: Record<string, unknown>[] = [];
       for (const r of rows) {
