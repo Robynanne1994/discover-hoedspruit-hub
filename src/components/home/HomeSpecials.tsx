@@ -191,6 +191,7 @@ const HomeSpecials = () => {
     <section>
       <HomeSectionHead primary="Active Specials" actionHref="/specials" />
       <div
+        ref={scrollerRef}
         className="scrollbar-hide"
         style={{
           overflowX: "auto",
