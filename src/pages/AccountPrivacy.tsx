@@ -6,8 +6,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestCount } from "@/hooks/useFollows";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
-import { ArrowUpRight } from "lucide-react";
-import { SECTION_INSET, type } from "@/lib/type";
+import { Lock, UserCheck, Ban, Flag, FileText } from "lucide-react";
+import {
+  SettingsCard,
+  SettingsEyebrow,
+  SettingsSection,
+  type SettingsRowItem,
+} from "@/components/settings/SettingsList";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
@@ -145,78 +150,79 @@ const AccountPrivacy = () => {
     toast.success(value ? "Your account is now private." : "Your account is now public.");
   };
 
-  const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-    <div style={type.sectionEyebrow}>{children}</div>
-  );
-
-
-  const NavRow = ({
-    label,
-    onClick,
-    isFirst,
-  }: {
-    label: string;
-    onClick: () => void;
-    isFirst?: boolean;
-  }) => (
-    <div
-      onClick={onClick}
+  const Switch = ({ checked, disabled, onChange }: { checked: boolean; disabled?: boolean; onChange: (v: boolean) => void }) => (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
       style={{
-        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-        padding: "16px 0",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        cursor: "pointer",
+        width: 44,
+        height: 26,
+        borderRadius: 999,
+        background: checked ? DARK : "#D8D2C2",
+        border: "none",
+        position: "relative",
+        cursor: disabled ? "not-allowed" : "pointer",
+        flexShrink: 0,
+        transition: "background 120ms ease",
+        opacity: disabled ? 0.6 : 1,
       }}
     >
-      <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>{label}</div>
-      <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-    </div>
+      <span
+        style={{
+          position: "absolute",
+          top: 3,
+          left: checked ? 21 : 3,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "#fff",
+          transition: "left 120ms ease",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+        }}
+      />
+    </button>
   );
+
+  const visibilityRows: SettingsRowItem[] = [
+    {
+      label: "Private Account",
+      icon: Lock,
+      trailing: <Switch checked={isPrivate} disabled={savingPrivacy} onChange={togglePrivacy} />,
+    },
+  ];
+  // Also shown for a public account that still has requests waiting (legacy
+  // rows from before going public approved them), so nobody is left queued
+  // behind a row that has disappeared.
+  if (isPrivate || (pendingRequestCount ?? 0) > 0) {
+    visibilityRows.push({
+      label: "Follow Requests",
+      icon: UserCheck,
+      subtitle: pendingRequestCount
+        ? `${pendingRequestCount} pending ${pendingRequestCount === 1 ? "request" : "requests"}`
+        : "No pending requests",
+      onClick: () => navigate("/follow-requests"),
+    });
+  }
+
+  const safetyRows: SettingsRowItem[] = [
+    { label: "Blocked", icon: Ban, onClick: () => navigate("/account-settings/blocked") },
+    { label: "Reported", icon: Flag, onClick: () => navigate("/account-settings/reported") },
+    { label: "Account Notices", icon: FileText, onClick: () => navigate("/account-notices") },
+  ];
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
       <PageHeader title="Account Privacy" />
-      <div style={{ padding: `16px ${SECTION_INSET}px 0` }}>
-        <SectionTitle>Visibility</SectionTitle>
-        <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
-          <PrivacyToggleRow
-            label="Private Account"
-            description=""
-            checked={isPrivate}
-            disabled={savingPrivacy}
-            onChange={togglePrivacy}
-            isFirst
-          />
-          {/* Also shown for a public account that still has requests waiting
-              (legacy rows from before going public approved them), so nobody
-              is left queued behind a row that has disappeared. */}
-          {(isPrivate || (pendingRequestCount ?? 0) > 0) && (
-            <div
-              onClick={() => navigate("/follow-requests")}
-              style={{
-                borderTop: `1px solid ${LINE}`,
-                padding: "16px 0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                cursor: "pointer",
-              }}
-            >
-              <div>
-                <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow Requests</div>
-                <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
-                  {pendingRequestCount
-                    ? `${pendingRequestCount} pending ${pendingRequestCount === 1 ? "request" : "requests"}`
-                    : "No pending requests"}
-                </div>
-              </div>
-              <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-            </div>
-          )}
-        </div>
-        <p style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, lineHeight: 1.5, margin: "16px 4px 0" }}>
+
+      <div style={{ height: 24 }} />
+
+      <div style={{ marginBottom: 28 }}>
+        <SettingsEyebrow>Visibility</SettingsEyebrow>
+        <SettingsCard items={visibilityRows} />
+        <p style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, lineHeight: 1.5, margin: "16px 24px 0" }}>
           When your account is public, your profile and saved content can be seen by anyone on the Hello Hoedspruit app. When your account is private, only the followers that you approve can see what you save, who you follow and your followers. Certain info on your profile, such as your profile picture, name, surname and username, is visible to everyone on the Hello Hoedspruit.{" "}
           <a
             href="https://hellohoedspruit.co/legal/privacy-policy"
@@ -227,19 +233,13 @@ const AccountPrivacy = () => {
             Learn More
           </a>
         </p>
-
-        <div style={{ marginTop: 24 }}>
-          <SectionTitle>Safety</SectionTitle>
-          <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
-            <NavRow label="Blocked" onClick={() => navigate("/account-settings/blocked")} isFirst />
-            <NavRow label="Reported" onClick={() => navigate("/account-settings/reported")} />
-            <NavRow label="Account Notices" onClick={() => navigate("/account-notices")} />
-          </div>
-        </div>
       </div>
+
+      <SettingsSection label="Safety" items={safetyRows} />
     </div>
   );
 };
 
 export default AccountPrivacy;
+
 

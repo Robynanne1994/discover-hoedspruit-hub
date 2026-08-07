@@ -229,14 +229,15 @@ const PrivacyToggleRow = ({
   <div
     style={{
       borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-      padding: "16px 0",
+      minHeight: 56,
+      padding: "10px 0",
       display: "flex",
       alignItems: "center",
       gap: 12,
     }}
   >
     <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>{label}</div>
+      <div style={{ fontFamily: FF, fontSize: 16, fontWeight: 500, letterSpacing: "-0.01em", color: INK }}>{label}</div>
       <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2, lineHeight: 1.45 }}>
         {description}
       </div>
@@ -830,7 +831,7 @@ const AccountInfo = () => {
         <div
           style={{
             background: CARD,
-            borderRadius: 16,
+            borderRadius: 20,
             padding: "14px 16px",
             display: "flex",
             alignItems: "center",
@@ -938,8 +939,8 @@ const AccountInfo = () => {
         <div
           style={{
             background: CARD,
-            borderRadius: 16,
-            padding: "4px 20px",
+            borderRadius: 20,
+            padding: "0 16px",
             overflow: "hidden",
           }}
         >

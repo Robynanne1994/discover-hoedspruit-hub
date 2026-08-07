@@ -35,7 +35,9 @@ const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const BODY = "#2b2420";
 const MUTED = "#9A8F7E";
-const ICON_BG = "#EFE7D4";
+const LABEL = "#6B6A5E";
+const TRAIL_ICON = "#B4AE9E";
+const LINE = "#E2DAC6";
 const BROWN = "#715a3d";
 
 const CONTACT_EMAIL = "admin@hellohoedspruit.co";
@@ -49,68 +51,47 @@ const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
 
 type RowProps = {
   icon: React.ReactNode;
-  eyebrow: string;
-  value: React.ReactNode;
+  label: string;
+  subtitle?: string;
   href?: string;
-  external?: boolean;
 };
 
-const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
+const Row = ({ icon, label, subtitle, href }: RowProps) => {
   const inner = (
     <div
       style={{
         display: "flex",
         alignItems: "center",
         gap: 14,
-        background: "transparent",
-        padding: "16px 18px",
+        minHeight: 56,
+        padding: "10px 16px",
         textDecoration: "none",
         color: "inherit",
       }}
     >
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: "50%",
-          background: ICON_BG,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
+      <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        {eyebrow && (
-          <div
-            style={{
-              fontFamily: FF,
-              fontSize: 11,
-              fontWeight: 500,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#423324",
-              marginBottom: 4,
-            }}
-          >
-            {eyebrow}
-          </div>
-        )}
         <div
           style={{
             fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
+            fontSize: 16,
+            fontWeight: 500,
+            letterSpacing: "-0.01em",
             color: INK,
-            lineHeight: 1.3,
+            lineHeight: 1.25,
           }}
         >
-          {value}
+          {label}
         </div>
+        {subtitle ? (
+          <div style={{ fontFamily: FF, fontSize: 12.5, fontWeight: 400, color: LABEL, lineHeight: 1.3, marginTop: 2 }}>
+            {subtitle}
+          </div>
+        ) : null}
       </div>
-      {href && <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />}
+      {href && <ArrowUpRight size={16} strokeWidth={2} color={TRAIL_ICON} style={{ flexShrink: 0 }} />}
     </div>
   );
 
@@ -118,8 +99,8 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
   return (
     <a
       href={href}
-      target={external ? "_blank" : undefined}
-      rel={external ? "noopener noreferrer" : undefined}
+      target="_blank"
+      rel="noopener noreferrer"
       style={{ textDecoration: "none", color: "inherit", display: "block" }}
     >
       {inner}
@@ -130,6 +111,7 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <p style={{ ...type.sectionEyebrow, marginTop: 0 }}>{children}</p>
 );
+
 
 const SocialTile = ({
   icon,
@@ -147,7 +129,7 @@ const SocialTile = ({
     style={{
       flex: 1,
       background: CARD,
-      borderRadius: 16,
+      borderRadius: 20,
       padding: "18px 8px",
       display: "flex",
       flexDirection: "column",
@@ -168,7 +150,7 @@ const ContactUs = () => {
       style={{
         minHeight: "100vh",
         background: BG,
-        paddingBottom: 120,
+        paddingBottom: 100,
         fontFamily: FF,
         overflowX: "hidden",
       }}
@@ -180,12 +162,17 @@ const ContactUs = () => {
       />
       <PageHeader title="Contact Us" />
 
-      <div style={{ padding: `20px ${SECTION_INSET}px 0` }}>
-        <SectionLabel>Reach Out</SectionLabel>
+      <div style={{ height: 24 }} />
+
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ padding: "0 24px" }}>
+          <SectionLabel>Reach Out</SectionLabel>
+        </div>
         <div
           style={{
             background: CARD,
-            borderRadius: 16,
+            borderRadius: 20,
+            margin: "0 24px",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
@@ -193,37 +180,35 @@ const ContactUs = () => {
         >
           <Row
             icon={<Mail size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Email"
-            value={CONTACT_EMAIL}
+            label="Email"
+            subtitle={CONTACT_EMAIL}
             href={`mailto:${CONTACT_EMAIL}`}
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
           <Row
             icon={<Phone size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Phone"
-            value={CONTACT_PHONE}
+            label="Phone"
+            subtitle={CONTACT_PHONE}
             href={`tel:${PHONE_DIGITS}`}
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
           <Row
             icon={<WhatsAppIcon size={20} color={BROWN} />}
-            eyebrow="WhatsApp"
-            value={CONTACT_PHONE}
+            label="WhatsApp"
+            subtitle={CONTACT_PHONE}
             href={WHATSAPP_URL}
-            external
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
           <Row
             icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Website"
-            value="Fill out our contact form"
+            label="Contact Form"
+            subtitle="Fill it in on our website"
             href={WEBSITE_CONTACT_URL}
-            external
           />
         </div>
       </div>
 
-      <div style={{ padding: `24px ${SECTION_INSET}px 0` }}>
+      <div style={{ padding: `0 ${SECTION_INSET}px`, marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: type.sectionEyebrow.marginBottom }}>
           <p style={{ ...type.sectionEyebrow, margin: 0 }}>Office Hours</p>
           {(() => {
@@ -243,14 +228,14 @@ const ContactUs = () => {
             );
           })()}
         </div>
-        <div style={{ background: CARD, borderRadius: 16, overflow: "hidden", padding: "4px 18px" }}>
+        <div style={{ background: CARD, borderRadius: 20, overflow: "hidden", padding: "0 16px" }}>
           {[
             { day: "Monday – Friday", hours: "09:00 – 17:00", closed: false },
             { day: "Saturday", hours: "09:00 – 12:00", closed: false },
             { day: "Sunday", hours: "Closed", closed: true },
           ].map((r, i, arr) => (
             <div key={r.day}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", minHeight: 56, padding: "10px 0" }}>
                 <span style={{ fontFamily: FF, fontSize: 15, fontWeight: r.closed ? 400 : 500, color: r.closed ? MUTED : INK }}>{r.day}</span>
                 <span style={{ fontFamily: FF, fontSize: 15, fontWeight: 400, color: r.closed ? MUTED : BODY }}>{r.hours}</span>
               </div>
@@ -261,7 +246,7 @@ const ContactUs = () => {
       </div>
 
 
-      <div style={{ padding: `24px ${SECTION_INSET}px 0` }}>
+      <div style={{ padding: `0 ${SECTION_INSET}px`, marginBottom: 28 }}>
         <SectionLabel>Follow Along</SectionLabel>
         <div style={{ display: "flex", gap: 8 }}>
           <SocialTile icon={<InstagramIcon size={22} color={INK} />} label="Instagram" href={INSTAGRAM_URL} />

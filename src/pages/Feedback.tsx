@@ -208,7 +208,7 @@ const Feedback = () => {
 
   const inputBase: CSSProperties = {
     width: "100%", background: CARD, border: "none",
-    borderRadius: 16, height: 52, padding: "0 22px",
+    borderRadius: 12, height: 48, padding: "0 16px",
     fontFamily: FF, fontSize: 15, fontWeight: 400, color: INK,
     outline: "none", boxSizing: "border-box",
   };
@@ -219,7 +219,7 @@ const Feedback = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: FF, overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: BG, paddingBottom: 100, fontFamily: FF, overflowX: "hidden" }}>
       <Seo
         title="Send Feedback — Hello Hoedspruit"
         description="Share feedback, ideas, bug reports or compliments with the Hello Hoedspruit team."
@@ -322,9 +322,9 @@ const Feedback = () => {
                     alignItems: "center",
                     gap: 9,
                     width: "100%",
-                    height: 52,
+                    height: 48,
                     padding: "0 14px",
-                    borderRadius: 16,
+                    borderRadius: 12,
                     border: selected ? "none" : "1px solid rgba(66,51,36,0.10)",
                     background: selected ? SUBMIT_BG : CARD,
                     color: selected ? "#fff" : INK,
@@ -385,9 +385,9 @@ const Feedback = () => {
             }}
             style={{
               ...inputBase,
-              borderRadius: 16,
+              borderRadius: 12,
               height: "auto", minHeight: 160,
-              padding: "18px 22px",
+              padding: "14px 16px",
               resize: "none", lineHeight: 1.5,
               cursor: type ? "text" : "not-allowed",
             }}
@@ -414,7 +414,7 @@ const Feedback = () => {
             <div
               style={{
                 position: "relative",
-                borderRadius: 16,
+                borderRadius: 20,
                 overflow: "hidden",
                 background: CARD,
               }}
@@ -447,9 +447,9 @@ const Feedback = () => {
               {...tap}
               style={{
                 width: "100%",
-                minHeight: 64,
-                padding: "0 22px",
-                borderRadius: 16,
+                minHeight: 56,
+                padding: "0 16px",
+                borderRadius: 12,
                 background: CARD,
                 border: "1px dashed rgba(66,51,36,0.28)",
                 display: "flex", alignItems: "center", gap: 12,
@@ -487,12 +487,12 @@ const Feedback = () => {
             }}
           >
             <span style={{ minWidth: 0 }}>
-              <span style={{ display: "block", fontFamily: FF, fontSize: 15.5, fontWeight: 700, color: INK }}>
-                Reply to me by email as well
+              <span style={{ display: "block", fontFamily: FF, fontSize: 16, fontWeight: 500, letterSpacing: "-0.01em", color: INK }}>
+                Reply to me by email
               </span>
               <span
                 style={{
-                  display: "block", fontFamily: FF, fontSize: 13, fontWeight: 400, color: MUTED,
+                  display: "block", fontFamily: FF, fontSize: 12.5, fontWeight: 400, color: "#6B6A5E",
                   marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                 }}
               >
@@ -572,7 +572,7 @@ const Feedback = () => {
               key={r.id}
               style={{
                 background: CARD,
-                borderRadius: 16,
+                borderRadius: 20,
                 padding: 18,
                 display: "flex",
                 flexDirection: "column",
