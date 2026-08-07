@@ -17,6 +17,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { isOpenNow } from "@/lib/openHours";
+import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
@@ -1186,7 +1187,7 @@ const CategoryPage = () => {
                         lineHeight: 1,
                       }}
                     >
-                      <span style={{ color: INK }}>★</span>
+                      <span style={{ color: "#E9B417" }}>★</span>
                       {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
                       {l.google_reviews_count ? (
                         <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
@@ -1197,58 +1198,21 @@ const CategoryPage = () => {
                   <CardHeart listingId={l.id} />
                 </div>
 
-                <div style={{ padding: "10px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
-                  <h3
-                    {...noTitleCaseProps(l)}
-                    style={{
-                      ...type.cardTitleM,
-                      color: INK,
-                      lineHeight: 1.2,
-                      margin: 0,
-                      wordBreak: "break-word",
-                      minHeight: "36px",
-                      display: "-webkit-box",
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: "vertical",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {getDisplayTitle(l)}
-                  </h3>
+                <ListingCardMeta
+                  title={getDisplayTitle(l)}
+                  titleProps={noTitleCaseProps(l)}
+                  titleStyle={{
+                    ...type.cardTitleM,
+                    color: INK,
+                    lineHeight: 1.2,
+                    margin: 0,
+                    wordBreak: "break-word",
+                  }}
+                  eyebrow={eyebrow}
+                  location={l.location}
+                  hours={l.opening_hours as Record<string, string> | null}
+                />
 
-                  {eyebrow && (
-                    <p
-                      style={{
-                        fontFamily: sans,
-                        fontSize: 10,
-                        fontWeight: 600,
-                        letterSpacing: "0.12em",
-                        textTransform: "uppercase",
-                        color: "#715A3D",
-                        margin: 0,
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                      }}
-                    >
-                      {eyebrow}
-                    </p>
-                  )}
-
-                  {l.location && (
-                    <div style={{ ...type.meta, display: "flex", alignItems: "center", gap: 4, minWidth: 0 }}>
-                      <MapPin size={12} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
-                      <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{l.location}</span>
-                    </div>
-                  )}
-
-                  {open !== null && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: open ? OPEN_COLOR : CLOSED_COLOR, marginTop: 2 }}>
-                      <span style={{ width: 7, height: 7, borderRadius: "50%", background: open ? OPEN_COLOR : CLOSED_COLOR, flexShrink: 0, alignSelf: "center" }} />
-                      <span>{open ? "Open" : "Closed"}</span>
-                    </div>
-                  )}
-                </div>
               </article>
             );
           })}
