@@ -361,6 +361,9 @@ const SavedCard = ({
             <Chip style={{ height: 18, padding: "0 6px" }}>
               <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
                 <span style={{ color: STAR }}>★</span> {ratingChip}
+                {reviewCount && (
+                  <span style={{ letterSpacing: "-0.03em" }}> ({reviewCount})</span>
+                )}
               </span>
             </Chip>
           </div>
