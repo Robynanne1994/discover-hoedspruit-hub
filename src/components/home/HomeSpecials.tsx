@@ -69,11 +69,11 @@ const HomeSpecials = () => {
     },
   });
 
-  if (!specials || specials.length === 0) return null;
-
   useEffect(() => {
     if (scrollerRef.current) scrollerRef.current.scrollLeft = 0;
   }, [specials]);
+
+  if (!specials || specials.length === 0) return null;
 
   const press = {
     onPointerDown: (e: React.PointerEvent<HTMLAnchorElement>) =>
