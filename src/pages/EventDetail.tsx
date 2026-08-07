@@ -24,7 +24,7 @@ import { renderListingRichText } from "@/lib/listingRichText";
 import { sharePlainText } from "@/lib/share";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
-import { MUTED, tab as tabStyle, type } from "@/lib/type";
+import { MUTED, tab as tabStyle, type, metaRow, metaIcon } from "@/lib/type";
 import {
   resolveLocation,
   HOEDSPRUIT_CENTRE,
@@ -1087,11 +1087,11 @@ const EventDetail = () => {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              marginTop: 8, display: "flex", alignItems: "center", gap: 6,
+              marginTop: 8, ...metaRow,
               ...type.meta, textDecoration: "none",
             }}
           >
-            <MapPin size={14} color={MUTED} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={14} color={MUTED} strokeWidth={1.75} style={metaIcon()} />
             <span>{event.location}</span>
           </a>
         )}

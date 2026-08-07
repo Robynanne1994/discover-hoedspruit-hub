@@ -210,3 +210,52 @@ export const type = {
 
 /** Convenience for the common `active ? bold : regular` tab pattern. */
 export const tab = (active: boolean) => (active ? type.tabActive : type.tabInactive);
+
+/* -------------------------------------------------------------------------
+   Icon + meta text rows
+   -------------------------------------------------------------------------
+
+   Detail pages open with a small lucide icon beside a line of meta text —
+   "3.3km from Town", an event's location, the business a special belongs to.
+
+   Centring those two with `alignItems: "center"` lines up their *boxes*, and
+   the boxes do not describe what the eye sees. A 14px icon centres inside the
+   12px text's line box, which pushes the icon 3.7px below the text baseline —
+   enough to read as a mistake at a glance.
+
+   `alignItems: "baseline"` fixes the larger half: an SVG has no baseline of
+   its own, so flexbox synthesises one at its bottom edge and sits that edge on
+   the text baseline. What remains is the margin lucide leaves between a glyph
+   and the edge of its 24-unit viewBox — `baselineNudge` gives that back, so
+   the bottom of the icon lands on the bottom of the text exactly. */
+
+/**
+ * Translate an icon down by the empty space under its glyph.
+ *
+ * `ink` is where the drawing bottoms out in viewBox units: 22.875 for lucide's
+ * stroked icons (a path that ends at 22, plus half of the 1.75 stroke that
+ * straddles it), 21.07 for the filled Star.
+ */
+const baselineNudge = (size: number, ink: number) =>
+  `translateY(${((size * (24 - ink)) / 24).toFixed(2)}px)`;
+
+/** Row holding a small icon and a line of meta text. Spread `type.meta` after. */
+export const metaRow: CSSProperties = {
+  display: "flex",
+  alignItems: "baseline",
+  gap: 6,
+};
+
+/** A stroked lucide icon inside a `metaRow`. Pass its rendered px size. */
+export const metaIcon = (size = 14): CSSProperties => ({
+  flexShrink: 0,
+  alignSelf: "baseline",
+  transform: baselineNudge(size, 22.875),
+});
+
+/** A solid-filled icon (Star) inside a `metaRow` — its glyph stops higher. */
+export const metaIconSolid = (size = 14): CSSProperties => ({
+  flexShrink: 0,
+  alignSelf: "baseline",
+  transform: baselineNudge(size, 21.07),
+});

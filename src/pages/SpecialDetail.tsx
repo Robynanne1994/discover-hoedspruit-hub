@@ -22,7 +22,7 @@ import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
-import { MUTED, tab as tabStyle, type } from "@/lib/type";
+import { MUTED, tab as tabStyle, type, metaRow, metaIcon } from "@/lib/type";
 import {
   resolveLocation,
   HOEDSPRUIT_CENTRE,
@@ -731,12 +731,12 @@ const SpecialDetail = () => {
         </div>
 
         {special.business_name && (
-          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, ...type.meta }}>
-            <span style={{ width: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <Store size={14} color={MUTED} strokeWidth={1.75} />
-            </span>
+          <div style={{ marginTop: 12, ...metaRow, ...type.meta }}>
+            <Store size={14} color={MUTED} strokeWidth={1.75} style={metaIcon()} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: MUTED, textDecoration: "none" }}>
+              // `a { font-medium }` in index.css would otherwise weight this line
+              // heavier than the same row on the listing and event pages.
+              <Link to={`/listing/${special.business_id}`} style={{ ...type.meta, textDecoration: "none" }}>
                 {special.business_name}
               </Link>
             ) : <span>{special.business_name}</span>}
