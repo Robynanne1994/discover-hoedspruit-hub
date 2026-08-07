@@ -24,6 +24,7 @@ import { renderListingRichText } from "@/lib/listingRichText";
 import { sharePlainText } from "@/lib/share";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
+import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import {
   resolveLocation,
   HOEDSPRUIT_CENTRE,
@@ -44,7 +45,7 @@ const C = {
   divider: "#EDE9E3",
   heading: "#1A1A1A",
   text: "#2b2420",
-  muted: "#8A8480",
+  muted: MUTED,
   primary: "#715a3d",
   accent: "#B8916A",
   dark: "#423324",
@@ -79,12 +80,10 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: HEAD, fontWeight: 550, fontSize: 22, lineHeight: 1.2,
-  letterSpacing: 0, textTransform: "none", color: C.heading,
+  ...type.sectionTitle, textTransform: "none",
 };
 const paraStyle: React.CSSProperties = {
-  fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
-  color: C.text, margin: "0 0 10px",
+  ...type.body, margin: "0 0 10px",
 };
 const cardStyle: React.CSSProperties = {
   background: C.surface,
@@ -93,13 +92,9 @@ const cardStyle: React.CSSProperties = {
 };
 const categoryLineStyle: React.CSSProperties = {
   marginBottom: 8,
-  fontFamily: FONT,
-  fontSize: 10,
-  fontWeight: 450,
+  ...type.label,
   lineHeight: 1.4,
-  letterSpacing: "0.08em",
   color: "#715A3D",
-  textTransform: "uppercase",
 };
 const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
@@ -416,8 +411,7 @@ const EventDetail = () => {
       border: "none",
       color: fg, textDecoration: "none",
       cursor: disabled ? "not-allowed" : "pointer",
-      fontFamily: FONT, fontWeight: 700, fontSize: 12.5,
-      letterSpacing: "0.01em",
+      ...type.tabActive,
       boxShadow: disabled ? "none" : filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
       transition: "transform 150ms ease-out",
     };
@@ -444,9 +438,8 @@ const EventDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 13,
-          letterSpacing: "0.005em",
-          color: active ? C.heading : "#6B6A5E",
+          ...tabStyle(active),
+          color: active ? C.heading : MUTED,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
@@ -689,8 +682,7 @@ const EventDetail = () => {
           <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
             {r.Icon && <r.Icon size={16} strokeWidth={1.5} color={C.primary} />}
             <h3 style={{
-              margin: 0, fontFamily: FONT, fontWeight: 550, fontSize: 12,
-              letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1,
+              ...type.eyebrow, margin: 0, flex: 1,
             }}>{r.label}</h3>
             {r.href && <ArrowUpRight size={16} color={C.muted} />}
           </div>
@@ -793,7 +785,7 @@ const EventDetail = () => {
                       <div key={i} style={{ padding: 18, borderBottom: isLast ? undefined : `1px solid ${C.divider}` }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
                           <s.Icon size={16} strokeWidth={1.5} color={C.primary} />
-                          <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 550, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
+                          <h3 style={{ ...type.eyebrow, margin: 0, flex: 1 }}>{s.label}</h3>
                         </div>
                         {s.body}
                       </div>
@@ -895,8 +887,7 @@ const EventDetail = () => {
           </span>
           <span style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
             <span style={{
-              display: "block", fontFamily: FONT, fontSize: 10.5, fontWeight: 700,
-              letterSpacing: "0.1em", textTransform: "uppercase", color: C.muted, marginBottom: 3,
+              ...type.label, display: "block", marginBottom: 3,
             }}>
               {label}
             </span>
@@ -938,7 +929,7 @@ const EventDetail = () => {
               </div>
               <div style={{ padding: "14px 10px 6px" }}>
                 {event.location && (
-                  <div style={{ fontFamily: FONT, fontSize: 15.5, fontWeight: 700, color: C.heading, lineHeight: 1.35 }}>
+                  <div style={type.cardTitleL}>
                     {event.location}
                   </div>
                 )}
@@ -1059,8 +1050,7 @@ const EventDetail = () => {
         <h1
           data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
           style={{
-            margin: 0, fontFamily: HEAD, fontWeight: 550, fontSize: 28, lineHeight: 1.15,
-            color: C.heading, letterSpacing: "0.01em",
+            ...type.pageTitle, margin: 0,
           }}
         >
           {(event as any).title_override?.trim()
@@ -1080,13 +1070,13 @@ const EventDetail = () => {
             }}>
               {isPast ? "Event has passed" : "Upcoming"}
             </span>
-            <span style={{ fontSize: 13, color: "#6B6A5E" }}>· {dateDisplay}</span>
+            <span style={{ fontSize: 13, color: MUTED }}>· {dateDisplay}</span>
           </div>
         )}
 
         {timeDisplay && (
-          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, fontSize: 12.5, color: "#6B6A5E" }}>
-            <Clock size={14} color="#6B6A5E" strokeWidth={1.75} style={{ flexShrink: 0 }} />
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", gap: 6, ...type.meta }}>
+            <Clock size={14} color={MUTED} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{timeDisplay}</span>
           </div>
         )}
@@ -1098,10 +1088,10 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 8, display: "flex", alignItems: "center", gap: 6,
-              fontSize: 12.5, color: "#6B6A5E", textDecoration: "none",
+              ...type.meta, textDecoration: "none",
             }}
           >
-            <MapPin size={14} color="#6B6A5E" strokeWidth={1.75} style={{ flexShrink: 0 }} />
+            <MapPin size={14} color={MUTED} strokeWidth={1.75} style={{ flexShrink: 0 }} />
             <span>{event.location}</span>
           </a>
         )}
