@@ -11,6 +11,7 @@ import { isOpenNow } from "@/lib/openHours";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
+import { MUTED, type } from "@/lib/type";
 
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -19,7 +20,7 @@ const COLORS = {
   bg: "#E6E0CC",
   card: "#FFFFFF",
   ink: "#1A1A1A",
-  muted: "#9A9A92",
+  muted: MUTED,
   divider: "rgba(2,2,2,0.08)",
   emergencyBg: "#FBE6E6",
   emergencyInk: "#C0392B",
@@ -404,11 +405,11 @@ const Categories = () => {
               </div>
               <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 12, padding: "12px 14px 12px 14px" }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, wordBreak: "break-word", lineHeight: 1.25 }}>
+                  <p {...noTitleCaseProps(listing)} style={{ ...type.cardTitleM, margin: 0, wordBreak: "break-word" }}>
                     {getDisplayTitle(listing)}
                   </p>
                   {listing.location && (
-                    <p style={{ display: "flex", alignItems: "center", fontSize: 12, color: COLORS.muted, margin: 0, marginTop: 2, gap: 4 }}>
+                    <p style={{ ...type.meta, display: "flex", alignItems: "center", margin: 0, marginTop: 2, gap: 4 }}>
                       <MapPin size={11} strokeWidth={1.8} />
                       {listing.location}
                     </p>
@@ -477,10 +478,7 @@ const Categories = () => {
           style={{
             padding: "0 20px",
             margin: "0 0 12px",
-            fontFamily: FONT_BODY,
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.14em",
+            ...type.eyebrow,
             textTransform: "uppercase",
             color: "#6B6A5E",
           }}
@@ -534,18 +532,11 @@ const Categories = () => {
           >
             <div>
               <h2
-                style={{
-                  fontFamily: FONT_BODY,
-                  fontWeight: 550,
-                  fontSize: 22,
-                  lineHeight: 1.1,
-                  color: COLORS.ink,
-                  margin: 0,
-                }}
+                style={{ ...type.sectionTitle, margin: 0 }}
               >
                 {activeQuick.join(" + ")}
               </h2>
-              <p style={{ margin: "4px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: "#6B6A5E" }}>
+              <p style={{ ...type.meta, margin: "4px 0 0" }}>
                 {quickLoading
                   ? "Loading..."
                   : `${quickFilteredResults.length} ${quickFilteredResults.length === 1 ? "Result" : "Results"}`}
@@ -693,18 +684,11 @@ const Categories = () => {
       >
         <div style={{ minWidth: 0 }}>
           <h2
-            style={{
-              fontFamily: "Nohemi",
-              fontWeight: 550,
-              fontSize: 28,
-              lineHeight: 1.05,
-              color: COLORS.ink,
-              margin: 0,
-            }}
+            style={{ ...type.pageTitle, margin: 0 }}
           >
             All Categories
           </h2>
-          <p style={{ margin: "6px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, color: "#6B6A5E" }}>
+          <p style={{ ...type.meta, margin: "6px 0 0" }}>
             {sortedGrid.length}&nbsp;{sortedGrid.length === 1 ? "Category" : "Categories"} · {totalListings}&nbsp;Listings
           </p>
         </div>
@@ -805,8 +789,8 @@ const Categories = () => {
         </div>
       ) : sortedGrid.length === 0 && listingResults.length === 0 ? (
         <div style={{ textAlign: "center", paddingTop: 60, color: COLORS.ink }}>
-          <p style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 20, marginBottom: 6 }}>Nothing here.</p>
-          <p style={{ fontSize: 13, color: COLORS.muted }}>Try another search term</p>
+          <p style={{ ...type.sectionTitle, marginBottom: 6 }}>Nothing here.</p>
+          <p style={type.meta}>Try another search term</p>
         </div>
       ) : viewMode === "grid" ? (
         <div style={{ padding: "18px 20px 0" }}>
@@ -850,17 +834,14 @@ const Categories = () => {
                   <div style={{ padding: "12px 14px 14px" }}>
                     <p
                       style={{
-                        fontFamily: FONT_BODY,
-                        fontSize: 15,
-                        fontWeight: 700,
-                        lineHeight: 1.2,
+                        ...type.cardTitleM,
                         color: COLORS.ink,
                         margin: 0,
                       }}
                     >
                       {cat.title}
                     </p>
-                    <p style={{ margin: "3px 0 0", fontFamily: FONT_BODY, fontSize: 12.5, fontWeight: 400, lineHeight: 1.2, color: COLORS.muted }}>
+                    <p style={{ ...type.meta, margin: "3px 0 0" }}>
                       {count}&nbsp;{count === 1 ? "Listing" : "Listings"}
                     </p>
                   </div>
@@ -913,10 +894,7 @@ const Categories = () => {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p
                       style={{
-                        fontFamily: FONT_BODY,
-                        fontSize: 15,
-                        fontWeight: 700,
-                        lineHeight: 1.2,
+                        ...type.cardTitleM,
                         color: COLORS.ink,
                         margin: 0,
                         overflow: "hidden",
@@ -929,10 +907,7 @@ const Categories = () => {
                     <p
                       style={{
                         margin: "3px 0 0",
-                        fontFamily: FONT_BODY,
-                        fontSize: 12.5,
-                        fontWeight: 400,
-                        lineHeight: 1.2,
+                        ...type.meta,
                         color: COLORS.muted,
                         overflow: "hidden",
                         textOverflow: "ellipsis",
