@@ -96,7 +96,7 @@ const HomeSpecials = () => {
                         top: 8,
                         left: 8,
                         maxWidth: "calc(100% - 16px)",
-                        padding: "5px 10px",
+                        padding: "4px 9px",
                         borderRadius: 999,
                         background: i % 2 === 1 ? "#423324" : "#B4522E",
                         color: "#FFFFFF",
@@ -104,6 +104,7 @@ const HomeSpecials = () => {
                         fontSize: 10,
                         fontWeight: 700,
                         letterSpacing: "0.08em",
+                        lineHeight: 1,
                         textTransform: "uppercase",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
@@ -120,7 +121,7 @@ const HomeSpecials = () => {
                     {...noTitleCaseProps(s)}
                     style={{
                       fontFamily: HN,
-                      fontSize: 13,
+                      fontSize: 15,
                       fontWeight: 700,
                       color: "#1A1A1A",
                       lineHeight: 1.2,
