@@ -478,187 +478,149 @@ const MyAccount = () => {
   const BG = "#E6E0CC";
   const CARD = "#FFFFFF";
   const INK = "#1A1A1A";
-  const MUTED_INK = TOKEN_MUTED;
-  const LABEL = "#9A8E7A";
+  const LABEL = "#6B6A5E";
   const LINE = "#E2DAC6";
+  const LEAD_ICON = "#715A3D";
+  const TRAIL_ICON = "#B4AE9E";
 
-  const accountItems = [
+  type RowItem = {
+    label: string;
+    href: string;
+    icon?: any;
+    subtitle?: string;
+    external?: boolean;
+  };
+
+  const accountItems: RowItem[] = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
-    { label: "Account Privacy", href: "/account-settings/privacy", icon: Shield },
-    { label: "Notifications Settings", href: "/notification-preferences", icon: Bell },
+    { label: "Privacy", href: "/account-settings/privacy", icon: Shield },
+    { label: "Notifications", href: "/notification-preferences", icon: Bell },
   ];
-  const submissionsItems = [
-    { label: "Business Listing Submissions", href: "https://hellohoedspruit.co/submissions/listing", icon: Store },
-    { label: "Event Submissions", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar },
-    { label: "Promotion Submissions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag },
+  const submissionsItems: RowItem[] = [
+    { label: "Businesses", href: "https://hellohoedspruit.co/submissions/listing", icon: Store, external: true },
+    { label: "Events", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar, external: true },
+    { label: "Promotions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag, external: true },
   ];
-  const helpInfoItems = [
+  const helpInfoItems: RowItem[] = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
   ];
 
-  const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
+  const adminItems: RowItem[] = [{ label: "Dashboard", href: "/admin", icon: LayoutDashboard }];
 
   const Eyebrow = ({ children }: { children: React.ReactNode }) => (
     <p
       style={{
-        ...type.sectionEyebrow,
-        marginTop: 0,
-        padding: `0 ${SECTION_INSET}px`,
+        margin: "0 0 10px",
+        padding: "0 24px",
+        fontFamily: SANS,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        color: LABEL,
       }}
     >
       {children}
     </p>
   );
 
-
-  const Row = ({
-    item,
-    isFirst,
-    heart = false,
-  }: {
-    item: { label: string; href: string; icon?: any };
-    isFirst: boolean;
-    heart?: boolean;
-  }) => (
-    <Link
-      to={item.href}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 16,
-        padding: "18px 0",
-        textDecoration: "none",
-        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-      }}
-    >
-      {heart ? (
-        <div
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: "50%",
-            background: INK,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-          }}
-        >
-          <Heart size={16} strokeWidth={2} color="#FFFFFF" fill="#FFFFFF" />
-        </div>
-
-      ) : item.icon ? (
-        <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
-        </div>
-      ) : null}
-      <span
-        style={{
-          flex: 1,
-          fontFamily: SANS,
-          fontSize: 16,
-          fontWeight: 400,
-          letterSpacing: "-0.1px",
-          color: INK,
-          lineHeight: 1.25,
-        }}
-      >
-        {item.label}
-      </span>
-      <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-
-    </Link>
-  );
-
-  const ExternalRow = ({
-    item,
-    isFirst,
-  }: {
-    item: { label: string; href: string; icon?: any };
-    isFirst: boolean;
-  }) => (
-    <a
-      href={item.href}
-      target="_blank"
-      rel="noopener noreferrer"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 16,
-        padding: "18px 0",
-        textDecoration: "none",
-        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-      }}
-    >
+  const RowBody = ({ item }: { item: RowItem }) => (
+    <>
       {item.icon ? (
         <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+          <item.icon size={20} strokeWidth={1.6} color={LEAD_ICON} />
         </div>
       ) : null}
-      <span
-        style={{
-          flex: 1,
-          fontFamily: SANS,
-          fontSize: 16,
-          fontWeight: 400,
-          letterSpacing: "-0.1px",
-          color: INK,
-          lineHeight: 1.25,
-        }}
-      >
-        {item.label}
+      <span style={{ flex: 1, display: "block" }}>
+        <span
+          style={{
+            display: "block",
+            fontFamily: SANS,
+            fontSize: 16,
+            fontWeight: 500,
+            letterSpacing: "-0.01em",
+            color: INK,
+            lineHeight: 1.25,
+          }}
+        >
+          {item.label}
+        </span>
+        {item.subtitle ? (
+          <span
+            style={{
+              display: "block",
+              marginTop: 2,
+              fontFamily: SANS,
+              fontSize: 12.5,
+              fontWeight: 400,
+              color: LABEL,
+              lineHeight: 1.3,
+            }}
+          >
+            {item.subtitle}
+          </span>
+        ) : null}
       </span>
-      <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-    </a>
+      {item.external ? (
+        <ArrowUpRight size={16} strokeWidth={2} color={TRAIL_ICON} style={{ flexShrink: 0 }} />
+      ) : (
+        <ChevronRight size={16} strokeWidth={2} color={TRAIL_ICON} style={{ flexShrink: 0 }} />
+      )}
+    </>
   );
 
-  const Card = ({
-    items,
-    heartFirst = false,
-  }: {
-    items: { label: string; href: string; icon?: any }[];
-    heartFirst?: boolean;
-  }) => (
-    <div
-      style={{
-        background: CARD,
-        borderRadius: 20,
-        margin: "0 24px",
-        padding: "4px 22px",
-      }}
-    >
-      {items.map((item, i) => (
-        <Row key={item.label} item={item} isFirst={i === 0} heart={heartFirst && i === 0} />
-      ))}
-    </div>
-  );
+  const ROW_STYLE: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    minHeight: 56,
+    padding: "10px 16px",
+    textDecoration: "none",
+  };
 
-  const ExternalCard = ({
-    items,
-  }: {
-    items: { label: string; href: string; icon?: any }[];
-  }) => (
-    <div
-      style={{
-        background: CARD,
-        borderRadius: 20,
-        margin: "0 24px",
-        padding: "4px 22px",
-      }}
-    >
-      {items.map((item, i) => (
-        <ExternalRow key={item.label} item={item} isFirst={i === 0} />
-      ))}
-    </div>
-  );
+  const Card = ({ items }: { items: RowItem[] }) => {
+    const rows = items.filter((i) => i.label && i.href);
+    if (rows.length === 0) return null;
+    return (
+      <div style={{ background: CARD, borderRadius: 20, margin: "0 24px", overflow: "hidden" }}>
+        {rows.map((item, i) => (
+          <div key={item.label}>
+            {i > 0 && (
+              <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
+            )}
+            {item.external ? (
+              <a href={item.href} target="_blank" rel="noopener noreferrer" style={ROW_STYLE}>
+                <RowBody item={item} />
+              </a>
+            ) : (
+              <Link to={item.href} style={ROW_STYLE}>
+                <RowBody item={item} />
+              </Link>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const Section = ({ label, items }: { label: string; items: RowItem[] }) => {
+    const rows = items.filter((i) => i.label && i.href);
+    if (rows.length === 0) return null;
+    return (
+      <div style={{ marginBottom: 28 }}>
+        <Eyebrow>{label}</Eyebrow>
+        <Card items={rows} />
+      </div>
+    );
+  };
 
   return (
     <div
       style={{
         minHeight: "100vh",
         background: BG,
-        paddingBottom: 120,
+        paddingBottom: 100,
         fontFamily: SANS,
       }}
     >
@@ -671,33 +633,16 @@ const MyAccount = () => {
       {/* Top bar */}
       <PageHeader title="Settings" onBack={() => navigate(user ? "/my-profile" : "/")} />
 
-
-
       <div style={{ height: 24 }} />
 
-      {user && (
-        <>
-          <Eyebrow>Account</Eyebrow>
-          <Card items={accountItems} />
-          <div style={{ height: 28 }} />
-        </>
-      )}
+      {user && <Section label="Account" items={accountItems} />}
 
-      <Eyebrow>Submissions</Eyebrow>
-      <ExternalCard items={submissionsItems} />
+      <Section label="Submissions" items={submissionsItems} />
 
-      <div style={{ height: 28 }} />
+      <Section label="Support" items={helpInfoItems} />
 
-      <Eyebrow>Support</Eyebrow>
-      <Card items={helpInfoItems} />
+      {isAdmin && <Section label="Admin" items={adminItems} />}
 
-      {isAdmin && (
-        <>
-          <div style={{ height: 28 }} />
-          <Eyebrow>Admin</Eyebrow>
-          <Card items={adminItems} />
-        </>
-      )}
 
       {/* Log out / Sign in */}
       <div style={{ padding: "32px 24px 24px" }}>
