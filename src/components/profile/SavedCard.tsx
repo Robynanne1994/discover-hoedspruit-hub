@@ -114,7 +114,7 @@ const buildContent = (it: any, type: CardType) => {
 
   if (type === "listing") {
     const rating = it.google_rating ? Number(it.google_rating).toFixed(1).replace(/\.0$/, "") : null;
-    const reviews = it.google_reviews_count ? ` (${it.google_reviews_count})` : "";
+    const reviews = it.google_reviews_count ? `\u2009(${it.google_reviews_count})` : "";
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
     if (rating) ratingChip = `${rating}${reviews}`;
     lines.push(category ? { text: category } : null);
