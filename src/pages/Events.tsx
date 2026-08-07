@@ -110,14 +110,14 @@ function eventDateLine(e: any): string {
       return time ? `${datePart} • ${time}` : datePart;
     }
   }
-  if (parseRecurrenceRule(e.recurrence)) {
+  const rule = parseRecurrenceRule(e.recurrence);
+  if (rule) {
     const next = getNextOccurrence(e);
-    if (next) {
-      const time = next.startTime ? fmtTime(next.startTime) : "";
-      const datePart = `Next: ${format(next.date, "d MMM")}`;
-      return time ? `${datePart} • ${time}` : datePart;
-    }
+    const time = next?.startTime ? fmtTime(next.startTime) : fmtTime(e.start_time);
+    const datePart = recurrenceLabel(rule) ?? (next ? `Next: ${format(next.date, "d MMM")}` : "");
+    if (datePart) return time ? `${datePart} • ${time}` : datePart;
   }
+
   const { start, end } = getEventDates(e);
   if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
   const sameDay = !end || start.getTime() === end.getTime();
