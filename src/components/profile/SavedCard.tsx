@@ -149,7 +149,7 @@ const buildContent = (it: any, type: CardType) => {
     const category = it.categories?.title ? titleCase(it.categories.title) : null;
     if (rating) ratingChip = rating;
     if (reviews) reviewCount = reviews;
-    lines.push(category ? { text: category } : null);
+    lines.push(category ? { icon: categoryIcon(it.categories?.title), text: category } : null);
     // Location clamp is decided at render time from the measured title height:
     // one-line titles leave room for two lines of location, two-line titles do not.
     lines.push(it.location ? { icon: MapPin, text: it.location } : null);
