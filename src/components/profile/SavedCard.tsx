@@ -4,6 +4,7 @@ import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCirc
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { getNextOccurrence } from "@/lib/eventSchedule";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
