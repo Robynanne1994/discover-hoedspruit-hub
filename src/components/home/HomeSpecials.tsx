@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
@@ -26,6 +27,28 @@ interface Special {
   savings: string | null;
 }
 
+const clamp = (lines: number) => ({
+  display: "-webkit-box" as const,
+  WebkitLineClamp: lines,
+  WebkitBoxOrient: "vertical" as const,
+  overflow: "hidden" as const,
+});
+
+const cardStyle: React.CSSProperties = {
+  flex: "0 0 calc((100vw - 32px) / 1.5)",
+  minWidth: 200,
+  maxWidth: 280,
+  scrollSnapAlign: "start",
+  background: "#FFFFFF",
+  borderRadius: 18,
+  overflow: "hidden",
+  boxShadow: "0 1px 4px -1px rgba(0,0,0,0.04)",
+  textDecoration: "none",
+  display: "flex",
+  flexDirection: "column",
+  transition: "transform 150ms ease-out",
+};
+
 const HomeSpecials = () => {
   const { data: specials } = useQuery({
     queryKey: ["home-specials"],
@@ -46,154 +69,211 @@ const HomeSpecials = () => {
 
   if (!specials || specials.length === 0) return null;
 
+  const press = {
+    onPointerDown: (e: React.PointerEvent<HTMLAnchorElement>) =>
+      (e.currentTarget.style.transform = "scale(0.98)"),
+    onPointerUp: (e: React.PointerEvent<HTMLAnchorElement>) =>
+      (e.currentTarget.style.transform = "scale(1)"),
+    onPointerLeave: (e: React.PointerEvent<HTMLAnchorElement>) =>
+      (e.currentTarget.style.transform = "scale(1)"),
+  };
+
+  const valueLine = (s: Special) => {
+    const value = specialValue(s);
+    if (value.kind === "none") return null;
+    if (value.kind === "price") {
+      return (
+        <div style={{ marginTop: "auto", paddingTop: 10 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              height: 32,
+              padding: "0 12px",
+              borderRadius: 999,
+              background: "#6B7C5C",
+              color: "#FFFFFF",
+              fontFamily: HN,
+              fontSize: 12,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {value.price}
+          </span>
+        </div>
+      );
+    }
+    return (
+      <div
+        style={{
+          marginTop: "auto",
+          paddingTop: 10,
+          fontFamily: HN,
+          fontSize: 13,
+          fontWeight: 700,
+          color: "#423324",
+          lineHeight: 1.3,
+          ...clamp(2),
+        }}
+      >
+        {value.text}
+      </div>
+    );
+  };
+
+  const businessRow = (s: Special, withLogo: boolean) =>
+    s.business_name ? (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          minWidth: 0,
+          marginTop: 4,
+        }}
+      >
+        {withLogo ? (
+          <span
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 999,
+              background: "#EEE8DA",
+              flexShrink: 0,
+            }}
+          />
+        ) : (
+          <MapPin size={13} strokeWidth={1.6} color="#6B6A5E" style={{ flexShrink: 0 }} />
+        )}
+        <span
+          style={{
+            fontFamily: HN,
+            fontSize: 13,
+            color: "#6B6A5E",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minWidth: 0,
+          }}
+        >
+          {s.business_name}
+        </span>
+      </div>
+    ) : null;
+
+  const title = (s: Special) => (
+    <div
+      {...noTitleCaseProps(s)}
+      style={{
+        fontFamily: HN,
+        fontSize: 15,
+        fontWeight: 700,
+        lineHeight: 1.25,
+        letterSpacing: "-0.2px",
+        color: "#1A1A1A",
+        ...clamp(2),
+      }}
+    >
+      {getDisplayTitle(s)}
+    </div>
+  );
+
   return (
     <section>
       <HomeSectionHead primary="Active Specials" actionHref="/specials" />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
-        <div style={{ display: "flex", gap: 12, paddingRight: 20 }}>
-          {specials.map((s, i) => {
-            const image = s.homepage_image_url || s.image_url || s.detail_image_url;
-            const value = specialValue(s);
+      <div
+        className="scrollbar-hide"
+        style={{
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          padding: "0 20px",
+          display: "flex",
+          alignItems: "stretch",
+          gap: 12,
+        }}
+      >
+        {specials.map((s) => {
+          const image = s.homepage_image_url || s.image_url || s.detail_image_url;
+
+          if (!image) {
             return (
-              <Link
-                key={s.id}
-                to={`/specials/${s.id}`}
-                onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
-                onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                style={{
-                  width: 138,
-                  flexShrink: 0,
-                  textDecoration: "none",
-                  transition: "transform 150ms ease-out",
-                  display: "block",
-                }}
-              >
-                {/* Image with the deal badge sitting on it */}
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    aspectRatio: "1 / 1",
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    background: "#F4EFE3",
-                    marginBottom: 8,
-                  }}
-                >
-                  {image && (
-                    <img
-                      src={image}
-                      alt={s.business_name}
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                    />
-                  )}
+              <Link key={s.id} to={`/specials/${s.id}`} {...press} style={cardStyle}>
+                <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
                   {s.deal_label && (
-                    <span
+                    <div
                       style={{
-                        position: "absolute",
-                        top: 8,
-                        left: 8,
-                        maxWidth: "calc(100% - 16px)",
-                        padding: "4px 9px",
-                        borderRadius: 999,
-                        background: i % 2 === 1 ? "#423324" : "#B4522E",
-                        color: "#FFFFFF",
                         fontFamily: HN,
                         fontSize: 10,
                         fontWeight: 700,
-                        letterSpacing: "0.08em",
-                        lineHeight: 1,
                         textTransform: "uppercase",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
+                        letterSpacing: "0.16em",
+                        color: "#C0392B",
+                        marginBottom: 6,
                       }}
                     >
                       {s.deal_label}
-                    </span>
-                  )}
-                </div>
-
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <div
-                    {...noTitleCaseProps(s)}
-                    style={{
-                      fontFamily: HN,
-                      fontSize: 15,
-                      fontWeight: 700,
-                      color: "#1A1A1A",
-                      lineHeight: 1.2,
-                      marginBottom: 2,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {getDisplayTitle(s)}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: HN,
-                      fontSize: 11,
-                      color: "#6B6A5E",
-                      marginBottom: 3,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {s.business_name}
-                  </div>
-
-                  {/* The offer, in plain words under the business */}
-                  {value.kind !== "none" && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "baseline",
-                        gap: 4,
-                        minWidth: 0,
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: HN,
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: "#1A1A1A",
-                          letterSpacing: "-0.2px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {value.kind === "price" ? value.price : value.text}
-                      </span>
-                      {value.kind === "price" && (value.note || value.original) && (
-                        <span
-                          style={{
-                            fontFamily: HN,
-                            fontSize: 11,
-                            color: "#6B6A5E",
-                            textDecoration: value.original ? "line-through" : "none",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            minWidth: 0,
-                          }}
-                        >
-                          {value.original || value.note}
-                        </span>
-                      )}
                     </div>
                   )}
+                  {title(s)}
+                  {businessRow(s, true)}
+                  <div style={{ height: 1, background: "#EAE4D5", marginTop: 10 }} />
+                  {valueLine(s)}
                 </div>
               </Link>
             );
-          })}
-        </div>
+          }
+
+          return (
+            <Link key={s.id} to={`/specials/${s.id}`} {...press} style={cardStyle}>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  background: "#F4EFE3",
+                }}
+              >
+                <img
+                  src={image}
+                  alt={s.business_name || getDisplayTitle(s)}
+                  loading="lazy"
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+                {s.deal_label && (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: 10,
+                      left: 10,
+                      background: "#C0392B",
+                      color: "#FFFFFF",
+                      fontFamily: HN,
+                      fontSize: 10,
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                      padding: "5px 10px",
+                      borderRadius: 999,
+                      whiteSpace: "nowrap",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {s.deal_label}
+                  </span>
+                )}
+              </div>
+              <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
+                {title(s)}
+                {businessRow(s, false)}
+                {valueLine(s)}
+              </div>
+            </Link>
+          );
+        })}
+        <div style={{ flex: "0 0 20px" }} aria-hidden />
       </div>
     </section>
   );
