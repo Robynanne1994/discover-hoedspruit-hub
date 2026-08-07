@@ -14,7 +14,7 @@ const META = "#2b2420";
 const MUTED = TOKEN_MUTED;
 const BROWN = "#715A3D";
 const HEART = "#5b4632";
-const SAGE = "#6B7C5C";
+const SAGE = "#2b7f3f";
 const CLAY = "#C0392B";
 const OLIVE = "#4F4A38";
 const IMAGE_BG = "#F4EFE3";
@@ -470,7 +470,9 @@ const SavedCard = ({
           if (!line) return null;
           // Listing location: two lines when the title fits on one, otherwise one.
           const clamp =
-            line.icon === MapPin && type === "listing" ? (titleLines > 1 ? 1 : 2) : line.clamp ?? 2;
+            (line.icon === MapPin && type === "listing") || (line.icon === Store && type === "special")
+              ? (titleLines > 1 ? 1 : 2)
+              : line.clamp ?? 2;
           return (
             <div
               key={i}
