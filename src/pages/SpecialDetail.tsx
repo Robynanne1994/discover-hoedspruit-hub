@@ -459,7 +459,7 @@ const SpecialDetail = () => {
     });
     whatsapps.forEach((w, i) => {
       const clean = w.replace(/[^0-9]/g, "");
-      rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
+      rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
     });
     const email = contactEmail;
     if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
