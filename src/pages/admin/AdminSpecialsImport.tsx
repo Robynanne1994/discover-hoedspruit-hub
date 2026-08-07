@@ -12,11 +12,11 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 };
 
 const EXPECTED_HEADERS = [
-  "title", "title_override", "badge_override", "deal_type", "day_of_week",
+  "title", "badge_override", "deal_type", "day_of_week",
   "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "business_id", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
-  "valid_from", "valid_until", "card_footer_text",
-  "price", "price_label", "original_price", "savings",
+  "valid_from", "valid_until",
+  "price", "price_label", "original_price",
   "booking_required", "booking_link", "booking_link_label", "promo_code",
   "contact_phone", "contact_whatsapp", "contact_email",
   "additional_phones", "additional_whatsapps",
@@ -103,7 +103,6 @@ const AdminSpecialsImport = () => {
 
         const payload: Record<string, any> = {
           title,
-          title_override: row.title_override || null,
           badge_override: row.badge_override || null,
           deal_type: row.deal_type || null,
           day_of_week: row.day_of_week || null,
@@ -117,11 +116,9 @@ const AdminSpecialsImport = () => {
           // image_url & detail_image_url ignored — managed via Lovable editor only
           valid_from: row.valid_from || null,
           valid_until: row.valid_until || null,
-          card_footer_text: row.card_footer_text || null,
           price: stripTrailingZeros(row.price) || null,
           price_label: row.price_label || null,
           original_price: stripTrailingZeros(row.original_price) || null,
-          savings: row.savings || null,
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
@@ -139,6 +136,12 @@ const AdminSpecialsImport = () => {
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
         };
 
+
+        // Legacy columns are no longer part of the template, but an older file
+        // may still carry them — honour them when present, ignore when absent.
+        for (const legacy of ["title_override", "card_footer_text", "savings"]) {
+          if (parsed.headers.includes(legacy)) payload[legacy] = row[legacy] || null;
+        }
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
@@ -180,9 +183,9 @@ const AdminSpecialsImport = () => {
 
   const downloadTemplate = () => {
     const example = [
-      "Sunset Dinner Deal", "", "50% OFF", "Bush Lodge", "", "Half-price dinner with wine pairing",
-      "2026-01-01", "2026-06-30", "Weekends only",
-      "R450pp", "per person", "R900pp", "50% off",
+      "Sunset Dinner Deal", "50% OFF", "Bush Lodge", "", "Half-price dinner with wine pairing",
+      "2026-01-01", "2026-06-30",
+      "R450pp", "per person", "R900pp",
       "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
       "+27 123 456 789", "+27 123 456 789", "info@example.com",
       "", "",
@@ -199,10 +202,10 @@ const AdminSpecialsImport = () => {
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.title ?? "", s.title_override ?? "", s.badge_override ?? "", s.deal_type ?? "", s.day_of_week ?? "",
+      s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", s.day_of_week ?? "",
       s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
-      s.valid_from ?? "", s.valid_until ?? "", s.card_footer_text ?? "",
-      stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "", s.savings ?? "",
+      s.valid_from ?? "", s.valid_until ?? "",
+      stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
