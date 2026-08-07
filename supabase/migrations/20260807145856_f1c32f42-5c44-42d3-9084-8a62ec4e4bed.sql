@@ -1,0 +1,1 @@
+ALTER TABLE public.feedback ADD COLUMN IF NOT EXISTS image_url TEXT, ADD COLUMN IF NOT EXISTS image_urls TEXT[] DEFAULT '{}'::text[];

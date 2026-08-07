@@ -62,6 +62,8 @@ const titleCaseSubject = (s: string | null | undefined) => {
   }).join("");
 };
 
+const MAX_IMAGES = 5;
+
 type Reply = {
   id: string;
   subject: string | null;
@@ -77,7 +79,7 @@ const Feedback = () => {
   const [type, setType] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const [replyByEmail, setReplyByEmail] = useState(false);
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
@@ -137,39 +139,60 @@ const Feedback = () => {
   }, []);
 
   const handlePhotoPick = () => {
-    if (!user) { requireAuth("add a photo"); return; }
+    if (!user) { requireAuth("add images"); return; }
+    if (imageUrls.length >= MAX_IMAGES) {
+      toast.error(`You can add up to ${MAX_IMAGES} images.`);
+      return;
+    }
     fileRef.current?.click();
   };
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const picked = Array.from(e.target.files ?? []);
     if (fileRef.current) fileRef.current.value = "";
-    if (!file) return;
-    if (!user) { requireAuth("add a photo"); return; }
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please choose an image file.");
+    if (!picked.length) return;
+    if (!user) { requireAuth("add images"); return; }
+
+    const remaining = MAX_IMAGES - imageUrls.length;
+    if (remaining <= 0) {
+      toast.error(`You can add up to ${MAX_IMAGES} images.`);
       return;
     }
-    if (file.size > 8 * 1024 * 1024) {
-      toast.error("That image is too large (max 8MB).");
-      return;
+    let files = picked;
+    if (files.length > remaining) {
+      files = files.slice(0, remaining);
+      toast.error(`Only ${remaining} more ${remaining === 1 ? "image" : "images"} can be added.`);
     }
+
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error } = await supabase.storage
-        .from("feedback-images")
-        .upload(path, file, { contentType: file.type, upsert: false });
-      if (error) throw error;
-      const { data } = supabase.storage.from("feedback-images").getPublicUrl(path);
-      setImageUrl(data.publicUrl);
+      const uploaded: string[] = [];
+      for (const file of files) {
+        if (!file.type.startsWith("image/")) {
+          toast.error("Please choose image files only.");
+          continue;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          toast.error(`${file.name} is too large (max 8MB).`);
+          continue;
+        }
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error } = await supabase.storage
+          .from("feedback-images")
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (error) throw error;
+        const { data } = supabase.storage.from("feedback-images").getPublicUrl(path);
+        uploaded.push(data.publicUrl);
+      }
+      if (uploaded.length) setImageUrls((prev) => [...prev, ...uploaded].slice(0, MAX_IMAGES));
     } catch {
-      toast.error("Couldn't upload that photo. Please try again.");
+      toast.error("Couldn't upload those images. Please try again.");
     } finally {
       setUploading(false);
     }
   };
+
 
   const handleSubmit = async () => {
     const errs: typeof errors = {};
@@ -188,7 +211,8 @@ const Feedback = () => {
         feedback_type: type.toLowerCase(),
         subject: subject.trim() || null,
         message: message.trim(),
-        image_url: imageUrl || null,
+        image_url: imageUrls[0] || null,
+        image_urls: imageUrls,
         reply_by_email: wantsEmail,
         reply_email: wantsEmail ? user?.email ?? null : null,
       } as any);
@@ -197,7 +221,7 @@ const Feedback = () => {
       setSubject("");
       setMessage("");
       setType("");
-      setImageUrl("");
+      setImageUrls([]);
       setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -400,46 +424,51 @@ const Feedback = () => {
         </div>
 
 
-        {/* Photo attachment (optional) */}
+        {/* Supporting images (optional) */}
         <div>
-          <label style={labelStyle}>Add a photo (optional)</label>
+          <label style={labelStyle}>Add Supporting Images (Optional)</label>
+          <p style={{ fontFamily: FF, fontSize: 12.5, fontWeight: 400, color: "#6B6A5E", margin: "0 0 10px", paddingLeft: 18 }}>
+            Add up to {MAX_IMAGES} supporting screenshots or images to help us understand.
+          </p>
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
+            multiple
             onChange={handleFile}
             style={{ display: "none" }}
           />
-          {imageUrl ? (
-            <div
-              style={{
-                position: "relative",
-                borderRadius: 20,
-                overflow: "hidden",
-                background: CARD,
-              }}
-            >
-              <img
-                src={imageUrl}
-                alt="Attachment preview"
-                style={{ width: "100%", maxHeight: 220, objectFit: "cover", display: "block" }}
-              />
-              <button
-                type="button"
-                onClick={() => setImageUrl("")}
-                aria-label="Remove photo"
-                style={{
-                  position: "absolute", top: 10, right: 10,
-                  width: 32, height: 32, borderRadius: 999,
-                  background: "rgba(26,26,26,0.72)", border: "none",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <X size={16} color="#fff" strokeWidth={2.2} />
-              </button>
+          {imageUrls.length > 0 && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+              {imageUrls.map((url) => (
+                <div
+                  key={url}
+                  style={{ position: "relative", borderRadius: 12, overflow: "hidden", background: CARD, aspectRatio: "1 / 1" }}
+                >
+                  <img
+                    src={url}
+                    alt="Supporting image preview"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setImageUrls((prev) => prev.filter((u) => u !== url))}
+                    aria-label="Remove image"
+                    style={{
+                      position: "absolute", top: 6, right: 6,
+                      width: 26, height: 26, borderRadius: 999,
+                      background: "rgba(26,26,26,0.72)", border: "none",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <X size={14} color="#fff" strokeWidth={2.2} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ) : (
+          )}
+          {imageUrls.length < MAX_IMAGES && (
             <button
               type="button"
               onClick={handlePhotoPick}
@@ -467,12 +496,17 @@ const Feedback = () => {
               ) : (
                 <>
                   <Camera size={20} color={SUBMIT_BG} strokeWidth={1.8} />
-                  <span style={{ color: SUBMIT_BG }}>Add a screenshot or photo</span>
+                  <span style={{ color: SUBMIT_BG }}>
+                    {imageUrls.length === 0
+                      ? "Add screenshots or images"
+                      : `Add more (${MAX_IMAGES - imageUrls.length} left)`}
+                  </span>
                 </>
               )}
             </button>
           )}
         </div>
+
 
         {/* Reply to me by email (logged-in users only) */}
         {user?.email && (
