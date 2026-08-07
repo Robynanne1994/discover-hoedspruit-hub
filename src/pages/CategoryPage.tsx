@@ -17,6 +17,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { isOpenNow } from "@/lib/openHours";
+import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 
@@ -1186,7 +1187,7 @@ const CategoryPage = () => {
                         lineHeight: 1,
                       }}
                     >
-                      <span style={{ color: INK }}>★</span>
+                      <span style={{ color: "#E9B417" }}>★</span>
                       {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
                       {l.google_reviews_count ? (
                         <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
