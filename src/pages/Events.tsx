@@ -351,6 +351,113 @@ const EventCard = ({ event }: { event: any }) => {
   );
 };
 
+// Happening Soon poster card ---------------------------------------
+const PosterCard = ({ event }: { event: any }) => {
+  const navigate = useNavigate();
+  const d: Date | null = event._parsed ?? null;
+  return (
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={() => navigate(`/events/${event.id}`)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          navigate(`/events/${event.id}`);
+        }
+      }}
+      onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+      onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      style={{
+        position: "relative",
+        flexShrink: 0,
+        width: 196,
+        height: 252,
+        borderRadius: 16,
+        overflow: "hidden",
+        background: "#F4EFE3",
+        cursor: "pointer",
+        transition: "transform 150ms ease-out",
+      }}
+    >
+      {event.image_url && (
+        <img
+          src={event.image_url}
+          alt={getDisplayTitle(event)}
+          loading="lazy"
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+        />
+      )}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.65) 100%)",
+        }}
+      />
+      {d && (
+        <div
+          style={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            width: 50,
+            height: 50,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.92)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: SANS,
+              fontSize: 9,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              color: "#6B6A5E",
+              lineHeight: 1,
+            }}
+          >
+            {format(d, "MMM")}
+          </span>
+          <span
+            style={{
+              fontFamily: SANS,
+              fontSize: 17,
+              color: C.ink,
+              lineHeight: 1,
+              marginTop: 2,
+            }}
+          >
+            {format(d, "d")}
+          </span>
+        </div>
+      )}
+      <h3
+        {...noTitleCaseProps(event)}
+        style={{
+          position: "absolute",
+          left: 14,
+          right: 14,
+          bottom: 14,
+          margin: 0,
+          fontFamily: SANS,
+          fontWeight: 400,
+          fontSize: 17,
+          lineHeight: 1.2,
+          color: "#FFFFFF",
+        }}
+      >
+        {getDisplayTitle(event)}
+      </h3>
+    </div>
+  );
+};
 
 
 // Page --------------------------------------------------------------
