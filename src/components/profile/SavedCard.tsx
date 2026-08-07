@@ -457,36 +457,47 @@ const SavedCard = ({
           ) : null,
         )}
 
-        {status && (
-          <div style={{ marginTop: "auto", paddingTop: 6, display: "flex", flexDirection: "column", gap: 3 }}>
-            {status.items.map((s, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  fontFamily: SANS,
-                  ...t.meta,
-                  color: s.tone,
-                  lineHeight: 1.2,
-                }}
-              >
-                <span
-                  style={{
-                    width: 5,
-                    height: 5,
-                    borderRadius: 9999,
-                    background: s.tone,
-                    flexShrink: 0,
-                  }}
-                />
-                {s.text}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
+
+      {status && (
+        <div
+          style={{
+            marginTop: "auto",
+            background: "#F5F0E8",
+            borderTop: "1px solid rgba(26,26,26,0.06)",
+            padding: "8px 12px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+          }}
+        >
+          {status.items.map((s, i) => (
+            <div
+              key={i}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 5,
+                fontFamily: SANS,
+                ...t.meta,
+                color: s.tone,
+                lineHeight: 1.2,
+              }}
+            >
+              <span
+                style={{
+                  width: 5,
+                  height: 5,
+                  borderRadius: 9999,
+                  background: s.tone,
+                  flexShrink: 0,
+                }}
+              />
+              {s.text}
+            </div>
+          ))}
+        </div>
+      )}
     </Link>
   );
 };
