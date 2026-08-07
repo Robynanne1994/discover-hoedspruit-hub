@@ -150,6 +150,23 @@ function parseFreeTextRecurrence(s: string): ParsedRule | null {
   return null;
 }
 
+/**
+ * Resolve the effective recurrence rule for an event. Structured rules win;
+ * otherwise we read the human date text ("Every Saturday", "First Saturday of
+ * Every Month") which is where legacy recurring events keep their pattern
+ * while `recurrence` only says "Weekly" / "Monthly".
+ */
+export function resolveRecurrenceRule(e: EventScheduleLike): ParsedRule | null {
+  const structured = parseRecurrenceRule(e.recurrence ?? null);
+  if (structured) return structured;
+  const rec = String(e.recurrence ?? "").trim().toLowerCase();
+  const txt = String(e.date ?? "").trim().toLowerCase();
+  if (!txt) return null;
+  const recurring = (rec && rec !== "none") || /\bevery\b|\bdaily\b|\bweekly\b|\bmonthly\b/.test(txt);
+  if (!recurring) return null;
+  return parseFreeTextRecurrence(txt);
+}
+
 
 /** Expand a recurrence rule between anchor start/end into concrete dates within [from, to]. */
 function expandRecurrence(
