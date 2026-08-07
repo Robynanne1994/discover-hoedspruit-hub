@@ -71,6 +71,10 @@ const HomeSpecials = () => {
 
   if (!specials || specials.length === 0) return null;
 
+  useEffect(() => {
+    if (scrollerRef.current) scrollerRef.current.scrollLeft = 0;
+  }, [specials]);
+
   const press = {
     onPointerDown: (e: React.PointerEvent<HTMLAnchorElement>) =>
       (e.currentTarget.style.transform = "scale(0.98)"),
