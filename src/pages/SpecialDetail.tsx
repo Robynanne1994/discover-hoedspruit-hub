@@ -235,7 +235,7 @@ const SpecialDetail = () => {
     fromDate.getFullYear() === untilDate.getFullYear() &&
     fromDate.getMonth() === untilDate.getMonth() &&
     fromDate.getDate() === untilDate.getDate();
-  let dotColor = "#5C8A4A";
+  let dotColor = "#2b7f3f";
   let statusLabel = "Live Now";
   let datesText = "Ongoing";
   if (untilDate && now > untilDate) {
