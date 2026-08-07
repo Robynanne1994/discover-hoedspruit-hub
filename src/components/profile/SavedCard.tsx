@@ -167,6 +167,9 @@ const buildContent = (it: any, type: CardType) => {
         const opens = to12h(opensAt(hours!));
         status = { items: [{ text: opens ? `Closed · Opens ${opens}` : "Closed Now", tone: CLAY }] };
       }
+    } else {
+      // No hours captured yet: keep the bar so cards stay uniform, in brown.
+      status = { items: [{ text: "Hours Unknown", tone: BROWN }] };
     }
 
   }
