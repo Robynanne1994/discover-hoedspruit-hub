@@ -222,7 +222,44 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             )}
             
           </div>
-          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
+          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
+
+          {/* Structured deal fields — the badge is generated from these when no override is set */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Deal Type</Label>
+              <select className={SELECT_CLS} value={form.deal_type || ""} onChange={(e) => set("deal_type", e.target.value || null)}>
+                <option value="">None</option>
+                {DEAL_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label>Day Of Week</Label>
+              <select className={SELECT_CLS} value={form.day_of_week || ""} onChange={(e) => set("day_of_week", e.target.value || null)}>
+                <option value="">None</option>
+                {DAYS.map((v) => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Discount Type</Label>
+              <select className={SELECT_CLS} value={form.discount_type || ""} onChange={(e) => set("discount_type", e.target.value || null)}>
+                <option value="">None</option>
+                {DISCOUNT_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
+              </select>
+            </div>
+            <div>
+              <Label>Discount Value</Label>
+              <Input
+                type="number"
+                value={form.discount_value ?? ""}
+                onChange={(e) => set("discount_value", e.target.value === "" ? null : Number(e.target.value))}
+              />
+            </div>
+          </div>
+          <div><Label>Freebie Text</Label><Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" /></div>
+          <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
 
           {/* Tag + sub-tags (same as events) */}
           <div><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
