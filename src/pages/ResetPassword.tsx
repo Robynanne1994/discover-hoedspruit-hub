@@ -10,6 +10,7 @@ import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 import { useResendCooldown } from "@/hooks/useResendCooldown";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   RESET_LINK_TTL_MINUTES,
   clearRecoveryParams,
@@ -26,7 +27,7 @@ import {
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const CREAM = "#E6E0CC";
 const INK = "#1A1A1A";
-const MUTED = "#6B6255";
+const MUTED = TOKEN_MUTED;
 const BROWN = "#423324";
 const LINK = "#715a3d";
 

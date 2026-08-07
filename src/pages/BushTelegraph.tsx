@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
+import { MUTED as TOKEN_MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -14,7 +15,7 @@ const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const MUTED = "#7A6E5C";
+const MUTED = TOKEN_MUTED;
 const LINE = "#E2DAC6";
 const DARK = "#2E2418";
 const RUST = "#C0392B";
@@ -107,15 +108,14 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
           <h4
             data-no-title-case={hasOverride ? "true" : undefined}
             style={{
-              fontFamily: HN, fontWeight: 700, fontSize: 16, lineHeight: 1.25,
-              letterSpacing: "-0.2px", color: INK, margin: 0,
+              ...type.cardTitleL, margin: 0,
               textTransform: hasOverride ? "none" : undefined,
             }}
           >{displayTitle}</h4>
           {metaParts.length > 0 && (
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
-              fontFamily: HN, fontWeight: 500, fontSize: 12.5, color: MUTED,
+              ...type.meta,
               margin: "4px 0 10px", flexWrap: "wrap",
             }}>
               {metaParts.map((m, i) => (
@@ -148,14 +148,14 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
 };
 
 const suggestInputStyle: React.CSSProperties = {
-  fontFamily: HN, fontWeight: 400, fontSize: 15, color: INK,
+  ...type.input,
   background: "#fff", border: `2px solid #C5C0BA`, borderRadius: 12,
   padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
   lineHeight: 1.4,
 };
 
 const suggestLabelStyle: React.CSSProperties = {
-  fontFamily: HN, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
+  ...type.eyebrow,
   textTransform: "uppercase", color: "#715a3d", marginBottom: 6, display: "block",
 };
 
@@ -207,8 +207,8 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
             <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>Suggest a Channel</h2>
-        <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
+        <h2 style={{ ...type.sectionTitle, margin: "0 0 8px" }}>Suggest a Channel</h2>
+        <p style={{ ...type.body, color: MUTED, margin: "0 0 20px" }}>
           Know a good local channel, group or feed? Share the details below and we will review and add it if it meets our criteria.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -239,8 +239,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
         </div>
         <button onClick={submit} disabled={submitting} style={{
           fontFamily: HN, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
-          background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
-          letterSpacing: "0.04em",
+          background: "#423324", color: "#FFFFFF", border: "none", ...type.button,
           cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
         }}>
           {submitting ? "Sending..." : "Send Suggestion"}
@@ -254,11 +253,10 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
 const SectionHeader = ({ title, count }: { title: string; count: number }) => (
   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 20px", marginBottom: 14 }}>
     <h2 style={{
-      fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 24,
-      lineHeight: 1.0, letterSpacing: "-0.4px", color: INK, margin: 0,
+      ...type.sectionTitle, margin: 0,
     }}>{title}</h2>
     <span style={{
-      fontFamily: HN, fontWeight: 500, fontSize: 14, color: MUTED,
+      ...type.meta,
     }}>({count})</span>
   </div>
 );
@@ -363,7 +361,7 @@ const BushTelegraph = () => {
                 key={c}
                 onClick={() => setActive(c)}
                 style={{
-                  fontFamily: HN, fontWeight: isActive ? 700 : 500, fontSize: 13.5,
+                  ...tabStyle(isActive),
                   height: 36, padding: "0 18px", borderRadius: 999,
                   border: `1px solid ${isActive ? DARK : LINE}`,
                   cursor: "pointer", whiteSpace: "nowrap",
@@ -385,10 +383,10 @@ const BushTelegraph = () => {
       {totalShown === 0 ? (
         <div style={{ padding: "64px 24px 0", textAlign: "center" }}>
           <h4 style={{
-            fontFamily: HN, fontWeight: 700, fontSize: 22,
+            ...type.sectionTitle,
             color: INK, margin: 0,
           }}>Nothing here yet</h4>
-          <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "8px auto 0", maxWidth: 280 }}>
+          <p style={{ ...type.body, color: MUTED, margin: "8px auto 0", maxWidth: 280 }}>
             We're still scouting good ones for this category. Check back soon.
           </p>
         </div>

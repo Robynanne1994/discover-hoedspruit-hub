@@ -29,6 +29,7 @@ import {
 import Seo from "@/components/Seo";
 import { sanitiseUsername, validateUsername, USERNAME_MAX, USERNAME_HINT } from "@/lib/username";
 import { isEmailDerivedName, nameFromProvider, signInMethodLabel } from "@/lib/authProviders";
+import { INK, MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -247,7 +248,7 @@ const CompleteProfile = () => {
         >
           Finish your profile
         </h1>
-        <p style={{ fontSize: 14, lineHeight: 1.55, color: "#6B6255", margin: "0 0 24px" }}>
+        <p style={{ fontSize: 14, lineHeight: 1.55, color: TOKEN_MUTED, margin: "0 0 24px" }}>
           Your email is verified — you signed in with {method}, so there's no code to enter
           and no password to remember. We just need a few things before your profile is
           ready for the rest of Hoedspruit to see. You can add a password later in Account
@@ -325,7 +326,7 @@ const CompleteProfile = () => {
                 <SelectTrigger className="h-12 w-full rounded-xl border border-border bg-white px-4 text-[15px]">
                   <SelectValue
                     placeholder="Select one"
-                    style={{ color: residency ? "#1A1A1A" : "#8A8480" }}
+                    style={{ color: residency ? INK : TOKEN_MUTED }}
                   />
                 </SelectTrigger>
                 <SelectContent>

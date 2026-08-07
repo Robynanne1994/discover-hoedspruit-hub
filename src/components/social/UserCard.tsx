@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { UserCircle, MapPin } from "lucide-react";
 import FollowButton from "./FollowButton";
+import { type } from "@/lib/type";
 
 interface UserCardProps {
   user: {
@@ -50,8 +51,7 @@ const UserCard = ({ user }: UserCardProps) => {
       <div className="flex-1 min-w-0">
         <p
           style={{
-            fontSize: 18,
-            fontWeight: 700,
+            ...type.cardTitleL,
             color: "#2b2420",
             lineHeight: 1.15,
             margin: 0,
@@ -67,7 +67,7 @@ const UserCard = ({ user }: UserCardProps) => {
             className="flex items-center truncate"
             style={{
               gap: 4,
-              fontSize: 12,
+              ...type.meta,
               color: "rgba(18,18,20,0.4)",
               margin: 0,
               marginTop: 6,

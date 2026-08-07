@@ -11,13 +11,14 @@ import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
 import { toast } from "sonner";
 import { residencyBadge } from "@/lib/residencyBadge";
+import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INNER = "#EFE7D3";
 const INK = "#1A1A1A";
-const SUBTLE = "rgba(26,26,26,0.55)";
+const SUBTLE = MUTED;
 const WHITE = "#FFFFFF";
 const PILL_BORDER = "#E8E4DF";
 const DARK_BROWN = "#423324";
@@ -560,8 +561,7 @@ const MyProfile = () => {
                 <>
                   <h2
                     style={{
-                      fontFamily: HEAD,
-                      fontWeight: 550,
+                      ...type.sectionTitle,
                       fontSize: 22,
                       lineHeight: 1.15,
                       letterSpacing: "-0.4px",
@@ -574,9 +574,7 @@ const MyProfile = () => {
                   {profile?.username && (
                     <div
                       style={{
-                        fontFamily: SANS,
-                        fontWeight: 300,
-                        fontSize: 13,
+                        ...type.meta,
                         color: "rgba(26,26,26,0.6)",
                         marginTop: 3,
                       }}
@@ -592,10 +590,7 @@ const MyProfile = () => {
                         background: INNER,
                         borderRadius: 999,
                         padding: "5px 11px",
-                        fontFamily: SANS,
-                        fontSize: 10,
-                        fontWeight: 700,
-                        letterSpacing: "0.1em",
+                        ...type.label,
                         color: "rgba(26,26,26,0.7)",
                         lineHeight: 1,
                       }}
@@ -651,15 +646,12 @@ const MyProfile = () => {
             ].map((s, i) => {
               const inner = (
                 <>
-                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 22, color: INK, lineHeight: 1 }}>
+                  <span style={{ ...type.sectionTitle, fontSize: 22, lineHeight: 1 }}>
                     {fmtCount(s.value)}
                   </span>
                   <span
                     style={{
-                      fontFamily: SANS,
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "0.12em",
+                      ...type.label,
                       color: "rgba(26,26,26,0.6)",
                       marginTop: 7,
                     }}
@@ -714,10 +706,10 @@ const MyProfile = () => {
                 <UserPlus size={15} strokeWidth={2} color="#FFFFFF" />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: SANS, fontSize: 14, fontWeight: 600, color: INK }}>
+                <div style={type.cardTitleM}>
                   Follow requests
                 </div>
-                <div style={{ fontFamily: SANS, fontSize: 12.5, color: SUBTLE, marginTop: 2 }}>
+                <div style={{ ...type.meta, marginTop: 2 }}>
                   {pendingRequests} {pendingRequests === 1 ? "person is" : "people are"} waiting for your approval
                 </div>
               </div>
@@ -839,10 +831,7 @@ const MyProfile = () => {
                   borderRadius: 999,
                   padding: "6px 14px",
                   cursor: "pointer",
-                  fontFamily: SANS,
-                  fontSize: 13,
-                  fontWeight: active ? 600 : 400,
-                  letterSpacing: "0.01em",
+                  ...tabStyle(active),
                   lineHeight: 1.2,
                 }}
               >
@@ -855,7 +844,7 @@ const MyProfile = () => {
 
       {/* Result count */}
       <div style={{ padding: "16px 20px 0" }}>
-        <span style={{ fontFamily: SANS, fontSize: 13, color: SUBTLE }}>
+        <span style={type.meta}>
           {current.length === 1 ? "1 Item" : `${current.length} Items`}
         </span>
       </div>

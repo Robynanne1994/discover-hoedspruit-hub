@@ -34,6 +34,7 @@ import { invalidateBlockQueries, useBlockedUsers } from "@/hooks/useBlockedUsers
 import { useBlockCooldown, fetchBlockCooldown } from "@/hooks/useBlockCooldown";
 import BlockActionSheet from "@/components/BlockActionSheet";
 import { residencyBadge } from "@/lib/residencyBadge";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import {
   blockCooldownBlockedMessage,
   blockCooldownNotice,
@@ -67,7 +68,7 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 
 // Saved-items tab styling — mirrors MyProfile for an identical look
 const TAB_INK = "#1A1A1A";
-const TAB_SUBTLE = "rgba(26,26,26,0.55)";
+const TAB_SUBTLE = TOKEN_MUTED;
 const TAB_LINE = "rgba(26,26,26,0.10)";
 
 type Tab = "listings" | "deals" | "events" | "resources";
@@ -601,7 +602,7 @@ const UserProfile = () => {
                           fontFamily: SANS,
                           fontWeight: 400,
                           fontSize: 13,
-                          color: "rgba(26,26,26,0.55)",
+                          color: TOKEN_MUTED,
                           marginTop: 2,
                         }}
                       >

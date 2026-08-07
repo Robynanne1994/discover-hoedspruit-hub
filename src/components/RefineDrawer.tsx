@@ -1,5 +1,6 @@
 import { useEffect, ReactNode } from "react";
 import { ChevronDown, X } from "lucide-react";
+import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -298,7 +299,7 @@ export const RefineSection = ({ label, open, onToggle, summary, children }: Refi
                     fontFamily: SANS,
                     fontSize: 12,
                     fontWeight: 500,
-                    color: "rgba(26,26,26,0.55)",
+                    color: TOKEN_MUTED,
                     letterSpacing: "0.01em",
                   }}
                 >
@@ -462,7 +463,7 @@ export const RefineToggle = ({
             fontFamily: SANS,
             fontWeight: 400,
             fontSize: 13,
-            color: "rgba(26,26,26,0.55)",
+            color: TOKEN_MUTED,
             letterSpacing: "0.01em",
             lineHeight: 1.3,
           }}
@@ -674,7 +675,7 @@ export const RefineSlider = ({
           marginTop: 8,
           fontFamily: SANS,
           fontSize: 12,
-          color: "rgba(26,26,26,0.55)",
+          color: TOKEN_MUTED,
           letterSpacing: "0.01em",
         }}
       >

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { getSpecialBadge } from "@/lib/specialBadge";
+import { type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -291,8 +292,7 @@ const SavedCard = ({
           <Chip>
             <span
               style={{
-                fontSize: 9.5,
-                fontWeight: 700,
+                ...t.label,
                 textTransform: "uppercase",
                 letterSpacing: "0.16em",
                 color: BROWN,
@@ -307,7 +307,7 @@ const SavedCard = ({
         {ratingChip && !badge && (
           <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
-              <span style={{ fontSize: 9.5, fontWeight: 600, color: META, whiteSpace: "nowrap" }}>
+              <span style={{ ...t.label, whiteSpace: "nowrap" }}>
                 {ratingChip}
               </span>
             </Chip>
@@ -393,9 +393,7 @@ const SavedCard = ({
         <h3
           {...(override ? { "data-no-title-case": "true" } : {})}
           style={{
-            fontFamily: SANS,
-            fontSize: 15,
-            fontWeight: 700,
+            ...t.cardTitleM,
             color: INK,
             lineHeight: 1.22,
             margin: 0,
@@ -418,9 +416,7 @@ const SavedCard = ({
                 display: "flex",
                 alignItems: "flex-start",
                 gap: 5,
-                fontFamily: SANS,
-                fontSize: i === 0 ? 12.5 : 11.5,
-                fontWeight: i === 0 ? 500 : 400,
+                ...t.meta,
                 color: i === 0 ? META : MUTED,
                 lineHeight: i === 0 ? 1.3 : 1.35,
                 minWidth: 0,
@@ -460,9 +456,7 @@ const SavedCard = ({
                   display: "flex",
                   alignItems: "center",
                   gap: 5,
-                  fontFamily: SANS,
-                  fontSize: 11,
-                  fontWeight: 600,
+                  ...t.meta,
                   color: s.tone,
                   lineHeight: 1.2,
                 }}
