@@ -152,7 +152,7 @@ const buildContent = (it: any, type: CardType) => {
     const ends = it.valid_until ? new Date(it.valid_until).getTime() : null;
     const expired = ends != null && ends < Date.now();
     if (expired) badge = { text: "Ended", tone: "ended" };
-    else if (it.deal_label) badge = { text: it.deal_label, tone: "deal" };
+    else badge = { text: getSpecialBadge(it), tone: "deal" };
 
     if (!expired && it.valid_until) {
       const d = daysAway(it.valid_until);

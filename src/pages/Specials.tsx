@@ -11,6 +11,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
+import { getSpecialBadge } from "@/lib/specialBadge";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -803,13 +804,13 @@ const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | nul
               "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.42) 38%, rgba(0,0,0,0.06) 68%, rgba(0,0,0,0) 100%)",
           }}
         />
-        {special.deal_label && (
+        {getSpecialBadge(special) && (
           <div
             style={{
               position: "absolute",
               top: 12,
               left: 12,
-              background: badgeColor(special.deal_label),
+              background: badgeColor(getSpecialBadge(special)),
               color: COLOR.badgeFg,
               padding: "6px 12px",
               borderRadius: 999,
@@ -820,7 +821,7 @@ const FeaturedCard = ({ special, km, onClick }: { special: any; km: string | nul
               textTransform: "uppercase",
             }}
           >
-            {special.deal_label}
+            {getSpecialBadge(special)}
           </div>
         )}
         <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
@@ -892,14 +893,14 @@ const DealCard = ({ special, km, onClick }: { special: any; km: string | null; o
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
-        {special.deal_label && (
+        {getSpecialBadge(special) && (
           <div
             style={{
               position: "absolute",
               top: 8,
               left: 8,
               maxWidth: "calc(100% - 16px)",
-              background: badgeColor(special.deal_label),
+              background: badgeColor(getSpecialBadge(special)),
               color: COLOR.badgeFg,
               padding: "4px 9px",
               borderRadius: 999,
@@ -913,7 +914,7 @@ const DealCard = ({ special, km, onClick }: { special: any; km: string | null; o
               textOverflow: "ellipsis",
             }}
           >
-            {special.deal_label}
+            {getSpecialBadge(special)}
           </div>
         )}
       </div>

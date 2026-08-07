@@ -649,7 +649,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("specials")
-        .select("id, title, title_override, business_name, image_url, deal_label, valid_until, is_featured")
+        .select("id, title, title_override, business_name, image_url, valid_until, is_featured")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         // Featured deals pin to the top, then the most recently added

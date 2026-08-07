@@ -356,7 +356,9 @@ const SpecialDetail = () => {
       value: <span>{savingsText}</span>,
     });
   }
-  if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
+  detailRows.push({ icon: Tag, label: "Deal", value: getSpecialBadge(sp) });
+  const redemptionNote = (sp.redemption_note || "").trim() || null;
+  if (redemptionNote) detailRows.push({ icon: Tag, label: "How To Redeem", value: redemptionNote });
 
   if (fromDate || untilDate) {
     detailRows.push({

@@ -208,7 +208,7 @@ const ListingDetail = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("specials")
-        .select("id,title,deal_label,image_url,valid_until")
+        .select("id,title,badge_override,day_of_week,discount_type,discount_value,freebie_text,image_url,valid_from,valid_until")
         .eq("business_id", id!)
         .eq("is_active", true);
       const today = new Date().toISOString().slice(0, 10);
@@ -1338,7 +1338,7 @@ const ListingDetail = () => {
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {(relatedSpecials ?? []).map((s: any) =>
           renderRelatedCard(
-            { id: s.id, title: s.title, image_url: s.image_url, badge: s.deal_label },
+            { id: s.id, title: s.title, image_url: s.image_url, badge: getSpecialBadge(s) },
             `/specials/${s.id}`
           )
         )}

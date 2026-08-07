@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { specialValue } from "@/lib/specialValue";
+import { getSpecialBadge } from "@/lib/specialBadge";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -17,7 +18,12 @@ interface Special {
   image_url: string | null;
   detail_image_url: string | null;
   homepage_image_url: string | null;
-  deal_label: string;
+  badge_override: string | null;
+  day_of_week: string | null;
+  discount_type: string | null;
+  discount_value: number | null;
+  freebie_text: string | null;
+  valid_from: string | null;
   card_footer_text: string | null;
   sub_tag_1: string | null;
   sub_tag_2: string | null;
@@ -59,7 +65,7 @@ const HomeSpecials = () => {
       const { data } = await supabase
         .from("specials")
         .select(
-          "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, deal_label, card_footer_text, sub_tag_1, sub_tag_2, valid_until, price, price_label, original_price, savings, is_featured, created_at",
+          "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, badge_override, day_of_week, discount_type, discount_value, freebie_text, redemption_note, card_footer_text, sub_tag_1, sub_tag_2, valid_from, valid_until, price, price_label, original_price, savings, is_featured, created_at",
         )
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
@@ -210,7 +216,7 @@ const HomeSpecials = () => {
             return (
               <Link key={s.id} to={`/specials/${s.id}`} {...press} style={cardStyle}>
                 <div style={{ padding: 12, display: "flex", flexDirection: "column", flex: 1 }}>
-                  {s.deal_label && (
+                  {getSpecialBadge(s) && (
                     <div
                       style={{
                         fontFamily: HN,
@@ -222,7 +228,7 @@ const HomeSpecials = () => {
                         marginBottom: 6,
                       }}
                     >
-                      {s.deal_label}
+                      {getSpecialBadge(s)}
                     </div>
                   )}
                   {title(s)}
@@ -250,7 +256,7 @@ const HomeSpecials = () => {
                   loading="lazy"
                   style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                 />
-                {s.deal_label && (
+                {getSpecialBadge(s) && (
                   <span
                     style={{
                       position: "absolute",
@@ -269,7 +275,7 @@ const HomeSpecials = () => {
                       lineHeight: 1,
                     }}
                   >
-                    {s.deal_label}
+                    {getSpecialBadge(s)}
                   </span>
                 )}
               </div>
