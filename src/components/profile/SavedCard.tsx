@@ -51,6 +51,36 @@ const PLATFORM_ICON: Record<string, typeof Globe> = {
   website: Globe,
 };
 
+// Category icon fallbacks. Mapped from the category title so the metadata
+// line carries a relevant icon; anything unmapped falls back to Tag.
+const CATEGORY_ICON: Record<string, typeof Tag> = {
+  restaurant: Utensils,
+  restaurants: Utensils,
+  "eat & drink": Utensils,
+  "restaurants & eateries": Utensils,
+  bar: Coffee,
+  cafe: Coffee,
+  coffee: Coffee,
+  accommodation: BedDouble,
+  "places to stay": BedDouble,
+  lodge: BedDouble,
+  hotel: BedDouble,
+  activities: Mountain,
+  "things to do": Mountain,
+  tours: Compass,
+  "tours & experiences": Compass,
+  wellness: Flower,
+  spa: Flower,
+  shopping: ShoppingBag,
+  "shops & boutiques": ShoppingBag,
+  services: Wrench,
+};
+const categoryIcon = (title?: string | null) => {
+  if (!title) return Tag;
+  const key = title.toLowerCase().trim();
+  return CATEGORY_ICON[key] || Tag;
+};
+
 // 24h "18:00" or "6:00" -> "6:00 PM"
 const to12h = (raw?: string | null) => {
   if (!raw) return null;
