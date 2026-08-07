@@ -577,6 +577,7 @@ const SavedCard = ({
                 gap: 5,
                 fontFamily: SANS,
                 ...t.meta,
+                fontWeight: 600,
                 color: s.tone,
                 lineHeight: 1.2,
               }}
