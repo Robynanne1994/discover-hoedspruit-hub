@@ -62,16 +62,11 @@ const HomeSpecials = () => {
                 onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 style={{
-                  width: 268,
+                  width: 138,
                   flexShrink: 0,
-                  background: "#ffffff",
-                  borderRadius: 16,
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
                   textDecoration: "none",
                   transition: "transform 150ms ease-out",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+                  display: "block",
                 }}
               >
                 {/* Image with the deal badge sitting on it */}
@@ -80,7 +75,10 @@ const HomeSpecials = () => {
                     position: "relative",
                     width: "100%",
                     aspectRatio: "1 / 1",
+                    borderRadius: 16,
+                    overflow: "hidden",
                     background: "#F4EFE3",
+                    marginBottom: 8,
                   }}
                 >
                   {image && (
@@ -88,22 +86,22 @@ const HomeSpecials = () => {
                       src={image}
                       alt={s.business_name}
                       loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     />
                   )}
                   {s.deal_label && (
                     <span
                       style={{
                         position: "absolute",
-                        top: 12,
-                        left: 12,
-                        maxWidth: "calc(100% - 24px)",
-                        padding: "7px 14px",
+                        top: 8,
+                        left: 8,
+                        maxWidth: "calc(100% - 16px)",
+                        padding: "5px 10px",
                         borderRadius: 999,
                         background: i % 2 === 1 ? "#423324" : "#B4522E",
                         color: "#FFFFFF",
                         fontFamily: HN,
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: 700,
                         letterSpacing: "0.08em",
                         textTransform: "uppercase",
@@ -117,15 +115,16 @@ const HomeSpecials = () => {
                   )}
                 </div>
 
-                <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 4 }}>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                   <div
                     {...noTitleCaseProps(s)}
                     style={{
                       fontFamily: HN,
-                      fontSize: 16,
+                      fontSize: 13,
                       fontWeight: 700,
                       color: "#1A1A1A",
-                      lineHeight: 1.25,
+                      lineHeight: 1.2,
+                      marginBottom: 2,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -136,8 +135,9 @@ const HomeSpecials = () => {
                   <div
                     style={{
                       fontFamily: HN,
-                      fontSize: 14,
+                      fontSize: 11,
                       color: "#6B6A5E",
+                      marginBottom: 3,
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -150,17 +150,16 @@ const HomeSpecials = () => {
                   {value.kind !== "none" && (
                     <div
                       style={{
-                        marginTop: 8,
                         display: "flex",
                         alignItems: "baseline",
-                        gap: 6,
+                        gap: 4,
                         minWidth: 0,
                       }}
                     >
                       <span
                         style={{
                           fontFamily: HN,
-                          fontSize: 16,
+                          fontSize: 13,
                           fontWeight: 700,
                           color: "#1A1A1A",
                           letterSpacing: "-0.2px",
@@ -175,7 +174,7 @@ const HomeSpecials = () => {
                         <span
                           style={{
                             fontFamily: HN,
-                            fontSize: 13,
+                            fontSize: 11,
                             color: "#6B6A5E",
                             textDecoration: value.original ? "line-through" : "none",
                             whiteSpace: "nowrap",
@@ -193,7 +192,6 @@ const HomeSpecials = () => {
               </Link>
             );
           })}
-
         </div>
       </div>
     </section>
