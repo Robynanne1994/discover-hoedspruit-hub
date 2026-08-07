@@ -172,9 +172,14 @@ const buildContent = (it: any, type: CardType) => {
   if (type === "resource") {
     const platformKey = (it.platform || "").toString().toLowerCase();
     const icon = PLATFORM_ICON[platformKey] ?? Globe;
-    const first = it.meta || it.platform;
+    const candidates = [it.meta, it.meta_2].map((v) => (v == null ? "" : String(v).trim()));
+    const memberIdx = candidates.findIndex((v) => /member|follower|subscriber/i.test(v));
+    const memberText = memberIdx >= 0 ? candidates[memberIdx] : null;
+    const rest = candidates.filter((_, i) => i !== memberIdx).filter(Boolean);
+    const first = rest[0] || it.platform;
     lines.push(first ? { icon, text: first } : null);
-    lines.push(it.meta_2 ? { text: it.meta_2 } : null);
+    lines.push(rest[1] ? { text: rest[1] } : null);
+    if (memberText) status = { items: [{ text: memberText, tone: OLIVE }] };
   }
 
   return { lines, status, badge, ratingChip };
