@@ -27,7 +27,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref 
         style={{
           margin: 0,
           fontFamily: HEAD,
-          fontWeight: 500,
+          fontWeight: 550,
           fontSize: 24,
           letterSpacing: "0.01em",
           color: "#1A1A1A",
@@ -46,6 +46,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref 
             display: "inline-flex",
             alignItems: "center",
             gap: 2,
+            whiteSpace: "nowrap",
           }}
         >
           {actionLabel}
