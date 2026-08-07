@@ -101,6 +101,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      payload.title_override = (form.title_override || "").trim() || null;
       payload.tag = (form.tag || "").trim() || null;
       payload.sub_tag_1 = (form.sub_tag_1 || "").trim() || null;
       payload.sub_tag_2 = (form.sub_tag_2 || "").trim() || null;
