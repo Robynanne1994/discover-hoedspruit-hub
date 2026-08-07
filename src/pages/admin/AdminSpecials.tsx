@@ -259,6 +259,27 @@ const AdminSpecials = () => {
           </div>
 
           <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="special-use-title-override"
+                checked={!!(form.title_override && String(form.title_override).trim())}
+                onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : null })}
+              />
+              <Label htmlFor="special-use-title-override" className="text-sm cursor-pointer font-normal">
+                Use custom title (overrides auto-capitalisation)
+              </Label>
+            </div>
+            {!!(form.title_override && String(form.title_override).trim()) && (
+              <Textarea
+                rows={2}
+                className="resize-none"
+                placeholder="Custom title — rendered exactly as typed"
+                value={form.title_override || ""}
+                onChange={(e) => setForm({ ...form, title_override: e.target.value })}
+              />
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Deal Type</Label>
