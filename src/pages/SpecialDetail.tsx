@@ -562,14 +562,14 @@ const SpecialDetail = () => {
 
     return (
       <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 12 }}>
+        <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 0, overflow: "hidden" }}>
           {isSurrounds ? (
             <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
               Hoedspruit &amp; Surrounds
             </div>
           ) : (
             <>
-              <div style={{ borderRadius: 14, overflow: "hidden" }}>
+              <div style={{ borderRadius: "16px 16px 0 0", overflow: "hidden" }}>
                 <LocationMap
                   coords={mapPlace?.coords ?? null}
                   precise={mapPlace?.precise ?? true}
@@ -578,7 +578,7 @@ const SpecialDetail = () => {
                   pinColor={C.primary}
                 />
               </div>
-              <div style={{ padding: "14px 10px 6px" }}>
+              <div style={{ padding: "14px 20px 16px" }}>
                 {locText && (
                   <div style={type.cardTitleL}>
                     {locText}
