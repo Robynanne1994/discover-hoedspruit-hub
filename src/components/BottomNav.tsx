@@ -102,7 +102,8 @@ const BottomNav = () => {
               )}
             </Link>
           );
-        })}
+          });
+        })()}
       </div>
     </nav>
   );
