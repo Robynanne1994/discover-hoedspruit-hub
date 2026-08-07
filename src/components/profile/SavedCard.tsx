@@ -348,7 +348,7 @@ const SavedCard = ({
           <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
             <Chip style={{ height: 18, padding: "0 6px" }}>
               <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
-                {ratingChip}
+                <span style={{ color: STAR }}>★</span> {ratingChip}
               </span>
             </Chip>
           </div>
