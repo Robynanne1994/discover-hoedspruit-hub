@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { HelpCircle, FileText, Mail, MessageSquare, ArrowUpRight } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const BG = "#E6E0CC";
@@ -69,20 +69,15 @@ const HelpCentre = () => {
       <div style={{ padding: "24px 0 0" }}>
         <p
           style={{
-            fontFamily: '"Nohemi", ' + SANS,
-            fontSize: 15,
-            fontWeight: 550,
-            letterSpacing: "0.06em",
-            textTransform: "uppercase",
-            color: INK,
-            margin: "0 0 10px 0",
-            padding: "0 24px",
+            ...type.sectionEyebrow,
+            marginTop: 0,
+            padding: `0 ${SECTION_INSET}px`,
           }}
         >
           Find what you need
         </p>
 
-        <div style={{ background: CARD, borderRadius: 20, margin: "0 24px", padding: "4px 22px" }}>
+        <div style={{ background: CARD, borderRadius: 20, margin: `0 ${SECTION_INSET}px`, padding: "4px 22px" }}>
           {ROWS.map((item, i) => (
             <Row key={item.label} item={item} isFirst={i === 0} />
           ))}

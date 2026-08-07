@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { supabase } from "@/integrations/supabase/client";
 import Seo from "@/components/Seo";
+import { SECTION_INSET, type } from "@/lib/type";
 
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -217,19 +218,13 @@ const FAQs = () => {
           <div key={section.title}>
             <div
               style={{
-                padding: "0 24px",
-                marginBottom: 10,
-                fontFamily: '"Nohemi", ' + FF,
-                fontSize: 15,
-                fontWeight: 700,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: INK,
+                ...type.sectionEyebrow,
+                padding: `0 ${SECTION_INSET}px`,
               }}
             >
               {section.title}
             </div>
-            <div style={{ padding: "0 20px" }}>
+            <div style={{ padding: `0 ${SECTION_INSET}px` }}>
               <div
                 style={{
                   background: CARD,

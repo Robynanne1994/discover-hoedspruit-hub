@@ -10,7 +10,7 @@ import {
 
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 
 // === Editorial design tokens (matches My Account) ===
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -29,14 +29,9 @@ const supportItems = [
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <p
     style={{
-      fontFamily: '"Nohemi", ' + SANS,
-      fontSize: 15,
-      fontWeight: 550,
-      letterSpacing: "0.06em",
-      textTransform: "uppercase",
-      color: "#1A1A1A",
-      margin: "0 0 10px 0",
-      padding: "0 24px",
+      ...type.sectionEyebrow,
+      marginTop: 0,
+      padding: `0 ${SECTION_INSET}px`,
     }}
   >
     {children}

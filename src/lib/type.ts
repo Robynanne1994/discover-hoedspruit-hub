@@ -44,6 +44,15 @@ export const MUTED = "#5F5E52";
  */
 const HEADING_TRACKING = "-0.02em";
 
+/**
+ * Horizontal page inset for a section eyebrow and the card it labels.
+ *
+ * Both need the same value or the label floats off the card's edge — which is
+ * what happened on FAQs, Notifications and Contact Us, where a 24px label sat
+ * above a 20px card.
+ */
+export const SECTION_INSET = 24;
+
 export const type = {
   /** Hero title on detail pages and full-screen headers. */
   pageTitle: {
@@ -118,6 +127,28 @@ export const type = {
     color: MUTED,
   },
 
+  /**
+   * The small caps label that sits *above* a card and names the group below
+   * it — "ACCOUNT", "PERSONAL DETAILS", "POLICIES & AGREEMENTS".
+   *
+   * Eleven screens each hand-wrote this in Nohemi 15 and drifted: three
+   * weights (700/550/400), three trackings, three gaps and two left insets,
+   * with three pages whose label didn't line up with the card beneath it.
+   * 15px caps in the heading face read as a second page title, so this lands
+   * at 13/550 — still recognisably Nohemi, no longer competing with the
+   * PageHeader. Pair it with SECTION_INSET so the label and card share an edge.
+   *
+   * Distinct from `eyebrow` below, which labels content *inside* a card.
+   */
+  sectionEyebrow: {
+    fontFamily: NOHEMI,
+    fontSize: 13,
+    fontWeight: 550,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+    color: INK,
+    marginBottom: 10,
+  },
   /** Section-level uppercase heading, e.g. "GOOD TO KNOW". */
   eyebrow: {
     fontFamily: HN,

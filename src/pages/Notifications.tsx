@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 import {
   FILTER_TYPE_META,
   NotificationFilterType,
@@ -431,7 +431,7 @@ const Notifications = () => {
       <PageHeader title="Notification Preferences" />
 
       {/* Master card */}
-      <div style={{ padding: "20px 20px 0", marginBottom: 28 }}>
+      <div style={{ padding: `20px ${SECTION_INSET}px 0`, marginBottom: 28 }}>
         <div
           onClick={() => toggleBool("push_enabled")}
           style={{
@@ -462,19 +462,13 @@ const Notifications = () => {
           <div key={section.label}>
             <div
               style={{
-                fontFamily: '"Nohemi", ' + SANS,
-                fontSize: 15,
-                fontWeight: 550,
-                color: C.ink,
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                padding: "0 24px",
-                marginBottom: 10,
+                ...type.sectionEyebrow,
+                padding: `0 ${SECTION_INSET}px`,
               }}
             >
               {section.label}
             </div>
-            <div style={{ padding: "0 20px" }}>
+            <div style={{ padding: `0 ${SECTION_INSET}px` }}>
               <div
                 style={{
                   background: C.card,

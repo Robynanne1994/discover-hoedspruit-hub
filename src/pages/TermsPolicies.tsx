@@ -2,7 +2,7 @@ import { FileText, Shield, Cookie, Users, ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const BG = "#E6E0CC";
@@ -21,14 +21,9 @@ const POLICIES = [
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <p
     style={{
-      fontFamily: `"Nohemi", ${FF}`,
-      fontSize: 15,
-      fontWeight: 700,
-      letterSpacing: "0.06em",
-      textTransform: "uppercase",
-      color: INK,
-      margin: "0 0 12px 0",
-      padding: "0 24px",
+      ...type.sectionEyebrow,
+      marginTop: 0,
+      padding: `0 ${SECTION_INSET}px`,
     }}
   >
     {children}

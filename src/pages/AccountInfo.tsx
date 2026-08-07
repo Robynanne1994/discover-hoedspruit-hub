@@ -40,7 +40,7 @@ import {
   verifySignupCode,
 } from "@/lib/emailVerification";
 import { hasPasswordIdentity, signInMethodLabel } from "@/lib/authProviders";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 import {
   clearEmailChangeParams,
   forgetEmailChangeLink,
@@ -813,25 +813,20 @@ const AccountInfo = () => {
       {/* Top bar */}
       <PageHeader title="Account Info" />
 
-      {/* Profile Photo */}
+      {/* Profile Photo — blank eyebrow, kept so the photo card starts on the
+          same rhythm as the labelled sections below it. */}
       <div
         style={{
-          paddingLeft: 20,
-          paddingRight: 20,
+          ...type.sectionEyebrow,
+          paddingLeft: SECTION_INSET,
+          paddingRight: SECTION_INSET,
           marginTop: 24,
-          marginBottom: 10,
-          fontFamily: '"Nohemi", ' + FF,
-          fontSize: 15,
-          fontWeight: 700,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          color: INK,
         }}
       >
         {"\n"}
       </div>
 
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
+      <div style={{ paddingLeft: SECTION_INSET, paddingRight: SECTION_INSET, marginBottom: 24 }}>
         <div
           style={{
             background: CARD,
@@ -929,15 +924,9 @@ const AccountInfo = () => {
       {/* Section eyebrow */}
       <div
         style={{
-          paddingLeft: 20,
-          paddingRight: 20,
-          marginBottom: 10,
-          fontFamily: '"Nohemi", ' + FF,
-          fontSize: 15,
-          fontWeight: 700,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          color: INK,
+          ...type.sectionEyebrow,
+          paddingLeft: SECTION_INSET,
+          paddingRight: SECTION_INSET,
         }}
       >
         Personal Details
@@ -945,7 +934,7 @@ const AccountInfo = () => {
 
 
       {/* Personal details card */}
-      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+      <div style={{ paddingLeft: SECTION_INSET, paddingRight: SECTION_INSET }}>
         <div
           style={{
             background: CARD,

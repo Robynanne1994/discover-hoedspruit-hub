@@ -2,6 +2,7 @@ import { Mail, Phone, ArrowUpRight, Clock, Globe } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
+import { SECTION_INSET, type } from "@/lib/type";
 
 const WhatsAppIcon = ({ size = 18, color = "#1A1A1A" }: { size?: number; color?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
@@ -127,20 +128,7 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
 };
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <p
-    style={{
-      fontFamily: `"Nohemi", ${FF}`,
-      fontSize: 15,
-      fontWeight: 550,
-      letterSpacing: "0.06em",
-      textTransform: "uppercase",
-      color: "#1A1A1A",
-      margin: "0 0 10px 0",
-      padding: "0 4px",
-    }}
-  >
-    {children}
-  </p>
+  <p style={{ ...type.sectionEyebrow, marginTop: 0 }}>{children}</p>
 );
 
 const SocialTile = ({
@@ -192,7 +180,7 @@ const ContactUs = () => {
       />
       <PageHeader title="Contact Us" />
 
-      <div style={{ padding: "20px 20px 0" }}>
+      <div style={{ padding: `20px ${SECTION_INSET}px 0` }}>
         <SectionLabel>Reach Out</SectionLabel>
         <div
           style={{
@@ -235,9 +223,9 @@ const ContactUs = () => {
         </div>
       </div>
 
-      <div style={{ padding: "24px 20px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, padding: "0 4px" }}>
-          <p style={{ fontFamily: `"Nohemi", ${FF}`, fontSize: 15, fontWeight: 550, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1A1A1A", margin: 0 }}>Office Hours</p>
+      <div style={{ padding: `24px ${SECTION_INSET}px 0` }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: type.sectionEyebrow.marginBottom }}>
+          <p style={{ ...type.sectionEyebrow, margin: 0 }}>Office Hours</p>
           {(() => {
             const now = new Date();
             const day = now.getDay();
@@ -273,7 +261,7 @@ const ContactUs = () => {
       </div>
 
 
-      <div style={{ padding: "24px 20px 0" }}>
+      <div style={{ padding: `24px ${SECTION_INSET}px 0` }}>
         <SectionLabel>Follow Along</SectionLabel>
         <div style={{ display: "flex", gap: 8 }}>
           <SocialTile icon={<InstagramIcon size={22} color={INK} />} label="Instagram" href={INSTAGRAM_URL} />

@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import AvatarCropDialog from "@/components/profile/AvatarCropDialog";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
@@ -222,17 +222,14 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const parsed = parsePhone(phone);
   const flag = (AREA_CODES.find((a) => a.code === parsed.areaCode) || AREA_CODES[0]).flag;
 
+  // Same token as every other section label, but this form sits on the olive
+  // background rather than the cream page, so the ink colour is inverted.
   const SectionEyebrow = ({ children }: { children: React.ReactNode }) => (
     <div
       style={{
-        fontFamily: SANS,
-        fontSize: 11,
-        fontWeight: 400,
-        letterSpacing: "2.4px",
-        textTransform: "uppercase",
+        ...type.sectionEyebrow,
         color: "rgba(238,232,218,0.7)",
-        padding: "0 24px",
-        marginBottom: 10,
+        padding: `0 ${SECTION_INSET}px`,
       }}
     >
       {children}

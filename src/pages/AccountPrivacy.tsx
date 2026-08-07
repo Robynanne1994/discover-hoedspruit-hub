@@ -7,6 +7,7 @@ import { useFollowRequestCount } from "@/hooks/useFollows";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 import { ArrowUpRight } from "lucide-react";
+import { SECTION_INSET, type } from "@/lib/type";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
@@ -145,19 +146,7 @@ const AccountPrivacy = () => {
   };
 
   const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-    <div
-      style={{
-        fontFamily: '"Nohemi", ' + FF,
-        fontWeight: 700,
-        fontSize: 15,
-        letterSpacing: "0.06em",
-        textTransform: "uppercase",
-        color: INK,
-        marginBottom: 12,
-      }}
-    >
-      {children}
-    </div>
+    <div style={type.sectionEyebrow}>{children}</div>
   );
 
 
@@ -189,7 +178,7 @@ const AccountPrivacy = () => {
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
       <PageHeader title="Account Privacy" />
-      <div style={{ padding: "16px 20px 0" }}>
+      <div style={{ padding: `16px ${SECTION_INSET}px 0` }}>
         <SectionTitle>Visibility</SectionTitle>
         <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
           <PrivacyToggleRow
