@@ -137,35 +137,47 @@ const HomeSpecials = () => {
 
           return (
             <Link key={s.id} to={`/specials/${s.id}`} {...press} style={cardStyle}>
-              {image ? (
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    aspectRatio: "1 / 0.9",
-                    background: "#F4EFE3",
-                  }}
-                >
+              {/* Always render the image block at the same height so every card
+                  lines up, even when a special has no photo. */}
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: 190,
+                  background: "#F4EFE3",
+                  flexShrink: 0,
+                }}
+              >
+                {image ? (
                   <img
                     src={image}
                     alt={s.business_name || getDisplayTitle(s)}
                     loading="lazy"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "0 12px",
+                    }}
+                  >
+                    <SpecialBadgePill special={s} />
+                  </div>
+                )}
+                {image && (
                   <SpecialBadgePill
                     special={s}
                     style={{ position: "absolute", top: 10, left: 10, maxWidth: "calc(100% - 20px)" }}
                   />
-                </div>
-              ) : null}
+                )}
+              </div>
 
               <div style={{ padding: "12px 12px 8px", display: "flex", flexDirection: "column", flex: 1 }}>
-                {/* No art to hang the pill on, so it leads the copy instead. */}
-                {!image && (
-                  <div style={{ marginBottom: 6 }}>
-                    <SpecialBadgePill special={s} />
-                  </div>
-                )}
                 {title(s)}
                 {businessRow(s)}
               </div>
