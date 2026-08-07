@@ -171,25 +171,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
         <DialogHeader><DialogTitle>Edit Special</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="special-dlg-use-title-override"
-                checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => set("title_override", v ? (form.title_override || form.title || "") : null)}
-              />
-              <Label htmlFor="special-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use custom title (overrides auto-capitalisation)
-              </Label>
-            </div>
-            {!!(form.title_override && String(form.title_override).trim()) && (
-              <Input
-                placeholder="Custom title — rendered exactly as typed"
-                value={form.title_override || ""}
-                onChange={(e) => set("title_override", e.target.value)}
-              />
-            )}
-          </div>
           <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
           <div>
             <Label>Linked Business Listing</Label>
@@ -246,22 +227,51 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Discount Type</Label>
-              <select className={SELECT_CLS} value={form.discount_type || ""} onChange={(e) => set("discount_type", e.target.value || null)}>
+              <select
+                className={SELECT_CLS}
+                value={form.discount_type || ""}
+                onChange={(e) => {
+                  const next = e.target.value || null;
+                  set("discount_type", next);
+                  if (!discountTypeUsesValue(next)) set("discount_value", null);
+                }}
+              >
                 <option value="">None</option>
                 {DISCOUNT_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               </select>
+              {discountTypeHint(form.discount_type) && (
+                <p className="text-xs text-muted-foreground mt-1">{discountTypeHint(form.discount_type)}</p>
+              )}
             </div>
-            <div>
-              <Label>Discount Value</Label>
-              <Input
-                type="number"
-                value={form.discount_value ?? ""}
-                onChange={(e) => set("discount_value", e.target.value === "" ? null : Number(e.target.value))}
-              />
-            </div>
+            {discountTypeUsesValue(form.discount_type) && (
+              <div>
+                <Label>{form.discount_type === "percent_off" ? "Percent off" : "Amount off"}</Label>
+                <div className="relative">
+                  {form.discount_type === "amount_off" && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R</span>
+                  )}
+                  <Input
+                    type="number"
+                    className={form.discount_type === "amount_off" ? "pl-7" : "pr-7"}
+                    value={form.discount_value ?? ""}
+                    onChange={(e) => set("discount_value", e.target.value === "" ? null : Number(e.target.value))}
+                  />
+                  {form.discount_type === "percent_off" && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">%</span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-          <div><Label>Freebie Text</Label><Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" /></div>
+          <div>
+            <Label>Freebie Text</Label>
+            <Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" />
+            {form.discount_type === "freebie" && (
+              <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
+            )}
+          </div>
           <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
+
 
           {/* Tag + sub-tags (same as events) */}
           <div><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
@@ -348,10 +358,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </Label>
           </div>
 
-          <div>
-            <Label>Card Footer Text <span className="text-xs text-muted-foreground font-normal">(optional — overrides the auto "Valid until..." text on the listing card)</span></Label>
-            <Input value={form.card_footer_text || ""} onChange={(e) => set("card_footer_text", e.target.value)} placeholder="e.g. Weekends only" />
-          </div>
 
           {/* Simplified price block */}
           <div className="border rounded-md p-3 space-y-3">
@@ -359,7 +365,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
             <div><Label>Price Notes <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
             <div><Label>Original Price <span className="text-xs text-muted-foreground font-normal">(optional — strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
-            <div><Label>Savings <span className="text-xs text-muted-foreground font-normal">(optional — shown when no price is set)</span></Label><Input value={form.savings || ""} onChange={(e) => set("savings", e.target.value)} placeholder="e.g. 50% off, R200 off" /></div>
+            
           </div>
 
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
