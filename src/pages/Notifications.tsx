@@ -162,7 +162,8 @@ const PrefRow = ({
   return (
     <div
       style={{
-        padding: "16px 0",
+        minHeight: 56,
+        padding: "10px 0",
         borderTop: isFirst ? "none" : `1px solid ${C.line}`,
         opacity: disabled ? 0.55 : 1,
         pointerEvents: disabled ? "none" : "auto",
@@ -175,10 +176,10 @@ const PrefRow = ({
             paddingRight: 8,
             fontFamily: SANS,
             fontSize: 16,
-            fontWeight: 400,
+            fontWeight: 500,
             color: C.ink,
-            lineHeight: 1.2,
-            letterSpacing: "-0.1px",
+            lineHeight: 1.25,
+            letterSpacing: "-0.01em",
           }}
         >
           {title}
@@ -218,7 +219,7 @@ const PrefRow = ({
           >
             {linkText}
           </span>
-          <ChevronRight size={18} color={C.muted} strokeWidth={1.5} />
+          <ChevronRight size={16} color="#B4AE9E" strokeWidth={2} />
         </Link>
       )}
     </div>
@@ -426,7 +427,7 @@ const Notifications = () => {
   const masterOn = bools.push_enabled;
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: 120, fontFamily: SANS }}>
+    <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: 100, fontFamily: SANS }}>
       {/* Top bar */}
       <PageHeader title="Notification Preferences" />
 
@@ -436,8 +437,8 @@ const Notifications = () => {
           onClick={() => toggleBool("push_enabled")}
           style={{
             background: C.card,
-            borderRadius: 18,
-            padding: "20px 22px",
+            borderRadius: 20,
+            padding: "16px 16px",
             display: "flex",
             alignItems: "center",
             gap: 16,
@@ -445,10 +446,10 @@ const Notifications = () => {
           }}
         >
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: SANS, fontSize: 18, fontWeight: 700, color: C.ink, marginBottom: 4, letterSpacing: "-0.2px" }}>
+            <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 500, color: C.ink, marginBottom: 2, letterSpacing: "-0.01em" }}>
               Push Notifications
             </div>
-            <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 14, color: C.muted, lineHeight: 1.4 }}>
+            <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 12.5, color: "#6B6A5E", lineHeight: 1.3 }}>
               Turn all alerts on or off in one tap.
             </div>
           </div>
@@ -457,7 +458,7 @@ const Notifications = () => {
       </div>
 
       {/* Sections */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 22, opacity: loaded ? 1 : 0, transition: "opacity 200ms ease-out" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 28, opacity: loaded ? 1 : 0, transition: "opacity 200ms ease-out" }}>
         {loaded && SECTIONS.map((section) => (
           <div key={section.label}>
             <div
@@ -472,8 +473,8 @@ const Notifications = () => {
               <div
                 style={{
                   background: C.card,
-                  borderRadius: 18,
-                  padding: "8px 22px",
+                  borderRadius: 20,
+                  padding: "0 16px",
                   overflow: "hidden",
                 }}
               >
