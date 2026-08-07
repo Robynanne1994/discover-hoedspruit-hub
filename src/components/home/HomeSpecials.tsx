@@ -142,7 +142,7 @@ const HomeSpecials = () => {
                   style={{
                     position: "relative",
                     width: "100%",
-                    aspectRatio: "1 / 1",
+                    aspectRatio: "1 / 0.9",
                     background: "#F4EFE3",
                   }}
                 >
