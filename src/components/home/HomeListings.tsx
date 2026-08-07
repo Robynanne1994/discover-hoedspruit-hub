@@ -3,8 +3,8 @@ import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepage
 import HomeSectionHead from "./HomeSectionHead";
 
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { type } from "@/lib/type";
 
-const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Props {
   sectionKey: string;
@@ -67,10 +67,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
               <div
                 {...noTitleCaseProps(l)}
                 style={{
-                  fontFamily: HN,
-                  fontSize: 13,
-                  color: "#1A1A1A",
-                  lineHeight: 1.2,
+                  ...type.cardTitleS,
                   marginBottom: 2,
                   wordBreak: "break-word",
                 }}
@@ -78,7 +75,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                 {(l as any).title_override?.trim() ? getDisplayTitle(l) : cleanName(l.title)}
               </div>
               {(l.subtitle || l.category_label) && (
-                <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E", marginBottom: 3 }}>
+                <div style={{ ...type.meta, marginBottom: 3 }}>
                   {l.subtitle || l.category_label}
                 </div>
               )}

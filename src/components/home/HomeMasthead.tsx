@@ -3,10 +3,8 @@ import { Bell, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 import hhLogo from "@/assets/hh-logo.png";
+import { type } from "@/lib/type";
 
-const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
-const NOHEMI = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const HomeMasthead = () => {
   const { user } = useAuth();
@@ -35,14 +33,14 @@ const HomeMasthead = () => {
           <div style={{ minWidth: 0 }}>
             <h1
               aria-label="Hello Hoedspruit — Your Lowveld local guide to restaurants, lodges, events and specials"
+              // The masthead is a logo lockup rather than a page title, so it
+              // keeps its own 22px size — but it now tracks with the heading
+              // scale instead of loosening.
               style={{
+                ...type.sectionTitle,
                 margin: 0,
-                fontFamily: NOHEMI,
-                fontWeight: 550,
                 fontSize: 22,
                 lineHeight: 1.05,
-                letterSpacing: "0.01em",
-                color: "#1A1A1A",
               }}
             >
               Hello
@@ -50,15 +48,7 @@ const HomeMasthead = () => {
               Hoedspruit
             </h1>
             <p
-              style={{
-                margin: "6px 0 0",
-                fontFamily: HN,
-                fontWeight: 400,
-                fontSize: 10,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "#6B6A5E",
-              }}
+              style={{ ...type.label, margin: "6px 0 0" }}
             >
               Your Lowveld local
             </p>

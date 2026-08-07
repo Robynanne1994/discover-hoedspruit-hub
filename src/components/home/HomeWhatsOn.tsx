@@ -5,8 +5,8 @@ import HomeSectionHead from "./HomeSectionHead";
 import { getEventDates } from "@/lib/eventDates";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { INK, type } from "@/lib/type";
 
-const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 function formatTime(t?: string | null) {
   if (!t) return "";
   const m = /^(\d{1,2}):(\d{2})/.exec(t);
@@ -133,11 +133,8 @@ const HomeWhatsOn = () => {
                       padding: "4px 9px",
                       borderRadius: 999,
                       background: "rgba(255,255,255,0.94)",
-                      fontFamily: HN,
-                      fontSize: 10,
-                      fontWeight: 600,
-                      letterSpacing: "0.06em",
-                      color: "#1A1A1A",
+                      ...type.label,
+                      color: INK,
                       lineHeight: 1,
                     }}
                   >
@@ -148,11 +145,8 @@ const HomeWhatsOn = () => {
                   <div
                     {...noTitleCaseProps(e)}
                     style={{
-                      fontFamily: HN,
-                      fontSize: 13,
-                      fontWeight: 600,
+                      ...type.cardTitleS,
                       color: "#ffffff",
-                      lineHeight: 1.2,
                       display: "-webkit-box",
                       WebkitLineClamp: 2,
                       WebkitBoxOrient: "vertical",
@@ -164,11 +158,9 @@ const HomeWhatsOn = () => {
                   {metaLine && (
                     <div
                       style={{
+                        ...type.meta,
                         marginTop: 4,
-                        fontFamily: HN,
-                        fontSize: 10.5,
                         color: "rgba(255,255,255,0.88)",
-                        lineHeight: 1.2,
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         textOverflow: "ellipsis",

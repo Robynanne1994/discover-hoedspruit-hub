@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { INK, type } from "@/lib/type";
 
 /**
  * Shared top page header used across the mobile app so every page title
@@ -8,7 +9,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
  * weight, colour, position and spacing.
  *
  * Standard:
- *  - Title: <h1>, Helvetica Neue, 20px / 700, #1A1A1A, letterSpacing -0.2px, centred
+ *  - Title: <h1>, type.navTitle (Nohemi 20px / 550 / -0.02em, #1A1A1A), centred
  *  - Top spacing: notch-safe var(--header-top) (see src/index.css)
  *  - Divider: 1px, rgba(26,26,26,0.10), full-bleed, 20px below the title
  *
@@ -22,16 +23,17 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
  * and position while guaranteeing the title always fits on a single line.
  */
 
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
-const INK = "#1A1A1A";
 const LINE = "rgba(26,26,26,0.10)";
 const CARD = "#FFFFFF";
 
-/** Title font size when there's plenty of room. */
-const MAX_TITLE_FONT = 20;
-/** Smallest the title will ever shrink to before relying on the ellipsis. */
-const MIN_TITLE_FONT = 15;
+/** Title font size when there's plenty of room. Matches type.navTitle. */
+const MAX_TITLE_FONT = type.navTitle.fontSize;
+/**
+ * Smallest the title will ever shrink to before relying on the ellipsis.
+ * Kept close to MAX so a long category name still reads as the same tier as a
+ * short one — a truncated title looks deliberate, a shrunken one looks broken.
+ */
+const MIN_TITLE_FONT = 17;
 /** Breathing room (px) kept between the title and the side button slots. */
 const TITLE_SIDE_GAP = 16;
 
@@ -169,13 +171,9 @@ const PageHeader = ({
           <h1
             ref={titleRef}
             style={{
+              ...type.navTitle,
               margin: 0,
-              fontFamily: HEAD,
               fontSize: titleFont,
-              fontWeight: 550,
-              color: INK,
-              letterSpacing: "-0.2px",
-              lineHeight: 1,
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
