@@ -98,8 +98,58 @@ export function parseRecurrenceRule(raw: string | null | undefined): ParsedRule 
   if (m) return { kind: "monthly-day", day: parseInt(m[1], 10) };
   m = s.match(/^monthly-nth:(\d):(\d)$/);
   if (m) return { kind: "monthly-nth", n: parseInt(m[1], 10), weekday: parseInt(m[2], 10) };
+  return parseFreeTextRecurrence(s);
+}
+
+const WEEKDAY_WORDS: Record<string, number> = {
+  sunday: 0, sun: 0,
+  monday: 1, mon: 1,
+  tuesday: 2, tue: 2, tues: 2,
+  wednesday: 3, wed: 3,
+  thursday: 4, thu: 4, thur: 4, thurs: 4,
+  friday: 5, fri: 5,
+  saturday: 6, sat: 6,
+};
+
+const NTH_WORDS: Record<string, number> = {
+  first: 1, "1st": 1,
+  second: 2, "2nd": 2,
+  third: 3, "3rd": 3,
+  fourth: 4, "4th": 4,
+  last: 5,
+};
+
+/**
+ * Legacy / human recurrence text, e.g. "First Saturday of every month",
+ * "Every Saturday", "Last Friday of the month", "Every day".
+ * Returns null when the text is not confidently understood.
+ */
+function parseFreeTextRecurrence(s: string): ParsedRule | null {
+  if (/\bevery\s+day\b|\bdaily\b/.test(s)) return { kind: "daily" };
+
+  const weekdayWord = Object.keys(WEEKDAY_WORDS).find((w) => new RegExp(`\\b${w}\\b`).test(s));
+
+  // "first/second/.../last <weekday> of (every|the) month"
+  if (weekdayWord && /month/.test(s)) {
+    const nthWord = Object.keys(NTH_WORDS).find((w) => new RegExp(`\\b${w}\\b`).test(s));
+    if (nthWord) return { kind: "monthly-nth", n: NTH_WORDS[nthWord], weekday: WEEKDAY_WORDS[weekdayWord] };
+  }
+
+  // "every <weekday>" / "weekly on <weekday>" / "<weekday>s"
+  if (weekdayWord && !/month/.test(s)) {
+    return { kind: "weekly", weekday: WEEKDAY_WORDS[weekdayWord] };
+  }
+
+  // "<n>th of every month"
+  const dayMatch = s.match(/\b(\d{1,2})(st|nd|rd|th)?\s+of\s+(every|each|the)\s+month\b/);
+  if (dayMatch) {
+    const day = parseInt(dayMatch[1], 10);
+    if (day >= 1 && day <= 31) return { kind: "monthly-day", day };
+  }
+
   return null;
 }
+
 
 /** Expand a recurrence rule between anchor start/end into concrete dates within [from, to]. */
 function expandRecurrence(

@@ -4,6 +4,7 @@ import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCirc
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { getNextOccurrence } from "@/lib/eventSchedule";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -84,6 +85,9 @@ const fmt = (iso: string | null | undefined, opts: Intl.DateTimeFormatOptions) =
 };
 const weekdayDate = (iso?: string | null) => fmt(iso, { weekday: "short", day: "numeric", month: "short" });
 const weekday = (iso?: string | null) => fmt(iso, { weekday: "long" });
+const isoOf = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
 
 type CardType = "listing" | "event" | "special" | "resource";
 
@@ -130,25 +134,31 @@ const buildContent = (it: any, type: CardType) => {
   }
 
   if (type === "event") {
-    const dateLabel = weekdayDate(it.start_date) || weekdayDate(it.date) || it.date || null;
-    const time = to12h(it.start_time);
+    // Recurring and multi-performance events resolve to their next real
+    // occurrence, so "First Saturday of every month" still counts down in days.
+    const next = getNextOccurrence(it);
+    const nextIso = next ? isoOf(next.date) : null;
+    const dateLabel = weekdayDate(nextIso) || weekdayDate(it.start_date) || weekdayDate(it.date) || it.date || null;
+    const time = to12h(next?.startTime || it.start_time);
     const first = [dateLabel, time].filter(Boolean).join(" · ");
     lines.push(first ? { icon: Calendar, text: first } : null);
     lines.push(it.location ? { icon: MapPin, text: it.location } : null);
 
-    const ref = it.end_date || it.start_date || it.date;
-    const over = ref ? new Date(ref).getTime() < Date.now() : false;
-    if (over) badge = { text: "Ended", tone: "ended" };
-    else {
-      const d = daysAway(it.start_date || it.date);
+    if (!next) {
+      const ref = it.end_date || it.start_date || it.date;
+      const over = ref ? new Date(ref).getTime() < Date.now() : false;
+      if (over) badge = { text: "Ended", tone: "ended" };
+    } else {
+      const d = daysAway(nextIso);
       if (d != null) {
         if (d <= 0) status = { items: [{ text: "Today", tone: SAGE }] };
         else if (d === 1) status = { items: [{ text: "Tomorrow", tone: SAGE }] };
-        else if (d < 7) status = { items: [{ text: `This ${weekday(it.start_date || it.date)}`, tone: SAGE }] };
+        else if (d < 7) status = { items: [{ text: `This ${weekday(nextIso)}`, tone: SAGE }] };
         else status = { items: [{ text: `In ${d} Days`, tone: SAGE }] };
       }
     }
   }
+
 
   if (type === "special") {
     lines.push(it.business_name ? { icon: Store, text: titleCase(it.business_name) } : null);
@@ -414,7 +424,7 @@ const SavedCard = ({
             minHeight: 37,
             overflowWrap: "break-word",
             display: "-webkit-box",
-            WebkitLineClamp: 2,
+            WebkitLineClamp: type === "resource" ? 3 : 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
