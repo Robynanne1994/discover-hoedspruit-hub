@@ -501,8 +501,9 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
       margin: "4px 0 0",
       borderRadius: 9999,
       background: DARK,
-      color: "#FFFFFF",
       ...type.cardTitleM,
+      color: "#FFFFFF",
+
       textDecoration: "none",
       transition: "transform 0.12s ease, opacity 0.12s ease",
     }}
