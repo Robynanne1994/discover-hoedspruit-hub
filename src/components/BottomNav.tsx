@@ -32,13 +32,13 @@ const BottomNav = () => {
         borderRadius: "32px 32px 0 0",
         // The app draws edge-to-edge, so the bar grows by the home-indicator
         // inset and pads it out — the icons never sit under the indicator.
-        height: "calc(84px + var(--safe-bottom))",
+        height: "calc(74px + var(--safe-bottom))",
         padding: "0 10px var(--safe-bottom)",
         borderTop: "1px solid rgba(0,0,0,0.08)",
         boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 84, gap: 4 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 74, gap: 4 }}>
         {navItems.map((item) => {
           const path = location.pathname;
           let isActive = false;
@@ -76,7 +76,7 @@ const BottomNav = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 textDecoration: "none",
-                height: 46,
+                height: 40,
                 borderRadius: 999,
                 background: isActive ? ACTIVE_BG : "transparent",
                 gap: 8,
