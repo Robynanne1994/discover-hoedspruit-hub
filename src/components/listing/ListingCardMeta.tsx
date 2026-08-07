@@ -155,9 +155,12 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, hou
         }}
       >
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0 }} />
-        {status.text}
+        <span>{status.label}</span>
+        {status.detail ? (
+          <span style={{ fontWeight: 400 }}>· {status.detail}</span>
+        ) : null}
       </div>
-    </>
+    </>;
   );
 };
 
