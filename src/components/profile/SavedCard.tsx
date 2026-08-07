@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, Facebook, Globe, Heart, Instagram, MapPin, MessageCircle, Store } from "lucide-react";
+import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, Heart, Instagram, MapPin, MessageCircle, Mountain, ShoppingBag, Store, Tag, Utensils, Wrench } from "lucide-react";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
