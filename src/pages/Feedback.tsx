@@ -422,46 +422,51 @@ const Feedback = () => {
         </div>
 
 
-        {/* Photo attachment (optional) */}
+        {/* Supporting images (optional) */}
         <div>
-          <label style={labelStyle}>Add a photo (optional)</label>
+          <label style={labelStyle}>Add Supporting Images (Optional)</label>
+          <p style={{ fontFamily: FF, fontSize: 12.5, fontWeight: 400, color: "#6B6A5E", margin: "0 0 10px", paddingLeft: 18 }}>
+            Add up to {MAX_IMAGES} supporting screenshots or images to help us understand.
+          </p>
           <input
             ref={fileRef}
             type="file"
             accept="image/*"
+            multiple
             onChange={handleFile}
             style={{ display: "none" }}
           />
-          {imageUrl ? (
-            <div
-              style={{
-                position: "relative",
-                borderRadius: 20,
-                overflow: "hidden",
-                background: CARD,
-              }}
-            >
-              <img
-                src={imageUrl}
-                alt="Attachment preview"
-                style={{ width: "100%", maxHeight: 220, objectFit: "cover", display: "block" }}
-              />
-              <button
-                type="button"
-                onClick={() => setImageUrl("")}
-                aria-label="Remove photo"
-                style={{
-                  position: "absolute", top: 10, right: 10,
-                  width: 32, height: 32, borderRadius: 999,
-                  background: "rgba(26,26,26,0.72)", border: "none",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <X size={16} color="#fff" strokeWidth={2.2} />
-              </button>
+          {imageUrls.length > 0 && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 }}>
+              {imageUrls.map((url) => (
+                <div
+                  key={url}
+                  style={{ position: "relative", borderRadius: 12, overflow: "hidden", background: CARD, aspectRatio: "1 / 1" }}
+                >
+                  <img
+                    src={url}
+                    alt="Supporting image preview"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setImageUrls((prev) => prev.filter((u) => u !== url))}
+                    aria-label="Remove image"
+                    style={{
+                      position: "absolute", top: 6, right: 6,
+                      width: 26, height: 26, borderRadius: 999,
+                      background: "rgba(26,26,26,0.72)", border: "none",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <X size={14} color="#fff" strokeWidth={2.2} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ) : (
+          )}
+          {imageUrls.length < MAX_IMAGES && (
             <button
               type="button"
               onClick={handlePhotoPick}
@@ -489,12 +494,17 @@ const Feedback = () => {
               ) : (
                 <>
                   <Camera size={20} color={SUBMIT_BG} strokeWidth={1.8} />
-                  <span style={{ color: SUBMIT_BG }}>Add a screenshot or photo</span>
+                  <span style={{ color: SUBMIT_BG }}>
+                    {imageUrls.length === 0
+                      ? "Add screenshots or images"
+                      : `Add more (${MAX_IMAGES - imageUrls.length} left)`}
+                  </span>
                 </>
               )}
             </button>
           )}
         </div>
+
 
         {/* Reply to me by email (logged-in users only) */}
         {user?.email && (
