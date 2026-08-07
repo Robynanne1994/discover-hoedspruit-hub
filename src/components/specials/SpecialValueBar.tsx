@@ -37,7 +37,7 @@ const SpecialValueBar = ({
   // A 170px card can't hold an offer sentence and a schedule at once, so the
   // narrow bar ranks them: urgency first, then the offer, then the schedule.
   // A price is short enough to sit next to a schedule; a sentence isn't.
-  const showMeta = full || meta.urgent || value.kind === "price";
+  const showMeta = !!meta.text && (full || meta.urgent || value.kind === "price");
 
   return (
     <div
@@ -132,7 +132,7 @@ const SpecialValueBar = ({
           </span>
         )}
 
-        {value.kind === "none" && (
+        {value.kind === "none" && !!meta.text && (
           <span
             style={{
               fontFamily: SANS,
