@@ -84,6 +84,9 @@ const fmt = (iso: string | null | undefined, opts: Intl.DateTimeFormatOptions) =
 };
 const weekdayDate = (iso?: string | null) => fmt(iso, { weekday: "short", day: "numeric", month: "short" });
 const weekday = (iso?: string | null) => fmt(iso, { weekday: "long" });
+const isoOf = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+
 
 type CardType = "listing" | "event" | "special" | "resource";
 
