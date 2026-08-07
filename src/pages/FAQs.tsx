@@ -59,7 +59,8 @@ const FAQRow = ({
         gap: 12,
         background: "none",
         border: "none",
-        padding: "16px 0",
+        minHeight: 56,
+        padding: "10px 0",
         cursor: "pointer",
         textAlign: "left",
         fontFamily: FF,
@@ -80,10 +81,6 @@ const FAQRow = ({
       <span
         aria-hidden
         style={{
-          width: 28,
-          height: 28,
-          borderRadius: "50%",
-          background: "#F1ECDD",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -93,7 +90,7 @@ const FAQRow = ({
           color: INK,
         }}
       >
-        <ChevronDown size={14} strokeWidth={2} />
+        <ChevronDown size={16} strokeWidth={2} color="#B4AE9E" />
       </span>
     </button>
     {open && (
@@ -185,7 +182,7 @@ const FAQs = () => {
   }, [sections]);
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 100 }}>
       <Seo
         title="Hello Hoedspruit — FAQs"
         description="Answers to common questions about Hello Hoedspruit: accounts, saving places, listing your business, events and more."
@@ -213,7 +210,7 @@ const FAQs = () => {
       </div>
 
       {/* Sections */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 22, marginTop: 24 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 28, marginTop: 24 }}>
         {filtered.map((section) => (
           <div key={section.title}>
             <div
@@ -228,9 +225,8 @@ const FAQs = () => {
               <div
                 style={{
                   background: CARD,
-                  borderRadius: 18,
-                  padding: "2px 20px",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                  borderRadius: 20,
+                  padding: "0 16px",
                 }}
               >
                 {section.items.map((item, idx) => {
