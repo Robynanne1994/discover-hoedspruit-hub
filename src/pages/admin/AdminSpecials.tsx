@@ -150,6 +150,7 @@ const AdminSpecials = () => {
         additional_emails: sanitizeContactArray(form.additional_emails),
         additional_phones: sanitizeContactArray(form.additional_phones),
         additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
+        title_override: (form.title_override || "").trim() || null,
       };
       if (editing) {
         const { error } = await supabase
