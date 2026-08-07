@@ -7,7 +7,7 @@ import { getSpecialBadge, getSpecialBadgeExcluding, specialBadgeTone } from "@/l
 describe("specialCard", () => {
   it("keeps the badge off a claim the value bar already makes", () => {
     const card = specialCard({ discount_type: "percent_off", discount_value: 20 });
-    expect(card.value).toEqual({ kind: "deal", text: "20% off" });
+    expect(card.value).toEqual({ kind: "deal", text: "20% Off" });
     expect(card.badge.text).toBe("Special");
   });
 
@@ -20,7 +20,7 @@ describe("specialCard", () => {
   it("keeps a badge that says something the value bar does not", () => {
     const card = specialCard({ day_of_week: "Tuesday", discount_type: "percent_off", discount_value: 20 });
     expect(card.badge.text).toBe("Tuesday Special");
-    expect(card.value).toEqual({ kind: "deal", text: "20% off" });
+    expect(card.value).toEqual({ kind: "deal", text: "20% Off" });
   });
 
   it("steps the badge back when it would repeat the savings accent", () => {
