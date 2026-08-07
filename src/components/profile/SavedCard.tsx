@@ -424,7 +424,7 @@ const SavedCard = ({
             minHeight: 37,
             overflowWrap: "break-word",
             display: "-webkit-box",
-            WebkitLineClamp: 2,
+            WebkitLineClamp: type === "resource" ? 3 : 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
