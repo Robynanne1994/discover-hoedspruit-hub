@@ -51,6 +51,7 @@ const cardStyle: React.CSSProperties = {
 };
 
 const HomeSpecials = () => {
+  const scrollerRef = useRef<HTMLDivElement>(null);
   const { data: specials } = useQuery({
     queryKey: ["home-specials"],
     queryFn: async () => {
