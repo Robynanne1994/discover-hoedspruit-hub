@@ -68,12 +68,18 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
-  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "deal_label",
+  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "badge_override",
+  "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "tag", "sub_tag_1", "sub_tag_2",
 ];
+
+const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1";
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const DEAL_TYPES = ["weekly", "date_range", "monthly", "ongoing"];
+const DISCOUNT_TYPES = ["percent_off", "amount_off", "fixed_price", "buy_x_get_y", "freebie"];
 
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
