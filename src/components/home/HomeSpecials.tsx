@@ -196,6 +196,8 @@ const HomeSpecials = () => {
         style={{
           overflowX: "auto",
           scrollSnapType: "x mandatory",
+          scrollPaddingLeft: 20,
+          scrollPaddingRight: 20,
           padding: "0 20px",
           display: "flex",
           alignItems: "stretch",
