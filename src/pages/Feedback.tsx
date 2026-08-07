@@ -137,39 +137,60 @@ const Feedback = () => {
   }, []);
 
   const handlePhotoPick = () => {
-    if (!user) { requireAuth("add a photo"); return; }
+    if (!user) { requireAuth("add images"); return; }
+    if (imageUrls.length >= MAX_IMAGES) {
+      toast.error(`You can add up to ${MAX_IMAGES} images.`);
+      return;
+    }
     fileRef.current?.click();
   };
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const picked = Array.from(e.target.files ?? []);
     if (fileRef.current) fileRef.current.value = "";
-    if (!file) return;
-    if (!user) { requireAuth("add a photo"); return; }
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please choose an image file.");
+    if (!picked.length) return;
+    if (!user) { requireAuth("add images"); return; }
+
+    const remaining = MAX_IMAGES - imageUrls.length;
+    if (remaining <= 0) {
+      toast.error(`You can add up to ${MAX_IMAGES} images.`);
       return;
     }
-    if (file.size > 8 * 1024 * 1024) {
-      toast.error("That image is too large (max 8MB).");
-      return;
+    let files = picked;
+    if (files.length > remaining) {
+      files = files.slice(0, remaining);
+      toast.error(`Only ${remaining} more ${remaining === 1 ? "image" : "images"} can be added.`);
     }
+
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
-      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error } = await supabase.storage
-        .from("feedback-images")
-        .upload(path, file, { contentType: file.type, upsert: false });
-      if (error) throw error;
-      const { data } = supabase.storage.from("feedback-images").getPublicUrl(path);
-      setImageUrl(data.publicUrl);
+      const uploaded: string[] = [];
+      for (const file of files) {
+        if (!file.type.startsWith("image/")) {
+          toast.error("Please choose image files only.");
+          continue;
+        }
+        if (file.size > 8 * 1024 * 1024) {
+          toast.error(`${file.name} is too large (max 8MB).`);
+          continue;
+        }
+        const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+        const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error } = await supabase.storage
+          .from("feedback-images")
+          .upload(path, file, { contentType: file.type, upsert: false });
+        if (error) throw error;
+        const { data } = supabase.storage.from("feedback-images").getPublicUrl(path);
+        uploaded.push(data.publicUrl);
+      }
+      if (uploaded.length) setImageUrls((prev) => [...prev, ...uploaded].slice(0, MAX_IMAGES));
     } catch {
-      toast.error("Couldn't upload that photo. Please try again.");
+      toast.error("Couldn't upload those images. Please try again.");
     } finally {
       setUploading(false);
     }
   };
+
 
   const handleSubmit = async () => {
     const errs: typeof errors = {};
