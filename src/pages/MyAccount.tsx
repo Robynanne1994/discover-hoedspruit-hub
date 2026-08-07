@@ -56,7 +56,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { toast } from "sonner";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 import {
   Dialog,
   DialogContent,
@@ -502,14 +502,9 @@ const MyAccount = () => {
   const Eyebrow = ({ children }: { children: React.ReactNode }) => (
     <p
       style={{
-        fontFamily: '"Nohemi", ' + SANS,
-        fontSize: 15,
-        fontWeight: 700,
-        letterSpacing: "0.06em",
-        textTransform: "uppercase",
-        color: "#1A1A1A",
-        margin: "0 0 10px 0",
-        padding: "0 24px",
+        ...type.sectionEyebrow,
+        marginTop: 0,
+        padding: `0 ${SECTION_INSET}px`,
       }}
     >
       {children}

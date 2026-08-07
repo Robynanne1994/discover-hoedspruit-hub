@@ -18,7 +18,7 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, SECTION_INSET, type as t } from "@/lib/type";
 
 
 // Each topic maps to a friendly label + icon. The label is stored (lowercased)
@@ -214,15 +214,8 @@ const Feedback = () => {
   };
 
   const labelStyle: CSSProperties = {
+    ...t.sectionEyebrow,
     display: "block",
-    fontFamily: '"Nohemi", ' + FF,
-    fontSize: 15,
-    fontWeight: 700,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    color: INK,
-    marginBottom: 8,
-    marginLeft: -1,
   };
 
   return (
