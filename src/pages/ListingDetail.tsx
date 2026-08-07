@@ -39,7 +39,7 @@ import { renderListingRichText } from "@/lib/listingRichText";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MUTED, tab as tabStyle, type } from "@/lib/type";
+import { MUTED, tab as tabStyle, type, metaRow, metaIcon, metaIconSolid } from "@/lib/type";
 
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -1650,17 +1650,18 @@ const ListingDetail = () => {
             {l.google_rating != null && (() => {
               const reviewsHref: string | null = l.google_reviews_url || null;
               const row: React.CSSProperties = {
-                display: "inline-flex", alignItems: "center", gap: 5,
+                ...metaRow, display: "inline-flex", gap: 5,
                 ...type.meta, color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
-                  <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
+                  <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} style={metaIconSolid()} />
                   <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
                   {l.google_reviews_count != null && (
                     <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
                   )}
-                  {reviewsHref && <ChevronRight size={14} strokeWidth={2} color={C.muted} />}
+                  {/* A directional affordance rather than a glyph beside the text — it reads best optically centred. */}
+                  {reviewsHref && <ChevronRight size={14} strokeWidth={2} color={C.muted} style={{ alignSelf: "center", flexShrink: 0 }} />}
                 </>
               );
               return reviewsHref
@@ -1669,8 +1670,8 @@ const ListingDetail = () => {
             })()}
 
             {kmFromTown && (
-              <div style={{ display: "flex", alignItems: "center", gap: 6, ...type.meta }}>
-                <MapPin size={14} strokeWidth={1.75} color={MUTED} style={{ flexShrink: 0 }} />
+              <div style={{ ...metaRow, ...type.meta }}>
+                <MapPin size={14} strokeWidth={1.75} color={MUTED} style={metaIcon()} />
                 <span>{kmFromTown}</span>
               </div>
             )}
