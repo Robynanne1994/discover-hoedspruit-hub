@@ -1026,6 +1026,7 @@ const ListingDetail = () => {
           <div
             ref={descRef}
             className="ld-richtext"
+            style={
               descExpanded || !descOverflows
                 ? undefined
                 : {
