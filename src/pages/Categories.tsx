@@ -837,6 +837,12 @@ const Categories = () => {
                         ...type.cardTitleM,
                         color: COLORS.ink,
                         margin: 0,
+                        lineHeight: 1.25,
+                        minHeight: "2.5em",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
                       }}
                     >
                       {cat.title}
@@ -845,6 +851,7 @@ const Categories = () => {
                       {count}&nbsp;{count === 1 ? "Listing" : "Listings"}
                     </p>
                   </div>
+
                 </Link>
               );
             })}
