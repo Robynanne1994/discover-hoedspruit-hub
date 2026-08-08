@@ -74,12 +74,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://hello-hoedspruit-hub.lovable.app/category/5be7017f-50b4-43b7-a815-945139d401c0</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://hello-hoedspruit-hub.lovable.app/category/bb1b611d-6da8-4cdc-8b7a-179f1cee7adf</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -128,12 +122,6 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://hello-hoedspruit-hub.lovable.app/category/f3b9837e-f893-4723-89ef-57a74be53201</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://hello-hoedspruit-hub.lovable.app/category/39bcd6ab-d2f8-4643-85b0-4e6e7b3a2a1a</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -165,6 +153,18 @@
   </url>
   <url>
     <loc>https://hello-hoedspruit-hub.lovable.app/category/7b335bd5-3ce9-4ecd-92bd-3735804402b8</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hello-hoedspruit-hub.lovable.app/category/5be7017f-50b4-43b7-a815-945139d401c0</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hello-hoedspruit-hub.lovable.app/category/f3b9837e-f893-4723-89ef-57a74be53201</loc>
     <lastmod>2026-08-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
