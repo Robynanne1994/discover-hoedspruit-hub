@@ -919,10 +919,12 @@ const Events = () => {
             className="no-scrollbar"
             style={{
               display: "flex",
-              gap: 6,
-              paddingLeft: 20,
+              gap: 10,
+              padding: "0 20px",
               overflowX: "auto",
               scrollbarWidth: "none",
+              alignItems: "flex-start",
+              marginTop: 12,
             }}
           >
             {happeningSoon.map((e) => (
