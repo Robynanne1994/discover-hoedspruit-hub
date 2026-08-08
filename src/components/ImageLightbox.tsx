@@ -8,9 +8,10 @@ interface ImageLightboxProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   alt?: string;
+  title?: string;
 }
 
-const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: ImageLightboxProps) => {
+const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", title }: ImageLightboxProps) => {
   const [index, setIndex] = useState(initialIndex);
 
   useEffect(() => {
