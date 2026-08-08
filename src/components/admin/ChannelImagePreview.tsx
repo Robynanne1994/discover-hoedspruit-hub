@@ -1,8 +1,9 @@
-import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { ArrowUpRight, Heart, Share2 } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { MUTED, HN, type } from "@/lib/type";
 import type { ChannelImageSlot } from "@/lib/channelImageSlots";
+import ImageBox from "./PreviewImageBox";
 
 /**
  * The four screens a Local Channel picture lands on, rebuilt at the size the
@@ -63,57 +64,15 @@ const floatBtn: React.CSSProperties = {
 const displayTitleOf = (c: ChannelPreviewData) =>
   (c.title_override || "").trim() || (c.title || "").trim() || "Channel title";
 
-/**
- * The image box, painted at the size it actually comes out at.
- *
+/*
  * Only the listing card has a height in the source: 128px, fixed. The homepage
  * row's tile is `alignSelf: stretch` over a `minHeight: 90`, so a title that
  * wraps to two lines makes the row — and the tile — taller than the square the
  * picture was cropped to, and `cover` trims the sides to compensate. The hero
- * and the Saved tile hold a ratio but take their width from the column.
- *
- * Handing `renderImage` a nominal size would hide all of that, which is the
- * one thing this preview exists to show. So the box measures itself and the
- * picture is drawn at whatever came out, with `overflow: hidden` keeping the
- * measurement from feeding back into the layout.
+ * and the Saved tile hold a ratio but take their width from the column. That
+ * is why the picture goes into a self-measuring `ImageBox` rather than a box
+ * of nominal size.
  */
-const ImageBox = ({
-  style,
-  fallback,
-  renderImage,
-}: {
-  style: CSSProperties;
-  fallback: { width: number; height: number };
-  renderImage: (width: number, height: number) => ReactNode;
-}) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const [size, setSize] = useState(fallback);
-
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
-    const measure = () => {
-      const r = el.getBoundingClientRect();
-      if (r.width > 0 && r.height > 0) {
-        setSize((prev) =>
-          Math.abs(prev.width - r.width) < 0.5 && Math.abs(prev.height - r.height) < 0.5
-            ? prev
-            : { width: r.width, height: r.height },
-        );
-      }
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  return (
-    <div ref={ref} style={{ overflow: "hidden", ...style }}>
-      {renderImage(size.width, size.height)}
-    </div>
-  );
-};
 
 /** BushTelegraph.tsx — ChannelCard. */
 const ListingCard = ({ slot, channel, renderImage }: ChannelImagePreviewProps) => {

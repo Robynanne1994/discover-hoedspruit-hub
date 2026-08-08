@@ -15,6 +15,8 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import ImageUpload from "@/components/admin/ImageUpload";
+import CategoryImagePreview from "@/components/admin/CategoryImagePreview";
+import { CATEGORY_IMAGE_SLOT } from "@/lib/categoryImageSlot";
 import {
   DndContext,
   closestCenter,
@@ -619,7 +621,29 @@ const AdminCategories = () => {
               <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
               <div><Label>Description</Label><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
               <div><Label>Icon (Lucide name)</Label><Input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} /></div>
-              <div><Label>Cover Image</Label><ImageUpload bucket="category-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} /></div>
+              <div className="space-y-1.5">
+                <Label>Cover Image</Label>
+                <p className="text-xs text-muted-foreground">
+                  Shown on the category cards on Explore. Cropped to {CATEGORY_IMAGE_SLOT.aspectLabel} —
+                  drag and zoom to choose what stays in frame.
+                </p>
+                <ImageUpload
+                  bucket="category-images"
+                  value={form.image_url}
+                  onChange={(url) => setForm({ ...form, image_url: url })}
+                  aspect={CATEGORY_IMAGE_SLOT.aspect}
+                  lockAspect
+                  aspectLabel={CATEGORY_IMAGE_SLOT.aspectLabel}
+                  cropTitle="Crop — category cover"
+                  previewRender={(renderImage) => (
+                    <CategoryImagePreview
+                      title={form.title}
+                      listingCount={editing ? catCounts?.[editing.id] ?? 0 : 0}
+                      renderImage={renderImage}
+                    />
+                  )}
+                />
+              </div>
               <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
               <div className="flex items-center gap-2">
                 <Switch checked={form.is_quick_category} onCheckedChange={(v) => setForm({ ...form, is_quick_category: v })} />
