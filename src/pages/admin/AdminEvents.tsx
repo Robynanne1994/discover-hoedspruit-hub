@@ -17,9 +17,13 @@ import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
 import HostLinkField from "@/components/admin/HostLinkField";
+import { eventImageSlot } from "@/lib/eventImageSlots";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
+
+// All three host photos land in the same 48px circle, so they share one slot.
+const hostSlot = eventImageSlot("host");
 const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
@@ -372,8 +376,24 @@ const AdminEvents = () => {
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
                 </select>
               </div>
-              <div className="space-y-2"><Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(3:4 portrait — matches the events list card)</span></Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={140/188} /></div>
-              <div className="space-y-2"><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={(form as any).detail_image_url || ""} onChange={(v) => setForm({ ...form, detail_image_url: v } as any)} aspect={4/3} /></div>
+              {(["card", "detail"] as const).map((key) => {
+                const slot = eventImageSlot(key);
+                return (
+                  <div key={key} className="space-y-1">
+                    <Label>{slot.label}</Label>
+                    <p className="text-[11px] text-muted-foreground">
+                      Cropped to {slot.aspectLabel}. {slot.where} {slot.fallback}
+                    </p>
+                    <ImageUpload
+                      bucket="listing-images"
+                      value={((form as any)[slot.field] as string) || ""}
+                      onChange={(v) => setForm({ ...form, [slot.field]: v } as any)}
+                      aspect={slot.aspect}
+                      cropTitle={`Crop — ${slot.label}`}
+                    />
+                  </div>
+                );
+              })}
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
@@ -468,7 +488,19 @@ const AdminEvents = () => {
                             listings={(listings || []) as { id: string; title: string }[]}
                             onChange={(v) => setForm((f) => ({ ...f, [linkKey]: v.link, [listingKey]: v.listingId }))}
                           />
-                          <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={(form[imgKey] as string) || ""} onChange={(url) => setForm({ ...form, [imgKey]: url })} /></div>
+                          <div className="space-y-1">
+                            <Label>Photo</Label>
+                            <p className="text-[11px] text-muted-foreground">
+                              Cropped to {hostSlot.aspectLabel}. {hostSlot.where} {hostSlot.fallback}
+                            </p>
+                            <ImageUpload
+                              bucket="listing-images"
+                              value={(form[imgKey] as string) || ""}
+                              onChange={(url) => setForm({ ...form, [imgKey]: url })}
+                              aspect={hostSlot.aspect}
+                              cropTitle={`Crop — ${hostSlot.label}`}
+                            />
+                          </div>
                         </div>
                       );
                     })}

@@ -15,6 +15,7 @@ import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
+import { eventImageSlot } from "@/lib/eventImageSlots";
 
 interface Props {
   open: boolean;
@@ -33,6 +34,9 @@ const FIELDS = [
 ];
 
 const HOST_LISTING_KEYS = ["hosted_by_listing_id", "hosted_by_listing_id_2", "hosted_by_listing_id_3"];
+
+// All three host photos land in the same 48px circle, so they share one slot.
+const hostSlot = eventImageSlot("host");
 
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
@@ -201,10 +205,24 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
             </p>
           </div>
-          <div><Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(3:4 portrait — matches the events list card)</span></Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={140/188} /></div>
-          <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
-          <div><Label>Homepage Upcoming Events Image</Label><ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={23/30} /></div>
-          <div><Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label><ImageUpload bucket="listing-images" value={form.saved_image_url || ""} onChange={(url) => set("saved_image_url", url)} aspect={4/3} /></div>
+          {(["card", "detail", "homepage", "saved"] as const).map((key) => {
+            const slot = eventImageSlot(key);
+            return (
+              <div key={key} className="space-y-1">
+                <Label>{slot.label}</Label>
+                <p className="text-[11px] text-muted-foreground">
+                  Cropped to {slot.aspectLabel}. {slot.where} {slot.fallback}
+                </p>
+                <ImageUpload
+                  bucket="listing-images"
+                  value={form[slot.field] || ""}
+                  onChange={(url) => set(slot.field, url)}
+                  aspect={slot.aspect}
+                  cropTitle={`Crop — ${slot.label}`}
+                />
+              </div>
+            );
+          })}
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
@@ -332,7 +350,19 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       listings={listings || []}
                       onChange={(v) => setForm((f: any) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
                     />
-                    <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form[h.imgKey] || ""} onChange={(url) => set(h.imgKey, url)} /></div>
+                    <div className="space-y-1">
+                      <Label>Photo</Label>
+                      <p className="text-[11px] text-muted-foreground">
+                        Cropped to {hostSlot.aspectLabel}. {hostSlot.where} {hostSlot.fallback}
+                      </p>
+                      <ImageUpload
+                        bucket="listing-images"
+                        value={form[h.imgKey] || ""}
+                        onChange={(url) => set(h.imgKey, url)}
+                        aspect={hostSlot.aspect}
+                        cropTitle={`Crop — ${hostSlot.label}`}
+                      />
+                    </div>
                   </div>
                 ))}
                 {shown < 3 && (
