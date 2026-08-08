@@ -389,11 +389,17 @@ const BushTelegraph = () => {
                 onClick={() => setActive(c)}
                 style={{
                   ...tabStyle(isActive),
-                  height: 36, padding: "0 18px", borderRadius: 999,
-                  border: `1px solid ${isActive ? DARK : LINE}`,
-                  cursor: "pointer", whiteSpace: "nowrap",
-                  background: isActive ? DARK : CARD,
-                  color: isActive ? CARD : INK,
+                  background: isActive ? "#423324" : "#FFFFFF",
+                  border: `1px solid ${isActive ? "#423324" : "rgba(26,26,26,0.08)"}`,
+                  borderRadius: 999,
+                  padding: "7px 14px",
+                  cursor: "pointer",
+                  lineHeight: 1,
+                  color: isActive ? "#FFFFFF" : "#1A1A1A",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
                 }}
               >
                 {c}
