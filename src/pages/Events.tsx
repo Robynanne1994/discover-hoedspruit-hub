@@ -471,14 +471,17 @@ const PosterCard = ({ event }: { event: any }) => {
         <h3
           {...noTitleCaseProps(event)}
           style={{
-            margin: 0,
-            fontFamily: HEAD,
-            fontSize: 14.5,
+            fontFamily: SANS,
             fontWeight: 700,
+            fontSize: 15.5,
             lineHeight: 1.25,
             color: "#1A1A1A",
+            margin: 0,
+            marginBottom: 10,
+            wordBreak: "break-word",
+            overflowWrap: "anywhere",
             display: "-webkit-box",
-            WebkitLineClamp: 2,
+            WebkitLineClamp: 3,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
