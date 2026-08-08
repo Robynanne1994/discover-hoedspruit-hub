@@ -497,15 +497,26 @@ const PosterCard = ({ event }: { event: any }) => {
           <div
             style={{
               marginTop: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
               fontFamily: SANS,
               fontSize: 11.5,
               color: "#6B6A5E",
               whiteSpace: "nowrap",
               overflow: "hidden",
-              textOverflow: "ellipsis",
             }}
           >
-            {event.location}
+            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
+            <span
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {event.location}
+            </span>
           </div>
         )}
       </div>
