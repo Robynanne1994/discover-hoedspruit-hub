@@ -713,7 +713,7 @@ const Categories = () => {
                             fontFamily: FONT_BODY,
                             fontSize: 10,
                             fontWeight: 600,
-                            letterSpacing: "0.1em",
+                            letterSpacing: "0.05em",
                             textTransform: "uppercase",
                             color: COLORS.eyebrow,
                             margin: 0,
