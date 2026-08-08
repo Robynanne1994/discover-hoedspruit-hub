@@ -481,6 +481,13 @@ const MyProfile = () => {
 
   const badge = residencyBadge(profile?.location);
 
+  // Initials fallback avatar: first letter of the first and last name parts.
+  const nameParts = (profile?.display_name || "").trim().split(/\s+/).filter(Boolean);
+  const initials = nameParts.length
+    ? (nameParts[0][0] + (nameParts.length > 1 ? nameParts[nameParts.length - 1][0] : "")).toUpperCase()
+    : "";
+
+
   // Guests (and signed-out users) never see the profile card with its
   // saved / followers / following stats. The effect above redirects them —
   // guests to the account settings page, everyone else to Welcome — so we
