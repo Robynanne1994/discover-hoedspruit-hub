@@ -238,7 +238,7 @@ const EventCard = ({ event }: { event: any }) => {
                 color: "#FFFFFF",
                 fontFamily: SANS,
                 fontWeight: 700,
-                fontSize: 10,
+                fontSize: 8.5,
                 letterSpacing: "0.1em",
                 textTransform: "uppercase",
                 whiteSpace: "nowrap",
