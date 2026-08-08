@@ -1,6 +1,4 @@
-import type { ReactNode } from "react";
 import ImageUpload from "./ImageUpload";
-import PreviewImageBox from "./PreviewImageBox";
 import type { EventImageSlot } from "@/lib/eventImageSlots";
 
 interface EventImageFieldProps {
@@ -13,45 +11,21 @@ interface EventImageFieldProps {
 }
 
 /**
- * One event picture, cropped and previewed at the exact box the app paints it
- * into.
+ * One event picture.
  *
- * The preview uses the same `renderImage` callback the crop dialog uses for its
- * live preview, so what is positioned mid-crop and what lands on the phone are
- * one picture: same ratio, same zoom, no background fill showing at the edges.
+ * Deliberately the same behaviour as the listings editor: the plain
+ * ImageUpload thumbnail plus the standard crop dialog, with the slot's ratio
+ * offered as the starting shape and free to change. The locked-ratio, live
+ * in-app preview version was too fiddly to work with.
  */
-const EventImageField = ({ slot, value, onChange, label, bucket = "listing-images" }: EventImageFieldProps) => {
-  const previewRender = (renderImage: (w: number, h: number) => ReactNode) => (
-    <PreviewImageBox
-      style={{
-        width: slot.box.width,
-        height: slot.box.height,
-        borderRadius: slot.key === "host" ? 999 : 12,
-        background: "#F4EFE3",
-      }}
-      fallback={slot.box}
-      renderImage={renderImage}
-    />
-  );
-
-  return (
-    <div className="space-y-1">
-      <p className="text-sm font-medium text-foreground">{label ?? slot.label}</p>
-      <p className="text-[11px] text-muted-foreground">
-        Cropped to {slot.aspectLabel}. {slot.where} {!value && slot.fallback}
-      </p>
-      <ImageUpload
-        bucket={bucket}
-        value={value}
-        onChange={onChange}
-        aspect={slot.aspect}
-        lockAspect
-        aspectLabel={slot.aspectLabel}
-        cropTitle={`Crop — ${slot.label}`}
-        previewRender={previewRender}
-      />
-    </div>
-  );
-};
+const EventImageField = ({ slot, value, onChange, label, bucket = "listing-images" }: EventImageFieldProps) => (
+  <div className="space-y-1">
+    <p className="text-sm font-medium text-foreground">{label ?? slot.label}</p>
+    <p className="text-[11px] text-muted-foreground">
+      Best at {slot.aspectLabel}. {slot.where} {!value && slot.fallback}
+    </p>
+    <ImageUpload bucket={bucket} value={value} onChange={onChange} aspect={slot.aspect} />
+  </div>
+);
 
 export default EventImageField;
