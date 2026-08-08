@@ -18,6 +18,7 @@ import {
   type SettingsRowItem,
 } from "@/components/settings/SettingsList";
 import { MUTED } from "@/lib/type";
+import hhLogo from "@/assets/hh-logo.png";
 
 // The lists below are the same rows, in the same order, with the same labels
 // as the signed-in Settings hub (/my-account). Guests get the identical
