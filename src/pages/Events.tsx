@@ -388,7 +388,7 @@ const PosterCard = ({ event }: { event: any }) => {
       style={{
         flexShrink: 0,
         width: 196,
-        height: 292,
+        height: 270,
         display: "flex",
         flexDirection: "column",
         background: "#FFFFFF",
