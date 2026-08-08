@@ -409,6 +409,9 @@ const LocalChannelDetail = () => {
           open={lightboxOpen}
           onOpenChange={setLightboxOpen}
           alt={displayTitle}
+          title={type === "qr"
+            ? "Tip: screenshot this code and send it to another device to scan with your phone."
+            : undefined}
         />
       )}
     </div>
