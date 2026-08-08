@@ -426,7 +426,7 @@ const BushTelegraph = () => {
                 title={section.platform}
                 count={section.items.length}
               />
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "0 20px" }}>
                 {section.items.map((r) => (
                   <ChannelCard
                     key={r.id}
