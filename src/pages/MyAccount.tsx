@@ -482,7 +482,7 @@ const MyAccount = () => {
   const accountItems: SettingsRowItem[] = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
     { label: "Privacy", href: "/account-settings/privacy", icon: Shield },
-    { label: "Notifications", href: "/notification-preferences", icon: Bell },
+    { label: "Notification Settings", href: "/notification-preferences", icon: Bell },
   ];
   const submissionsItems: SettingsRowItem[] = [
     { label: "Businesses", href: "https://hellohoedspruit.co/submissions/listing", icon: Store, external: true },
