@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { Store } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
@@ -83,15 +84,24 @@ const HomeSpecials = () => {
     s.business_name ? (
       <div
         style={{
-          ...type.meta,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          minWidth: 0,
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
           marginTop: 2,
         }}
       >
-        {s.business_name}
+        <Store size={12} style={{ flexShrink: 0 }} />
+        <div
+          style={{
+            ...type.meta,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minWidth: 0,
+          }}
+        >
+          {s.business_name}
+        </div>
       </div>
     ) : null;
 
