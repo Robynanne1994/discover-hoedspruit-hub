@@ -232,7 +232,7 @@ const EventCard = ({ event }: { event: any }) => {
                 display: "inline-flex",
                 alignItems: "center",
                 height: 24,
-                padding: "0 11px",
+                padding: "0 8px",
                 borderRadius: 999,
                 background: "#423324",
                 color: "#FFFFFF",
