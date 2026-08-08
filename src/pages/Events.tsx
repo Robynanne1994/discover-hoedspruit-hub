@@ -465,7 +465,7 @@ const PosterCard = ({ event }: { event: any }) => {
             lineHeight: 1.25,
             color: "#1A1A1A",
             margin: 0,
-            marginBottom: 10,
+            marginBottom: 8,
             flex: 1,
             minHeight: 0,
             wordBreak: "break-word",
