@@ -25,7 +25,6 @@ import {
   HelpCircle,
   Info,
   LogOut,
-  ChevronRight,
   Pencil,
   UserCircle,
   LayoutDashboard,
@@ -43,7 +42,6 @@ import {
   Phone,
   Shield,
   Briefcase,
-  ArrowUpRight,
   Store,
 } from "lucide-react";
 import {
@@ -55,6 +53,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
+import {
+  SANS,
+  SETTINGS_BG,
+  SettingsSection,
+  type SettingsRowItem,
+} from "@/components/settings/SettingsList";
 import { toast } from "sonner";
 import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 import {
@@ -473,153 +477,30 @@ const MyAccount = () => {
     );
   }
 
-  // === Editorial design tokens ===
-  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const BG = "#E6E0CC";
-  const CARD = "#FFFFFF";
-  const INK = "#1A1A1A";
-  const LABEL = "#6B6A5E";
-  const LINE = "#E2DAC6";
-  const LEAD_ICON = "#715A3D";
-  const TRAIL_ICON = "#B4AE9E";
-
-  type RowItem = {
-    label: string;
-    href: string;
-    icon?: any;
-    subtitle?: string;
-    external?: boolean;
-  };
-
-  const accountItems: RowItem[] = [
+  // Rows, cards and eyebrows all come from the shared Settings primitives, so
+  // this hub and the guest profile stay identical by construction.
+  const accountItems: SettingsRowItem[] = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
     { label: "Privacy", href: "/account-settings/privacy", icon: Shield },
     { label: "Notifications", href: "/notification-preferences", icon: Bell },
   ];
-  const submissionsItems: RowItem[] = [
+  const submissionsItems: SettingsRowItem[] = [
     { label: "Businesses", href: "https://hellohoedspruit.co/submissions/listing", icon: Store, external: true },
     { label: "Events", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar, external: true },
     { label: "Promotions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag, external: true },
   ];
-  const helpInfoItems: RowItem[] = [
+  const helpInfoItems: SettingsRowItem[] = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
   ];
 
-  const adminItems: RowItem[] = [{ label: "Dashboard", href: "/admin", icon: LayoutDashboard }];
-
-  const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-    <p
-      style={{
-        margin: "0 0 10px",
-        padding: "0 24px",
-        fontFamily: SANS,
-        fontSize: 11,
-        fontWeight: 700,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        color: LABEL,
-      }}
-    >
-      {children}
-    </p>
-  );
-
-  const RowBody = ({ item }: { item: RowItem }) => (
-    <>
-      {item.icon ? (
-        <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <item.icon size={20} strokeWidth={1.6} color={LEAD_ICON} />
-        </div>
-      ) : null}
-      <span style={{ flex: 1, display: "block" }}>
-        <span
-          style={{
-            display: "block",
-            fontFamily: SANS,
-            fontSize: 16,
-            fontWeight: 500,
-            letterSpacing: "-0.01em",
-            color: INK,
-            lineHeight: 1.25,
-          }}
-        >
-          {item.label}
-        </span>
-        {item.subtitle ? (
-          <span
-            style={{
-              display: "block",
-              marginTop: 2,
-              fontFamily: SANS,
-              fontSize: 12.5,
-              fontWeight: 400,
-              color: LABEL,
-              lineHeight: 1.3,
-            }}
-          >
-            {item.subtitle}
-          </span>
-        ) : null}
-      </span>
-      {item.external ? (
-        <ArrowUpRight size={16} strokeWidth={2} color={TRAIL_ICON} style={{ flexShrink: 0 }} />
-      ) : (
-        <ChevronRight size={16} strokeWidth={2} color={TRAIL_ICON} style={{ flexShrink: 0 }} />
-      )}
-    </>
-  );
-
-  const ROW_STYLE: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: 14,
-    minHeight: 56,
-    padding: "10px 16px",
-    textDecoration: "none",
-  };
-
-  const Card = ({ items }: { items: RowItem[] }) => {
-    const rows = items.filter((i) => i.label && i.href);
-    if (rows.length === 0) return null;
-    return (
-      <div style={{ background: CARD, borderRadius: 20, margin: "0 24px", overflow: "hidden" }}>
-        {rows.map((item, i) => (
-          <div key={item.label}>
-            {i > 0 && (
-              <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
-            )}
-            {item.external ? (
-              <a href={item.href} target="_blank" rel="noopener noreferrer" style={ROW_STYLE}>
-                <RowBody item={item} />
-              </a>
-            ) : (
-              <Link to={item.href} style={ROW_STYLE}>
-                <RowBody item={item} />
-              </Link>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  const Section = ({ label, items }: { label: string; items: RowItem[] }) => {
-    const rows = items.filter((i) => i.label && i.href);
-    if (rows.length === 0) return null;
-    return (
-      <div style={{ marginBottom: 28 }}>
-        <Eyebrow>{label}</Eyebrow>
-        <Card items={rows} />
-      </div>
-    );
-  };
+  const adminItems: SettingsRowItem[] = [{ label: "Dashboard", href: "/admin", icon: LayoutDashboard }];
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: BG,
+        background: SETTINGS_BG,
         paddingBottom: 100,
         fontFamily: SANS,
       }}
@@ -635,13 +516,13 @@ const MyAccount = () => {
 
       <div style={{ height: 24 }} />
 
-      {user && <Section label="Account" items={accountItems} />}
+      {user && <SettingsSection label="Account" items={accountItems} />}
 
-      <Section label="Submissions" items={submissionsItems} />
+      <SettingsSection label="Submissions" items={submissionsItems} />
 
-      <Section label="Support" items={helpInfoItems} />
+      <SettingsSection label="Support" items={helpInfoItems} />
 
-      {isAdmin && <Section label="Admin" items={adminItems} />}
+      {isAdmin && <SettingsSection label="Admin" items={adminItems} />}
 
 
       {/* Log out / Sign in */}
