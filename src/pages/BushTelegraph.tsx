@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
+import BlockActionSheet from "@/components/BlockActionSheet";
 import { MUTED as TOKEN_MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
