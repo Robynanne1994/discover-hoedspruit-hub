@@ -388,7 +388,7 @@ const BushTelegraph = () => {
                 key={c}
                 onClick={() => setActive(c)}
                 style={{
-                  {...tabStyle(isActive)},
+                  ...tabStyle(isActive),
                   background: isActive ? "#423324" : "#FFFFFF",
                   border: `1px solid ${isActive ? "#423324" : "rgba(26,26,26,0.08)"}`,
                   borderRadius: 999,
