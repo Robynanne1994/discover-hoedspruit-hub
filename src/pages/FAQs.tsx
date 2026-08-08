@@ -146,7 +146,7 @@ const FAQs = () => {
         })
         .map(({ title, items }) => ({ title, items }));
       setSections(list);
-      if (list[0]?.items[0]) setOpenKey(`${list[0].title}-${list[0].items[0].id}`);
+
     })();
   }, []);
 
