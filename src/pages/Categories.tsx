@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, Phone, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X } from "lucide-react";
+import { Search, MapPin, AlertTriangle, Phone, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X, Tag } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,7 +27,15 @@ const COLORS = {
   dark: "#423324",
   toggleTrack: "#FFFFFF",
   chipBorder: "rgba(26,26,26,0.10)",
+  eyebrow: "#715A3D",
 };
+
+/**
+ * Quick-filter result rows are a fixed height so a card with three lines of
+ * meta sits flush beside one with a single line. It matches the 88px thumbnail,
+ * which is what sets the row's floor anyway.
+ */
+const QUICK_RESULT_HEIGHT = 88;
 
 const QUICK_FILTERS = ["Open Now", "Saved", "Child Friendly", "Pet Friendly"];
 
@@ -194,6 +202,66 @@ const Categories = () => {
       return true;
     });
   }, [filteredListings, activeQuick, savedIds]);
+
+  // Category names for the quick-filter result cards. A listing can sit in
+  // several categories (junction rows) on top of its legacy `category_id`, so
+  // both sources feed the same map. Only runs once a quick filter is open.
+  const { data: categoryIndex } = useQuery({
+    queryKey: ["explore-listing-category-titles"],
+    queryFn: async () => {
+      const PAGE = 1000;
+      const junctions: { listing_id: string; category_id: string }[] = [];
+      for (let from = 0; ; from += PAGE) {
+        const { data, error } = await supabase
+          .from("listing_categories")
+          .select("listing_id, category_id")
+          .range(from, from + PAGE - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) break;
+        junctions.push(...(data as any[]));
+        if (data.length < PAGE) break;
+      }
+
+      // Quick categories are excluded from the Explore grid, so they'd name a
+      // category the reader can't actually browse to from here.
+      const { data: cats, error: catError } = await supabase
+        .from("categories")
+        .select("id, title")
+        .eq("is_quick_category", false)
+        .order("sort_order");
+      if (catError) throw catError;
+
+      const titleById = new Map<string, string>();
+      const rankById = new Map<string, number>();
+      (cats || []).forEach((c: any, i: number) => {
+        titleById.set(c.id, c.title);
+        rankById.set(c.id, i);
+      });
+
+      const byListing = new Map<string, string[]>();
+      junctions.forEach((r) => {
+        if (!r.listing_id || !r.category_id || !titleById.has(r.category_id)) return;
+        const ids = byListing.get(r.listing_id) || [];
+        if (!ids.includes(r.category_id)) ids.push(r.category_id);
+        byListing.set(r.listing_id, ids);
+      });
+
+      return { titleById, rankById, byListing };
+    },
+    enabled: activeQuick.length > 0,
+  });
+
+  // Category titles for one listing, in the same order the Explore grid lists
+  // them so a listing always reads its categories the same way round.
+  const categoryTitlesFor = (listing: any): string[] => {
+    if (!categoryIndex) return [];
+    const ids = [...(categoryIndex.byListing.get(listing.id) || [])];
+    if (listing.category_id && !ids.includes(listing.category_id)) ids.push(listing.category_id);
+    return ids
+      .filter((cid) => categoryIndex.titleById.has(cid))
+      .sort((a, b) => (categoryIndex.rankById.get(a) ?? 0) - (categoryIndex.rankById.get(b) ?? 0))
+      .map((cid) => categoryIndex.titleById.get(cid)!);
+  };
 
   // Treat "waiting for the saved set" as loading too, otherwise the empty
   // state flashes before the saved ids resolve.
@@ -569,7 +637,7 @@ const Categories = () => {
           {quickLoading ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} style={{ width: "100%", height: 88, borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
+                <Skeleton key={i} style={{ width: "100%", height: QUICK_RESULT_HEIGHT, borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
               ))}
             </div>
           ) : quickFilteredResults.length === 0 ? (
@@ -590,7 +658,9 @@ const Categories = () => {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {quickFilteredResults.map((listing) => (
+              {quickFilteredResults.map((listing) => {
+                const cardCategories = categoryTitlesFor(listing);
+                return (
                 <Link
                   key={listing.id}
                   to={`/listing/${listing.id}`}
@@ -601,19 +671,20 @@ const Categories = () => {
                     borderRadius: 16,
                     overflow: "hidden",
                     textDecoration: "none",
-                    height: 88,
+                    height: QUICK_RESULT_HEIGHT,
+                    minHeight: QUICK_RESULT_HEIGHT,
                     transition: "transform 150ms ease-out",
                   }}
                   onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
                   onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 >
-                  <div style={{ width: 88, height: 88, background: "#e6e0d2", flexShrink: 0 }}>
+                  <div style={{ width: QUICK_RESULT_HEIGHT, height: QUICK_RESULT_HEIGHT, background: "#e6e0d2", flexShrink: 0 }}>
                     {listing.image_url && (
                       <img
                         src={listing.image_url}
                         alt={listing.title}
-                        style={{ width: 88, height: 88, objectFit: "cover", display: "block" }}
+                        style={{ width: QUICK_RESULT_HEIGHT, height: QUICK_RESULT_HEIGHT, objectFit: "cover", display: "block" }}
                       />
                     )}
                   </div>
@@ -634,6 +705,37 @@ const Categories = () => {
                       >
                         {getDisplayTitle(listing)}
                       </p>
+                      {cardCategories.length > 0 && (
+                        <p
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            fontFamily: FONT_BODY,
+                            fontSize: 10,
+                            fontWeight: 600,
+                            letterSpacing: "0.1em",
+                            textTransform: "uppercase",
+                            color: COLORS.eyebrow,
+                            margin: 0,
+                            marginTop: 3,
+                            gap: 4,
+                            minWidth: 0,
+                            lineHeight: 1.3,
+                          }}
+                        >
+                          <Tag size={10} strokeWidth={2} style={{ flexShrink: 0 }} />
+                          <span
+                            style={{
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              minWidth: 0,
+                            }}
+                          >
+                            {cardCategories.join(" · ")}
+                          </span>
+                        </p>
+                      )}
                       {listing.location && (
                         <p
                           style={{
@@ -642,7 +744,7 @@ const Categories = () => {
                             fontSize: 12,
                             color: COLORS.muted,
                             margin: 0,
-                            marginTop: 2,
+                            marginTop: 3,
                             gap: 4,
                             minWidth: 0,
                           }}
@@ -665,7 +767,8 @@ const Categories = () => {
                   </div>
 
                 </Link>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
