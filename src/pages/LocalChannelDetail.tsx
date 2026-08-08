@@ -186,18 +186,6 @@ const LocalChannelDetail = () => {
     : defaultLabel;
   const PrimaryIcon = isImageType ? (type_ === "qr" ? QrCode : ImageIcon) : ExternalLink;
 
-  const platformNames = [resource.platform, platformLabel(resource.platform)]
-    .filter(Boolean)
-    .map((p: string) => p.toLowerCase());
-  const metaParts = [resource.meta]
-    .filter((m: string | null) => m && m.trim())
-    // The platform already sits in the row above, so drop it from the meta line
-    .flatMap((m: string) =>
-      m
-        .split(/[•·|]/)
-        .map((p) => p.trim())
-        .filter((p) => p && !platformNames.includes(p.toLowerCase()))
-    );
   const memberLine = (resource.meta_2 || "").trim();
   const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
   const ChannelIcon = platformIcon(resource.platform);
@@ -318,28 +306,13 @@ const LocalChannelDetail = () => {
           </div>
         )}
 
-        {(memberLine || metaParts.length > 0) && (
+        {memberLine && (
           <div style={{
-            marginTop: 6, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6,
+            marginTop: 6, display: "flex", alignItems: "center", gap: 6,
             ...type.meta,
           }}>
-            {metaParts.map((m: string, i: number) => (
-              <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                {i > 0 && (
-                  <span style={{ width: 4, height: 4, borderRadius: 999, background: MUTED, display: "inline-block" }} />
-                )}
-                <span>{m}</span>
-              </span>
-            ))}
-            {memberLine && (
-              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                {metaParts.length > 0 && (
-                  <span style={{ width: 4, height: 4, borderRadius: 999, background: MUTED, display: "inline-block" }} />
-                )}
-                <Users size={13} color={MUTED} strokeWidth={1.75} />
-                <span>{memberLine}</span>
-              </span>
-            )}
+            <Users size={13} color={MUTED} strokeWidth={1.75} />
+            <span>{memberLine}</span>
           </div>
         )}
       </div>
