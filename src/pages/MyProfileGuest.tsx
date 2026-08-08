@@ -1,8 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   HelpCircle,
-  ArrowUpRight,
   Store,
   Calendar,
   Tag,
@@ -10,151 +9,30 @@ import {
 
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
+import {
+  SANS,
+  SETTINGS_BG,
+  SETTINGS_CARD,
+  SETTINGS_INK,
+  SettingsSection,
+  type SettingsRowItem,
+} from "@/components/settings/SettingsList";
+import { MUTED } from "@/lib/type";
 
-// === Editorial design tokens (matches My Account) ===
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const BG = "#E6E0CC";
-const CARD = "#FFFFFF";
-const INK = "#1A1A1A";
-const MUTED_INK = TOKEN_MUTED;
-const LINE = "#E2DAC6";
+// The lists below are the same rows, in the same order, with the same labels
+// as the signed-in Settings hub (/my-account). Guests get the identical
+// Settings-list treatment — same eyebrows, cards, icon rail and dividers — so
+// Support and Submissions don't change shape the moment you sign in.
+const submissionsItems: SettingsRowItem[] = [
+  { label: "Businesses", href: "https://hellohoedspruit.co/submissions/listing", icon: Store, external: true },
+  { label: "Events", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar, external: true },
+  { label: "Promotions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag, external: true },
+];
 
-// Support is the constant block shared with the signed-in Settings hub.
-const supportItems = [
+const supportItems: SettingsRowItem[] = [
   { label: "Local Channels", href: "/local-channels", icon: Users },
   { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
 ];
-
-const Eyebrow = ({ children }: { children: React.ReactNode }) => (
-  <p
-    style={{
-      ...type.sectionEyebrow,
-      marginTop: 0,
-      padding: `0 ${SECTION_INSET}px`,
-    }}
-  >
-    {children}
-  </p>
-);
-
-const Row = ({
-  item,
-  isFirst,
-}: {
-  item: { label: string; href: string; icon?: any };
-  isFirst: boolean;
-}) => (
-  <Link
-    to={item.href}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 16,
-      padding: "18px 0",
-      textDecoration: "none",
-      borderTop: isFirst ? "none" : `1px solid ${LINE}`,
-    }}
-  >
-    {item.icon ? (
-      <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-        <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
-      </div>
-    ) : null}
-    <span
-      style={{
-        flex: 1,
-        fontFamily: SANS,
-        fontSize: 16,
-        fontWeight: 400,
-        letterSpacing: "-0.1px",
-        color: INK,
-        lineHeight: 1.25,
-      }}
-    >
-      {item.label}
-    </span>
-    <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-  </Link>
-);
-
-const Card = ({
-  items,
-}: {
-  items: { label: string; href: string; icon?: any }[];
-}) => (
-  <div
-    style={{
-      background: CARD,
-      borderRadius: 20,
-      margin: "0 24px",
-      padding: "4px 22px",
-    }}
-  >
-    {items.map((item, i) => (
-      <Row key={item.label} item={item} isFirst={i === 0} />
-    ))}
-  </div>
-);
-
-const submissionsItems = [
-  { label: "Business Listing Submissions", href: "https://hellohoedspruit.co/submissions/listing", icon: Store },
-  { label: "Event Submissions", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar },
-  { label: "Promotion Submissions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag },
-];
-
-const ExternalCard = ({
-  items,
-}: {
-  items: { label: string; href: string; icon?: any }[];
-}) => (
-  <div
-    style={{
-      background: CARD,
-      borderRadius: 20,
-      margin: "0 24px",
-      padding: "4px 22px",
-    }}
-  >
-    {items.map((item, i) => (
-      <a
-        key={item.label}
-        href={item.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-          padding: "18px 0",
-          textDecoration: "none",
-          borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
-        }}
-      >
-        {item.icon ? (
-          <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
-          </div>
-        ) : null}
-        <span
-          style={{
-            flex: 1,
-            fontFamily: SANS,
-            fontSize: 16,
-            fontWeight: 400,
-            letterSpacing: "-0.1px",
-            color: INK,
-            lineHeight: 1.25,
-          }}
-        >
-          {item.label}
-        </span>
-        <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-      </a>
-    ))}
-  </div>
-);
-
 
 const MyProfileGuest = () => {
   const navigate = useNavigate();
@@ -163,8 +41,8 @@ const MyProfileGuest = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: BG,
-        paddingBottom: 120,
+        background: SETTINGS_BG,
+        paddingBottom: 100,
         fontFamily: SANS,
       }}
     >
@@ -180,7 +58,14 @@ const MyProfileGuest = () => {
       <div style={{ height: 24 }} />
 
       {/* Sign-in card — the hero of the guest screen */}
-      <div style={{ margin: "0 24px", background: CARD, borderRadius: 20, padding: 24 }}>
+      <div
+        style={{
+          margin: "0 24px 28px",
+          background: SETTINGS_CARD,
+          borderRadius: 20,
+          padding: 24,
+        }}
+      >
         <h2
           style={{
             fontFamily: '"Nohemi", ' + SANS,
@@ -188,13 +73,13 @@ const MyProfileGuest = () => {
             fontSize: 24,
             lineHeight: 1.1,
             letterSpacing: "-0.01em",
-            color: INK,
+            color: SETTINGS_INK,
             margin: "0 0 8px",
           }}
         >
           Create Your Free Account
         </h2>
-        <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.5, color: MUTED_INK, margin: "0 0 20px" }}>
+        <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.5, color: MUTED, margin: "0 0 20px" }}>
           Save places, events and specials. Follow locals. Never miss what's on.
         </p>
         <button
@@ -236,16 +121,9 @@ const MyProfileGuest = () => {
         </button>
       </div>
 
-      <div style={{ height: 28 }} />
+      <SettingsSection label="Submissions" items={submissionsItems} />
 
-      <Eyebrow>Submissions</Eyebrow>
-      <ExternalCard items={submissionsItems} />
-
-      <div style={{ height: 28 }} />
-
-      <Eyebrow>Support</Eyebrow>
-      <Card items={supportItems} />
-
+      <SettingsSection label="Support" items={supportItems} />
     </div>
   );
 };
