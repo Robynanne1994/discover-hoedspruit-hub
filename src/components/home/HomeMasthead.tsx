@@ -41,6 +41,7 @@ const HomeMasthead = () => {
                 margin: 0,
                 fontSize: 22,
                 lineHeight: 1.05,
+                color: "#443221",
               }}
             >
               Hello
