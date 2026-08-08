@@ -18,6 +18,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { getSpecialBadge } from "@/lib/specialBadge";
+import { formatDays, parseDays } from "@/lib/specialDays";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
@@ -358,6 +359,17 @@ const SpecialDetail = () => {
   detailRows.push({ icon: Tag, label: "Deal", value: getSpecialBadge(sp) });
   const redemptionNote = (sp.redemption_note || "").trim() || null;
   if (redemptionNote) detailRows.push({ icon: Tag, label: "How To Redeem", value: redemptionNote });
+
+  // The cards abbreviate a multi-day schedule to fit; the detail page has the
+  // room to spell it out.
+  const dayLine = formatDays(parseDays(sp.day_of_week), "long");
+  if (dayLine) {
+    detailRows.push({
+      icon: Clock,
+      label: "Runs On",
+      value: dayLine === "Every day" ? "Every day" : `Every ${dayLine}`,
+    });
+  }
 
   if (fromDate || untilDate) {
     detailRows.push({

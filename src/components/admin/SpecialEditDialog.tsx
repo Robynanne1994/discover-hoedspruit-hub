@@ -15,7 +15,9 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
+import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
+import { parseDays } from "@/lib/specialDays";
 
 
 interface Props {
@@ -79,7 +81,6 @@ const FIELDS: (keyof any)[] = [
 ];
 
 const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1";
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const DEAL_TYPES = ["weekly", "date_range", "monthly", "ongoing"];
 const DISCOUNT_TYPES = ["percent_off", "amount_off", "fixed_price", "buy_x_get_y", "freebie"];
 
@@ -105,6 +106,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       payload.tag = (form.tag || "").trim() || null;
       payload.sub_tag_1 = (form.sub_tag_1 || "").trim() || null;
       payload.sub_tag_2 = (form.sub_tag_2 || "").trim() || null;
+      // Legacy rows may still hold a bare day name; the column takes a list.
+      const days = parseDays(form.day_of_week);
+      payload.day_of_week = days.length ? days : null;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
@@ -238,13 +242,19 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 {DEAL_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               </select>
             </div>
-            <div>
-              <Label>Day Of Week</Label>
-              <select className={SELECT_CLS} value={form.day_of_week || ""} onChange={(e) => set("day_of_week", e.target.value || null)}>
-                <option value="">None</option>
-                {DAYS.map((v) => <option key={v} value={v}>{v}</option>)}
-              </select>
-            </div>
+          </div>
+          <div>
+            <Label>
+              Days Of The Week{" "}
+              <span className="text-xs text-muted-foreground font-normal">
+                (pick as many as the deal runs on)
+              </span>
+            </Label>
+            <DayOfWeekPicker
+              value={form.day_of_week}
+              onChange={(days) => set("day_of_week", days)}
+              hint={form.deal_type === "weekly" ? "Pick the days this weekly deal runs on" : "No day set"}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>

@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { compactDays, parseDays, recurringDays } from "./specialDays";
 
 // Deals ending within this many days are "ending soon" (and get the urgent treatment).
 export const ENDING_SOON_DAYS = 7;
@@ -13,7 +14,8 @@ export interface SpecialLike {
   card_footer_text?: string | null;
   valid_from?: string | null;
   valid_until?: string | null;
-  day_of_week?: string | null;
+  // A list of days, or a single name on older rows. See lib/specialDays.
+  day_of_week?: string | string[] | null;
   discount_type?: string | null;
   discount_value?: number | string | null;
   freebie_text?: string | null;
@@ -144,14 +146,19 @@ const numeric = (v: unknown): string | null => {
 
 // Human date line for a special: weekly day, date range, or nothing at all.
 export const specialDateLine = (s: SpecialLike): string | null => {
-  const day = str(s.day_of_week);
+  const days = parseDays(s.day_of_week);
   const from = s.valid_from ? new Date(s.valid_from) : null;
   const until = s.valid_until ? new Date(s.valid_until) : null;
   const validFrom = from && !isNaN(from.getTime()) ? from : null;
   const validUntil = until && !isNaN(until.getTime()) ? until : null;
 
-  if (day && validUntil) return `${day}s until ${format(validUntil, "d MMM")}`;
-  if (day) return `Every ${day}`;
+  // Days win over dates: a weekly deal is defined by the night it runs on, and
+  // the abbreviated form is what keeps this line inside a 170px card.
+  if (days.length) {
+    if (validUntil) return `${recurringDays(days)} until ${format(validUntil, "d MMM")}`;
+    // "Every day" already carries its own "every".
+    return days.length === 7 ? "Every day" : `Every ${compactDays(days)}`;
+  }
   if (validFrom && validUntil) {
     const sameMonth =
       validFrom.getMonth() === validUntil.getMonth() && validFrom.getFullYear() === validUntil.getFullYear();

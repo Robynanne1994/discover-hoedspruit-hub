@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { compactDays, parseDays } from "./specialDays";
 
 // Every surface that shows a special's badge pill reads it from here, so the
 // wording stays identical on the specials list, the homepage rail, the detail
@@ -6,7 +7,9 @@ import { format } from "date-fns";
 // which of the two tones it belongs to.
 export interface SpecialBadgeLike {
   badge_override?: string | null;
-  day_of_week?: string | null;
+  // A list of days, or a single name on rows written before weekly specials
+  // could run on more than one day.
+  day_of_week?: string | string[] | null;
   discount_type?: string | null;
   discount_value?: number | string | null;
   valid_from?: string | null;
@@ -48,7 +51,9 @@ export const specialBadgeCandidates = (s: SpecialBadgeLike): string[] => {
 
   push(s.badge_override);
 
-  const day = str(s.day_of_week);
+  // "Tuesday Special", "Wed & Thu Special" — the pill is narrow, so more than
+  // one day is abbreviated rather than spelled out.
+  const day = compactDays(parseDays(s.day_of_week));
   if (day) push(`${day} Special`);
 
   const value = num(s.discount_value);

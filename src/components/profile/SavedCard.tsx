@@ -4,6 +4,7 @@ import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, H
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { compactDays, parseDays } from "@/lib/specialDays";
 import { getNextOccurrence } from "@/lib/eventSchedule";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
@@ -203,7 +204,11 @@ const buildContent = (it: any, type: CardType) => {
 
   if (type === "special") {
     lines.push(it.business_name ? { icon: Store, text: titleCase(it.business_name) } : null);
-    lines.push(it.card_footer_text ? { icon: Clock, text: it.card_footer_text } : null);
+    // The business's own wording wins; otherwise the weekly schedule, so a
+    // "every Wed & Thu" deal still says when it runs on a saved card.
+    const days = compactDays(parseDays(it.day_of_week));
+    const schedule = it.card_footer_text || (days ? (days === "Every day" ? days : `Every ${days}`) : null);
+    lines.push(schedule ? { icon: Clock, text: schedule } : null);
 
     const ends = it.valid_until ? new Date(it.valid_until).getTime() : null;
     const expired = ends != null && ends < Date.now();
