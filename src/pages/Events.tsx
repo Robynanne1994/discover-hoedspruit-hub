@@ -904,8 +904,7 @@ const Events = () => {
         <div>
           <h2
             style={{
-              margin: "26px 0 14px",
-              padding: "0 20px",
+              margin: "26px 20px 0",
               fontFamily: HEAD,
               fontSize: 24,
               fontWeight: 550,
