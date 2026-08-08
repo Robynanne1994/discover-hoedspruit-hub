@@ -56,12 +56,6 @@
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://hello-hoedspruit-hub.lovable.app/category/c867119f-8ca9-45a7-870e-6671f028748c</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://hello-hoedspruit-hub.lovable.app/category/155013e7-486a-49cb-b25f-5ac7078653c6</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -74,19 +68,7 @@
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://hello-hoedspruit-hub.lovable.app/category/7d504654-a8d8-49c1-8cb7-75d2939bc7b1</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
     <loc>https://hello-hoedspruit-hub.lovable.app/category/2e2fe36b-a259-4487-837c-25b1ae84fef1</loc>
-    <lastmod>2026-05-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://hello-hoedspruit-hub.lovable.app/category/cef1c5ad-b199-41c9-bc8a-5834703a953a</loc>
     <lastmod>2026-05-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -106,6 +88,24 @@
   <url>
     <loc>https://hello-hoedspruit-hub.lovable.app/category/f8abde1b-1619-43ff-816e-be584a03b3c3</loc>
     <lastmod>2026-05-25</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hello-hoedspruit-hub.lovable.app/category/c867119f-8ca9-45a7-870e-6671f028748c</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hello-hoedspruit-hub.lovable.app/category/7d504654-a8d8-49c1-8cb7-75d2939bc7b1</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://hello-hoedspruit-hub.lovable.app/category/cef1c5ad-b199-41c9-bc8a-5834703a953a</loc>
+    <lastmod>2026-08-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

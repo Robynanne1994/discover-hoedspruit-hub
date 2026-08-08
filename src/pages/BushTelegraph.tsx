@@ -193,6 +193,7 @@ const BushTelegraph = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [active, setActive] = useState<string>("All");
+  const [suggestOpen, setSuggestOpen] = useState(false);
 
   const openResource = (r: Resource) => {
     if (r.slug) navigate(`/local-channels/${r.slug}`);
