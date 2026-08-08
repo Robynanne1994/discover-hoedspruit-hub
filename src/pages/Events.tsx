@@ -388,6 +388,9 @@ const PosterCard = ({ event }: { event: any }) => {
       style={{
         flexShrink: 0,
         width: 196,
+        height: 292,
+        display: "flex",
+        flexDirection: "column",
         background: "#FFFFFF",
         borderRadius: 16,
         overflow: "hidden",
@@ -396,7 +399,7 @@ const PosterCard = ({ event }: { event: any }) => {
         transition: "transform 150ms ease-out",
       }}
     >
-      <div style={{ position: "relative", height: 164, background: "#F4EFE3" }}>
+      <div style={{ position: "relative", height: 164, flexShrink: 0, background: "#F4EFE3" }}>
         {event.image_url && (
           <img
             src={event.image_url}
@@ -452,7 +455,7 @@ const PosterCard = ({ event }: { event: any }) => {
           </div>
         )}
       </div>
-      <div style={{ padding: "11px 13px 13px" }}>
+      <div style={{ padding: "11px 13px 13px", flex: 1, display: "flex", flexDirection: "column" }}>
         {eyebrow && (
           <div
             style={{
@@ -478,6 +481,8 @@ const PosterCard = ({ event }: { event: any }) => {
             color: "#1A1A1A",
             margin: 0,
             marginBottom: 10,
+            flex: 1,
+            minHeight: 0,
             wordBreak: "break-word",
             overflowWrap: "anywhere",
             display: "-webkit-box",
@@ -491,7 +496,7 @@ const PosterCard = ({ event }: { event: any }) => {
         {event.location && (
           <div
             style={{
-              marginTop: 5,
+              marginTop: "auto",
               fontFamily: SANS,
               fontSize: 11.5,
               color: "#6B6A5E",
