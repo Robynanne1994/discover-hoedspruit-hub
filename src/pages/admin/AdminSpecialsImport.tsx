@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { daysToCsv, parseDays } from "@/lib/specialDays";
 
 const stripTrailingZeros = (val: string | null | undefined) => {
   if (!val) return val ?? null;
@@ -101,11 +102,16 @@ const AdminSpecialsImport = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
         csvTitles.add(title.toLowerCase());
 
+        // "Wednesday|Thursday" — a weekly deal can run on several days. Commas,
+        // slashes and short forms ("Wed") are accepted too; anything that isn't
+        // a day name is dropped rather than stored.
+        const days = parseDays(row.day_of_week);
+
         const payload: Record<string, any> = {
           title,
           badge_override: row.badge_override || null,
           deal_type: row.deal_type || null,
-          day_of_week: row.day_of_week || null,
+          day_of_week: days.length ? days : null,
           discount_type: row.discount_type || null,
           discount_value: row.discount_value ? Number(row.discount_value) : null,
           freebie_text: row.freebie_text || null,
@@ -182,8 +188,11 @@ const AdminSpecialsImport = () => {
   };
 
   const downloadTemplate = () => {
+    // One value per header, in header order — a short row silently shifts every
+    // column after it, so the two lists are kept side by side.
     const example = [
-      "Sunset Dinner Deal", "50% OFF", "Bush Lodge", "", "Half-price dinner with wine pairing",
+      "Sunset Dinner Deal", "50% OFF", "weekly", "Wednesday|Thursday",
+      "percent_off", "50", "", "Book direct", "Bush Lodge", "", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
       "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
@@ -202,7 +211,7 @@ const AdminSpecialsImport = () => {
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", s.day_of_week ?? "",
+      s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
@@ -247,6 +256,11 @@ const AdminSpecialsImport = () => {
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
             Specials are matched by title (case-insensitive). Missing specials will be deleted.
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            day_of_week, additional_phones, additional_whatsapps and terms take several
+            values separated by | — e.g. <code>Wednesday|Thursday</code> for a deal that
+            runs on both nights.
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
