@@ -15,7 +15,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import ImageUpload from "@/components/admin/ImageUpload";
-import CategoryImagePreview from "@/components/admin/CategoryImagePreview";
+
 import { CATEGORY_IMAGE_SLOT } from "@/lib/categoryImageSlot";
 import {
   DndContext,
