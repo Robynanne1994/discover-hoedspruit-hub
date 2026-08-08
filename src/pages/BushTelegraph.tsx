@@ -126,7 +126,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
         )}
       </div>
 
-      <div style={{ flex: 1, minWidth: 0, paddingRight: 10 }}>
+      <div style={{ flex: 1, minWidth: 0, paddingLeft: 12, paddingRight: 10 }}>
         <div style={{ fontFamily: HN, fontSize: 12, fontWeight: 500, color: "#6B6A5E" }}>
           {platformLabel(r.platform)}
         </div>
