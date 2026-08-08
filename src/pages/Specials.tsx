@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Star } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Star } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -806,9 +806,42 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
 /* Grid card                                                           */
 /* ------------------------------------------------------------------ */
 
+// Title line-height 1.25 on a 15px face, so two lines of title reserve this much.
+const DEAL_TITLE_LINES_2 = 38;
+
 const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
   const image = specialImage(special, "list");
   const meta = special.business_name || "";
+  const titleRef = useRef<HTMLSpanElement | null>(null);
+  const metaRef = useRef<HTMLSpanElement | null>(null);
+  const [titleLines, setTitleLines] = useState(1);
+  const [metaLines, setMetaLines] = useState(1);
+
+  // Measure what the title and the business name actually render on. A one-line
+  // title lends its spare line to the business name; a two-line title keeps it.
+  useEffect(() => {
+    const els: Array<[HTMLElement | null, (n: number) => void]> = [
+      [titleRef.current, setTitleLines],
+      [metaRef.current, setMetaLines],
+    ];
+    const measure = () => {
+      els.forEach(([el, set]) => {
+        if (!el) return;
+        const lh = parseFloat(getComputedStyle(el).lineHeight) || 1;
+        set(Math.max(1, Math.round(el.scrollHeight / lh)));
+      });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    els.forEach(([el]) => el && ro.observe(el));
+    return () => ro.disconnect();
+  }, [special.id, meta]);
+
+  // Two lines of business name only get room by giving up the title's reserved
+  // second line — so the card keeps its height. When both fit on one line the
+  // reserved line stays, holding the business name at the bottom of the block.
+  const metaClamp = titleLines > 1 ? 1 : 2;
+  const shiftUp = titleLines === 1 && metaLines > 1;
 
   return (
     <article
@@ -841,7 +874,6 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
       <div style={{ padding: "10px 11px 11px 11px", display: "flex", flexDirection: "column", flex: 1 }}>
         <h3
           {...noTitleCaseProps(special)}
-          className="line-clamp-2"
           style={{
             fontFamily: SANS,
             ...type.cardTitleM,
@@ -849,23 +881,50 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
             letterSpacing: "-0.15px",
             color: COLOR.ink,
             margin: 0,
+            minHeight: shiftUp ? undefined : DEAL_TITLE_LINES_2,
+            overflowWrap: "break-word",
           }}
         >
-          {getDisplayTitle(special)}
+          <span
+            ref={titleRef}
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {getDisplayTitle(special)}
+          </span>
         </h3>
         {meta && (
           <div
             style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
               fontFamily: SANS,
               ...type.meta,
+              lineHeight: 1.3,
               color: COLOR.mutedInk,
               marginTop: 3,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              minWidth: 0,
             }}
           >
-            {meta}
+            <Store size={12} strokeWidth={1.8} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
+            <span
+              ref={metaRef}
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: metaClamp,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                overflowWrap: metaClamp === 1 ? "normal" : "break-word",
+                wordBreak: metaClamp === 1 ? "normal" : undefined,
+              }}
+            >
+              {meta}
+            </span>
           </div>
         )}
       </div>
