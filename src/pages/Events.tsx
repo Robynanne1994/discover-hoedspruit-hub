@@ -455,7 +455,7 @@ const PosterCard = ({ event }: { event: any }) => {
           </div>
         )}
       </div>
-      <div style={{ padding: "11px 13px 13px" }}>
+      <div style={{ padding: "11px 13px 13px", flex: 1, display: "flex", flexDirection: "column" }}>
         {eyebrow && (
           <div
             style={{
