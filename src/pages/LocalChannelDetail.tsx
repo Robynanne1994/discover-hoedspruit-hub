@@ -72,6 +72,8 @@ const WhatsAppIcon = ({ size = 24, color = "currentColor", style }: { size?: num
   </svg>
 );
 
+const platformLabel = (p?: string | null) => (p ? PLATFORM_LABEL[p] || p : "");
+
 const platformIcon = (p?: string | null) => {
   if (p === "Facebook") return Facebook;
   if (p === "Instagram") return Instagram;
