@@ -316,17 +316,6 @@ const AdminBushTelegraph = () => {
     upsertMutation.mutate({ ...form, id: editing?.id });
   };
 
-  // What the image previews frame. The custom title only counts when its
-  // switch is on, matching what `upsertMutation` will actually write.
-  const previewChannel = {
-    title: form.title,
-    title_override: form.use_title_override ? form.title_override : "",
-    platform: form.platform,
-    meta: form.meta,
-    meta_2: form.meta_2,
-    tag_1: form.tag_1,
-    tag_2: form.tag_2,
-  };
 
   // CSV
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
