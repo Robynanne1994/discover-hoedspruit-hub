@@ -186,9 +186,6 @@ const LocalChannelDetail = () => {
     : defaultLabel;
   const PrimaryIcon = isImageType ? (type_ === "qr" ? QrCode : ImageIcon) : ExternalLink;
 
-  const platformNames = [resource.platform, platformLabel(resource.platform)]
-    .filter(Boolean)
-    .map((p: string) => p.toLowerCase());
   const memberLine = (resource.meta_2 || "").trim();
   const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
   const ChannelIcon = platformIcon(resource.platform);
