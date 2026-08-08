@@ -311,7 +311,7 @@ const LocalChannelDetail = () => {
           </div>
         )}
 
-        {metaParts.length > 0 && (
+        {(memberLine || metaParts.length > 0) && (
           <div style={{
             marginTop: 6, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6,
             ...type.meta,
@@ -324,6 +324,15 @@ const LocalChannelDetail = () => {
                 <span>{m}</span>
               </span>
             ))}
+            {memberLine && (
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                {metaParts.length > 0 && (
+                  <span style={{ width: 4, height: 4, borderRadius: 999, background: MUTED, display: "inline-block" }} />
+                )}
+                <Users size={13} color={MUTED} strokeWidth={1.75} />
+                <span>{memberLine}</span>
+              </span>
+            )}
           </div>
         )}
       </div>
