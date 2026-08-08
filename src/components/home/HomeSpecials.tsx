@@ -186,7 +186,7 @@ const HomeSpecials = () => {
             </Link>
           );
         })}
-        <div style={{ flex: "0 0 20px" }} aria-hidden />
+        
       </div>
     </section>
   );
