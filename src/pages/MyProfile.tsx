@@ -773,7 +773,7 @@ const MyProfile = () => {
             <button
               key={t.id}
               type="button"
-              onClick={() => setTab(t.id)}
+              onClick={() => setTab(t.id === tab ? "all" : t.id)}
               aria-pressed={active}
               style={{
                 flex: "0 0 auto",
