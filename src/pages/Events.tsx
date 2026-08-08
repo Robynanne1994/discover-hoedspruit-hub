@@ -496,7 +496,7 @@ const PosterCard = ({ event }: { event: any }) => {
         {event.location && (
           <div
             style={{
-              marginTop: 5,
+              marginTop: "auto",
               fontFamily: SANS,
               fontSize: 11.5,
               color: "#6B6A5E",
