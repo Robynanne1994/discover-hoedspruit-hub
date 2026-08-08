@@ -1,17 +1,35 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Pipette } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Pipette, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
+import CropPreviewImage from "./CropPreviewImage";
+import { coverCropArea, exportSize } from "@/lib/cropPreview";
 
 interface ImageCropDialogProps {
   open: boolean;
   imageSrc: string | null;
   defaultAspect?: number;
+  /**
+   * Start with the ratio held at `defaultAspect` and the free-ratio buttons
+   * out of the way. The lock can still be released in the dialog.
+   */
+  lockAspect?: boolean;
+  /** Label for the locked ratio, e.g. "4:3". */
+  aspectLabel?: string;
+  /** Dialog heading — name the slot being cropped when there is more than one. */
+  title?: string;
+  /**
+   * Frame the live crop in whatever chrome it will land in. The callback is
+   * handed a painter that draws the current crop at an exact box size, so the
+   * preview updates as the image is dragged rather than after it is saved.
+   */
+  previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
   onCancel: () => void;
   onConfirm: (blob: Blob) => void;
 }
@@ -25,6 +43,10 @@ const ASPECTS: { label: string; value: number | "free" }[] = [
   { label: "3:2", value: 3 / 2 },
 ];
 
+const MIN_ZOOM = 0.2;
+const MAX_ZOOM = 4;
+const ZOOM_STEP = 0.1;
+
 async function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const i = new Image();
@@ -35,11 +57,19 @@ async function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-async function getCroppedBlob(imageSrc: string, area: Area, bgColor: string): Promise<Blob> {
+async function getCroppedBlob(
+  imageSrc: string,
+  area: Area,
+  bgColor: string,
+  outputAspect?: number,
+): Promise<Blob> {
   const img = await loadImage(imageSrc);
   const canvas = document.createElement("canvas");
-  canvas.width = Math.round(area.width);
-  canvas.height = Math.round(area.height);
+  // Snapping to the target ratio keeps `object-fit: cover` from shaving a
+  // hairline off one edge — see exportSize.
+  const size = exportSize(area, outputAspect);
+  canvas.width = size.width;
+  canvas.height = size.height;
   const ctx = canvas.getContext("2d")!;
   // Fill background first so any area outside the source image shows the chosen colour
   ctx.fillStyle = bgColor;
@@ -69,14 +99,29 @@ function rgbToHex(r: number, g: number, b: number) {
   return `#${h(r)}${h(g)}${h(b)}`;
 }
 
-const ImageCropDialog = ({ open, imageSrc, defaultAspect, onCancel, onConfirm }: ImageCropDialogProps) => {
+
+const ImageCropDialog = ({
+  open,
+  imageSrc,
+  defaultAspect,
+  lockAspect,
+  aspectLabel,
+  title,
+  previewRender,
+  onCancel,
+  onConfirm,
+}: ImageCropDialogProps) => {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [aspect, setAspect] = useState<number | "free">(defaultAspect ?? "free");
+  const [locked, setLocked] = useState(!!lockAspect && !!defaultAspect);
   const [croppedArea, setCroppedArea] = useState<Area | null>(null);
   const [busy, setBusy] = useState(false);
   const [bgColor, setBgColor] = useState("#ffffff");
   const [picking, setPicking] = useState(false);
+  const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
+  const [sourceSettled, setSourceSettled] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
   const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const sampleImgRef = useRef<HTMLImageElement | null>(null);
   const cropperWrapRef = useRef<HTMLDivElement | null>(null);
@@ -86,40 +131,82 @@ const ImageCropDialog = ({ open, imageSrc, defaultAspect, onCancel, onConfirm }:
       setCrop({ x: 0, y: 0 });
       setZoom(1);
       setAspect(defaultAspect ?? "free");
+      setLocked(!!lockAspect && !!defaultAspect);
+      setCroppedArea(null);
       setBgColor("#ffffff");
       setPicking(false);
     }
-  }, [open, defaultAspect]);
+  }, [open, defaultAspect, lockAspect]);
 
-  // Preload an image into an offscreen canvas for eyedropper sampling
+  // Preload the source: the offscreen canvas backs eyedropper sampling, and
+  // the natural size is what the opening crop is worked out from. The cropper
+  // waits for this, because `initialCroppedAreaPixels` is only read once, when
+  // the media first loads.
   useEffect(() => {
+    setNatural(null);
+    setSourceSettled(false);
+    sampleCanvasRef.current = null;
+    sampleImgRef.current = null;
     if (!imageSrc) return;
+    let cancelled = false;
     loadImage(imageSrc)
       .then((img) => {
+        if (cancelled) return;
         const c = document.createElement("canvas");
         c.width = img.width;
         c.height = img.height;
         c.getContext("2d")!.drawImage(img, 0, 0);
         sampleCanvasRef.current = c;
         sampleImgRef.current = img;
+        setNatural({ width: img.naturalWidth, height: img.naturalHeight });
+        setSourceSettled(true);
       })
-      .catch(() => {});
+      .catch(() => {
+        // Still show the cropper — it loads the image itself; only the opening
+        // crop and the eyedropper need our own copy.
+        if (!cancelled) setSourceSettled(true);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [imageSrc]);
 
-  const onCropComplete = useCallback((_: Area, areaPixels: Area) => {
+  // `onCropAreaChange` fires on every frame of a drag, so the preview keeps up
+  // with the image instead of snapping into place when the pointer is released.
+  const onCropAreaChange = useCallback((_: Area, areaPixels: Area) => {
     setCroppedArea(areaPixels);
   }, []);
+
+  const activeAspect = aspect === "free" ? undefined : aspect;
+
+  const initialArea =
+    natural && lockAspect && defaultAspect ? coverCropArea(natural, defaultAspect) : undefined;
 
   const handleConfirm = async () => {
     if (!imageSrc || !croppedArea) return;
     setBusy(true);
     try {
-      const blob = await getCroppedBlob(imageSrc, croppedArea, bgColor);
+      const blob = await getCroppedBlob(imageSrc, croppedArea, bgColor, activeAspect);
       onConfirm(blob);
     } finally {
       setBusy(false);
     }
   };
+
+  // Remounting is what puts the opening crop back: react-easy-crop reads
+  // `initialCroppedAreaPixels` once, when the media loads.
+  const reset = () => {
+    setCrop({ x: 0, y: 0 });
+    setZoom(1);
+    if (lockAspect && defaultAspect) {
+      setLocked(true);
+      setAspect(defaultAspect);
+    }
+    setResetKey((k) => k + 1);
+  };
+
+  const nudgeZoom = (delta: number) =>
+    setZoom((z) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round((z + delta) * 100) / 100)));
 
   const openNativeEyedropper = async () => {
     // @ts-ignore - EyeDropper is a newer browser API
@@ -148,10 +235,18 @@ const ImageCropDialog = ({ open, imageSrc, defaultAspect, onCancel, onConfirm }:
       setPicking(false);
       return;
     }
-    const rect = wrap.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width; // 0..1 inside crop frame
+    // Map through the crop frame, not the whole container: the frame is the
+    // only rectangle whose corners we know in source-image pixels
+    // (`croppedArea`). Clicks outside it still map correctly, because the same
+    // linear relation carries on past the frame's edges.
+    const frame = wrap.querySelector(".reactEasyCrop_CropArea");
+    const rect = (frame ?? wrap).getBoundingClientRect();
+    if (!rect.width || !rect.height) {
+      setPicking(false);
+      return;
+    }
+    const px = (e.clientX - rect.left) / rect.width;
     const py = (e.clientY - rect.top) / rect.height;
-    // Map crop-frame coords -> source image coords using croppedArea
     const ix = Math.round(croppedArea.x + px * croppedArea.width);
     const iy = Math.round(croppedArea.y + py * croppedArea.height);
     if (ix < 0 || iy < 0 || ix >= img.width || iy >= img.height) {
@@ -168,51 +263,99 @@ const ImageCropDialog = ({ open, imageSrc, defaultAspect, onCancel, onConfirm }:
     }
   };
 
+  const renderLiveImage = useCallback(
+    (width: number, height: number) => (
+      <CropPreviewImage
+        src={imageSrc}
+        area={croppedArea}
+        bgColor={bgColor}
+        width={width}
+        height={height}
+      />
+    ),
+    [imageSrc, croppedArea, bgColor],
+  );
+
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onCancel()}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Crop & position image</DialogTitle>
+          <DialogTitle>{title || "Crop & position image"}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div
             ref={cropperWrapRef}
-            className="relative w-full h-[400px]"
+            className="relative w-full h-[340px]"
             style={{ background: bgColor, cursor: picking ? "crosshair" : "default" }}
             onClick={handlePickClick}
           >
-            {imageSrc && (
+            {imageSrc && sourceSettled && (
               <Cropper
+                key={resetKey}
                 image={imageSrc}
                 crop={crop}
                 zoom={zoom}
-                aspect={aspect === "free" ? undefined : aspect}
-                minZoom={0.2}
-                maxZoom={4}
+                aspect={activeAspect}
+                minZoom={MIN_ZOOM}
+                maxZoom={MAX_ZOOM}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
-                onCropComplete={onCropComplete}
+                onCropAreaChange={onCropAreaChange}
+                initialCroppedAreaPixels={initialArea}
                 restrictPosition={false}
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
-            {picking && (
-              <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />
-            )}
+            {picking && <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />}
           </div>
-          <div className="flex flex-wrap gap-1.5">
-            {ASPECTS.map((a) => (
-              <Button
-                key={a.label}
-                type="button"
-                size="sm"
-                variant={aspect === a.value ? "default" : "outline"}
-                onClick={() => setAspect(a.value)}
-              >
-                {a.label}
-              </Button>
-            ))}
-          </div>
+
+          {previewRender && (
+            <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <Label className="text-xs">In the app</Label>
+                <span className="text-[11px] text-muted-foreground">
+                  Live — this is exactly what saving will produce.
+                </span>
+              </div>
+              <div className="flex justify-center">{previewRender(renderLiveImage)}</div>
+            </div>
+          )}
+
+          {defaultAspect && lockAspect ? (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+              <div className="min-w-0">
+                <Label className="text-sm">Lock to the app's shape{aspectLabel ? ` (${aspectLabel})` : ""}</Label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Keeps the crop the same shape as the space the app paints it into, so nothing gets
+                  trimmed off after saving.
+                </p>
+              </div>
+              <Switch
+                checked={locked}
+                onCheckedChange={(c) => {
+                  setLocked(c);
+                  setAspect(c ? defaultAspect : "free");
+                }}
+              />
+            </div>
+          ) : null}
+
+          {!locked && (
+            <div className="flex flex-wrap gap-1.5">
+              {ASPECTS.map((a) => (
+                <Button
+                  key={a.label}
+                  type="button"
+                  size="sm"
+                  variant={aspect === a.value ? "default" : "outline"}
+                  onClick={() => setAspect(a.value)}
+                >
+                  {a.label}
+                </Button>
+              ))}
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <Label className="text-xs">Background fill</Label>
             <div className="flex items-center gap-2">
@@ -246,12 +389,60 @@ const ImageCropDialog = ({ open, imageSrc, defaultAspect, onCancel, onConfirm }:
               </Button>
             </div>
           </div>
+
           <div className="space-y-1.5">
-            <Label className="text-xs">Zoom</Label>
-            <Slider value={[zoom]} min={0.2} max={4} step={0.01} onValueChange={(v) => setZoom(v[0])} />
+            <div className="flex items-center justify-between">
+              <Label className="text-xs">Zoom</Label>
+              <span className="text-[11px] tabular-nums text-muted-foreground">
+                {Math.round(zoom * 100)}%
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+                onClick={() => nudgeZoom(-ZOOM_STEP)}
+                disabled={zoom <= MIN_ZOOM}
+                aria-label="Zoom out"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+              <Slider
+                value={[zoom]}
+                min={MIN_ZOOM}
+                max={MAX_ZOOM}
+                step={0.01}
+                onValueChange={(v) => setZoom(v[0])}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+                onClick={() => nudgeZoom(ZOOM_STEP)}
+                disabled={zoom >= MAX_ZOOM}
+                aria-label="Zoom in"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="shrink-0 gap-1"
+                onClick={reset}
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Reset
+              </Button>
+            </div>
           </div>
+
           <p className="text-xs text-muted-foreground">
-            Drag to reposition. Zoom out below 100% to add space around the image — the background fill colour will be baked into the export.
+            Drag to reposition. Zoom out below 100% to add space around the image — the background
+            fill colour will be baked into the export.
           </p>
         </div>
         <DialogFooter>

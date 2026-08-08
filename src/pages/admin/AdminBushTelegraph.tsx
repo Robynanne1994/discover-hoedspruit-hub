@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
+import ChannelImageField from "@/components/admin/ChannelImageField";
+import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
 
@@ -312,6 +314,18 @@ const AdminBushTelegraph = () => {
       return;
     }
     upsertMutation.mutate({ ...form, id: editing?.id });
+  };
+
+  // What the image previews frame. The custom title only counts when its
+  // switch is on, matching what `upsertMutation` will actually write.
+  const previewChannel = {
+    title: form.title,
+    title_override: form.use_title_override ? form.title_override : "",
+    platform: form.platform,
+    meta: form.meta,
+    meta_2: form.meta_2,
+    tag_1: form.tag_1,
+    tag_2: form.tag_2,
   };
 
   // CSV
@@ -637,43 +651,23 @@ const AdminBushTelegraph = () => {
               </div>
             )}
 
-            <div>
-              <Label>Listing card image</Label>
-              <ImageUpload
-                bucket="local-channels-images"
-                value={form.image_url}
-                onChange={(url) => setForm({ ...form, image_url: url })}
-              />
-            </div>
-
-            <div>
-              <Label>Detail page image</Label>
-              <ImageUpload
-                bucket="local-channels-images"
-                value={form.detail_image_url}
-                onChange={(url) => setForm({ ...form, detail_image_url: url })}
-                aspect={4 / 3}
-              />
-            </div>
-
-            <div>
-              <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Local Channels section — 1:1. Falls back to card image if empty.)</span></Label>
-              <ImageUpload
-                bucket="local-channels-images"
-                value={form.homepage_image_url}
-                onChange={(url) => setForm({ ...form, homepage_image_url: url })}
-                aspect={1}
-              />
-            </div>
-
-            <div>
-              <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
-              <ImageUpload
-                bucket="local-channels-images"
-                value={form.saved_image_url}
-                onChange={(url) => setForm({ ...form, saved_image_url: url })}
-                aspect={4 / 3}
-              />
+            <div className="space-y-3">
+              <div>
+                <Label>Images</Label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  One picture per place the channel appears. Each opens cropped to the exact shape
+                  that screen paints, so the preview here is what the app will show.
+                </p>
+              </div>
+              {CHANNEL_IMAGE_SLOTS.map((slot) => (
+                <ChannelImageField
+                  key={slot.key}
+                  slot={slot}
+                  value={(form[slot.field] as string) || ""}
+                  onChange={(url) => setForm((f) => ({ ...f, [slot.field]: url }))}
+                  channel={previewChannel}
+                />
+              ))}
             </div>
 
             <div className="grid grid-cols-2 gap-3">
