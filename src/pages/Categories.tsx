@@ -689,7 +689,16 @@ const Categories = () => {
                     )}
                   </div>
                   <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 14px 12px 14px" }}>
-                    <div style={{ flex: 1, minWidth: 0 }}>
+                    <div
+                      style={{
+                        flex: 1,
+                        minWidth: 0,
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                      }}
+                    >
                       <p
                         {...noTitleCaseProps(listing)}
                         style={{
@@ -705,63 +714,64 @@ const Categories = () => {
                       >
                         {getDisplayTitle(listing)}
                       </p>
-                      {cardCategories.length > 0 && (
-                        <p
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontFamily: FONT_BODY,
-                            fontSize: 10,
-                            fontWeight: 600,
-                            letterSpacing: "0.05em",
-                            textTransform: "uppercase",
-                            color: COLORS.eyebrow,
-                            margin: 0,
-                            marginTop: 3,
-                            gap: 4,
-                            minWidth: 0,
-                            lineHeight: 1.3,
-                          }}
-                        >
-                          <Tag size={10} strokeWidth={2} style={{ flexShrink: 0 }} />
-                          <span
+                      <div style={{ minWidth: 0 }}>
+                        {cardCategories.length > 0 && (
+                          <p
                             style={{
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
+                              display: "flex",
+                              alignItems: "center",
+                              fontFamily: FONT_BODY,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              letterSpacing: "0.05em",
+                              textTransform: "uppercase",
+                              color: COLORS.eyebrow,
+                              margin: 0,
+                              gap: 4,
+                              minWidth: 0,
+                              lineHeight: 1.3,
+                            }}
+                          >
+                            <Tag size={10} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <span
+                              style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                minWidth: 0,
+                              }}
+                            >
+                              {cardCategories.join(" · ")}
+                            </span>
+                          </p>
+                        )}
+                        {listing.location && (
+                          <p
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              fontSize: 12,
+                              color: COLORS.muted,
+                              margin: 0,
+                              marginTop: 3,
+                              gap: 4,
                               minWidth: 0,
                             }}
                           >
-                            {cardCategories.join(" · ")}
-                          </span>
-                        </p>
-                      )}
-                      {listing.location && (
-                        <p
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            fontSize: 12,
-                            color: COLORS.muted,
-                            margin: 0,
-                            marginTop: 3,
-                            gap: 4,
-                            minWidth: 0,
-                          }}
-                        >
-                          <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0 }} />
-                          <span
-                            style={{
-                              whiteSpace: "nowrap",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              minWidth: 0,
-                            }}
-                          >
-                            {listing.location}
-                          </span>
-                        </p>
-                      )}
+                            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0 }} />
+                            <span
+                              style={{
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                minWidth: 0,
+                              }}
+                            >
+                              {listing.location}
+                            </span>
+                          </p>
+                        )}
+                      </div>
                     </div>
                     <ArrowUpRight size={18} color="#1A1A1A" style={{ flexShrink: 0 }} />
                   </div>
