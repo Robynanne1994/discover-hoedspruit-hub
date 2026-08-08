@@ -144,8 +144,19 @@ const numeric = (v: unknown): string | null => {
   return String(Math.round(n * 100) / 100);
 };
 
+// Narrow cards — the 2-col specials grid and the homepage rail — leave the
+// schedule roughly this much room beside a price. Wording longer than this is
+// swapped for the generated short schedule rather than printed with an
+// ellipsis through the middle of it.
+const COMPACT_META_CHARS = 16;
+
+export interface MetaOptions {
+  /** True on the narrow cards, where the schedule shares one line with a price. */
+  compact?: boolean;
+}
+
 // Human date line for a special: weekly day, date range, or nothing at all.
-export const specialDateLine = (s: SpecialLike): string | null => {
+export const specialDateLine = (s: SpecialLike, { compact = false }: MetaOptions = {}): string | null => {
   const days = parseDays(s.day_of_week);
   const from = s.valid_from ? new Date(s.valid_from) : null;
   const until = s.valid_until ? new Date(s.valid_until) : null;
@@ -155,7 +166,10 @@ export const specialDateLine = (s: SpecialLike): string | null => {
   // Days win over dates: a weekly deal is defined by the night it runs on, and
   // the abbreviated form is what keeps this line inside a 170px card.
   if (days.length) {
-    if (validUntil) return `${recurringDays(days)} until ${format(validUntil, "d MMM")}`;
+    // The end date is what tips this line past a narrow card's width, and it is
+    // the least useful half of it — a deal inside its last week is flagged as
+    // ending soon anyway, and the full validity is on the detail page.
+    if (validUntil && !compact) return `${recurringDays(days)} until ${format(validUntil, "d MMM")}`;
     // "Every day" already carries its own "every".
     return days.length === 7 ? "Every day" : `Every ${compactDays(days)}`;
   }
@@ -187,11 +201,20 @@ export const savingLabel = (s: SpecialLike): string | null => {
 // conversion-relevant thing on a deals card — then the business's own wording,
 // then the schedule. Empty string means there is nothing to say, so callers
 // render no row at all rather than an empty one.
-export const specialMeta = (s: SpecialLike): { text: string; urgent: boolean } => {
+export const specialMeta = (
+  s: SpecialLike,
+  { compact = false }: MetaOptions = {}
+): { text: string; urgent: boolean } => {
   if (isEndingSoon(s)) return { text: countdownLabel(s), urgent: true };
   const own = str(s.card_footer_text);
-  if (own) return { text: own, urgent: false };
-  const line = specialDateLine(s);
+  const line = specialDateLine(s, { compact });
+  // The business's own wording wins — but only while it fits. A weekly deal
+  // running over more than one day is written out in full more often than not
+  // ("Wednesday & Thursday Specials"), which is wider than the slot a grid card
+  // has for it; the generated schedule says the same thing in the room there is.
+  if (own && !(compact && line && own.length > COMPACT_META_CHARS)) {
+    return { text: own, urgent: false };
+  }
   if (line) return { text: line, urgent: false };
   if (s.valid_until) return { text: countdownLabel(s), urgent: false };
   return { text: "", urgent: false };

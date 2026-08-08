@@ -66,7 +66,15 @@ export interface SpecialCardModel {
   saving: string | null;
 }
 
-export const specialCard = (s: SpecialCardLike): SpecialCardModel => {
+export interface SpecialCardOptions {
+  /** True for the narrow cards — the 2-col specials grid and the homepage rail. */
+  compact?: boolean;
+}
+
+export const specialCard = (
+  s: SpecialCardLike,
+  { compact = false }: SpecialCardOptions = {}
+): SpecialCardModel => {
   const value = specialValue(s);
   const saving = value.kind === "price" ? savingLabel(s) : null;
 
@@ -79,7 +87,10 @@ export const specialCard = (s: SpecialCardLike): SpecialCardModel => {
   return {
     badge: { text: badgeText, tone: specialBadgeTone(badgeText) },
     value,
-    meta: specialMeta(s),
+    // The schedule only has to squeeze when it shares a line with the money.
+    // With nothing in the value slot it gets the whole strip, so the business's
+    // own wording fits as written.
+    meta: specialMeta(s, { compact: compact && value.kind !== "none" }),
     saving,
   };
 };
