@@ -488,6 +488,7 @@ const MyAccount = () => {
     { label: "Businesses", href: "https://hellohoedspruit.co/submissions/listing", icon: Store, external: true },
     { label: "Events", href: "https://hellohoedspruit.co/submissions/event", icon: Calendar, external: true },
     { label: "Promotions", href: "https://hellohoedspruit.co/submissions/special", icon: Tag, external: true },
+    { label: "Channels", href: "https://hellohoedspruit.co/submissions/channel", icon: Radio, external: true },
   ];
   const helpInfoItems: SettingsRowItem[] = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
