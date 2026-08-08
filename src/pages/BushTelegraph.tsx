@@ -59,6 +59,13 @@ const gradientFor = (id: string) => {
   return AVATAR_GRADIENTS[Math.abs(h) % AVATAR_GRADIENTS.length];
 };
 
+const PLATFORM_LABEL: Record<string, string> = {
+  Facebook: "Facebook Group",
+  WhatsApp: "WhatsApp Channel",
+  Instagram: "Instagram",
+};
+const platformLabel = (p: string) => PLATFORM_LABEL[p] || p;
+
 const press = {
   onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.985)"; },
   onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
