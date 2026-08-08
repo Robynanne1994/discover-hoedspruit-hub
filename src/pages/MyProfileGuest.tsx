@@ -18,6 +18,7 @@ import {
   type SettingsRowItem,
 } from "@/components/settings/SettingsList";
 import { MUTED } from "@/lib/type";
+import hhLogo from "@/assets/hh-logo.png";
 
 // The lists below are the same rows, in the same order, with the same labels
 // as the signed-in Settings hub (/my-account). Guests get the identical
@@ -66,19 +67,52 @@ const MyProfileGuest = () => {
           padding: 24,
         }}
       >
-        <h2
-          style={{
-            fontFamily: '"Nohemi", ' + SANS,
-            fontWeight: 400,
-            fontSize: 24,
-            lineHeight: 1.1,
-            letterSpacing: "-0.01em",
-            color: SETTINGS_INK,
-            margin: "0 0 8px",
-          }}
-        >
-          Create Your Free Account
-        </h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 16 }}>
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: 999,
+              background: "#F5F0E8",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+            }}
+          >
+            <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 30, height: 30, objectFit: "contain" }} />
+          </div>
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                fontFamily: SANS,
+                fontSize: 10,
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+                color: MUTED,
+                marginBottom: 4,
+              }}
+            >
+              Your Lowveld Local
+            </div>
+            <h2
+              style={{
+                fontFamily: '"Nohemi", ' + SANS,
+                fontWeight: 400,
+                fontSize: 22,
+                lineHeight: 1.1,
+                letterSpacing: "-0.01em",
+                color: SETTINGS_INK,
+                margin: 0,
+              }}
+            >
+              Create Your Free Account
+            </h2>
+          </div>
+        </div>
+
         <p style={{ fontFamily: SANS, fontSize: 14, lineHeight: 1.5, color: MUTED, margin: "0 0 20px" }}>
           Save places, events and specials. Follow locals. Never miss what's on.
         </p>
@@ -96,30 +130,43 @@ const MyProfileGuest = () => {
             fontWeight: 400,
             letterSpacing: "0.1px",
             cursor: "pointer",
-            marginBottom: 10,
+            marginBottom: 14,
           }}
         >
           Create Account
         </button>
-        <button
-          onClick={() => navigate("/welcome", { state: { mode: "signin" } })}
+        <div
           style={{
-            width: "100%",
-            height: 52,
-            borderRadius: 999,
-            background: "transparent",
-            color: "#715a3d",
-            border: "1px solid #715a3d",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
             fontFamily: SANS,
-            fontSize: 15,
-            fontWeight: 400,
-            letterSpacing: "0.1px",
-            cursor: "pointer",
+            fontSize: 13.5,
+            color: MUTED,
           }}
         >
-          Log In
-        </button>
+          <span>Already have an account?</span>
+          <button
+            onClick={() => navigate("/welcome", { state: { mode: "signin" } })}
+            style={{
+              background: "none",
+              border: "none",
+              padding: 0,
+              fontFamily: SANS,
+              fontSize: 13.5,
+              fontWeight: 700,
+              color: "#715a3d",
+              textDecoration: "underline",
+              textUnderlineOffset: 3,
+              cursor: "pointer",
+            }}
+          >
+            Log In
+          </button>
+        </div>
       </div>
+
 
       <SettingsSection label="Submissions" items={submissionsItems} />
 
