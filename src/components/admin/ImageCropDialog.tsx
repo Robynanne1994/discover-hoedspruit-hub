@@ -296,13 +296,17 @@ const ImageCropDialog = ({
                 crop={crop}
                 zoom={zoom}
                 aspect={activeAspect}
-                minZoom={MIN_ZOOM}
+                // While the ratio is locked the crop is held inside the source
+                // image: zooming out past fit or dragging past an edge would
+                // bake the background fill into the export, which shows up as
+                // white bands beside the picture on the phone.
+                minZoom={locked ? 1 : MIN_ZOOM}
                 maxZoom={MAX_ZOOM}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropAreaChange={onCropAreaChange}
                 initialCroppedAreaPixels={initialArea}
-                restrictPosition={false}
+                restrictPosition={locked ? true : false}
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
@@ -335,6 +339,9 @@ const ImageCropDialog = ({
                 onCheckedChange={(c) => {
                   setLocked(c);
                   setAspect(c ? defaultAspect : "free");
+                  // Locking pulls the crop back inside the image, so any
+                  // zoomed-out padding has to go with it.
+                  if (c) setZoom((z) => Math.max(1, z));
                 }}
               />
             </div>
