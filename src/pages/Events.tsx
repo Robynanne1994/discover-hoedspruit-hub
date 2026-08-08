@@ -356,6 +356,21 @@ const EventCard = ({ event }: { event: any }) => {
 const PosterCard = ({ event }: { event: any }) => {
   const navigate = useNavigate();
   const d: Date | null = event._parsed ?? null;
+
+  const month = d ? format(d, "MMM").toUpperCase() : "";
+  const day = d ? format(d, "d") : "";
+  const weekday = d ? format(d, "EEE").toUpperCase() : "";
+  let timeLabel = "";
+  const st = event.start_time && String(event.start_time).trim() ? String(event.start_time).slice(0, 5) : null;
+  if (d && st) {
+    try {
+      timeLabel = format(parse(st, "HH:mm", d), "h:mm a");
+    } catch {
+      timeLabel = st;
+    }
+  }
+  const eyebrow = [weekday, day, month].filter(Boolean).join(" ") + (timeLabel ? `  \u2022  ${timeLabel}` : "");
+
   return (
     <div
       role="link"
@@ -371,91 +386,121 @@ const PosterCard = ({ event }: { event: any }) => {
       onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
       onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       style={{
-        position: "relative",
         flexShrink: 0,
         width: 196,
-        height: 252,
+        background: "#FFFFFF",
         borderRadius: 16,
         overflow: "hidden",
-        background: "#F4EFE3",
+        boxShadow: "0 1px 4px -1px rgba(0,0,0,0.04)",
         cursor: "pointer",
         transition: "transform 150ms ease-out",
       }}
     >
-      {event.image_url && (
-        <img
-          src={event.image_url}
-          alt={getDisplayTitle(event)}
-          loading="lazy"
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-        />
-      )}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.65) 100%)",
-        }}
-      />
-      {d && (
-        <div
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            width: 50,
-            height: 50,
-            borderRadius: 999,
-            background: "rgba(255,255,255,0.92)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span
+      <div style={{ position: "relative", height: 164, background: "#F4EFE3" }}>
+        {event.image_url && (
+          <img
+            src={event.image_url}
+            alt={getDisplayTitle(event)}
+            loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+        {d && (
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              width: 46,
+              height: 46,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.94)",
+              backdropFilter: "blur(4px)",
+              WebkitBackdropFilter: "blur(4px)",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              lineHeight: 1,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: SANS,
+                fontSize: 8.5,
+                fontWeight: 700,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "#6B6A5E",
+                lineHeight: 1,
+              }}
+            >
+              {month}
+            </span>
+            <span
+              style={{
+                fontFamily: HEAD,
+                fontSize: 17,
+                fontWeight: 550,
+                color: "#1A1A1A",
+                lineHeight: 1,
+                marginTop: 2,
+              }}
+            >
+              {day}
+            </span>
+          </div>
+        )}
+      </div>
+      <div style={{ padding: "11px 13px 13px" }}>
+        {eyebrow && (
+          <div
             style={{
               fontFamily: SANS,
               fontSize: 9,
-              letterSpacing: "0.08em",
+              fontWeight: 700,
+              letterSpacing: "0.14em",
               textTransform: "uppercase",
-              color: "#6B6A5E",
-              lineHeight: 1,
+              color: "#423324",
+              marginBottom: 6,
             }}
           >
-            {format(d, "MMM")}
-          </span>
-          <span
+            {eyebrow}
+          </div>
+        )}
+        <h3
+          {...noTitleCaseProps(event)}
+          style={{
+            margin: 0,
+            fontFamily: HEAD,
+            fontSize: 14.5,
+            fontWeight: 700,
+            lineHeight: 1.25,
+            color: "#1A1A1A",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {getDisplayTitle(event)}
+        </h3>
+        {event.location && (
+          <div
             style={{
+              marginTop: 5,
               fontFamily: SANS,
-              fontSize: 17,
-              color: C.ink,
-              lineHeight: 1,
-              marginTop: 2,
+              fontSize: 11.5,
+              color: "#6B6A5E",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
-            {format(d, "d")}
-          </span>
-        </div>
-      )}
-      <h3
-        {...noTitleCaseProps(event)}
-        style={{
-          position: "absolute",
-          left: 14,
-          right: 14,
-          bottom: 14,
-          margin: 0,
-          fontFamily: SANS,
-          fontWeight: 400,
-          fontSize: 17,
-          lineHeight: 1.2,
-          color: "#FFFFFF",
-        }}
-      >
-        {getDisplayTitle(event)}
-      </h3>
+            {event.location}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
