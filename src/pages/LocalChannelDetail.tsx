@@ -189,15 +189,6 @@ const LocalChannelDetail = () => {
   const platformNames = [resource.platform, platformLabel(resource.platform)]
     .filter(Boolean)
     .map((p: string) => p.toLowerCase());
-  const metaParts = [resource.meta]
-    .filter((m: string | null) => m && m.trim())
-    // The platform already sits in the row above, so drop it from the meta line
-    .flatMap((m: string) =>
-      m
-        .split(/[•·|]/)
-        .map((p) => p.trim())
-        .filter((p) => p && !platformNames.includes(p.toLowerCase()))
-    );
   const memberLine = (resource.meta_2 || "").trim();
   const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
   const ChannelIcon = platformIcon(resource.platform);
