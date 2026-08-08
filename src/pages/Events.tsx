@@ -459,16 +459,22 @@ const PosterCard = ({ event }: { event: any }) => {
         {eyebrow && (
           <div
             style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
               fontFamily: SANS,
-              fontSize: 9,
-              fontWeight: 700,
-              letterSpacing: "0.14em",
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: "0.18em",
               textTransform: "uppercase",
-              color: "#423324",
+              color: "#6B6A5E",
               marginBottom: 6,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
             }}
           >
-            {eyebrow}
+            <Calendar size={11} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{eyebrow}</span>
           </div>
         )}
         <h3
