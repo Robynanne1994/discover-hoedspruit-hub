@@ -388,6 +388,9 @@ const PosterCard = ({ event }: { event: any }) => {
       style={{
         flexShrink: 0,
         width: 196,
+        height: 292,
+        display: "flex",
+        flexDirection: "column",
         background: "#FFFFFF",
         borderRadius: 16,
         overflow: "hidden",
@@ -396,7 +399,7 @@ const PosterCard = ({ event }: { event: any }) => {
         transition: "transform 150ms ease-out",
       }}
     >
-      <div style={{ position: "relative", height: 164, background: "#F4EFE3" }}>
+      <div style={{ position: "relative", height: 164, flexShrink: 0, background: "#F4EFE3" }}>
         {event.image_url && (
           <img
             src={event.image_url}
