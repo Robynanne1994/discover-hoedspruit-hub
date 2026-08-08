@@ -447,7 +447,6 @@ const LocalChannelDetail = () => {
           }}
           {...pressScale()}
         >
-          <PrimaryIcon size={18} strokeWidth={1.75} color="#FFFFFF" />
           <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{primaryLabel}</span>
           {!isImageType && type_ !== "internal" && <ArrowUpRight size={16} strokeWidth={2} color="#FFFFFF" />}
         </button>
