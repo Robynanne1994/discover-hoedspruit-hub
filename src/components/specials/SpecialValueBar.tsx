@@ -34,6 +34,10 @@ const SpecialValueBar = ({
   const saving = full ? savingAccent : null;
   const priceSize = full ? 15 : 13.5;
   const metaSize = full ? 12 : 11;
+  // A fixed line box (inherited as a length by every span in the bar) means the
+  // strip is the same height whatever mix of price / deal / schedule text a
+  // given special happens to have — so cards line up beside each other.
+  const lineBox = full ? 20 : 17;
 
   // A 170px card can't hold an offer sentence and a schedule at once, so the
   // narrow bar ranks them: urgency first, then the offer, then the schedule.
@@ -44,12 +48,18 @@ const SpecialValueBar = ({
     <div
       style={{
         display: "flex",
-        alignItems: "baseline",
+        // Centre, not baseline, at this level: both sides are fixed-height line
+        // boxes, so centring keeps the strip exactly one line tall no matter
+        // which font sizes it happens to contain. The money group below still
+        // aligns its own parts on the baseline.
+        alignItems: "center",
         justifyContent: "space-between",
         gap: 8,
         padding,
         background: BAR.bg,
         borderTop: `1px solid ${BAR.border}`,
+        lineHeight: `${lineBox}px`,
+        flexShrink: 0,
       }}
     >
       {/* Left — the money. Falls back to the validity line so a special with no
@@ -67,6 +77,7 @@ const SpecialValueBar = ({
           // A price is short and must stay whole; a written offer is the one
           // that gives way when the two sides can't both fit.
           flexShrink: value.kind === "price" ? 0 : 1,
+          height: lineBox,
         }}
       >
         {value.kind === "price" && (
@@ -184,6 +195,7 @@ const SpecialValueBar = ({
             minWidth: 0,
             flexShrink: 1,
             textAlign: "right",
+            height: lineBox,
           }}
         >
           {meta.text}

@@ -680,6 +680,9 @@ const FeaturedSection = ({
                 style={{
                   flex: `0 0 calc(100% - ${SLIDE_GAP + SLIDE_PEEK}px)`,
                   scrollSnapAlign: "start",
+                  // display:flex lets the card stretch to the tallest slide, so
+                  // every featured card in the rail is the same height.
+                  display: "flex",
                 }}
               >
                 <FeaturedCard special={s} onClick={() => onSelect(s)} />
@@ -730,11 +733,16 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
         display: "flex",
         flexDirection: "column",
         boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+        // Fill the slide so a card sitting next to a taller neighbour matches it
+        // instead of leaving a ragged edge along the rail.
+        width: "100%",
+        height: "100%",
       }}
     >
-      {/* Image with the headline sitting on the gradient */}
-      {/* minHeight:0 keeps the flex item from growing past the aspect ratio */}
-      <div style={{ position: "relative", width: "100%", aspectRatio: "5 / 3", minHeight: 0, flexShrink: 0, background: "#EEE8DA" }}>
+      {/* Image with the headline sitting on the gradient. The aspect ratio sets
+          the natural height; flex:1 lets the image absorb any extra height when
+          a neighbouring card's value bar runs taller. */}
+      <div style={{ position: "relative", width: "100%", aspectRatio: "5 / 3", flex: "1 1 auto", minHeight: 0, background: "#EEE8DA" }}>
         {image && (
           <img
             src={image}
