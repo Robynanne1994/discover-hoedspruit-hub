@@ -339,6 +339,9 @@ const ImageCropDialog = ({
                 onCheckedChange={(c) => {
                   setLocked(c);
                   setAspect(c ? defaultAspect : "free");
+                  // Locking pulls the crop back inside the image, so any
+                  // zoomed-out padding has to go with it.
+                  if (c) setZoom((z) => Math.max(1, z));
                 }}
               />
             </div>

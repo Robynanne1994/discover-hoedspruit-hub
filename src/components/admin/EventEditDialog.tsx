@@ -16,6 +16,7 @@ import { sanitizeContactArray } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
+import EventImageField from "./EventImageField";
 
 interface Props {
   open: boolean;
@@ -208,19 +209,12 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           {(["card", "detail", "homepage", "saved"] as const).map((key) => {
             const slot = eventImageSlot(key);
             return (
-              <div key={key} className="space-y-1">
-                <Label>{slot.label}</Label>
-                <p className="text-[11px] text-muted-foreground">
-                  Cropped to {slot.aspectLabel}. {slot.where} {slot.fallback}
-                </p>
-                <ImageUpload
-                  bucket="listing-images"
-                  value={form[slot.field] || ""}
-                  onChange={(url) => set(slot.field, url)}
-                  aspect={slot.aspect}
-                  cropTitle={`Crop — ${slot.label}`}
-                />
-              </div>
+              <EventImageField
+                key={key}
+                slot={slot}
+                value={form[slot.field] || ""}
+                onChange={(url) => set(slot.field, url)}
+              />
             );
           })}
           <div className="grid grid-cols-2 gap-3">
@@ -350,19 +344,12 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       listings={listings || []}
                       onChange={(v) => setForm((f: any) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
                     />
-                    <div className="space-y-1">
-                      <Label>Photo</Label>
-                      <p className="text-[11px] text-muted-foreground">
-                        Cropped to {hostSlot.aspectLabel}. {hostSlot.where} {hostSlot.fallback}
-                      </p>
-                      <ImageUpload
-                        bucket="listing-images"
-                        value={form[h.imgKey] || ""}
-                        onChange={(url) => set(h.imgKey, url)}
-                        aspect={hostSlot.aspect}
-                        cropTitle={`Crop — ${hostSlot.label}`}
-                      />
-                    </div>
+                    <EventImageField
+                      slot={hostSlot}
+                      label="Photo"
+                      value={form[h.imgKey] || ""}
+                      onChange={(url) => set(h.imgKey, url)}
+                    />
                   </div>
                 ))}
                 {shown < 3 && (
