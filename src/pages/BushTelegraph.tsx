@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
+import BlockActionSheet from "@/components/BlockActionSheet";
 import { MUTED as TOKEN_MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
@@ -192,6 +193,7 @@ const BushTelegraph = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [active, setActive] = useState<string>("All");
+  const [suggestOpen, setSuggestOpen] = useState(false);
 
   const openResource = (r: Resource) => {
     if (r.slug) navigate(`/local-channels/${r.slug}`);
@@ -269,7 +271,7 @@ const BushTelegraph = () => {
               </CircleBtn>
             )}
             <CircleBtn
-              onClick={() => window.open(SUGGEST_CHANNEL_URL, "_blank", "noopener,noreferrer")}
+              onClick={() => setSuggestOpen(true)}
               ariaLabel="Suggest a channel"
             >
               <Plus size={18} color={INK} strokeWidth={2} />
@@ -362,6 +364,19 @@ const BushTelegraph = () => {
           );
         })
       )}
+
+      <BlockActionSheet
+        open={suggestOpen}
+        onClose={() => setSuggestOpen(false)}
+        title="Suggest a local channel"
+        body="This will open our website where you can suggest a channel, group or resource for the local community. You'll leave the app to do this."
+        confirmLabel="Continue to Website"
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          setSuggestOpen(false);
+          window.open(SUGGEST_CHANNEL_URL, "_blank", "noopener,noreferrer");
+        }}
+      />
     </div>
   );
 };
