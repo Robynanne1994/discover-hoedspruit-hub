@@ -483,19 +483,16 @@ const PosterCard = ({ event }: { event: any }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 5,
+              gap: 4,
               fontFamily: SANS,
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
+              fontSize: 11.5,
               color: "#6B6A5E",
               marginBottom: 8,
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
           >
-            <Calendar size={11} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
+            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{eyebrow}</span>
           </div>
         )}
