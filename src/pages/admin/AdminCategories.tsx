@@ -624,24 +624,13 @@ const AdminCategories = () => {
               <div className="space-y-1.5">
                 <Label>Cover Image</Label>
                 <p className="text-xs text-muted-foreground">
-                  Shown on the category cards on Explore. Cropped to {CATEGORY_IMAGE_SLOT.aspectLabel} —
-                  drag and zoom to choose what stays in frame.
+                  Shown on the category cards on Explore. Best at {CATEGORY_IMAGE_SLOT.aspectLabel}.
                 </p>
                 <ImageUpload
                   bucket="category-images"
                   value={form.image_url}
                   onChange={(url) => setForm({ ...form, image_url: url })}
                   aspect={CATEGORY_IMAGE_SLOT.aspect}
-                  lockAspect
-                  aspectLabel={CATEGORY_IMAGE_SLOT.aspectLabel}
-                  cropTitle="Crop — category cover"
-                  previewRender={(renderImage) => (
-                    <CategoryImagePreview
-                      title={form.title}
-                      listingCount={editing ? catCounts?.[editing.id] ?? 0 : 0}
-                      renderImage={renderImage}
-                    />
-                  )}
                 />
               </div>
               <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
