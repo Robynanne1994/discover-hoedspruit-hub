@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil, Calendar, Clock, Users,
-  Heart, Share2, Megaphone, Facebook, Instagram, MessageCircle,
+  Heart, Share2, Megaphone, Facebook, Instagram,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
