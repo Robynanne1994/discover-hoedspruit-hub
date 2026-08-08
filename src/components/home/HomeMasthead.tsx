@@ -49,7 +49,7 @@ const HomeMasthead = () => {
               Hoedspruit
             </h1>
             <p
-              style={{ ...type.label, margin: "6px 0 0", color: "#443221" }}
+              style={{ ...type.label, margin: "6px 0 0", color: "#443221", letterSpacing: "0.04em" }}
             >
               Your Lowveld local
             </p>
