@@ -14,7 +14,6 @@ import {
   Menu,
   
   Users,
-  Inbox,
   FileBarChart,
   Bell,
   Megaphone,
@@ -40,7 +39,6 @@ const navItems = [
   { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "App Updates & Notifications", path: "/admin/app-updates", icon: Megaphone },
-  { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
   { label: "Reported Users", path: "/admin/user-reports", icon: Flag },
   { label: "Moderated Users", path: "/admin/moderated-users", icon: ShieldAlert },

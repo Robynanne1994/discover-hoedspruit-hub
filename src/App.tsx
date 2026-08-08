@@ -72,7 +72,6 @@ import SearchPage from "./pages/Search.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
 
 import AdminUsers from "./pages/admin/AdminUsers.tsx";
-import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
 import AdminReports from "./pages/admin/AdminReports.tsx";
 import AdminUserReports from "./pages/admin/AdminUserReports.tsx";
 import AdminModeratedUsers from "./pages/admin/AdminModeratedUsers.tsx";
@@ -317,7 +316,6 @@ const App = () => (
                 <Route path="import" element={<AdminImport />} />
                 
                 <Route path="users" element={<AdminUsers />} />
-                <Route path="submissions" element={<AdminSubmissions />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="user-reports" element={<AdminUserReports />} />
                 <Route path="moderated-users" element={<AdminModeratedUsers />} />

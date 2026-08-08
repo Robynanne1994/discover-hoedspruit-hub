@@ -6,7 +6,6 @@ import {
   List,
   Calendar,
   ShieldCheck,
-  Inbox,
   Tag,
   
   Radio,
@@ -16,16 +15,6 @@ import {
 } from "lucide-react";
 
 type CountableTable = "categories" | "listings" | "events" | "specials" | "bush_telegraph_resources";
-
-type ContactSubmissionsCountClient = {
-  from: (table: "contact_submissions") => {
-    select: (columns: string, options: { count: "exact"; head: true }) => {
-      eq: (column: "is_read", value: boolean) => Promise<{ count: number | null; error: Error | null }>;
-    };
-  };
-};
-
-const contactSubmissionsClient = supabase as unknown as ContactSubmissionsCountClient;
 
 const useCount = (key: string, table: CountableTable) =>
   useQuery({
@@ -56,32 +45,6 @@ const AdminDashboard = () => {
   
   const resources = useCount("resources", "bush_telegraph_resources");
   
-  const contacts = useQuery({
-    queryKey: ["admin-count-contact-submissions-unread"],
-    queryFn: async () => {
-      const { count, error } = await contactSubmissionsClient
-        .from("contact_submissions")
-        .select("*", { count: "exact", head: true })
-        .eq("is_read", false);
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
-  const feedback = useQuery({
-    queryKey: ["admin-count-feedback-unread"],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("feedback")
-        .select("*", { count: "exact", head: true })
-        .eq("is_read", false);
-      if (error) throw error;
-      return count ?? 0;
-    },
-  });
-
-
-
-
   // users count via edge function (auth.users not directly queryable)
   const users = useQuery({
     queryKey: ["admin-count-users"],
@@ -116,11 +79,7 @@ const AdminDashboard = () => {
     },
   });
 
-  const submissions = (contacts.data ?? 0) + (feedback.data ?? 0);
-
   const cards = [
-    { label: "Submissions", count: submissions, to: "/admin/submissions", icon: Inbox, hint: "Contact + feedback" },
-
     { label: "Reported Users", count: userReports.data, to: "/admin/user-reports", icon: Flag, hint: "Unread reports" },
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },

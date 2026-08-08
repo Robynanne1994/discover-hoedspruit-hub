@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, X, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
-import { toast } from "sonner";
+import { Plus, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
@@ -44,6 +43,9 @@ interface Resource {
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
 const CHIPS: string[] = ["All", "Facebook", "WhatsApp", "Instagram"];
+
+// Channel suggestions are handled on the website, not in the app.
+const SUGGEST_CHANNEL_URL = "https://hellohoedspruit.co/submissions/channel";
 
 const AVATAR_GRADIENTS = [
   "linear-gradient(135deg, #C9A87C 0%, #8E6F4A 100%)",
@@ -174,108 +176,6 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
   );
 };
 
-const suggestInputStyle: React.CSSProperties = {
-  ...type.input,
-  background: "#fff", border: `2px solid #C5C0BA`, borderRadius: 12,
-  padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
-  lineHeight: 1.4,
-};
-
-const suggestLabelStyle: React.CSSProperties = {
-  ...type.eyebrow,
-  textTransform: "uppercase", color: "#715a3d", marginBottom: 6, display: "block",
-};
-
-const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
-  const { user } = useAuth();
-  const isGuest = !user;
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [resourceName, setResourceName] = useState("");
-  const [resourceLink, setResourceLink] = useState("");
-  const [reason, setReason] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-
-  if (!open) return null;
-
-  const submit = async () => {
-    const effectiveName = isGuest ? name.trim() : ((user?.user_metadata as any)?.full_name || user?.email || "Member");
-    const effectiveEmail = isGuest ? email.trim() : (user?.email || "");
-    if ((isGuest && (!name.trim() || !email.trim())) || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
-      toast.error("Please fill in all the fields.");
-      return;
-    }
-    setSubmitting(true);
-    const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nAbout: ${reason.trim()}`;
-    const { error } = await supabase.from("contact_submissions").insert({
-      name: effectiveName, email: effectiveEmail, message: composed,
-    });
-    setSubmitting(false);
-    if (error) { toast.error("Couldn't send right now. Try again shortly."); return; }
-    toast.success("Thanks — we'll take a look.");
-    setName(""); setEmail(""); setResourceName(""); setResourceLink(""); setReason("");
-    onClose();
-  };
-
-  return (
-    <div role="dialog" aria-modal="true"
-      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
-      onClick={onClose}>
-      <div onClick={(e) => e.stopPropagation()} style={{
-        fontFamily: HN, width: "100%", background: "#ffffff",
-        borderRadius: "20px 20px 0 0", padding: "20px 20px 32px",
-        animation: "bt-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-        maxHeight: "90vh", overflowY: "auto",
-      }}>
-        <style>{`@keyframes bt-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <div style={{ fontFamily: HN, fontSize: 11, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase" }}>{"\n"}</div>
-          <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
-            <X size={20} color={INK} strokeWidth={1.75} />
-          </button>
-        </div>
-        <h2 style={{ ...type.sectionTitle, margin: "0 0 8px" }}>Suggest a Channel</h2>
-        <p style={{ ...type.body, color: MUTED, margin: "0 0 20px" }}>
-          Know a good local channel, group or feed? Share the details below and we will review and add it if it meets our criteria.
-        </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {isGuest && (
-            <>
-              <div>
-                <label style={suggestLabelStyle}>Your name</label>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" style={suggestInputStyle} />
-              </div>
-              <div>
-                <label style={suggestLabelStyle}>Your email</label>
-                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@example.com" style={suggestInputStyle} />
-              </div>
-            </>
-          )}
-          <div>
-            <label style={suggestLabelStyle}>Resource name</label>
-            <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="e.g. Hoedspruit Community Group" style={suggestInputStyle} />
-          </div>
-          <div>
-            <label style={suggestLabelStyle}>Resource link</label>
-            <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="https://..." style={suggestInputStyle} />
-          </div>
-          <div>
-            <label style={suggestLabelStyle}>About</label>
-            <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Tell us a little about this resource and why it should be listed." rows={5} style={{ ...suggestInputStyle, resize: "none" }} />
-          </div>
-        </div>
-        <button onClick={submit} disabled={submitting} style={{
-          fontFamily: HN, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
-          background: "#423324", color: "#FFFFFF", border: "none", ...type.button,
-          cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
-        }}>
-          {submitting ? "Sending..." : "Send Suggestion"}
-        </button>
-      </div>
-    </div>
-  );
-};
-
 
 const SectionHeader = ({ title, count }: { title: string; count: number }) => (
   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 20px", marginBottom: 14 }}>
@@ -292,7 +192,6 @@ const BushTelegraph = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
   const [active, setActive] = useState<string>("All");
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   const openResource = (r: Resource) => {
     if (r.slug) navigate(`/local-channels/${r.slug}`);
@@ -369,7 +268,10 @@ const BushTelegraph = () => {
                 <Pencil size={16} color={INK} strokeWidth={2} />
               </CircleBtn>
             )}
-            <CircleBtn onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
+            <CircleBtn
+              onClick={() => window.open(SUGGEST_CHANNEL_URL, "_blank", "noopener,noreferrer")}
+              ariaLabel="Suggest a channel"
+            >
               <Plus size={18} color={INK} strokeWidth={2} />
             </CircleBtn>
           </>
@@ -460,8 +362,6 @@ const BushTelegraph = () => {
           );
         })
       )}
-
-      <SuggestSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
     </div>
   );
 };
