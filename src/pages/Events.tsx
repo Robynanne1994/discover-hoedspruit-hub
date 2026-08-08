@@ -681,7 +681,7 @@ const Events = () => {
       if (existing) existing.events.push(e);
       else groups.push({ key, label, events: [e] });
     });
-    if (recurring.length) groups.push({ key: "every-week", label: "Every Week", events: recurring });
+    if (recurring.length) groups.push({ key: "recurring", label: "Recurring", events: recurring });
     return groups;
   }, [filtered]);
 
