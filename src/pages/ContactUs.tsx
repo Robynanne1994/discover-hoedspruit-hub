@@ -202,7 +202,7 @@ const ContactUs = () => {
           <Row
             icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
             label="Contact Form"
-            subtitle="Fill it in on our website"
+            subtitle="Fill out a contact form on our website"
             href={WEBSITE_CONTACT_URL}
           />
         </div>
