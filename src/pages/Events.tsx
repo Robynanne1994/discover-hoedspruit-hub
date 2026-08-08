@@ -736,7 +736,7 @@ const Events = () => {
     const today = startOfToday();
     return sortedEvents
       .filter((e) => e._parsed && !isBefore(e._parsed, today) && !parseRecurrenceRule(e.recurrence))
-      .slice(0, 6);
+      .slice(0, 3);
   }, [sortedEvents]);
 
 
