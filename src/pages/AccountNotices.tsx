@@ -109,15 +109,46 @@ const AccountNotices = () => {
             Loading…
           </div>
         ) : !actions || actions.length === 0 ? (
-          <div style={{ textAlign: "center", padding: "64px 20px" }}>
-            <p style={{ fontFamily: FF, fontSize: 15, color: INK, fontWeight: 500, margin: "0 0 6px" }}>
+          <div
+            style={{
+              background: CARD,
+              borderRadius: 20,
+              padding: "40px 24px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: 999,
+                background: "#F2EFE5",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 18px",
+              }}
+            >
+              <ShieldCheck size={26} color="#715A3D" strokeWidth={1.75} />
+            </div>
+            <p
+              style={{
+                fontFamily: HEAD,
+                fontSize: 18,
+                fontWeight: 700,
+                color: INK,
+                letterSpacing: "-0.2px",
+                margin: "0 0 6px",
+              }}
+            >
               No account notices
             </p>
-            <p style={{ fontFamily: FF, fontSize: 13, color: MUTED, margin: 0 }}>
+            <p style={{ fontFamily: FF, fontSize: 14, color: MUTED, margin: 0 }}>
               Your account is in good standing.
             </p>
           </div>
         ) : (
+
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {actions
               .filter((a: any) => a.action !== "dismissed")
