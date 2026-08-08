@@ -634,6 +634,9 @@ export type Database = {
           hosted_by_link: string | null
           hosted_by_link_2: string | null
           hosted_by_link_3: string | null
+          hosted_by_listing_id: string | null
+          hosted_by_listing_id_2: string | null
+          hosted_by_listing_id_3: string | null
           hosted_by_name: string | null
           hosted_by_name_2: string | null
           hosted_by_name_3: string | null
@@ -688,6 +691,9 @@ export type Database = {
           hosted_by_link?: string | null
           hosted_by_link_2?: string | null
           hosted_by_link_3?: string | null
+          hosted_by_listing_id?: string | null
+          hosted_by_listing_id_2?: string | null
+          hosted_by_listing_id_3?: string | null
           hosted_by_name?: string | null
           hosted_by_name_2?: string | null
           hosted_by_name_3?: string | null
@@ -742,6 +748,9 @@ export type Database = {
           hosted_by_link?: string | null
           hosted_by_link_2?: string | null
           hosted_by_link_3?: string | null
+          hosted_by_listing_id?: string | null
+          hosted_by_listing_id_2?: string | null
+          hosted_by_listing_id_3?: string | null
           hosted_by_name?: string | null
           hosted_by_name_2?: string | null
           hosted_by_name_3?: string | null
@@ -774,6 +783,27 @@ export type Database = {
           {
             foreignKeyName: "events_business_id_fkey"
             columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_hosted_by_listing_id_2_fkey"
+            columns: ["hosted_by_listing_id_2"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_hosted_by_listing_id_3_fkey"
+            columns: ["hosted_by_listing_id_3"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_hosted_by_listing_id_fkey"
+            columns: ["hosted_by_listing_id"]
             isOneToOne: false
             referencedRelation: "listings"
             referencedColumns: ["id"]
