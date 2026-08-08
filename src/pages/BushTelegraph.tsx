@@ -383,10 +383,14 @@ const BushTelegraph = () => {
         <div className="bt-scroll" style={{ display: "flex", gap: 8, width: "max-content" }}>
           {CHIPS.map((c) => {
             const isActive = c === active;
+            const chipCount =
+              c === "All"
+                ? resources.length
+                : resources.filter((r) => r.platform === c).length;
             return (
               <button
                 key={c}
-                onClick={() => setActive(c)}
+                onClick={() => setActive(isActive ? "All" : c)}
                 style={{
                   ...tabStyle(isActive),
                   background: isActive ? "#423324" : "#FFFFFF",
@@ -400,9 +404,20 @@ const BushTelegraph = () => {
                   flexShrink: 0,
                   display: "inline-flex",
                   alignItems: "center",
+                  gap: 6,
                 }}
               >
-                {c}
+                <span>{c}</span>
+                {chipCount > 0 && (
+                  <span
+                    style={{
+                      opacity: isActive ? 0.85 : 0.65,
+                      fontFamily: HN,
+                    }}
+                  >
+                    ({chipCount})
+                  </span>
+                )}
               </button>
             );
           })}
