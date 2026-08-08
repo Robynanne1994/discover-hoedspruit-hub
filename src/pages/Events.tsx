@@ -16,6 +16,7 @@ import {
   isWithinInterval,
   addDays,
   format,
+  parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule } from "@/lib/eventSchedule";
