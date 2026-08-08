@@ -29,8 +29,8 @@ const SpecialValueBar = ({
   detail?: "compact" | "full";
   padding?: string;
 }) => {
-  const { value, meta, saving: savingAccent } = specialCard(special);
   const full = detail === "full";
+  const { value, meta, saving: savingAccent } = specialCard(special, { compact: !full });
   const saving = full ? savingAccent : null;
   const priceSize = full ? 15 : 13.5;
   const metaSize = full ? 12 : 11;

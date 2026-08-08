@@ -83,6 +83,11 @@ describe("specialDateLine", () => {
       .toBe("Tuesdays until 12 Aug");
   });
 
+  it("drops the end date on a narrow card so the days stay whole", () => {
+    expect(specialDateLine({ day_of_week: ["Wednesday", "Thursday"], valid_until: "2026-08-12" }, { compact: true }))
+      .toBe("Every Wed & Thu");
+  });
+
   it("still reads a row that holds a single day name", () => {
     expect(specialDateLine({ day_of_week: "Friday" })).toBe("Every Friday");
   });
@@ -116,5 +121,26 @@ describe("specialMeta", () => {
 
   it("says nothing when there is no footer wording and no dates", () => {
     expect(specialMeta({ valid_until: null })).toEqual({ text: "", urgent: false });
+  });
+
+  it("swaps footer wording too long for a narrow card for the short schedule", () => {
+    const special = {
+      card_footer_text: "Wednesday & Thursday Specials",
+      day_of_week: ["Wednesday", "Thursday"],
+      valid_until: inDays(40),
+    };
+    expect(specialMeta(special, { compact: true })).toEqual({ text: "Every Wed & Thu", urgent: false });
+    // The featured card is wide enough to print it as the business wrote it.
+    expect(specialMeta(special)).toEqual({ text: "Wednesday & Thursday Specials", urgent: false });
+  });
+
+  it("keeps short footer wording on a narrow card", () => {
+    expect(specialMeta({ card_footer_text: "Ladies Night", day_of_week: ["Thursday"] }, { compact: true }))
+      .toEqual({ text: "Ladies Night", urgent: false });
+  });
+
+  it("keeps long footer wording when there is no schedule to fall back on", () => {
+    expect(specialMeta({ card_footer_text: "While stocks last, in store only" }, { compact: true }))
+      .toEqual({ text: "While stocks last, in store only", urgent: false });
   });
 });
