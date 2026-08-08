@@ -131,7 +131,7 @@ const HomeSpecials = () => {
           gap: 12,
         }}
       >
-        {specials.map((s) => {
+        {specials.slice(0, 6).map((s) => {
           const image = specialImage(s, "home");
 
           return (
