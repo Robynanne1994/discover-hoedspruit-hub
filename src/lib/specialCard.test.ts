@@ -23,6 +23,11 @@ describe("specialCard", () => {
     expect(card.value).toEqual({ kind: "deal", text: "20% Off" });
   });
 
+  it("shortens the badge for a special that runs on two days", () => {
+    // "Wednesday & Thursday Special" would outgrow the pill it sits in.
+    expect(specialCard({ day_of_week: ["Wednesday", "Thursday"] }).badge.text).toBe("Wed & Thu Special");
+  });
+
   it("steps the badge back when it would repeat the savings accent", () => {
     const card = specialCard({
       price: "R70",

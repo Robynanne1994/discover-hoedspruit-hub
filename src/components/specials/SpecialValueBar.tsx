@@ -63,8 +63,23 @@ const SpecialValueBar = ({
       }}
     >
       {/* Left — the money. Falls back to the validity line so a special with no
-          price and no savings keeps the same card height as its neighbours. */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 5, minWidth: 0, flex: 1, height: lineBox }}>
+          price and no savings keeps the same card height as its neighbours.
+          A basis of `auto` matters: with a basis of 0 the money gets no width of
+          its own and a long schedule on the right prints straight over it. */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "baseline",
+          gap: 5,
+          minWidth: 0,
+          flexGrow: 1,
+          flexBasis: "auto",
+          // A price is short and must stay whole; a written offer is the one
+          // that gives way when the two sides can't both fit.
+          flexShrink: value.kind === "price" ? 0 : 1,
+          height: lineBox,
+        }}
+      >
         {value.kind === "price" && (
           <>
             <span
@@ -75,6 +90,9 @@ const SpecialValueBar = ({
                 color: BAR.ink,
                 letterSpacing: "-0.2px",
                 whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                minWidth: 0,
               }}
             >
               {value.price}
@@ -161,7 +179,9 @@ const SpecialValueBar = ({
         )}
       </div>
 
-      {/* Right — time. Red is reserved for this one meaning. */}
+      {/* Right — time. Red is reserved for this one meaning. Schedules are
+          free text ("Wednesday & Thursday Specials"), so this side truncates
+          rather than pushing itself over the money. */}
       {value.kind !== "none" && showMeta && (
         <span
           style={{
@@ -170,7 +190,11 @@ const SpecialValueBar = ({
             fontWeight: meta.urgent ? 700 : 400,
             color: meta.urgent ? BAR.urgent : BAR.muted,
             whiteSpace: "nowrap",
-            flexShrink: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            minWidth: 0,
+            flexShrink: 1,
+            textAlign: "right",
             height: lineBox,
           }}
         >

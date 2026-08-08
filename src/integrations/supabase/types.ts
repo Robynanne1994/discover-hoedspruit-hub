@@ -2001,7 +2001,7 @@ export type Database = {
           contact_phone: string | null
           contact_whatsapp: string | null
           created_at: string
-          day_of_week: string | null
+          day_of_week: string[] | null
           deal_type: string | null
           description: string | null
           detail_image_url: string | null
@@ -2045,7 +2045,7 @@ export type Database = {
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
-          day_of_week?: string | null
+          day_of_week?: string[] | null
           deal_type?: string | null
           description?: string | null
           detail_image_url?: string | null
@@ -2089,7 +2089,7 @@ export type Database = {
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
-          day_of_week?: string | null
+          day_of_week?: string[] | null
           deal_type?: string | null
           description?: string | null
           detail_image_url?: string | null

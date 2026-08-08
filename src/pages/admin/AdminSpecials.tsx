@@ -16,6 +16,8 @@ import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
+import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
+import { parseDays } from "@/lib/specialDays";
 
 
 interface Special {
@@ -28,7 +30,8 @@ interface Special {
   image_url: string | null;
   badge_override: string | null;
   deal_type: string | null;
-  day_of_week: string | null;
+  // A list of days — "every Wednesday and Thursday" is a single special.
+  day_of_week: string[] | null;
   discount_type: string | null;
   discount_value: number | null;
   freebie_text: string | null;
@@ -57,7 +60,7 @@ interface Special {
 }
 
 const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm";
-const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const DEAL_TYPES = ["weekly","date_range","monthly","ongoing"];
 const DISCOUNT_TYPES = ["percent_off","amount_off","fixed_price","buy_x_get_y","freebie"];
 
 const emptyForm: Omit<Special, "id"> = {
@@ -144,9 +147,11 @@ const AdminSpecials = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const isExpired = !!form.valid_until && new Date(form.valid_until) < today;
+      const days = parseDays(form.day_of_week);
       const cleaned = {
         ...form,
         is_active: !isExpired,
+        day_of_week: days.length ? days : null,
         additional_emails: sanitizeContactArray(form.additional_emails),
         additional_phones: sanitizeContactArray(form.additional_phones),
         additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
@@ -201,7 +206,7 @@ const AdminSpecials = () => {
       image_url: s.image_url,
       badge_override: (s as any).badge_override ?? null,
       deal_type: (s as any).deal_type ?? null,
-      day_of_week: (s as any).day_of_week ?? null,
+      day_of_week: parseDays((s as any).day_of_week),
       discount_type: (s as any).discount_type ?? null,
       discount_value: (s as any).discount_value ?? null,
       freebie_text: (s as any).freebie_text ?? null,
@@ -290,20 +295,17 @@ const AdminSpecials = () => {
                 onChange={(e) => setForm({ ...form, deal_type: e.target.value || null })}
               >
                 <option value="">None</option>
-                {["weekly", "date_range", "monthly", "ongoing"].map((v) => <option key={v} value={v}>{v}</option>)}
+                {DEAL_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               </select>
             </div>
-            <div>
-              <Label>Day Of Week</Label>
-              <select
-                className={SELECT_CLS}
-                value={form.day_of_week || ""}
-                onChange={(e) => setForm({ ...form, day_of_week: e.target.value || null })}
-              >
-                <option value="">None</option>
-                {DAYS.map((v) => <option key={v} value={v}>{v}</option>)}
-              </select>
-            </div>
+          </div>
+          <div>
+            <Label>Days Of The Week (pick as many as the deal runs on)</Label>
+            <DayOfWeekPicker
+              value={form.day_of_week}
+              onChange={(days) => setForm({ ...form, day_of_week: days })}
+              hint={form.deal_type === "weekly" ? "Pick the days this weekly deal runs on" : "No day set"}
+            />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>

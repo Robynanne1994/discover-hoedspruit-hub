@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { savingLabel, specialMeta, specialValue } from "@/lib/specialValue";
+import { savingLabel, specialDateLine, specialMeta, specialValue } from "@/lib/specialValue";
 
 // Deals are entered by hand, so the value bar has to cope with a price, a
 // free-text offer, or nothing at all.
@@ -64,6 +64,32 @@ describe("savingLabel", () => {
   it("stays quiet when the original is not actually higher", () => {
     expect(savingLabel({ price: "R95", original_price: "R70" })).toBeNull();
     expect(savingLabel({ price: "R95" })).toBeNull();
+  });
+});
+
+describe("specialDateLine", () => {
+  it("names the day a weekly special runs on", () => {
+    expect(specialDateLine({ day_of_week: ["Tuesday"] })).toBe("Every Tuesday");
+  });
+
+  it("abbreviates once a special runs on more than one day", () => {
+    expect(specialDateLine({ day_of_week: ["Wednesday", "Thursday"] })).toBe("Every Wed & Thu");
+  });
+
+  it("keeps the end date alongside the days", () => {
+    expect(specialDateLine({ day_of_week: ["Wednesday", "Thursday"], valid_until: "2026-08-12" }))
+      .toBe("Wed & Thu until 12 Aug");
+    expect(specialDateLine({ day_of_week: ["Tuesday"], valid_until: "2026-08-12" }))
+      .toBe("Tuesdays until 12 Aug");
+  });
+
+  it("still reads a row that holds a single day name", () => {
+    expect(specialDateLine({ day_of_week: "Friday" })).toBe("Every Friday");
+  });
+
+  it("falls back to the dates when there is no weekly schedule", () => {
+    expect(specialDateLine({ valid_from: "2026-08-01", valid_until: "2026-08-12" })).toBe("1 to 12 Aug");
+    expect(specialDateLine({})).toBeNull();
   });
 });
 
