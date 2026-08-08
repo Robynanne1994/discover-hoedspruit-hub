@@ -56,7 +56,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
       >
         {title && (
           <div style={{
-            position: "absolute", top: 24, left: 68, right: 68, zIndex: 20,
+            position: "absolute", top: 72, left: 40, right: 40, zIndex: 20,
             textAlign: "center",
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontSize: 13, lineHeight: 1.4, fontWeight: 500, color: "#5F5E52",
