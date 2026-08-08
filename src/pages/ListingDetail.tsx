@@ -1091,19 +1091,30 @@ const ListingDetail = () => {
         ? "Temporarily Closed"
         : "Closed Now";
     return (
-      <div style={{ ...cardStyle, padding: "20px 22px" }}>
-        <CardHead
-          Icon={Clock}
-          right={openStatus ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+      <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
+        <div
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
+            background: C.ivory, padding: "14px 18px",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
+            <Clock size={16} strokeWidth={1.75} color={C.heading} style={{ flexShrink: 0 }} />
+            <h3 style={{
+              margin: 0, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.16em",
+              textTransform: "uppercase", color: C.heading,
+            }}>
+              Opening Hours
+            </h3>
+          </div>
+          {openStatus ? (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
-              <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: "0.01em", color: statusColor }}>{statusText}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: statusColor }}>{statusText}</span>
             </span>
           ) : null}
-        >
-          Opening hours
-        </CardHead>
-        <div>
+        </div>
+        <div style={{ padding: "0 18px 6px" }}>
           {DAY_LABELS.map((day, i) => {
             const v = openingHours![day.toLowerCase()] || "";
             const isAlwaysOpenValue = /always\s*open|24\s*\/?\s*7|open\s*24|24\s*hours?|24h\b/i.test(v);
@@ -1121,6 +1132,7 @@ const ListingDetail = () => {
                   display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
                   padding: "13px 0",
                 }}>
+
                   <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
                     <span style={{ fontSize: 15, color: isToday ? C.heading : C.muted, fontWeight: isToday ? 700 : 400 }}>
                       {day}
