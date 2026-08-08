@@ -90,66 +90,86 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
 
 const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void }) => {
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
-  const metaParts = [r.meta, r.meta_2].filter((m) => m && m.trim());
   const displayTitle = (r.title_override?.trim()) || r.title;
-  const hasOverride = !!r.title_override?.trim();
+  const memberCount = r.meta_2?.trim();
+  const image = r.image_url;
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onOpen(r)}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onOpen(r); } }}
       style={{
-        textAlign: "left", background: CARD, border: "none",
-        borderRadius: 18, padding: "16px 18px 18px",
-        position: "relative", display: "block", width: "100%",
-        fontFamily: HN, transition: "transform 120ms ease",
+        position: "relative",
+        width: "100%", height: 128,
+        background: CARD, borderRadius: 16,
+        boxShadow: "0 1px 4px -1px rgba(0,0,0,0.04)",
+        display: "flex", alignItems: "center",
+        overflow: "hidden",
+        cursor: "pointer",
+        fontFamily: HN,
+        transition: "transform 150ms ease-out",
       }}
       {...press}
     >
-      <div onClick={() => onOpen(r)} style={{ display: "flex", gap: 14, alignItems: "flex-start", cursor: "pointer" }}>
-        <div
-          style={{
-            width: 52, height: 52, borderRadius: "50%", flexShrink: 0,
-            background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
-          }}
-        />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h4
-            data-no-title-case={hasOverride ? "true" : undefined}
-            style={{
-              ...type.cardTitleL, margin: 0,
-              textTransform: hasOverride ? "none" : undefined,
-            }}
-          >{displayTitle}</h4>
-          {metaParts.length > 0 && (
-            <div style={{
-              display: "flex", alignItems: "center", gap: 8,
-              ...type.meta,
-              margin: "4px 0 10px", flexWrap: "wrap",
-            }}>
-              {metaParts.map((m, i) => (
-                <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  {i > 0 && (
-                    <span style={{ width: 3, height: 3, borderRadius: 999, background: MUTED, display: "inline-block" }} />
-                  )}
-                  <span>{m}</span>
-                </span>
-              ))}
-            </div>
-          )}
-          {tags.length > 0 && (
-            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
-              {tags.map((t, i) => (
-                <span
-                  key={i}
-                  className="inline-block text-[8px] font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-1.5 py-0.5"
-                  style={{ fontFamily: HN }}
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+      <div style={{ width: 90, height: 128, flexShrink: 0, alignSelf: "stretch", background: "#F4EFE3" }}>
+        {image ? (
+          <img
+            src={image}
+            alt=""
+            loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        ) : (
+          <div style={{ width: "100%", height: "100%", background: gradientFor(r.id) }} />
+        )}
       </div>
+
+      <div style={{ flex: 1, minWidth: 0, paddingRight: 10 }}>
+        <div style={{ fontFamily: HN, fontSize: 12, fontWeight: 500, color: "#6B6A5E" }}>
+          {platformLabel(r.platform)}
+        </div>
+        <div
+          data-no-title-case={r.title_override?.trim() ? "true" : undefined}
+          style={{
+            fontFamily: HN, fontSize: 15, fontWeight: 500, color: "#1A1A1A",
+            lineHeight: 1.25, marginTop: 4,
+            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            textTransform: r.title_override?.trim() ? "none" : undefined,
+          }}
+        >{displayTitle}</div>
+        {memberCount && (
+          <div style={{ fontFamily: HN, fontSize: 12, fontWeight: 500, color: "#6B6A5E", marginTop: 4 }}>
+            {memberCount}
+          </div>
+        )}
+        {tags.length > 0 && (
+          <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+            {tags.map((t, i) => (
+              <span
+                key={i}
+                style={{
+                  fontFamily: HN, fontSize: 10, fontWeight: 700,
+                  textTransform: "uppercase", letterSpacing: "0.08em",
+                  color: "#715A3D", background: "#EEE8DA",
+                  borderRadius: 999, padding: "5px 9px",
+                }}
+              >
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <ArrowUpRight
+        size={16}
+        strokeWidth={1.8}
+        color="#715A3D"
+        style={{ position: "absolute", top: 14, right: 14 }}
+      />
     </div>
   );
 };
