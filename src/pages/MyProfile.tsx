@@ -528,12 +528,46 @@ const MyProfile = () => {
 
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>
-        <section style={{ background: CARD, borderRadius: 20, padding: "18px 18px 16px" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+        <section
+          style={{
+            position: "relative",
+            background: CARD,
+            borderRadius: 18,
+            border: "none",
+            boxShadow: "0 1px 4px -1px rgba(0,0,0,0.04)",
+            padding: "26px 20px 20px",
+          }}
+        >
+          <button
+            onClick={() => navigate("/account-settings/info")}
+            aria-label="Edit profile"
+            onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+            onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            style={{
+              position: "absolute",
+              top: 14,
+              right: 14,
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "#F5F0E8",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              transition: "transform 120ms ease-out",
+            }}
+          >
+            <Pencil size={18} strokeWidth={1.5} color={DARK_BROWN} />
+          </button>
+
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <div
               style={{
-                width: 62,
-                height: 62,
+                width: 88,
+                height: 88,
                 borderRadius: "50%",
                 overflow: "hidden",
                 flexShrink: 0,
@@ -550,90 +584,82 @@ const MyProfile = () => {
                   style={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <User size={26} strokeWidth={1.5} color="rgba(26,26,26,0.5)" />
+                <span
+                  style={{
+                    fontFamily: HEAD,
+                    fontWeight: 550,
+                    fontSize: 30,
+                    letterSpacing: "-0.02em",
+                    color: DARK_BROWN,
+                  }}
+                >
+                  {initials}
+                </span>
               )}
             </div>
 
-            <div style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
-              {isLoading ? (
-                <Skeleton className="h-7 w-40" />
-              ) : (
-                <>
-                  <h2
+            {isLoading ? (
+              <Skeleton className="h-7 w-40" style={{ marginTop: 16 }} />
+            ) : (
+              <>
+                <h2
+                  style={{
+                    fontFamily: HEAD,
+                    fontWeight: 550,
+                    fontSize: 23,
+                    lineHeight: 1.15,
+                    letterSpacing: "-0.02em",
+                    color: INK,
+                    margin: 0,
+                    marginTop: 16,
+                  }}
+                >
+                  {titleCase(profile?.display_name) || "You"}
+                </h2>
+                {profile?.username && (
+                  <div
                     style={{
-                      ...type.sectionTitle,
-                      fontSize: 22,
-                      lineHeight: 1.15,
-                      letterSpacing: "-0.4px",
-                      color: INK,
-                      margin: 0,
+                      fontFamily: SANS,
+                      fontWeight: 400,
+                      fontSize: 13,
+                      color: "#6B6A5E",
+                      marginTop: 4,
                     }}
                   >
-                    {titleCase(profile?.display_name) || "You"}
-                  </h2>
-                  {profile?.username && (
-                    <div
-                      style={{
-                        ...type.meta,
-                        color: "rgba(26,26,26,0.6)",
-                        marginTop: 3,
-                      }}
-                    >
-                      @{profile.username.toLowerCase()}
-                    </div>
-                  )}
-                  {badge && (
-                    <div
-                      style={{
-                        display: "inline-block",
-                        marginTop: 10,
-                        background: INNER,
-                        borderRadius: 999,
-                        padding: "5px 11px",
-                        ...type.label,
-                        color: "rgba(26,26,26,0.7)",
-                        lineHeight: 1,
-                      }}
-                    >
-                      {badge}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-
-            <button
-              onClick={() => navigate("/account-settings/info")}
-              aria-label="Edit profile"
-              style={{
-                flexShrink: 0,
-                height: 34,
-                padding: "0 15px",
-                borderRadius: 9999,
-                background: "transparent",
-                color: INK,
-                border: `1px solid ${PILL_BORDER}`,
-                fontFamily: SANS,
-                fontWeight: 600,
-                fontSize: 13,
-                letterSpacing: "0.02em",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
-              <Pencil size={12} strokeWidth={2} color={INK} />
-              Edit
-            </button>
+                    @{profile.username.toLowerCase()}
+                  </div>
+                )}
+                {badge && (
+                  <div
+                    style={{
+                      display: "inline-block",
+                      marginTop: 12,
+                      background: INNER,
+                      borderRadius: 999,
+                      padding: "5px 11px",
+                      fontFamily: SANS,
+                      fontWeight: 600,
+                      fontSize: 10,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: DARK_BROWN,
+                      whiteSpace: "nowrap",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {badge}
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           {/* Stats inner card */}
           <div
             style={{
-              marginTop: 16,
+              marginTop: 20,
               background: "#F2EFE5",
-              borderRadius: 16,
+              borderRadius: 14,
               padding: "14px 6px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr 1fr",
@@ -646,14 +672,18 @@ const MyProfile = () => {
             ].map((s, i) => {
               const inner = (
                 <>
-                  <span style={{ ...type.sectionTitle, fontSize: 22, lineHeight: 1 }}>
+                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, lineHeight: 1, color: INK }}>
                     {fmtCount(s.value)}
                   </span>
                   <span
                     style={{
-                      ...type.label,
-                      color: "rgba(26,26,26,0.6)",
-                      marginTop: 7,
+                      fontFamily: SANS,
+                      fontWeight: 600,
+                      fontSize: 10,
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase",
+                      color: "#6B6A5E",
+                      marginTop: 6,
                     }}
                   >
                     {s.label}
@@ -665,7 +695,7 @@ const MyProfile = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                borderLeft: i === 0 ? "none" : "1px solid rgba(26,26,26,0.12)",
+                borderLeft: i === 0 ? "none" : "1px solid rgba(26,26,26,0.1)",
               };
               return s.clickable ? (
                 <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
@@ -674,6 +704,7 @@ const MyProfile = () => {
               );
             })}
           </div>
+
 
           {/* Waiting follow requests. Only shown when there is something to
               act on, so a public account never sees a row it can't use. */}
