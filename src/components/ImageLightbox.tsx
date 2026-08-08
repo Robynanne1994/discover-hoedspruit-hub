@@ -54,17 +54,29 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
           if (e.target === e.currentTarget) onOpenChange(false);
         }}
       >
+        {title && (
+          <div style={{
+            position: "absolute", top: 24, left: 68, right: 68, zIndex: 20,
+            textAlign: "center",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 13, lineHeight: 1.4, fontWeight: 500, color: "#5F5E52",
+          }}>
+            {title}
+          </div>
+        )}
+
         <button
           onClick={() => onOpenChange(false)}
           aria-label="Close"
           style={{
             position: "absolute", top: 16, right: 16, zIndex: 20,
             width: 44, height: 44, borderRadius: 999,
-            background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
+            background: "#ffffff", border: "1px solid #E2DAC6", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 1px 4px -1px rgba(0,0,0,0.06)",
           }}
         >
-          <X size={22} color="#0a0a0a" strokeWidth={2} />
+          <X size={20} color="#1A1A1A" strokeWidth={2} />
         </button>
 
         {images.length > 1 && (
