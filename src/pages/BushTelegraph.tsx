@@ -271,7 +271,7 @@ const BushTelegraph = () => {
               </CircleBtn>
             )}
             <CircleBtn
-              onClick={() => window.open(SUGGEST_CHANNEL_URL, "_blank", "noopener,noreferrer")}
+              onClick={() => setSuggestOpen(true)}
               ariaLabel="Suggest a channel"
             >
               <Plus size={18} color={INK} strokeWidth={2} />
