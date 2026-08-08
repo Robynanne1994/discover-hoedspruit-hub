@@ -316,17 +316,6 @@ const AdminBushTelegraph = () => {
     upsertMutation.mutate({ ...form, id: editing?.id });
   };
 
-  // What the image previews frame. The custom title only counts when its
-  // switch is on, matching what `upsertMutation` will actually write.
-  const previewChannel = {
-    title: form.title,
-    title_override: form.use_title_override ? form.title_override : "",
-    platform: form.platform,
-    meta: form.meta,
-    meta_2: form.meta_2,
-    tag_1: form.tag_1,
-    tag_2: form.tag_2,
-  };
 
   // CSV
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -655,8 +644,8 @@ const AdminBushTelegraph = () => {
               <div>
                 <Label>Images</Label>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  One picture per place the channel appears. Each opens cropped to the exact shape
-                  that screen paints, so the preview here is what the app will show.
+                  One picture per place the channel appears. Each opens in the crop tool with the
+                  best shape for that screen as a starting point.
                 </p>
               </div>
               {CHANNEL_IMAGE_SLOTS.map((slot) => (
@@ -665,7 +654,6 @@ const AdminBushTelegraph = () => {
                   slot={slot}
                   value={(form[slot.field] as string) || ""}
                   onChange={(url) => setForm((f) => ({ ...f, [slot.field]: url }))}
-                  channel={previewChannel}
                 />
               ))}
             </div>
