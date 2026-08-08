@@ -456,27 +456,6 @@ const PosterCard = ({ event }: { event: any }) => {
         )}
       </div>
       <div style={{ padding: "11px 13px 13px", flex: 1, display: "flex", flexDirection: "column" }}>
-        {eyebrow && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-              fontFamily: SANS,
-              fontSize: 10,
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#6B6A5E",
-              marginBottom: 6,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-            }}
-          >
-            <Calendar size={11} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{eyebrow}</span>
-          </div>
-        )}
         <h3
           {...noTitleCaseProps(event)}
           style={{
@@ -486,7 +465,7 @@ const PosterCard = ({ event }: { event: any }) => {
             lineHeight: 1.25,
             color: "#1A1A1A",
             margin: 0,
-            marginBottom: 10,
+            marginBottom: 8,
             flex: 1,
             minHeight: 0,
             wordBreak: "break-word",
@@ -499,6 +478,27 @@ const PosterCard = ({ event }: { event: any }) => {
         >
           {getDisplayTitle(event)}
         </h3>
+        {eyebrow && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              fontFamily: SANS,
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "#6B6A5E",
+              marginBottom: 8,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            }}
+          >
+            <Calendar size={11} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{eyebrow}</span>
+          </div>
+        )}
         {event.location && (
           <div
             style={{
