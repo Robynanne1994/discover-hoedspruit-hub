@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, Phone, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X, Tag } from "lucide-react";
+import { Search, MapPin, AlertTriangle, Phone, Siren, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X, Tag } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -510,17 +510,17 @@ const Categories = () => {
             >
               <div
                 style={{
-                  width: 44,
-                  height: 44,
+                  width: 48,
+                  height: 48,
                   borderRadius: 999,
-                  background: COLORS.emergencyBg,
+                  background: COLORS.emergencyInk,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   flexShrink: 0,
                 }}
               >
-                <Phone size={20} strokeWidth={2} color={COLORS.emergencyInk} />
+                <Siren size={24} strokeWidth={1.8} color="#FFFFFF" />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <span
