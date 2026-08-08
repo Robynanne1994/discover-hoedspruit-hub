@@ -688,12 +688,12 @@ const Categories = () => {
                       />
                     )}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 12, padding: "12px 14px 12px 14px" }}>
+                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 14px 12px 14px" }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p
                         {...noTitleCaseProps(listing)}
                         style={{
-                          fontSize: 14,
+                          fontSize: 15,
                           fontWeight: 600,
                           color: COLORS.ink,
                           margin: 0,
