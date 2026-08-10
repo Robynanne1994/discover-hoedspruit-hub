@@ -23,6 +23,8 @@ interface ImageUploadProps {
    * so what you position and what you see afterwards are one picture.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
+  /** Guide drawn over the part of the crop the app's chrome covers. */
+  bottomGuide?: { heightRatio: number; radiusRatio: number; label: string };
 }
 
 const ImageUpload = ({
@@ -34,6 +36,7 @@ const ImageUpload = ({
   aspectLabel,
   cropTitle,
   previewRender,
+  bottomGuide,
 }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -160,6 +163,7 @@ const ImageUpload = ({
         aspectLabel={aspectLabel}
         title={cropTitle}
         previewRender={previewRender}
+        bottomGuide={bottomGuide}
         onCancel={() => setCropSrc(null)}
         onConfirm={async (blob) => {
           setCropSrc(null);
