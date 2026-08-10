@@ -12,13 +12,16 @@ const stripTrailingZeros = (val: string | null | undefined) => {
   return val.replace(/(\d)\.00\b/g, "$1").replace(/(\d\.\d)0\b/g, "$1");
 };
 
-// Only these discount types exist in the database. "none", "n/a" or anything
-// unrecognised means "no structured discount", which is stored as blank.
+// Only these values exist in the database. "none", "n/a", "-" or anything
+// unrecognised means "not set", which is stored as blank rather than failing.
 const VALID_DISCOUNT_TYPES = ["percent_off", "amount_off", "fixed_price", "buy_x_get_y", "freebie"];
-const normalizeDiscountType = (val?: string) => {
+const VALID_DEAL_TYPES = ["weekly", "date_range", "monthly", "ongoing"];
+const normalizeEnum = (allowed: string[], val?: string) => {
   const v = (val ?? "").trim().toLowerCase().replace(/[\s-]+/g, "_");
-  return VALID_DISCOUNT_TYPES.includes(v) ? v : null;
+  return allowed.includes(v) ? v : null;
 };
+const normalizeDiscountType = (val?: string) => normalizeEnum(VALID_DISCOUNT_TYPES, val);
+const normalizeDealType = (val?: string) => normalizeEnum(VALID_DEAL_TYPES, val);
 
 const EXPECTED_HEADERS = [
   "title", "title_override", "badge_override", "deal_type", "day_of_week",
@@ -119,10 +122,10 @@ const AdminSpecialsImport = () => {
           title,
           title_override: row.title_override?.trim() || null,
           badge_override: row.badge_override || null,
-          deal_type: row.deal_type || null,
+          deal_type: normalizeDealType(row.deal_type),
           day_of_week: days.length ? days : null,
           discount_type: normalizeDiscountType(row.discount_type),
-          discount_value: row.discount_value ? Number(row.discount_value) : null,
+          discount_value: Number.isFinite(Number(row.discount_value)) && row.discount_value ? Number(row.discount_value) : null,
           freebie_text: row.freebie_text || null,
           redemption_note: row.redemption_note || null,
           business_name: row.business_name || "",
