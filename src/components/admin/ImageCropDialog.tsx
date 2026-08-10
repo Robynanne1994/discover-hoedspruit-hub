@@ -30,9 +30,16 @@ interface ImageCropDialogProps {
    * preview updates as the image is dragged rather than after it is saved.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
+  /**
+   * Chrome the live screen paints over the bottom of this image. Drawn inside
+   * the crop frame as a guide so nothing important is parked underneath it.
+   * `heightRatio` and `radiusRatio` are fractions of the frame's height/width.
+   */
+  bottomGuide?: { heightRatio: number; radiusRatio: number; label: string };
   onCancel: () => void;
   onConfirm: (blob: Blob) => void;
 }
+
 
 const ASPECTS: { label: string; value: number | "free" }[] = [
   { label: "Free", value: "free" },
@@ -108,6 +115,8 @@ const ImageCropDialog = ({
   aspectLabel,
   title,
   previewRender,
+  bottomGuide,
+
   onCancel,
   onConfirm,
 }: ImageCropDialogProps) => {
@@ -125,6 +134,22 @@ const ImageCropDialog = ({
   const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const sampleImgRef = useRef<HTMLImageElement | null>(null);
   const cropperWrapRef = useRef<HTMLDivElement | null>(null);
+  // Where the crop frame currently sits inside the wrapper, so the guide can be
+  // laid over exactly the part of the crop the app's chrome will cover.
+  const [frameBox, setFrameBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    if (!open || !bottomGuide) return;
+    const wrap = cropperWrapRef.current;
+    if (!wrap) return;
+    const frame = wrap.querySelector(".reactEasyCrop_CropArea");
+    if (!frame) return;
+    const w = wrap.getBoundingClientRect();
+    const f = frame.getBoundingClientRect();
+    setFrameBox({ left: f.left - w.left, top: f.top - w.top, width: f.width, height: f.height });
+  }, [open, bottomGuide, croppedArea, zoom, aspect, resetKey, sourceSettled]);
+
+
 
   useEffect(() => {
     if (open) {
@@ -310,7 +335,31 @@ const ImageCropDialog = ({
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
+            {bottomGuide && frameBox && (
+              <div
+                className="pointer-events-none absolute"
+                style={{
+                  left: frameBox.left,
+                  width: frameBox.width,
+                  top: frameBox.top + frameBox.height * (1 - bottomGuide.heightRatio),
+                  height: frameBox.height * bottomGuide.heightRatio,
+                  background: "rgba(255,255,255,0.72)",
+                  borderTop: "1.5px dashed rgba(180,35,24,0.9)",
+                  borderTopLeftRadius: frameBox.width * bottomGuide.radiusRatio,
+                  borderTopRightRadius: frameBox.width * bottomGuide.radiusRatio,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
+                <span style={{ fontSize: 9, lineHeight: 1, color: "#B42318", textAlign: "center", padding: "0 6px" }}>
+                  {bottomGuide.label}
+                </span>
+              </div>
+            )}
             {picking && <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />}
+
           </div>
 
           {previewRender && (

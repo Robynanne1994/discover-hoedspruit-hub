@@ -39,9 +39,15 @@ export type EventImageSlot = {
   aspectLabel: string;
   /** The box in CSS px, life-size as the phone paints it. */
   box: { width: number; height: number };
+  /**
+   * Chrome that sits over the bottom of the image on the live screen, in the
+   * same px scale as `box`. Drawn in the crop tool as a guide only.
+   */
+  bottomOverlay?: { heightPx: number; radiusPx: number; label: string };
   /** What the app shows when this slot is empty. */
   fallback: string;
 };
+
 
 export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
   {
@@ -65,7 +71,11 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     aspect: 4 / 3,
     aspectLabel: "4:3",
     box: { width: 360, height: 270 },
+    // EventDetail.tsx — the title sheet sits `marginTop: -28` over the hero
+    // with `borderRadius: "28px 28px 0 0"`, so it covers the bottom 28px.
+    bottomOverlay: { heightPx: 28, radiusPx: 28, label: "Covered by the white title card" },
     fallback: "Falls back to the card cover image.",
+
   },
   {
     key: "homepage",
