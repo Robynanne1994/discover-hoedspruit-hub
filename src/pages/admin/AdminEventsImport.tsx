@@ -55,7 +55,8 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
   "hosted_by_link_3",
   "hosted_by_listing_3",
   "is_featured",
-];
+]);
+
 
 // Performances format in CSV: pipe-separated entries, each entry uses
 // semicolons between fields: "YYYY-MM-DD;HH:MM;HH:MM" (date;start;end).
