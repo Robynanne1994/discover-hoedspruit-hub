@@ -71,7 +71,11 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     aspect: 4 / 3,
     aspectLabel: "4:3",
     box: { width: 360, height: 270 },
+    // EventDetail.tsx — the title sheet sits `marginTop: -28` over the hero
+    // with `borderRadius: "28px 28px 0 0"`, so it covers the bottom 28px.
+    bottomOverlay: { heightPx: 28, radiusPx: 28, label: "Covered by the white title card" },
     fallback: "Falls back to the card cover image.",
+
   },
   {
     key: "homepage",
