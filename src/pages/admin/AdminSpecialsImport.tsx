@@ -13,7 +13,7 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 };
 
 const EXPECTED_HEADERS = [
-  "title", "badge_override", "deal_type", "day_of_week",
+  "title", "title_override", "badge_override", "deal_type", "day_of_week",
   "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until",
@@ -109,6 +109,7 @@ const AdminSpecialsImport = () => {
 
         const payload: Record<string, any> = {
           title,
+          title_override: row.title_override?.trim() || null,
           badge_override: row.badge_override || null,
           deal_type: row.deal_type || null,
           day_of_week: days.length ? days : null,
@@ -144,9 +145,11 @@ const AdminSpecialsImport = () => {
 
         // Legacy columns are no longer part of the template, but an older file
         // may still carry them — honour them when present, ignore when absent.
-        for (const legacy of ["title_override", "card_footer_text", "savings"]) {
+        for (const legacy of ["card_footer_text", "savings"]) {
           if (parsed.headers.includes(legacy)) payload[legacy] = row[legacy] || null;
         }
+        // An older file without the column must not wipe a stored override.
+        if (!parsed.headers.includes("title_override")) delete payload.title_override;
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
@@ -190,7 +193,7 @@ const AdminSpecialsImport = () => {
     // One value per header, in header order — a short row silently shifts every
     // column after it, so the two lists are kept side by side.
     const example = [
-      "Sunset Dinner Deal", "50% OFF", "weekly", "Wednesday|Thursday",
+      "Sunset Dinner Deal", "", "50% OFF", "weekly", "Wednesday|Thursday",
       "percent_off", "50", "", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
@@ -210,7 +213,7 @@ const AdminSpecialsImport = () => {
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
+      s.title ?? "", s.title_override ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
