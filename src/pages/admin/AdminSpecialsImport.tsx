@@ -14,7 +14,7 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 
 const EXPECTED_HEADERS = [
   "title", "badge_override", "deal_type", "day_of_week",
-  "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "business_id", "description",
+  "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until",
   "price", "price_label", "original_price",
@@ -117,7 +117,6 @@ const AdminSpecialsImport = () => {
           freebie_text: row.freebie_text || null,
           redemption_note: row.redemption_note || null,
           business_name: row.business_name || "",
-          business_id: row.business_id || null,
           description: row.description || null,
           // image_url & detail_image_url ignored — managed via Lovable editor only
           valid_from: row.valid_from || null,
@@ -192,7 +191,7 @@ const AdminSpecialsImport = () => {
     // column after it, so the two lists are kept side by side.
     const example = [
       "Sunset Dinner Deal", "50% OFF", "weekly", "Wednesday|Thursday",
-      "percent_off", "50", "", "Book direct", "Bush Lodge", "", "Half-price dinner with wine pairing",
+      "percent_off", "50", "", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
       "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
@@ -212,7 +211,7 @@ const AdminSpecialsImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
       s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
-      s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
+      s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
