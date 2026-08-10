@@ -39,9 +39,15 @@ export type EventImageSlot = {
   aspectLabel: string;
   /** The box in CSS px, life-size as the phone paints it. */
   box: { width: number; height: number };
+  /**
+   * Chrome that sits over the bottom of the image on the live screen, in the
+   * same px scale as `box`. Drawn in the crop tool as a guide only.
+   */
+  bottomOverlay?: { heightPx: number; radiusPx: number; label: string };
   /** What the app shows when this slot is empty. */
   fallback: string;
 };
+
 
 export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
   {
