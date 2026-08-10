@@ -357,7 +357,7 @@ const PosterCard = ({ event }: { event: any }) => {
   const navigate = useNavigate();
   const d: Date | null = event._parsed ?? null;
 
-  const month = d ? format(d, "MMM").toUpperCase() : "";
+  const month = d ? format(d, "MMM") : "";
   const day = d ? format(d, "d") : "";
   const weekday = d ? format(d, "EEE").toUpperCase() : "";
   let timeLabel = "";
@@ -369,7 +369,8 @@ const PosterCard = ({ event }: { event: any }) => {
       timeLabel = st;
     }
   }
-  const eyebrow = [weekday, day, month].filter(Boolean).join(" ") + (timeLabel ? `  \u2022  ${timeLabel}` : "");
+  const eyebrow = [weekday, day, month].filter(Boolean).join(" ") + (timeLabel ? ` \u2022 ${timeLabel}` : "");
+
 
   return (
     <div
