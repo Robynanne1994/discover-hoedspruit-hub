@@ -257,18 +257,22 @@ const SpecialDetail = () => {
     datesText = "Ongoing";
   }
 
-  // Action pills
+  // Action pills. Matching the events page: only the FIRST pill is filled
+  // brown (the primary action) and it is Booking when a booking link exists,
+  // falling back to WhatsApp / Call when it doesn't.
   const emailClean = contactEmail;
+  const hasBooking = !!special.booking_link;
+  const primaryKey = hasBooking ? "booking" : waClean ? "whatsapp" : phoneClean ? "call" : null;
   const actions = [
-    phoneClean && { key: "call", label: "Call", href: `tel:${phoneClean}`, Icon: Phone, ext: false },
+    hasBooking && {
+      key: "booking", label: "Book",
+      href: special.booking_link, Icon: Send, ext: true,
+    },
     waClean && {
       key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${waClean}`, ext: true,
       Icon: WhatsAppIcon,
     },
-    special.booking_link && {
-      key: "booking", label: (sp.booking_link_label?.trim() || "Booking"),
-      href: special.booking_link, Icon: Send, ext: true,
-    },
+    phoneClean && { key: "call", label: "Call", href: `tel:${phoneClean}`, Icon: Phone, ext: false },
     special.business_id && {
       key: "business", label: "Business",
       href: `/listing/${special.business_id}`, Icon: Store, ext: false, internal: true,
@@ -282,7 +286,7 @@ const SpecialDetail = () => {
 
 
   const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
-    const filled = a.key === "booking" || a.key === "whatsapp";
+    const filled = a.key === primaryKey;
     const fg = filled ? "#FFFFFF" : C.heading;
     const baseStyle: React.CSSProperties = {
       flex: 1, minWidth: 0,
