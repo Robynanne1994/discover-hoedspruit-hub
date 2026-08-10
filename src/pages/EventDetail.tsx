@@ -231,6 +231,30 @@ const EventDetail = () => {
     enabled: !!id,
   });
 
+  // When a host is linked to an app listing, its cover image is the host photo.
+  const hostListingIds = [
+    (event as any)?.hosted_by_listing_id,
+    (event as any)?.hosted_by_listing_id_2,
+    (event as any)?.hosted_by_listing_id_3,
+  ].filter(Boolean) as string[];
+
+  const { data: hostListingImages } = useQuery({
+    queryKey: ["event-host-listing-images", hostListingIds.slice().sort().join(",")],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("listings")
+        .select("id, image_url, card_image_url, detail_image_url")
+        .in("id", hostListingIds);
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((l: any) => {
+        const url = l.image_url || l.card_image_url || l.detail_image_url;
+        if (url) map[l.id] = url;
+      });
+      return map;
+    },
+    enabled: hostListingIds.length > 0,
+  });
+
   const isFavourited = useIsFavourited(id!, "event");
   const toggleFavourite = useToggleFavourite();
 
