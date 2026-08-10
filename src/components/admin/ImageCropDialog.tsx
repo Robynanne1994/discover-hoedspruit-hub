@@ -134,6 +134,22 @@ const ImageCropDialog = ({
   const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const sampleImgRef = useRef<HTMLImageElement | null>(null);
   const cropperWrapRef = useRef<HTMLDivElement | null>(null);
+  // Where the crop frame currently sits inside the wrapper, so the guide can be
+  // laid over exactly the part of the crop the app's chrome will cover.
+  const [frameBox, setFrameBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    if (!open || !bottomGuide) return;
+    const wrap = cropperWrapRef.current;
+    if (!wrap) return;
+    const frame = wrap.querySelector(".reactEasyCrop_CropArea");
+    if (!frame) return;
+    const w = wrap.getBoundingClientRect();
+    const f = frame.getBoundingClientRect();
+    setFrameBox({ left: f.left - w.left, top: f.top - w.top, width: f.width, height: f.height });
+  }, [open, bottomGuide, croppedArea, zoom, aspect, resetKey, sourceSettled]);
+
+
 
   useEffect(() => {
     if (open) {
