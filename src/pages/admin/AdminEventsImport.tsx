@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { stripImageCsvColumns, omitImageKeys } from "@/lib/csvImageColumns";
 
-// Image columns are deliberately excluded: images are managed in the backend editor only.
-const EXPECTED_HEADERS = [
+// Image columns are deliberately excluded, exactly as in the listings import /
+// export: pictures are cropped and set in the admin editor only, so a CSV can
+// never carry, overwrite or clear them.
+const EXPECTED_HEADERS = stripImageCsvColumns([
+
   "title",
   "title_override",
   "description",
