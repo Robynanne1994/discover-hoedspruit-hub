@@ -30,9 +30,16 @@ interface ImageCropDialogProps {
    * preview updates as the image is dragged rather than after it is saved.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
+  /**
+   * Chrome the live screen paints over the bottom of this image. Drawn inside
+   * the crop frame as a guide so nothing important is parked underneath it.
+   * `heightRatio` and `radiusRatio` are fractions of the frame's height/width.
+   */
+  bottomGuide?: { heightRatio: number; radiusRatio: number; label: string };
   onCancel: () => void;
   onConfirm: (blob: Blob) => void;
 }
+
 
 const ASPECTS: { label: string; value: number | "free" }[] = [
   { label: "Free", value: "free" },
