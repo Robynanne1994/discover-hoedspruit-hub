@@ -12,6 +12,14 @@ const stripTrailingZeros = (val: string | null | undefined) => {
   return val.replace(/(\d)\.00\b/g, "$1").replace(/(\d\.\d)0\b/g, "$1");
 };
 
+// Only these discount types exist in the database. "none", "n/a" or anything
+// unrecognised means "no structured discount", which is stored as blank.
+const VALID_DISCOUNT_TYPES = ["percent_off", "amount_off", "fixed_price", "buy_x_get_y", "freebie"];
+const normalizeDiscountType = (val?: string) => {
+  const v = (val ?? "").trim().toLowerCase().replace(/[\s-]+/g, "_");
+  return VALID_DISCOUNT_TYPES.includes(v) ? v : null;
+};
+
 const EXPECTED_HEADERS = [
   "title", "title_override", "badge_override", "deal_type", "day_of_week",
   "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "description",
