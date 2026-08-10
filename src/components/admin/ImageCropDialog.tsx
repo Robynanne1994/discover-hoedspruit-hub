@@ -142,12 +142,20 @@ const ImageCropDialog = ({
     if (!open || !bottomGuide) return;
     const wrap = cropperWrapRef.current;
     if (!wrap) return;
-    const frame = wrap.querySelector(".reactEasyCrop_CropArea");
+    const frame = wrap.querySelector(".reactEasyCrop_CropArea") as HTMLElement | null;
     if (!frame) return;
     const w = wrap.getBoundingClientRect();
     const f = frame.getBoundingClientRect();
-    setFrameBox({ left: f.left - w.left, top: f.top - w.top, width: f.width, height: f.height });
+    // The frame carries a 1px border; only its content box maps to the pixels
+    // that get exported, so the guide is measured off that.
+    setFrameBox({
+      left: f.left - w.left + frame.clientLeft,
+      top: f.top - w.top + frame.clientTop,
+      width: frame.clientWidth,
+      height: frame.clientHeight,
+    });
   }, [open, bottomGuide, croppedArea, zoom, aspect, resetKey, sourceSettled]);
+
 
 
 
