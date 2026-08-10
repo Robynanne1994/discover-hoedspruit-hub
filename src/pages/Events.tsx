@@ -19,7 +19,7 @@ import {
   parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
-import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule } from "@/lib/eventSchedule";
+import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import Seo from "@/components/Seo";
@@ -744,7 +744,7 @@ const Events = () => {
     const groups: { key: string; label: string; events: any[] }[] = [];
     const recurring: any[] = [];
     filtered.forEach((e) => {
-      if (parseRecurrenceRule(e.recurrence) && !hasPerformances(e)) {
+      if (resolveRecurrenceRule(e) && !hasPerformances(e)) {
         recurring.push(e);
         return;
       }
@@ -762,7 +762,7 @@ const Events = () => {
   const happeningSoon = useMemo(() => {
     const today = startOfToday();
     return sortedEvents
-      .filter((e) => e._parsed && !isBefore(e._parsed, today) && !parseRecurrenceRule(e.recurrence))
+      .filter((e) => e._parsed && !isBefore(e._parsed, today) && !resolveRecurrenceRule(e))
       .slice(0, 3);
   }, [sortedEvents]);
 
