@@ -115,6 +115,8 @@ const ImageCropDialog = ({
   aspectLabel,
   title,
   previewRender,
+  bottomGuide,
+
   onCancel,
   onConfirm,
 }: ImageCropDialogProps) => {
