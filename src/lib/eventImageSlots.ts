@@ -41,6 +41,12 @@ export type EventImageSlot = {
   box: { width: number; height: number };
   /** What the app shows when this slot is empty. */
   fallback: string;
+  /**
+   * Fraction of the image's height hidden behind chrome that sits over the
+   * bottom of the picture (the detail page's raised white panel). The crop
+   * dialog paints a guide line here so nothing important is placed under it.
+   */
+  bottomCoverRatio?: number;
 };
 
 export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
@@ -66,6 +72,9 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     aspectLabel: "4:3",
     box: { width: 360, height: 270 },
     fallback: "Falls back to the card cover image.",
+    // EventDetail.tsx — the details panel is pulled up with `marginTop: -28`
+    // over a 270px-tall hero.
+    bottomCoverRatio: 28 / 270,
   },
   {
     key: "homepage",

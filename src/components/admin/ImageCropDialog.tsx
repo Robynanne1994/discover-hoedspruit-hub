@@ -30,6 +30,12 @@ interface ImageCropDialogProps {
    * preview updates as the image is dragged rather than after it is saved.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
+  /**
+   * Fraction (0–1) of the crop's height that the app hides behind chrome
+   * overlapping the bottom of the picture. Draws an admin-only guide line so
+   * important detail can be kept above it.
+   */
+  bottomCoverRatio?: number;
   onCancel: () => void;
   onConfirm: (blob: Blob) => void;
 }
@@ -108,6 +114,7 @@ const ImageCropDialog = ({
   aspectLabel,
   title,
   previewRender,
+  bottomCoverRatio,
   onCancel,
   onConfirm,
 }: ImageCropDialogProps) => {
@@ -285,8 +292,14 @@ const ImageCropDialog = ({
         <div className="space-y-4">
           <div
             ref={cropperWrapRef}
-            className="relative w-full h-[340px]"
-            style={{ background: bgColor, cursor: picking ? "crosshair" : "default" }}
+            className={`relative w-full h-[340px]${bottomCoverRatio ? " crop-cover-guide" : ""}`}
+            style={{
+              background: bgColor,
+              cursor: picking ? "crosshair" : "default",
+              ...(bottomCoverRatio
+                ? ({ ["--crop-cover" as string]: `${(bottomCoverRatio * 100).toFixed(2)}%` } as React.CSSProperties)
+                : {}),
+            }}
             onClick={handlePickClick}
           >
             {imageSrc && sourceSettled && (
@@ -311,6 +324,12 @@ const ImageCropDialog = ({
               />
             )}
             {picking && <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />}
+            {!!bottomCoverRatio && (
+              <>
+                <style>{`.crop-cover-guide .reactEasyCrop_CropArea::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--crop-cover);background:rgba(0,0,0,0.42);border-top:2px dashed rgba(255,255,255,0.95);pointer-events:none;}`}</style>
+                <div className="pointer-events-none absolute inset-0" />
+              </>
+            )}
           </div>
 
           {previewRender && (
@@ -447,6 +466,12 @@ const ImageCropDialog = ({
             </div>
           </div>
 
+          {!!bottomCoverRatio && (
+            <p className="text-xs text-muted-foreground">
+              The shaded strip along the bottom of the crop is hidden in the app by the white
+              details panel that sits over the picture. Keep important detail above the dashed line.
+            </p>
+          )}
           <p className="text-xs text-muted-foreground">
             Drag to reposition. Zoom out below 100% to add space around the image — the background
             fill colour will be baked into the export.
