@@ -335,7 +335,31 @@ const ImageCropDialog = ({
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
+            {bottomGuide && frameBox && (
+              <div
+                className="pointer-events-none absolute"
+                style={{
+                  left: frameBox.left,
+                  width: frameBox.width,
+                  top: frameBox.top + frameBox.height * (1 - bottomGuide.heightRatio),
+                  height: frameBox.height * bottomGuide.heightRatio,
+                  background: "rgba(255,255,255,0.72)",
+                  borderTop: "1.5px dashed rgba(180,35,24,0.9)",
+                  borderTopLeftRadius: frameBox.width * bottomGuide.radiusRatio,
+                  borderTopRightRadius: frameBox.width * bottomGuide.radiusRatio,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                }}
+              >
+                <span style={{ fontSize: 9, lineHeight: 1, color: "#B42318", textAlign: "center", padding: "0 6px" }}>
+                  {bottomGuide.label}
+                </span>
+              </div>
+            )}
             {picking && <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />}
+
           </div>
 
           {previewRender && (
