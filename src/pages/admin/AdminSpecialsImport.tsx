@@ -121,7 +121,7 @@ const AdminSpecialsImport = () => {
           badge_override: row.badge_override || null,
           deal_type: row.deal_type || null,
           day_of_week: days.length ? days : null,
-          discount_type: row.discount_type || null,
+          discount_type: normalizeDiscountType(row.discount_type),
           discount_value: row.discount_value ? Number(row.discount_value) : null,
           freebie_text: row.freebie_text || null,
           redemption_note: row.redemption_note || null,
