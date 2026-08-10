@@ -150,7 +150,13 @@ const AdminEventsImport = () => {
       const result = parseCSV(text);
       if (result.rows.length === 0) { toast.error("CSV file is empty or has no data rows"); return; }
       if (!result.headers.includes("title")) { toast.error("CSV must have a 'title' column"); return; }
-      setParsed(result);
+      // Ignore any image columns a spreadsheet happens to carry, so they never
+      // show in the preview table nor reach the database.
+      setParsed({
+        headers: stripImageCsvColumns(result.headers),
+        rows: result.rows.map((r) => omitImageKeys({ ...r })),
+      });
+
     };
     reader.readAsText(file);
   };
