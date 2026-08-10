@@ -381,6 +381,15 @@ const AccountInfo = () => {
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const initialized = useRef(false);
 
+  // Up to two initials from the name, shown when there is no photo yet.
+  const avatarInitials = fullName
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((p) => p[0]!.toUpperCase())
+    .join("");
+
   useEffect(() => {
     if (profile && !initialized.current) {
       const fallbackName = splitDisplayName(profile.display_name);
