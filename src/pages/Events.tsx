@@ -483,16 +483,18 @@ const PosterCard = ({ event }: { event: any }) => {
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 4,
+              gap: 6,
               fontFamily: SANS,
-              fontSize: 11.5,
-              color: "#6B6A5E",
-              marginBottom: 8,
+              fontWeight: 400,
+              fontSize: 13,
+              lineHeight: 1.35,
+              color: C.body,
+              margin: 0,
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
           >
-            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
+            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{eyebrow}</span>
           </div>
         )}
@@ -500,17 +502,20 @@ const PosterCard = ({ event }: { event: any }) => {
           <div
             style={{
               marginTop: "auto",
+              paddingTop: 4,
               display: "flex",
               alignItems: "center",
-              gap: 4,
+              gap: 6,
               fontFamily: SANS,
-              fontSize: 11.5,
-              color: "#6B6A5E",
+              fontWeight: 400,
+              fontSize: 12,
+              lineHeight: 1.35,
+              color: C.muted,
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
           >
-            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: "#6B6A5E" }} />
+            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
             <span
               style={{
                 overflow: "hidden",
