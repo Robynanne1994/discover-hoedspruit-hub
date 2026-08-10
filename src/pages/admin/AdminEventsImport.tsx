@@ -5,9 +5,13 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { stripImageCsvColumns, omitImageKeys } from "@/lib/csvImageColumns";
 
-// Image columns are deliberately excluded: images are managed in the backend editor only.
-const EXPECTED_HEADERS = [
+// Image columns are deliberately excluded, exactly as in the listings import /
+// export: pictures are cropped and set in the admin editor only, so a CSV can
+// never carry, overwrite or clear them.
+const EXPECTED_HEADERS = stripImageCsvColumns([
+
   "title",
   "title_override",
   "description",
@@ -51,7 +55,8 @@ const EXPECTED_HEADERS = [
   "hosted_by_link_3",
   "hosted_by_listing_3",
   "is_featured",
-];
+]);
+
 
 // Performances format in CSV: pipe-separated entries, each entry uses
 // semicolons between fields: "YYYY-MM-DD;HH:MM;HH:MM" (date;start;end).
@@ -145,7 +150,13 @@ const AdminEventsImport = () => {
       const result = parseCSV(text);
       if (result.rows.length === 0) { toast.error("CSV file is empty or has no data rows"); return; }
       if (!result.headers.includes("title")) { toast.error("CSV must have a 'title' column"); return; }
-      setParsed(result);
+      // Ignore any image columns a spreadsheet happens to carry, so they never
+      // show in the preview table nor reach the database.
+      setParsed({
+        headers: stripImageCsvColumns(result.headers),
+        rows: result.rows.map((r) => omitImageKeys({ ...r })),
+      });
+
     };
     reader.readAsText(file);
   };
@@ -236,6 +247,8 @@ const AdminEventsImport = () => {
           performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
         };
+        omitImageKeys(payload);
+
 
         // If performances provided, auto-derive start/end_date to match the editor's behaviour.
         if (Array.isArray(payload.performances) && payload.performances.length > 0) {
