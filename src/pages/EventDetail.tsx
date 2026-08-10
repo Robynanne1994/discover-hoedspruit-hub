@@ -231,6 +231,30 @@ const EventDetail = () => {
     enabled: !!id,
   });
 
+  // When a host is linked to an app listing, its cover image is the host photo.
+  const hostListingIds = [
+    (event as any)?.hosted_by_listing_id,
+    (event as any)?.hosted_by_listing_id_2,
+    (event as any)?.hosted_by_listing_id_3,
+  ].filter(Boolean) as string[];
+
+  const { data: hostListingImages } = useQuery({
+    queryKey: ["event-host-listing-images", hostListingIds.slice().sort().join(",")],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("listings")
+        .select("id, image_url, card_image_url, detail_image_url")
+        .in("id", hostListingIds);
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((l: any) => {
+        const url = l.image_url || l.card_image_url || l.detail_image_url;
+        if (url) map[l.id] = url;
+      });
+      return map;
+    },
+    enabled: hostListingIds.length > 0,
+  });
+
   const isFavourited = useIsFavourited(id!, "event");
   const toggleFavourite = useToggleFavourite();
 
@@ -456,9 +480,9 @@ const EventDetail = () => {
     // A host can link to a listing on the app or out to a URL — never both, so
     // the listing wins if some old row somehow carries the two.
     const hosts: { name: string; subtitle?: string; image?: string; link?: string; listingId?: string }[] = [];
-    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
-    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
-    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
+    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: (e.hosted_by_listing_id && hostListingImages?.[e.hosted_by_listing_id]) || e.hosted_by_image_url, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
+    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: (e.hosted_by_listing_id_2 && hostListingImages?.[e.hosted_by_listing_id_2]) || e.hosted_by_image_url_2, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
+    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: (e.hosted_by_listing_id_3 && hostListingImages?.[e.hosted_by_listing_id_3]) || e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
 
     return (
       <div style={{ padding: "16px 20px 20px" }}>
