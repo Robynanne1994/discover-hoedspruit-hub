@@ -247,6 +247,8 @@ const AdminEventsImport = () => {
           performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
         };
+        omitImageKeys(payload);
+
 
         // If performances provided, auto-derive start/end_date to match the editor's behaviour.
         if (Array.isArray(payload.performances) && payload.performances.length > 0) {
