@@ -23,8 +23,6 @@ interface ImageUploadProps {
    * so what you position and what you see afterwards are one picture.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
-  /** Fraction of the bottom of the image hidden by app chrome — see ImageCropDialog. */
-  bottomCoverRatio?: number;
 }
 
 const ImageUpload = ({
@@ -36,7 +34,6 @@ const ImageUpload = ({
   aspectLabel,
   cropTitle,
   previewRender,
-  bottomCoverRatio,
 }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -163,7 +160,6 @@ const ImageUpload = ({
         aspectLabel={aspectLabel}
         title={cropTitle}
         previewRender={previewRender}
-        bottomCoverRatio={bottomCoverRatio}
         onCancel={() => setCropSrc(null)}
         onConfirm={async (blob) => {
           setCropSrc(null);

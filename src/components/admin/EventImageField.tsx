@@ -24,7 +24,7 @@ const EventImageField = ({ slot, value, onChange, label, bucket = "listing-image
     <p className="text-[11px] text-muted-foreground">
       Best at {slot.aspectLabel}. {slot.where} {!value && slot.fallback}
     </p>
-    <ImageUpload bucket={bucket} value={value} onChange={onChange} aspect={slot.aspect} bottomCoverRatio={slot.bottomCoverRatio} />
+    <ImageUpload bucket={bucket} value={value} onChange={onChange} aspect={slot.aspect} />
   </div>
 );
 
