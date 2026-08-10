@@ -814,69 +814,58 @@ const AccountInfo = () => {
       {/* Top bar */}
       <PageHeader title="Account Info" />
 
-      {/* Profile Photo — blank eyebrow, kept so the photo card starts on the
-          same rhythm as the labelled sections below it. */}
+      {/* Profile photo — centred portrait avatar on the page canvas, with a
+          camera badge sitting on its lower right edge. */}
       <div
         style={{
-          ...type.sectionEyebrow,
-          paddingLeft: SECTION_INSET,
-          paddingRight: SECTION_INSET,
-          marginTop: 24,
+          display: "flex",
+          justifyContent: "center",
+          paddingTop: 24,
+          paddingBottom: 28,
         }}
       >
-        {"\n"}
-      </div>
-
-      <div style={{ paddingLeft: SECTION_INSET, paddingRight: SECTION_INSET, marginBottom: 24 }}>
-        <div
-          style={{
-            background: CARD,
-            borderRadius: 20,
-            padding: "14px 16px",
-            display: "flex",
-            alignItems: "center",
-            gap: 14,
-          }}
-        >
+        <div style={{ position: "relative", width: 152, height: 152 }}>
           <div
             style={{
-              width: 52,
-              height: 52,
-              borderRadius: 10,
+              width: 152,
+              height: 152,
+              borderRadius: "50%",
               background: SOFT_CREAM,
+              border: "6px solid #FFFFFF",
               overflow: "hidden",
-              flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              position: "relative",
+              boxSizing: "border-box",
             }}
           >
             {avatarUrl ? (
               <img src={avatarUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : avatarInitials ? (
+              <span style={{ fontFamily: FF, fontSize: 42, fontWeight: 700, color: "#715A3D", letterSpacing: "0.01em" }}>
+                {avatarInitials}
+              </span>
             ) : (
-              <Camera size={20} strokeWidth={1.5} color={MUTED} />
-            )}
-            {uploadingAvatar && (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "rgba(0,0,0,0.4)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Loader2 size={20} className="animate-spin" color="#FFFFFF" />
-              </div>
+              <Camera size={34} strokeWidth={1.5} color={MUTED} />
             )}
           </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: FF, fontSize: 15, fontWeight: 700, color: INK }}>
-              {avatarUrl ? "Profile Picture" : "Add a photo"}
+
+          {uploadingAvatar && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 6,
+                borderRadius: "50%",
+                background: "rgba(0,0,0,0.4)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Loader2 size={24} className="animate-spin" color="#FFFFFF" />
             </div>
-          </div>
+          )}
+
           <input
             ref={fileInputRef}
             type="file"
@@ -900,27 +889,34 @@ const AccountInfo = () => {
               e.target.value = "";
             }}
           />
+
           <button
+            type="button"
+            aria-label={avatarUrl ? "Change profile photo" : "Add profile photo"}
             onClick={() => setPhotoSheetOpen(true)}
             disabled={uploadingAvatar}
             style={{
+              position: "absolute",
+              right: 2,
+              bottom: 8,
+              width: 46,
+              height: 46,
+              borderRadius: "50%",
               background: DARK,
-              color: "#FFFFFF",
               border: "none",
-              borderRadius: 999,
-              padding: "10px 20px",
-              fontFamily: FF,
-              fontSize: 14,
-              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: uploadingAvatar ? "not-allowed" : "pointer",
               opacity: uploadingAvatar ? 0.7 : 1,
-              flexShrink: 0,
+              padding: 0,
             }}
           >
-            {avatarUrl ? "Change" : "Upload"}
+            <Camera size={20} strokeWidth={2} color="#FFFFFF" />
           </button>
         </div>
       </div>
+
 
       {/* Section eyebrow */}
       <div
