@@ -40,7 +40,9 @@ const C = {
   tag: "#e8e1d4",
 };
 
-type FilterType = "all" | "today" | "this-week" | "this-weekend" | "this-month" | "this-year" | "past";
+type FilterType = "all" | "today" | "this-week" | "this-weekend" | "this-month" | "this-year" | "next-year" | "past";
+
+const NEXT_YEAR = new Date().getFullYear() + 1;
 
 const FILTERS: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
@@ -49,6 +51,7 @@ const FILTERS: { label: string; value: FilterType }[] = [
   { label: "This Weekend", value: "this-weekend" },
   { label: "This Month", value: "this-month" },
   { label: "This Year", value: "this-year" },
+  { label: String(NEXT_YEAR), value: "next-year" },
   { label: "Past", value: "past" },
 ];
 
@@ -84,6 +87,7 @@ function getFilterCount(
     if (filter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
     if (filter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
     if (filter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+    if (filter === "next-year") return d.getFullYear() === NEXT_YEAR;
     if (filter === "past") return isBefore(d, today) && !isToday(d);
     return true;
   }).length;
@@ -540,7 +544,7 @@ const Events = () => {
   const navigate = useNavigate();
   const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
   const [searchParams, setSearchParams] = useSearchParams();
-  const validFilters: FilterType[] = ["all", "today", "this-week", "this-weekend", "this-month", "this-year", "past"];
+  const validFilters: FilterType[] = ["all", "today", "this-week", "this-weekend", "this-month", "this-year", "next-year", "past"];
   const urlFilter = searchParams.get("f") as FilterType | null;
   const activeFilter: FilterType = urlFilter && validFilters.includes(urlFilter) ? urlFilter : "all";
   const search = searchParams.get("q") ?? "";
@@ -660,6 +664,7 @@ const Events = () => {
         else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
         else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
         else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
+        else if (activeFilter === "next-year" && d.getFullYear() !== NEXT_YEAR) return;
         else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
       }
       const t = (e.tag || "").trim();
@@ -705,6 +710,7 @@ const Events = () => {
       if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
       if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
       if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+      if (activeFilter === "next-year") return d.getFullYear() === NEXT_YEAR;
       if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
       return true;
     });
@@ -749,7 +755,10 @@ const Events = () => {
         recurring.push(e);
         return;
       }
-      const label = e._parsed ? format(e._parsed, "MMMM").toUpperCase() : "DATE TO BE CONFIRMED";
+      const currentYear = new Date().getFullYear();
+      const label = e._parsed
+        ? format(e._parsed, e._parsed.getFullYear() === currentYear ? "MMMM" : "MMMM yyyy").toUpperCase()
+        : "DATE TO BE CONFIRMED";
       const key = e._parsed ? format(e._parsed, "yyyy-MM") : "tbc";
       const existing = groups.find((g) => g.key === key);
       if (existing) existing.events.push(e);
@@ -897,6 +906,7 @@ const Events = () => {
           {FILTERS.map((f) => {
             const active = activeFilter === f.value;
             const count = getFilterCount(f.value, sortedEvents);
+            if (f.value === "next-year" && count === 0) return null;
             return (
               <button
                 key={f.value}
@@ -1107,7 +1117,7 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
         >
           <div>
-            {FILTERS.map((f) => (
+            {FILTERS.filter((f) => f.value !== "next-year" || getFilterCount(f.value, sortedEvents) > 0).map((f) => (
               <RefineRectOption
                 key={f.value}
                 label={`${f.label} (${getFilterCount(f.value, sortedEvents)})`}
