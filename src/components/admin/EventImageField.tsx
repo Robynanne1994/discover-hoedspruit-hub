@@ -29,6 +29,8 @@ const EventImageField = ({ slot, value, onChange, label, bucket = "listing-image
       value={value}
       onChange={onChange}
       aspect={slot.aspect}
+      lockAspect
+      aspectLabel={slot.aspectLabel}
       bottomGuide={
         slot.bottomOverlay
           ? {

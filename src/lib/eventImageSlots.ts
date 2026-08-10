@@ -70,7 +70,9 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // EventDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    box: { width: 360, height: 270 },
+    // Life-size on a 390pt phone, which is what the overlay fractions below
+    // are worked out from (the sheet is a fixed 28px, the hero scales).
+    box: { width: 390, height: 292.5 },
     // EventDetail.tsx — the title sheet sits `marginTop: -28` over the hero
     // with `borderRadius: "28px 28px 0 0"`, so it covers the bottom 28px.
     bottomOverlay: { heightPx: 28, radiusPx: 28, label: "Covered by the white title card" },
