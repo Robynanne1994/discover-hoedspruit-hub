@@ -90,12 +90,12 @@ const MyProfileGuest = () => {
                 fontSize: 10,
                 fontWeight: 700,
                 textTransform: "uppercase",
-                letterSpacing: "0.18em",
-                color: MUTED,
+                letterSpacing: "0.04em",
+                color: "#443221",
                 marginBottom: 4,
               }}
             >
-              Your Lowveld Local
+              Your Lowveld local
             </div>
             <h2
               style={{
