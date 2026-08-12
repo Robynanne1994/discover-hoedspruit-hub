@@ -71,7 +71,7 @@ const capitaliseName = (value: string) =>
 
 
 const Welcome = () => {
-  const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
+  const location = useLocation() as { state?: { mode?: "signin" | "signup"; from?: string } };
   const initialMode = location.state?.mode ?? "welcome";
   const [mode, setMode] = useState<
     "welcome" | "signin" | "signup" | "forgot" | "forgotSent" | "verify"
