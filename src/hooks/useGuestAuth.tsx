@@ -149,8 +149,8 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
             </h2>
             <p style={{ fontFamily: FONT, fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
               {action
-                ? `Sign up or log in to ${action}.`
-                : "Sign up or log in to use this feature."}
+                ? `You can keep browsing without an account. Sign up only if you want to ${action}.`
+                : "You can keep browsing without an account. Sign up only if you want to save places and follow people."}
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <button
