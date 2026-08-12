@@ -104,7 +104,7 @@ const MyProfileGuest = () => {
                 fontSize: 22,
                 lineHeight: 1.1,
                 letterSpacing: "-0.01em",
-                color: SETTINGS_INK,
+                color: "#443221",
                 margin: 0,
               }}
             >
