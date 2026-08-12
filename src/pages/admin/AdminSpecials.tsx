@@ -35,6 +35,7 @@ interface Special {
   discount_type: string | null;
   discount_value: number | null;
   freebie_text: string | null;
+  card_deal_text: string | null;
   redemption_note: string | null;
   valid_until: string | null;
   valid_from: string | null;
@@ -76,6 +77,7 @@ const emptyForm: Omit<Special, "id"> = {
   discount_type: null,
   discount_value: null,
   freebie_text: null,
+  card_deal_text: null,
   redemption_note: null,
   valid_until: null,
   valid_from: null,
@@ -210,6 +212,7 @@ const AdminSpecials = () => {
       discount_type: (s as any).discount_type ?? null,
       discount_value: (s as any).discount_value ?? null,
       freebie_text: (s as any).freebie_text ?? null,
+      card_deal_text: (s as any).card_deal_text ?? null,
       redemption_note: (s as any).redemption_note ?? null,
       valid_until: s.valid_until,
       valid_from: s.valid_from,
@@ -355,6 +358,11 @@ const AdminSpecials = () => {
             {form.discount_type === "freebie" && (
               <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
             )}
+          </div>
+          <div>
+            <Label>Short Card Deal Text (optional)</Label>
+            <Input value={form.card_deal_text || ""} onChange={(e) => setForm({ ...form, card_deal_text: e.target.value || null })} placeholder="e.g. Free breakfast" />
+            <p className="text-xs text-muted-foreground mt-1">Shown on the listing, homepage and saved cards instead of the full deal text. Leave blank to use the full wording everywhere.</p>
           </div>
           <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => setForm({ ...form, redemption_note: e.target.value || null })} placeholder="e.g. Book direct on their website" /></div>
 

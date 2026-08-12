@@ -25,7 +25,7 @@ const normalizeDealType = (val?: string) => normalizeEnum(VALID_DEAL_TYPES, val)
 
 const EXPECTED_HEADERS = [
   "title", "title_override", "badge_override", "deal_type", "day_of_week",
-  "discount_type", "discount_value", "freebie_text", "redemption_note", "business_name", "description",
+  "discount_type", "discount_value", "freebie_text", "card_deal_text", "redemption_note", "business_name", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until",
   "price", "price_label", "original_price",
@@ -127,6 +127,7 @@ const AdminSpecialsImport = () => {
           discount_type: normalizeDiscountType(row.discount_type),
           discount_value: Number.isFinite(Number(row.discount_value)) && row.discount_value ? Number(row.discount_value) : null,
           freebie_text: row.freebie_text || null,
+          card_deal_text: row.card_deal_text || null,
           redemption_note: row.redemption_note || null,
           business_name: row.business_name || "",
           description: row.description || null,
@@ -225,7 +226,7 @@ const AdminSpecialsImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
       s.title ?? "", s.title_override ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
-      s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
+      s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
