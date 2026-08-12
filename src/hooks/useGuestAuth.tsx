@@ -47,6 +47,17 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, isGuest]);
 
+  // Browsing is free: anyone without a session is a guest by default, with no
+  // button to press first. Nothing in the app may present a sign-in wall on
+  // launch (App Store guideline 5.1.1(v)) — an account is only ever needed for
+  // account-based features like saving, following and reviewing.
+  useEffect(() => {
+    if (loading || user || isGuest) return;
+    localStorage.setItem(GUEST_KEY, "1");
+    sessionStorage.setItem(GUEST_KEY, "1");
+    setIsGuest(true);
+  }, [loading, user, isGuest]);
+
   // If the auth session hydrates while the sign-up prompt is open, close it —
   // otherwise a returning user briefly sees "Create an Account" for an action
   // they're actually already allowed to perform.
