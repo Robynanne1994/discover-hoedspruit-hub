@@ -117,7 +117,7 @@ const MyProfileGuest = () => {
           Save places, events and specials. Follow locals. Never miss what's on.
         </p>
         <button
-          onClick={() => navigate("/welcome", { state: { mode: "signup" } })}
+          onClick={() => navigate("/welcome", { state: { mode: "signup", from: "/my-profile-guest" } })}
           style={{
             width: "100%",
             height: 52,
