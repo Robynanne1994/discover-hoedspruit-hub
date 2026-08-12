@@ -531,6 +531,30 @@ const AccountInfo = () => {
     });
   };
 
+  // Warm the browser cache so the profile page paints the new photo instantly
+  // instead of showing a blank avatar while the file downloads.
+  const preloadImage = (url: string) =>
+    new Promise<void>((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+      img.src = url;
+    });
+
+  // Push the new avatar straight into every cached profile query so screens that
+  // read from those caches (my profile, public profile, header) update at once.
+  const primeAvatarCaches = (nextUrl: string | null) => {
+    if (!user) return;
+    const patch = (old: any) =>
+      old && typeof old === "object" ? { ...old, avatar_url: nextUrl } : old;
+    queryClient.setQueryData(["profile", user.id], patch);
+    queryClient.setQueryData(["my-profile", user.id], patch);
+    queryClient.setQueryData(["user-profile", user.id], patch);
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
+    queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+  };
+
   const handleAvatarUpload = async (blob: Blob) => {
     if (!user) return;
     setUploadingAvatar(true);
@@ -544,9 +568,9 @@ const AccountInfo = () => {
       const url = pub.publicUrl;
       const { error: dbErr } = await supabase.from("profiles").upsert({ id: user.id, avatar_url: url } as any);
       if (dbErr) throw dbErr;
+      await preloadImage(url);
       setAvatarUrl(url);
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
+      primeAvatarCaches(url);
       closeCropper();
       toast.success("Profile photo updated");
     } catch (err: any) {
@@ -565,8 +589,7 @@ const AccountInfo = () => {
         .upsert({ id: user.id, avatar_url: null } as any);
       if (error) throw error;
       setAvatarUrl("");
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
+      primeAvatarCaches(null);
       toast.success("Profile photo removed");
     } catch (err: any) {
       toast.error(err.message || "Could not remove photo");
