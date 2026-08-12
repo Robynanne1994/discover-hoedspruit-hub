@@ -210,7 +210,7 @@ const ListingDetail = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("specials")
-        .select("id,title,badge_override,day_of_week,discount_type,discount_value,freebie_text,image_url,valid_from,valid_until")
+        .select("id,title,badge_override,day_of_week,discount_type,discount_value,freebie_text,card_deal_text, card_deal_text,image_url,valid_from,valid_until")
         .eq("business_id", id!)
         .eq("is_active", true);
       const today = new Date().toISOString().slice(0, 10);

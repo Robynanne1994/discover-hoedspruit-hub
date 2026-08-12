@@ -16,7 +16,7 @@ import { type } from "@/lib/type";
 // below and the card model can't drift apart.
 const SPECIAL_CARD_COLUMNS =
   "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, saved_image_url, " +
-  "badge_override, day_of_week, discount_type, discount_value, freebie_text, card_footer_text, " +
+  "badge_override, day_of_week, discount_type, discount_value, freebie_text, card_deal_text, card_footer_text, " +
   "valid_from, valid_until, price, price_label, original_price, savings, is_featured, created_at";
 
 interface Special extends SpecialCardLike {
