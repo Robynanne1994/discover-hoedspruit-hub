@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
-import { getEventDates } from "@/lib/eventDates";
+import { getEventDates, formatEventDateShort } from "@/lib/eventDates";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { INK, type } from "@/lib/type";
