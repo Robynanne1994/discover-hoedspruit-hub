@@ -741,7 +741,11 @@ const Welcome = () => {
         {/* Circular back button */}
         <button
           type="button"
-          onClick={() => setMode("welcome")}
+          onClick={() => {
+            const from = location.state?.from;
+            if (from) navigate(from, { replace: true });
+            else setMode("welcome");
+          }}
           aria-label="Back"
           style={{
             width: 44, height: 44, borderRadius: 9999, background: "#FFFFFF",
