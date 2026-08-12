@@ -2037,6 +2037,7 @@ export type Database = {
           detail_image_url: string | null
           discount_type: string | null
           discount_value: number | null
+          featured_image_url: string | null
           freebie_text: string | null
           homepage_image_url: string | null
           id: string
@@ -2081,6 +2082,7 @@ export type Database = {
           detail_image_url?: string | null
           discount_type?: string | null
           discount_value?: number | null
+          featured_image_url?: string | null
           freebie_text?: string | null
           homepage_image_url?: string | null
           id?: string
@@ -2125,6 +2127,7 @@ export type Database = {
           detail_image_url?: string | null
           discount_type?: string | null
           discount_value?: number | null
+          featured_image_url?: string | null
           freebie_text?: string | null
           homepage_image_url?: string | null
           id?: string
