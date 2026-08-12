@@ -994,7 +994,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <div>
               <Label style={CARD_LABEL}>
-                RESIDENCY
+                HOEDSPRUIT RESIDENCY
               </Label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {RESIDENCY_OPTIONS.map((opt) => {
