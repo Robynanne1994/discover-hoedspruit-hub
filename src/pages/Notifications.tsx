@@ -252,8 +252,7 @@ const ScopeSelector = ({
       borderRadius: 999,
       padding: 4,
       gap: 4,
-      marginBottom: 16,
-      marginTop: -4,
+      margin: "0 16px 14px",
       opacity: disabled ? 0.55 : 1,
       pointerEvents: disabled ? "none" : "auto",
     }}
