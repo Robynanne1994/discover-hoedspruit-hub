@@ -249,10 +249,10 @@ const ScopeSelector = ({
     style={{
       display: "flex",
       background: "#F5F0E8",
-      borderRadius: 999,
-      padding: 4,
-      gap: 4,
-      margin: "0 16px 14px",
+      borderRadius: 12,
+      padding: 3,
+      gap: 3,
+      margin: "2px 16px 16px",
       opacity: disabled ? 0.55 : 1,
       pointerEvents: disabled ? "none" : "auto",
     }}
@@ -265,15 +265,21 @@ const ScopeSelector = ({
           onClick={() => onChange(opt.value)}
           style={{
             flex: 1,
+            height: 34,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             background: active ? "#FFFFFF" : "transparent",
-            border: "none",
-            borderRadius: 999,
-            padding: "8px 12px",
+            border: active ? "1px solid rgba(26,26,26,0.06)" : "1px solid transparent",
+            borderRadius: 10,
+            padding: "0 10px",
             cursor: "pointer",
             fontFamily: SANS,
             fontSize: 13,
-            fontWeight: 600,
+            fontWeight: 500,
+            letterSpacing: "-0.1px",
             color: active ? C.ink : C.muted,
+            boxShadow: active ? "0 1px 3px rgba(0,0,0,0.05)" : "none",
             transition: "background-color 200ms ease-out, color 200ms ease-out",
           }}
         >
