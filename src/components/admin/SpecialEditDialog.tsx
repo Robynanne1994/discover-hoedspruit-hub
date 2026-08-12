@@ -73,7 +73,7 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "badge_override",
-  "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "redemption_note",
+  "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "card_deal_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
@@ -301,6 +301,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             {form.discount_type === "freebie" && (
               <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
             )}
+          </div>
+          <div>
+            <Label>Short Card Deal Text <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+            <Input value={form.card_deal_text || ""} onChange={(e) => set("card_deal_text", e.target.value)} placeholder="e.g. Free breakfast" />
+            <p className="text-xs text-muted-foreground mt-1">
+              Shown in place of the deal text on the listing, homepage and saved cards when the full wording is too long. Leave blank to use the freebie / savings text everywhere.
+            </p>
           </div>
           <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
 

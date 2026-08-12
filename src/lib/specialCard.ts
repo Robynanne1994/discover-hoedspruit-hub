@@ -69,13 +69,18 @@ export interface SpecialCardModel {
 export interface SpecialCardOptions {
   /** True for the narrow cards — the 2-col specials grid and the homepage rail. */
   compact?: boolean;
+  /**
+   * False only for the detail page, which shows the full offer wording. On a
+   * card the special's shorter `card_deal_text` is used when it has one.
+   */
+  card?: boolean;
 }
 
 export const specialCard = (
   s: SpecialCardLike,
-  { compact = false }: SpecialCardOptions = {}
+  { compact = false, card = true }: SpecialCardOptions = {}
 ): SpecialCardModel => {
-  const value = specialValue(s);
+  const value = specialValue(s, { card });
   const saving = value.kind === "price" ? savingLabel(s) : null;
 
   // The badge and the value bar are fed by the same columns, so a 20%-off deal

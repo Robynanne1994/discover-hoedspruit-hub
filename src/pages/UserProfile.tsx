@@ -303,7 +303,7 @@ const UserProfile = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, title_override, image_url, business_name, valid_until, badge_override, day_of_week, discount_type, discount_value, freebie_text, redemption_note, card_footer_text, price, price_label, original_price, savings")
+        .select("id, title, title_override, image_url, business_name, valid_until, badge_override, day_of_week, discount_type, discount_value, freebie_text, card_deal_text, redemption_note, card_footer_text, price, price_label, original_price, savings")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s: any) => s.id);

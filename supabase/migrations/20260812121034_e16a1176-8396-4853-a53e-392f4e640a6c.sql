@@ -1,0 +1,1 @@
+ALTER TABLE public.specials ADD COLUMN IF NOT EXISTS card_deal_text text;

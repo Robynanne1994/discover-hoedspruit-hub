@@ -2026,6 +2026,7 @@ export type Database = {
           booking_required: boolean
           business_id: string | null
           business_name: string
+          card_deal_text: string | null
           card_footer_text: string | null
           contact_email: string | null
           contact_phone: string | null
@@ -2037,6 +2038,7 @@ export type Database = {
           detail_image_url: string | null
           discount_type: string | null
           discount_value: number | null
+          featured_image_url: string | null
           freebie_text: string | null
           homepage_image_url: string | null
           id: string
@@ -2070,6 +2072,7 @@ export type Database = {
           booking_required?: boolean
           business_id?: string | null
           business_name: string
+          card_deal_text?: string | null
           card_footer_text?: string | null
           contact_email?: string | null
           contact_phone?: string | null
@@ -2081,6 +2084,7 @@ export type Database = {
           detail_image_url?: string | null
           discount_type?: string | null
           discount_value?: number | null
+          featured_image_url?: string | null
           freebie_text?: string | null
           homepage_image_url?: string | null
           id?: string
@@ -2114,6 +2118,7 @@ export type Database = {
           booking_required?: boolean
           business_id?: string | null
           business_name?: string
+          card_deal_text?: string | null
           card_footer_text?: string | null
           contact_email?: string | null
           contact_phone?: string | null
@@ -2125,6 +2130,7 @@ export type Database = {
           detail_image_url?: string | null
           discount_type?: string | null
           discount_value?: number | null
+          featured_image_url?: string | null
           freebie_text?: string | null
           homepage_image_url?: string | null
           id?: string
