@@ -1121,71 +1121,112 @@ const Welcome = () => {
           </Button>
         </form>
 
-        {mode === "signup" && (
-          <p style={{ fontFamily: FF, fontSize: 13, color: TOKEN_MUTED, margin: "12px 0 0", textAlign: "center" }}>
-            By creating an account you agree to our{" "}
-            <a
-              href="https://hellohoedspruit.co/legal/terms-of-use"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#5A452E" }}
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              href="https://hellohoedspruit.co/legal/privacy-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#5A452E" }}
-            >
-              Privacy Policy
-            </a>
-            .
-          </p>
+        {mode === "signup" ? (
+          <>
+            {/* Social sign-up sits directly under Create Account, then the
+                supporting copy follows all three buttons. */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}>
+              <button
+                type="button"
+                onClick={() => handleOAuth("google")}
+                disabled={oauthLoading !== null}
+                style={socialButtonStyle}
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
+              <button
+                type="button"
+                onClick={() => handleOAuth("apple")}
+                disabled={oauthLoading !== null}
+                style={socialButtonStyle}
+              >
+                <AppleIcon />
+                Continue with Apple
+              </button>
+            </div>
+
+            <p style={{ fontFamily: FF, fontSize: 13, color: TOKEN_MUTED, margin: "16px 0 0", textAlign: "center" }}>
+              By creating an account you agree to our{" "}
+              <a
+                href="https://hellohoedspruit.co/legal/terms-of-use"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#5A452E" }}
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a
+                href="https://hellohoedspruit.co/legal/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontFamily: FF, fontSize: 13, fontWeight: 600, color: "#5A452E" }}
+              >
+                Privacy Policy
+              </a>
+              .
+            </p>
+
+            <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
+              Already have an account?{" "}
+              <button
+                onClick={() => {
+                  setAuthError(null);
+                  setSignupError(null);
+                  setMode("signin");
+                }}
+                style={{ fontFamily: FF, color: "#715a3d", fontWeight: 600 }}
+              >
+                Log In
+              </button>
+            </p>
+          </>
+        ) : (
+          <>
+            {/* OR divider */}
+            <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "22px 0 16px" }}>
+              <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
+              <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: TOKEN_MUTED }}>OR</span>
+              <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <button
+                type="button"
+                onClick={() => handleOAuth("google")}
+                disabled={oauthLoading !== null}
+                style={socialButtonStyle}
+              >
+                <GoogleIcon />
+                Continue with Google
+              </button>
+              <button
+                type="button"
+                onClick={() => handleOAuth("apple")}
+                disabled={oauthLoading !== null}
+                style={socialButtonStyle}
+              >
+                <AppleIcon />
+                Continue with Apple
+              </button>
+            </div>
+
+            <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
+              New here?{" "}
+              <button
+                onClick={() => {
+                  setAuthError(null);
+                  setSignupError(null);
+                  setMode("signup");
+                }}
+                style={{ fontFamily: FF, color: "#715a3d", fontWeight: 600 }}
+              >
+                Create an Account
+              </button>
+            </p>
+          </>
         )}
-
-        {/* OR divider */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14, margin: "22px 0 16px" }}>
-          <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
-          <span style={{ fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: TOKEN_MUTED }}>OR</span>
-          <div style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.12)" }} />
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          <button
-            type="button"
-            onClick={() => handleOAuth("google")}
-            disabled={oauthLoading !== null}
-            style={socialButtonStyle}
-          >
-            <GoogleIcon />
-            Continue with Google
-          </button>
-          <button
-            type="button"
-            onClick={() => handleOAuth("apple")}
-            disabled={oauthLoading !== null}
-            style={socialButtonStyle}
-          >
-            <AppleIcon />
-            Continue with Apple
-          </button>
-        </div>
-
-        <p className="text-center text-sm mt-6" style={{ fontFamily: FF, color: "#2b2420" }}>
-          {mode === "signup" ? "Already have an account?" : "New here?"}{" "}
-          <button
-            onClick={() => {
-              setAuthError(null);
-              setSignupError(null);
-              setMode(mode === "signup" ? "signin" : "signup");
-            }}
-            style={{ fontFamily: FF, color: "#715a3d", fontWeight: 600 }}
-          >
-            {mode === "signup" ? "Log In" : "Create an Account"}
-          </button>
-        </p>
       </div>
     </div>
   );
