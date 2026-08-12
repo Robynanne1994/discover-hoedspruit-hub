@@ -482,7 +482,6 @@ const Notifications = () => {
                 style={{
                   background: C.card,
                   borderRadius: 20,
-                  padding: "0 16px",
                   overflow: "hidden",
                 }}
               >
@@ -498,14 +497,15 @@ const Notifications = () => {
                     : undefined;
                   return (
                     <div key={row.key}>
+                      {i > 0 && <RowDivider />}
                       <PrefRow
                         title={row.title}
                         checked={bools[row.key]}
                         onToggle={() => toggleBool(row.key)}
                         disabled={!masterOn}
-                        isFirst={i === 0}
                         filterLink={filterLink}
                       />
+
                       {row.key === "events_updates" && bools.events_updates && masterOn && (
                         <ScopeSelector
                           value={eventsUpdatesScope}
