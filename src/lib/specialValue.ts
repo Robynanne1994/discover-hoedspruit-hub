@@ -19,6 +19,12 @@ export interface SpecialLike {
   discount_type?: string | null;
   discount_value?: number | string | null;
   freebie_text?: string | null;
+  /**
+   * Optional shorter wording for the offer, used only in the value bar on the
+   * listing / homepage / saved cards. The full wording (freebie_text, savings)
+   * still shows on the special's own page.
+   */
+  card_deal_text?: string | null;
 }
 
 const str = (v: unknown): string | null => {
