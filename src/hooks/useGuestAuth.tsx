@@ -98,7 +98,8 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
 
   const goAuth = (mode: "signup" | "signin") => {
     setPromptOpen(false);
-    exitGuest();
+    // Guest mode is left in place: if they back out of the welcome screen they
+    // land straight back in free browsing rather than on a sign-in wall.
     // Welcome screen handles both modes
     navigate("/welcome", { state: { mode } });
   };
