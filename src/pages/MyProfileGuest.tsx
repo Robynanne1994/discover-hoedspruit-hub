@@ -148,7 +148,7 @@ const MyProfileGuest = () => {
         >
           <span>Already have an account?</span>
           <button
-            onClick={() => navigate("/welcome", { state: { mode: "signin" } })}
+            onClick={() => navigate("/welcome", { state: { mode: "signin", from: "/my-profile-guest" } })}
             style={{
               background: "none",
               border: "none",
