@@ -591,8 +591,32 @@ const Welcome = () => {
           description="Sign in or create a free account to save your favourite places, events and specials around Hoedspruit."
           path="/welcome"
         />
+        {/* Skip: this screen is optional, never a gate. Browsing the app never
+            requires an account. */}
+        <div className="flex justify-end px-5" style={{ paddingTop: "max(env(safe-area-inset-top), 12px)" }}>
+          <button
+            type="button"
+            onClick={() => {
+              enterGuest();
+              navigate("/");
+            }}
+            style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#715a3d",
+              padding: "8px 4px",
+              background: "none",
+              border: "none",
+              borderRadius: 9999,
+            }}
+          >
+            Skip
+          </button>
+        </div>
+
         {/* Logo block */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-6">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 pt-6 pb-6">
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
           <h1
             style={{
@@ -612,7 +636,10 @@ const Welcome = () => {
         <div className="px-5 pb-10">
 
           <Button
-            onClick={() => setMode("signup")}
+            onClick={() => {
+              enterGuest();
+              navigate("/");
+            }}
             className="w-full"
             style={{
               height: 48,
@@ -624,14 +651,11 @@ const Welcome = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Create an Account
+            Browse the App
           </Button>
 
           <Button
-            onClick={() => {
-              enterGuest();
-              navigate("/");
-            }}
+            onClick={() => setMode("signup")}
             variant="outline"
             className="w-full mt-3"
             style={{
@@ -645,8 +669,13 @@ const Welcome = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Continue as Guest
+            Create an Account
           </Button>
+
+          <p style={{ textAlign: "center", color: "#6B6A5E", fontSize: 13, lineHeight: 1.5, marginTop: 14 }}>
+            No account needed to browse. Sign up only to save places and follow people.
+          </p>
+
 
           <p style={{ textAlign: "center", color: "#2b2420", fontSize: 14, marginTop: 18 }}>
             Already have an account?{" "}

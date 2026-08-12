@@ -47,6 +47,17 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [user, isGuest]);
 
+  // Browsing is free: anyone without a session is a guest by default, with no
+  // button to press first. Nothing in the app may present a sign-in wall on
+  // launch (App Store guideline 5.1.1(v)) — an account is only ever needed for
+  // account-based features like saving, following and reviewing.
+  useEffect(() => {
+    if (loading || user || isGuest) return;
+    localStorage.setItem(GUEST_KEY, "1");
+    sessionStorage.setItem(GUEST_KEY, "1");
+    setIsGuest(true);
+  }, [loading, user, isGuest]);
+
   // If the auth session hydrates while the sign-up prompt is open, close it —
   // otherwise a returning user briefly sees "Create an Account" for an action
   // they're actually already allowed to perform.
@@ -87,7 +98,8 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
 
   const goAuth = (mode: "signup" | "signin") => {
     setPromptOpen(false);
-    exitGuest();
+    // Guest mode is left in place: if they back out of the welcome screen they
+    // land straight back in free browsing rather than on a sign-in wall.
     // Welcome screen handles both modes
     navigate("/welcome", { state: { mode } });
   };
@@ -137,8 +149,8 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
             </h2>
             <p style={{ fontFamily: FONT, fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
               {action
-                ? `Sign up or log in to ${action}.`
-                : "Sign up or log in to use this feature."}
+                ? `You can keep browsing without an account. Sign up only if you want to ${action}.`
+                : "You can keep browsing without an account. Sign up only if you want to save places and follow people."}
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <button
