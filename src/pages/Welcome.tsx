@@ -758,8 +758,10 @@ const Welcome = () => {
 
         <p
           style={{
-            fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.14em",
-            textTransform: "uppercase", color: "#715A3D", margin: "0 0 6px",
+            ...type.label,
+            color: "#443221",
+            letterSpacing: "0.04em",
+            margin: "0 0 6px",
           }}
         >
           Your Lowveld Local
