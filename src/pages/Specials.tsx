@@ -719,7 +719,7 @@ const FeaturedSection = ({
 };
 
 const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
-  const image = specialImage(special, "list");
+  const image = specialImage(special, "featured");
   const meta = special.business_name || "";
 
   return (
@@ -742,7 +742,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
       {/* Image with the headline sitting on the gradient. The aspect ratio sets
           the natural height; flex:1 lets the image absorb any extra height when
           a neighbouring card's value bar runs taller. */}
-      <div style={{ position: "relative", width: "100%", aspectRatio: "5 / 3", flex: "1 1 auto", minHeight: 0, background: "#EEE8DA" }}>
+      <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 2", flex: "1 1 auto", minHeight: 0, background: "#EEE8DA" }}>
         {image && (
           <img
             src={image}
