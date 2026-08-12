@@ -810,7 +810,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
 const DEAL_TITLE_LINES_2 = 38;
 
 const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
-  const image = specialImage(special, "featured");
+  const image = specialImage(special, "list");
   const meta = special.business_name || "";
   const titleRef = useRef<HTMLSpanElement | null>(null);
   const metaRef = useRef<HTMLSpanElement | null>(null);
