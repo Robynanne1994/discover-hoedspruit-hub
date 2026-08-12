@@ -75,12 +75,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const verifyStillExists = async (u: User) => {
       const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) {
+      // Only treat this as a deleted account when Supabase actually says the
+      // user is gone. A network blip or a 5xx must never sign someone out and
+      // bounce them to /welcome with an error toast.
+      if (error) {
+        const status = (error as { status?: number }).status;
+        const msg = (error.message || "").toLowerCase();
+        const gone =
+          status === 401 ||
+          status === 403 ||
+          msg.includes("user not found") ||
+          msg.includes("user_not_found");
+        if (gone) {
+          await handleDeletedAccount();
+          return false;
+        }
+        // Unknown/transient failure: keep the existing session as-is.
+        return true;
+      }
+      if (!data.user) {
         await handleDeletedAccount();
         return false;
       }
       return true;
     };
+
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
