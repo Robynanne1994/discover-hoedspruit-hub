@@ -141,14 +141,12 @@ const PrefRow = ({
   checked,
   onToggle,
   disabled,
-  isFirst,
   filterLink,
 }: {
   title: string;
   checked: boolean;
   onToggle: () => void;
   disabled?: boolean;
-  isFirst: boolean;
   filterLink?: { to: string; selected: number; total: number; noun: string };
 }) => {
   const nounPlural = filterLink ? filterLink.noun : "";
@@ -162,18 +160,23 @@ const PrefRow = ({
   return (
     <div
       style={{
-        minHeight: 56,
-        padding: "10px 0",
-        borderTop: isFirst ? "none" : `1px solid ${C.line}`,
         opacity: disabled ? 0.55 : 1,
         pointerEvents: disabled ? "none" : "auto",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 14,
+          minHeight: 56,
+          padding: "10px 16px",
+        }}
+      >
         <div
           style={{
             flex: 1,
-            paddingRight: 8,
+            minWidth: 0,
             fontFamily: SANS,
             fontSize: 16,
             fontWeight: 500,
@@ -186,7 +189,7 @@ const PrefRow = ({
         </div>
         <button
           onClick={onToggle}
-          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex" }}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex", flexShrink: 0 }}
           aria-label={`Toggle ${title}`}
         >
           <Toggle checked={checked} />
@@ -199,7 +202,7 @@ const PrefRow = ({
             display: "flex",
             alignItems: "center",
             gap: 10,
-            marginTop: 10,
+            margin: "0 16px 14px",
             padding: "10px 14px",
             background: "#F5F0E8",
             borderRadius: 12,
@@ -226,6 +229,11 @@ const PrefRow = ({
   );
 };
 
+const RowDivider = () => (
+  <div style={{ height: 1, background: C.line, marginLeft: 16, marginRight: 16 }} />
+);
+
+
 const ScopeSelector = ({
   value,
   onChange,
@@ -244,8 +252,7 @@ const ScopeSelector = ({
       borderRadius: 999,
       padding: 4,
       gap: 4,
-      marginBottom: 16,
-      marginTop: -4,
+      margin: "0 16px 14px",
       opacity: disabled ? 0.55 : 1,
       pointerEvents: disabled ? "none" : "auto",
     }}
@@ -474,7 +481,6 @@ const Notifications = () => {
                 style={{
                   background: C.card,
                   borderRadius: 20,
-                  padding: "0 16px",
                   overflow: "hidden",
                 }}
               >
@@ -490,14 +496,15 @@ const Notifications = () => {
                     : undefined;
                   return (
                     <div key={row.key}>
+                      {i > 0 && <RowDivider />}
                       <PrefRow
                         title={row.title}
                         checked={bools[row.key]}
                         onToggle={() => toggleBool(row.key)}
                         disabled={!masterOn}
-                        isFirst={i === 0}
                         filterLink={filterLink}
                       />
+
                       {row.key === "events_updates" && bools.events_updates && masterOn && (
                         <ScopeSelector
                           value={eventsUpdatesScope}
