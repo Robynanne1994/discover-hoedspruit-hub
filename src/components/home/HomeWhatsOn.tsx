@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
-import { getEventDates } from "@/lib/eventDates";
+import { getEventDates, formatEventDateShort } from "@/lib/eventDates";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { INK, type } from "@/lib/type";
@@ -17,7 +17,7 @@ function formatTime(t?: string | null) {
   return `${h}:${m[2]} ${suffix}`;
 }
 
-const MONTHS_SHORT = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
 
 const COLUMNS =
   "id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url, is_featured";
@@ -86,9 +86,9 @@ const HomeWhatsOn = () => {
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
         <div style={{ display: "flex", gap: 8, paddingRight: 20 }}>
           {events.map((e) => {
-            const { start } = getEventDates(e);
-            const dayNum = start?.getDate();
-            const monLbl = start ? MONTHS_SHORT[start.getMonth()] : "";
+            const { start, end } = getEventDates(e);
+            const isMultiDay = !!start && !!end && start.getTime() !== end.getTime();
+            const dateLbl = formatEventDateShort(e);
             const timeLbl = formatTime((e as any).start_time);
             const metaLine = [timeLbl, e.location].filter(Boolean).join(" \u00b7 ");
             return (
@@ -126,21 +126,23 @@ const HomeWhatsOn = () => {
                     background: "linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 38%, rgba(0,0,0,0.72) 100%)",
                   }}
                 />
-                {dayNum != null && (
+                {dateLbl && (
                   <div
                     style={{
                       position: "absolute",
                       top: 8,
                       left: 8,
+                      maxWidth: isMultiDay ? "calc(100% - 16px)" : undefined,
                       padding: "4px 9px",
                       borderRadius: 999,
                       background: "rgba(255,255,255,0.94)",
                       ...type.label,
                       color: INK,
                       lineHeight: 1,
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    {dayNum} {monLbl}
+                    {dateLbl}
                   </div>
                 )}
                 <div style={{ position: "absolute", left: 10, right: 10, bottom: 10 }}>
