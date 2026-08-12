@@ -23,9 +23,10 @@ export interface SpecialCardLike extends SpecialLike, SpecialBadgeLike {
   detail_image_url?: string | null;
   homepage_image_url?: string | null;
   saved_image_url?: string | null;
+  featured_image_url?: string | null;
 }
 
-export type SpecialSurface = "home" | "list" | "saved" | "detail";
+export type SpecialSurface = "home" | "list" | "saved" | "detail" | "featured";
 
 const str = (v: unknown): string | null => {
   const s = String(v ?? "").trim();
@@ -40,6 +41,7 @@ export const specialImage = (s: SpecialCardLike, surface: SpecialSurface): strin
     list: [s.image_url],
     saved: [s.saved_image_url],
     detail: [s.detail_image_url],
+    featured: [s.featured_image_url],
   };
   const chain = [
     ...preferred[surface],
@@ -47,6 +49,7 @@ export const specialImage = (s: SpecialCardLike, surface: SpecialSurface): strin
     s.homepage_image_url,
     s.detail_image_url,
     s.saved_image_url,
+    s.featured_image_url,
   ];
   for (const candidate of chain) {
     const v = str(candidate);

@@ -72,7 +72,7 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
-  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "badge_override",
+  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "badge_override",
   "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "card_deal_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
@@ -341,6 +341,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div>
             <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Active Specials section — 1:1. Falls back to card image if empty.)</span></Label>
             <ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={1} />
+          </div>
+          <div>
+            <Label>Featured Carousel Image <span className="text-xs text-muted-foreground font-normal">(shown in the Top Deals carousel at the top of the specials page — 3:2. Falls back to card image if empty.)</span></Label>
+            <ImageUpload bucket="listing-images" value={form.featured_image_url || ""} onChange={(url) => set("featured_image_url", url)} aspect={3/2} />
           </div>
           <div>
             <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
