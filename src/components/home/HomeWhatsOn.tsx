@@ -17,7 +17,7 @@ function formatTime(t?: string | null) {
   return `${h}:${m[2]} ${suffix}`;
 }
 
-const MONTHS_SHORT = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
 
 const COLUMNS =
   "id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url, is_featured";
