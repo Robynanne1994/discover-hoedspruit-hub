@@ -302,6 +302,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
             )}
           </div>
+          <div>
+            <Label>Short Card Deal Text <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+            <Input value={form.card_deal_text || ""} onChange={(e) => set("card_deal_text", e.target.value)} placeholder="e.g. Free breakfast" />
+            <p className="text-xs text-muted-foreground mt-1">
+              Shown in place of the deal text on the listing, homepage and saved cards when the full wording is too long. Leave blank to use the freebie / savings text everywhere.
+            </p>
+          </div>
           <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
 
 
