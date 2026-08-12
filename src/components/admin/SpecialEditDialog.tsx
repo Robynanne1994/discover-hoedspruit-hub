@@ -344,7 +344,15 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
           <div>
             <Label>Featured Carousel Image <span className="text-xs text-muted-foreground font-normal">(shown in the Top Deals carousel at the top of the specials page — 3:2. Falls back to card image if empty.)</span></Label>
-            <ImageUpload bucket="listing-images" value={form.featured_image_url || ""} onChange={(url) => set("featured_image_url", url)} aspect={3/2} />
+            <ImageUpload
+              bucket="listing-images"
+              value={form.featured_image_url || ""}
+              onChange={(url) => set("featured_image_url", url)}
+              aspect={3 / 2}
+              lockAspect
+              aspectLabel="3:2"
+              cropTitle="Featured carousel image (3:2)"
+            />
           </div>
           <div>
             <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
