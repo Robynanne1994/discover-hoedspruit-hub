@@ -157,7 +157,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
                   fontFamily: HN, fontSize: 10, fontWeight: 700,
                   textTransform: "uppercase", letterSpacing: "0.08em",
                   color: "#715A3D", background: "#EEE8DA",
-                  borderRadius: 999, padding: "5px 9px",
+                  borderRadius: 999, padding: "3px 9px",
                 }}
               >
                 {t}
