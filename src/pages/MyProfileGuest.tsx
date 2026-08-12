@@ -100,7 +100,7 @@ const MyProfileGuest = () => {
             <h2
               style={{
                 fontFamily: '"Nohemi", ' + SANS,
-                fontWeight: 400,
+                fontWeight: 500,
                 fontSize: 22,
                 lineHeight: 1.1,
                 letterSpacing: "-0.01em",
