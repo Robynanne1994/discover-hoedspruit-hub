@@ -115,7 +115,16 @@ export type SpecialValue =
   | { kind: "deal"; text: string }
   | { kind: "none" };
 
-export const specialValue = (s: SpecialLike): SpecialValue => {
+export interface SpecialValueOptions {
+  /**
+   * True when the value bar is being drawn on a card. A special that carries a
+   * short card wording swaps its long offer sentence for it here, so the card
+   * fits while the detail page keeps the full text.
+   */
+  card?: boolean;
+}
+
+export const specialValue = (s: SpecialLike, { card = false }: SpecialValueOptions = {}): SpecialValue => {
   const price = str(s.price);
   if (price) {
     const original = str(s.original_price);
@@ -126,6 +135,10 @@ export const specialValue = (s: SpecialLike): SpecialValue => {
       note: str(s.price_label),
     };
   }
+  // A hand-written short version wins on cards — it exists precisely because
+  // the full wording does not fit there.
+  const short = card ? str(s.card_deal_text) : null;
+  if (short) return { kind: "deal", text: capitaliseOff(short) };
   // No price set — a structured discount or the savings line becomes the value.
   const pct = s.discount_type === "percent_off" ? numeric(s.discount_value) : null;
   if (pct != null) return { kind: "deal", text: `${pct}% Off` };
