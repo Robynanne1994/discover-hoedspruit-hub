@@ -60,9 +60,11 @@ const HomeWhatsOn = () => {
           .select(COLUMNS)
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
-        const curated = ids
-          .map((id) => map.get(id))
-          .filter((e): e is NonNullable<typeof e> => Boolean(e));
+        const curated = stillOn(
+          ids
+            .map((id) => map.get(id))
+            .filter((e): e is NonNullable<typeof e> => Boolean(e))
+        );
         return mergeFeaturedFirst([featured, curated], TARGET);
       }
 
