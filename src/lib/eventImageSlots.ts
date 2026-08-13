@@ -17,10 +17,11 @@
  * ratio and its box drift apart.
  */
 
-export type EventImageSlotKey = "card" | "detail" | "homepage" | "saved" | "host";
+export type EventImageSlotKey = "card" | "poster" | "detail" | "homepage" | "saved" | "host";
 
 export type EventImageField =
   | "image_url"
+  | "poster_image_url"
   | "detail_image_url"
   | "homepage_image_url"
   | "saved_image_url"
@@ -61,6 +62,17 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     aspectLabel: "35:47",
     box: { width: 140, height: 188 },
     fallback: "Nothing — the card shows a plain ivory panel instead.",
+  },
+  {
+    key: "poster",
+    field: "poster_image_url",
+    label: "Happening Soon Card Image",
+    where: "The poster card in the Happening Soon carousel at the top of the Events list.",
+    // Events.tsx — PosterCard image area is `width: 196, height: 164`.
+    aspect: 196 / 164,
+    aspectLabel: "49:41",
+    box: { width: 196, height: 164 },
+    fallback: "Falls back to the card cover image.",
   },
   {
     key: "detail",

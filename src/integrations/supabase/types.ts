@@ -650,6 +650,7 @@ export type Database = {
           location: string | null
           notes: string[]
           performances: Json | null
+          poster_image_url: string | null
           price: string | null
           price_notes: string[]
           recurrence: string | null
@@ -707,6 +708,7 @@ export type Database = {
           location?: string | null
           notes?: string[]
           performances?: Json | null
+          poster_image_url?: string | null
           price?: string | null
           price_notes?: string[]
           recurrence?: string | null
@@ -764,6 +766,7 @@ export type Database = {
           location?: string | null
           notes?: string[]
           performances?: Json | null
+          poster_image_url?: string | null
           price?: string | null
           price_notes?: string[]
           recurrence?: string | null
