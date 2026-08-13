@@ -405,9 +405,9 @@ const PosterCard = ({ event }: { event: any }) => {
       }}
     >
       <div style={{ position: "relative", height: 164, flexShrink: 0, background: "#F4EFE3" }}>
-        {event.image_url && (
+        {(event.poster_image_url || event.image_url) && (
           <img
-            src={event.image_url}
+            src={event.poster_image_url || event.image_url}
             alt={getDisplayTitle(event)}
             loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
