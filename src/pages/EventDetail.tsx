@@ -479,10 +479,12 @@ const EventDetail = () => {
 
     // A host can link to a listing on the app or out to a URL — never both, so
     // the listing wins if some old row somehow carries the two.
+    // A photo uploaded and cropped for the host always wins over the linked
+    // listing's cover, so the crop in the editor is what the page shows.
     const hosts: { name: string; subtitle?: string; image?: string; link?: string; listingId?: string }[] = [];
-    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: (e.hosted_by_listing_id && hostListingImages?.[e.hosted_by_listing_id]) || e.hosted_by_image_url, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
-    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: (e.hosted_by_listing_id_2 && hostListingImages?.[e.hosted_by_listing_id_2]) || e.hosted_by_image_url_2, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
-    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: (e.hosted_by_listing_id_3 && hostListingImages?.[e.hosted_by_listing_id_3]) || e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
+    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url || (e.hosted_by_listing_id && hostListingImages?.[e.hosted_by_listing_id]) || undefined, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
+    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 || (e.hosted_by_listing_id_2 && hostListingImages?.[e.hosted_by_listing_id_2]) || undefined, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
+    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 || (e.hosted_by_listing_id_3 && hostListingImages?.[e.hosted_by_listing_id_3]) || undefined, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
 
     return (
       <div style={{ padding: "16px 20px 20px" }}>
