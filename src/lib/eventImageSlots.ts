@@ -17,10 +17,11 @@
  * ratio and its box drift apart.
  */
 
-export type EventImageSlotKey = "card" | "detail" | "homepage" | "saved" | "host";
+export type EventImageSlotKey = "card" | "poster" | "detail" | "homepage" | "saved" | "host";
 
 export type EventImageField =
   | "image_url"
+  | "poster_image_url"
   | "detail_image_url"
   | "homepage_image_url"
   | "saved_image_url"
