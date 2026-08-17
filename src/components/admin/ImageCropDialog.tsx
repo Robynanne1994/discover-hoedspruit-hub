@@ -10,7 +10,7 @@ import { Pipette, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import CropPreviewImage from "./CropPreviewImage";
 import CropGuides from "./CropGuides";
-import { coverCropArea, exportSize } from "@/lib/cropPreview";
+import { exportSize } from "@/lib/cropPreview";
 import type { SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageCropDialogProps {
@@ -136,6 +136,12 @@ const ImageCropDialog = ({
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
   const [sourceSettled, setSourceSettled] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  // The photo as react-easy-crop lays it out (contained in the container) and
+  // the crop frame it derived from the ratio — the two sizes the cover zoom is
+  // worked out from.
+  const [mediaSize, setMediaSize] = useState<{ width: number; height: number } | null>(null);
+  const [cropSize, setCropSize] = useState<{ width: number; height: number } | null>(null);
+  const fittedRef = useRef(false);
   const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const sampleImgRef = useRef<HTMLImageElement | null>(null);
   const cropperWrapRef = useRef<HTMLDivElement | null>(null);
@@ -175,6 +181,9 @@ const ImageCropDialog = ({
       setCroppedArea(null);
       setBgColor("#ffffff");
       setPicking(false);
+      setMediaSize(null);
+      setCropSize(null);
+      fittedRef.current = false;
     }
   }, [open, defaultAspect, lockAspect]);
 
@@ -219,8 +228,32 @@ const ImageCropDialog = ({
 
   const activeAspect = aspect === "free" ? undefined : aspect;
 
-  const initialArea =
-    natural && lockAspect && defaultAspect ? coverCropArea(natural, defaultAspect) : undefined;
+  /**
+   * The zoom at which the photo exactly covers the crop frame — the same
+   * picture `object-fit: cover` would show. react-easy-crop measures zoom
+   * against the *contained* image, so for any crop whose ratio differs from
+   * the photo's this is above 1; letting the user go below it is what left
+   * background bands baked into the export, and passing an opening crop area
+   * instead of a zoom is what made square slots jump on open.
+   */
+  const coverZoom =
+    mediaSize && cropSize && mediaSize.width > 0 && mediaSize.height > 0
+      ? Math.max(cropSize.width / mediaSize.width, cropSize.height / mediaSize.height)
+      : null;
+
+  const effectiveMinZoom = locked && coverZoom ? coverZoom : MIN_ZOOM;
+
+  // Open on the cover crop, then keep the crop from ever falling inside it.
+  useEffect(() => {
+    if (!locked || !coverZoom) return;
+    if (!fittedRef.current) {
+      fittedRef.current = true;
+      setZoom(coverZoom);
+      setCrop({ x: 0, y: 0 });
+      return;
+    }
+    setZoom((z) => (z < coverZoom - 0.0001 ? coverZoom : z));
+  }, [locked, coverZoom]);
 
   const handleConfirm = async () => {
     if (!imageSrc || !croppedArea) return;
@@ -233,10 +266,9 @@ const ImageCropDialog = ({
     }
   };
 
-  // Remounting is what puts the opening crop back: react-easy-crop reads
-  // `initialCroppedAreaPixels` once, when the media loads.
   const reset = () => {
     setCrop({ x: 0, y: 0 });
+    fittedRef.current = false;
     setZoom(1);
     if (lockAspect && defaultAspect) {
       setLocked(true);
@@ -246,7 +278,9 @@ const ImageCropDialog = ({
   };
 
   const nudgeZoom = (delta: number) =>
-    setZoom((z) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round((z + delta) * 100) / 100)));
+    setZoom((z) =>
+      Math.min(MAX_ZOOM, Math.max(effectiveMinZoom, Math.round((z + delta) * 100) / 100)),
+    );
 
   const openNativeEyedropper = async () => {
     // @ts-ignore - EyeDropper is a newer browser API
@@ -340,12 +374,13 @@ const ImageCropDialog = ({
                 // image: zooming out past fit or dragging past an edge would
                 // bake the background fill into the export, which shows up as
                 // white bands beside the picture on the phone.
-                minZoom={locked ? 1 : MIN_ZOOM}
+                minZoom={effectiveMinZoom}
                 maxZoom={MAX_ZOOM}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropAreaChange={onCropAreaChange}
-                initialCroppedAreaPixels={initialArea}
+                onMediaLoaded={(m) => setMediaSize({ width: m.width, height: m.height })}
+                onCropSizeChange={(s) => setCropSize({ width: s.width, height: s.height })}
                 restrictPosition={locked ? true : false}
                 style={{ containerStyle: { background: bgColor } }}
               />
@@ -481,14 +516,14 @@ const ImageCropDialog = ({
                 size="icon"
                 className="h-8 w-8 shrink-0"
                 onClick={() => nudgeZoom(-ZOOM_STEP)}
-                disabled={zoom <= MIN_ZOOM}
+                disabled={zoom <= effectiveMinZoom}
                 aria-label="Zoom out"
               >
                 <ZoomOut className="h-4 w-4" />
               </Button>
               <Slider
                 value={[zoom]}
-                min={MIN_ZOOM}
+                min={effectiveMinZoom}
                 max={MAX_ZOOM}
                 step={0.01}
                 onValueChange={(v) => setZoom(v[0])}
