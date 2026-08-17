@@ -17,6 +17,11 @@ import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
 import ImageSlotField from "./ImageSlotField";
+import {
+  ADMIN_EDITOR_DIALOG,
+  ADMIN_FIELD_GRID_TIGHT,
+  ADMIN_IMAGE_GRID,
+} from "@/lib/adminEditorLayout";
 
 interface Props {
   open: boolean;
@@ -137,7 +142,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className={ADMIN_EDITOR_DIALOG}>
         <DialogHeader><DialogTitle>Edit Event</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Textarea rows={2} className="resize-none" value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
@@ -205,17 +210,19 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
             </p>
           </div>
-          {(["card", "poster", "detail", "homepage", "saved", "search"] as const).map((key) => {
-            const slot = eventImageSlot(key);
-            return (
-              <ImageSlotField
-                key={key}
-                slot={slot}
-                value={form[slot.field] || ""}
-                onChange={(url) => set(slot.field, url)}
-              />
-            );
-          })}
+          <div className={ADMIN_IMAGE_GRID}>
+            {(["card", "poster", "detail", "homepage", "saved", "search"] as const).map((key) => {
+              const slot = eventImageSlot(key);
+              return (
+                <ImageSlotField
+                  key={key}
+                  slot={slot}
+                  value={form[slot.field] || ""}
+                  onChange={(url) => set(slot.field, url)}
+                />
+              );
+            })}
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
@@ -249,61 +256,69 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               set("performances", arr);
             }}>+ Add performance date</Button>
           </div>
-          <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
-          <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
-          <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
-          <div className="space-y-2">
-            <Label>What's Included</Label>
-            <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
-            <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
+          <div className="grid gap-3 lg:grid-cols-3">
+            <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
+            <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
+            <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
           </div>
-          <div className="space-y-2">
-            <Label>Price Notes</Label>
-            <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line under the price. In CSV, separate notes with the <code>|</code> symbol.</p>
-            <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
+          <div className="grid gap-3 lg:grid-cols-3">
+            <div className="space-y-2">
+              <Label>What's Included</Label>
+              <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
+              <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
+            </div>
+            <div className="space-y-2">
+              <Label>Price Notes</Label>
+              <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line under the price. In CSV, separate notes with the <code>|</code> symbol.</p>
+              <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
+            </div>
+            <div className="space-y-2">
+              <Label>Notes</Label>
+              <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
+              <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label>Notes</Label>
-            <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
-            <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
+          <div className={ADMIN_FIELD_GRID_TIGHT}>
+            <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
+            <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
+            <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
+            <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>
           </div>
-          <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
-          <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
-          <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
-          <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>
           <ListingContactPicker
             listings={listings || []}
             onApply={(c) => setForm((f: any) => ({ ...f, ...c }))}
           />
-          <MultiContactField
-            label="Contact Email"
-            type="email"
-            primary={form.contact_email || ""}
-            onPrimaryChange={(v) => set("contact_email", v)}
-            extras={form.additional_emails || []}
-            onExtrasChange={(v) => set("additional_emails", v)}
-            addLabel="Add email"
-          />
-          <MultiContactField
-            label="Contact Phone"
-            type="tel"
-            primary={form.contact_phone || ""}
-            onPrimaryChange={(v) => set("contact_phone", v)}
-            extras={form.additional_phones || []}
-            onExtrasChange={(v) => set("additional_phones", v)}
-            addLabel="Add phone"
-          />
-          <MultiContactField
-            label="Contact WhatsApp"
-            type="tel"
-            primary={form.contact_whatsapp || ""}
-            onPrimaryChange={(v) => set("contact_whatsapp", v)}
-            extras={form.additional_whatsapps || []}
-            onExtrasChange={(v) => set("additional_whatsapps", v)}
-            placeholder="+27 ..."
-            addLabel="Add WhatsApp"
-          />
+          <div className="grid gap-3 lg:grid-cols-3">
+            <MultiContactField
+              label="Contact Email"
+              type="email"
+              primary={form.contact_email || ""}
+              onPrimaryChange={(v) => set("contact_email", v)}
+              extras={form.additional_emails || []}
+              onExtrasChange={(v) => set("additional_emails", v)}
+              addLabel="Add email"
+            />
+            <MultiContactField
+              label="Contact Phone"
+              type="tel"
+              primary={form.contact_phone || ""}
+              onPrimaryChange={(v) => set("contact_phone", v)}
+              extras={form.additional_phones || []}
+              onExtrasChange={(v) => set("additional_phones", v)}
+              addLabel="Add phone"
+            />
+            <MultiContactField
+              label="Contact WhatsApp"
+              type="tel"
+              primary={form.contact_whatsapp || ""}
+              onPrimaryChange={(v) => set("contact_whatsapp", v)}
+              extras={form.additional_whatsapps || []}
+              onExtrasChange={(v) => set("additional_whatsapps", v)}
+              placeholder="+27 ..."
+              addLabel="Add WhatsApp"
+            />
+          </div>
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
           <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
           {(() => {

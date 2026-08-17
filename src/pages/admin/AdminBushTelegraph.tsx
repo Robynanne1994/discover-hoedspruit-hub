@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
+import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
 
@@ -560,7 +561,7 @@ const AdminBushTelegraph = () => {
           navigate(dest);
         }
       }}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className={ADMIN_EDITOR_DIALOG}>
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Resource" : "Add Resource"}</DialogTitle>
           </DialogHeader>
@@ -587,7 +588,7 @@ const AdminBushTelegraph = () => {
               )}
             </div>
 
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
               <div>
                 <Label>Platform *</Label>
                 <div className="flex gap-2">
@@ -602,20 +603,19 @@ const AdminBushTelegraph = () => {
                   </Button>
                 </div>
               </div>
-            </div>
-
-            <div>
-              <Label>Resource type *</Label>
-              <Select value={form.resource_type} onValueChange={(v) => setForm({ ...form, resource_type: v })}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {RESOURCE_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <div>
+                <Label>Resource type *</Label>
+                <Select value={form.resource_type} onValueChange={(v) => setForm({ ...form, resource_type: v })}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {RESOURCE_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {(form.resource_type === "link" || form.resource_type === "internal") && (
-              <>
+              <div className="grid gap-4 lg:grid-cols-2">
                 <div>
                   <Label>URL {form.resource_type === "internal" ? "(in-app path, e.g. /events)" : "*"}</Label>
                   <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
@@ -627,9 +627,8 @@ const AdminBushTelegraph = () => {
                     onChange={(e) => setForm({ ...form, cta_label: e.target.value })}
                     placeholder={form.resource_type === "internal" ? "Open Page" : "Open Channel"}
                   />
-                  
                 </div>
-              </>
+              </div>
             )}
 
             {(form.resource_type === "qr" || form.resource_type === "image") && (
@@ -651,17 +650,19 @@ const AdminBushTelegraph = () => {
                   best shape for that screen as a starting point.
                 </p>
               </div>
-              {CHANNEL_IMAGE_SLOTS.map((slot) => (
-                <ImageSlotField
-                  key={slot.key}
-                  slot={slot}
-                  value={(form[slot.field] as string) || ""}
-                  onChange={(url) => setForm((f) => ({ ...f, [slot.field]: url }))}
-                />
-              ))}
+              <div className={ADMIN_IMAGE_GRID}>
+                {CHANNEL_IMAGE_SLOTS.map((slot) => (
+                  <ImageSlotField
+                    key={slot.key}
+                    slot={slot}
+                    value={(form[slot.field] as string) || ""}
+                    onChange={(url) => setForm((f) => ({ ...f, [slot.field]: url }))}
+                  />
+                ))}
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <div>
                 <Label>Meta 1 (Platform)</Label>
                 <Input value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} />
@@ -677,7 +678,7 @@ const AdminBushTelegraph = () => {
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <div>
                 <Label>Tag 1</Label>
                 <Input value={form.tag_1} onChange={(e) => setForm({ ...form, tag_1: e.target.value })} />
@@ -688,7 +689,7 @@ const AdminBushTelegraph = () => {
               </div>
             </div>
 
-            <div className="rounded-lg border border-border p-3 space-y-4">
+            <div className="rounded-lg border border-border p-3 space-y-4 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start">
 
               {/* Admins (array) */}
               <div className="space-y-3">
@@ -769,7 +770,7 @@ const AdminBushTelegraph = () => {
                 )}
               </div>
 
-              <div>
+              <div className="lg:col-start-2">
                 <Label>Avg. Posts Frequency</Label>
                 <Input value={form.post_frequency} onChange={(e) => setForm({ ...form, post_frequency: e.target.value })} placeholder="e.g. 3 / week" />
               </div>

@@ -19,6 +19,11 @@ import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import { parseDays } from "@/lib/specialDays";
+import {
+  ADMIN_EDITOR_DIALOG,
+  ADMIN_FIELD_GRID_TIGHT,
+  ADMIN_IMAGE_GRID,
+} from "@/lib/adminEditorLayout";
 
 
 interface Props {
@@ -172,7 +177,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className={ADMIN_EDITOR_DIALOG}>
         <DialogHeader><DialogTitle>Edit Special</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
@@ -197,39 +202,41 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               />
             )}
           </div>
-          <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
-          <div>
-            <Label>Linked Business Listing</Label>
-            {selectedListing ? (
-              <div className="flex items-center justify-between gap-2 rounded-md border px-3 py-2 mt-1">
-                <span className="text-sm">{selectedListing.title}</span>
-                <Button type="button" variant="ghost" size="sm" onClick={() => set("business_id", null)}>Clear</Button>
-              </div>
-            ) : (
-              <>
-                <Input
-                  placeholder="Search listings to link..."
-                  value={businessQuery}
-                  onChange={(e) => setBusinessQuery(e.target.value)}
-                  className="mt-1"
-                />
-                {filteredListings.length > 0 && (
-                  <div className="mt-1 border rounded-md max-h-48 overflow-y-auto">
-                    {filteredListings.map((l: any) => (
-                      <button
-                        key={l.id}
-                        type="button"
-                        onClick={() => { set("business_id", l.id); if (!form.business_name) set("business_name", l.title); }}
-                        className="block w-full text-left px-3 py-2 text-sm hover:bg-muted"
-                      >
-                        {l.title}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-            
+          <div className={ADMIN_FIELD_GRID_TIGHT}>
+            <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
+            <div>
+              <Label>Linked Business Listing</Label>
+              {selectedListing ? (
+                <div className="flex items-center justify-between gap-2 rounded-md border px-3 py-2 mt-1">
+                  <span className="text-sm">{selectedListing.title}</span>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => set("business_id", null)}>Clear</Button>
+                </div>
+              ) : (
+                <>
+                  <Input
+                    placeholder="Search listings to link..."
+                    value={businessQuery}
+                    onChange={(e) => setBusinessQuery(e.target.value)}
+                    className="mt-1"
+                  />
+                  {filteredListings.length > 0 && (
+                    <div className="mt-1 border rounded-md max-h-48 overflow-y-auto">
+                      {filteredListings.map((l: any) => (
+                        <button
+                          key={l.id}
+                          type="button"
+                          onClick={() => { set("business_id", l.id); if (!form.business_name) set("business_name", l.title); }}
+                          className="block w-full text-left px-3 py-2 text-sm hover:bg-muted"
+                        >
+                          {l.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+            </div>
           </div>
           <div><Label>Deal Label <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
 
@@ -295,26 +302,28 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               </div>
             )}
           </div>
-          <div>
-            <Label>Freebie Text</Label>
-            <Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" />
-            {form.discount_type === "freebie" && (
-              <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
-            )}
+          <div className={ADMIN_FIELD_GRID_TIGHT}>
+            <div>
+              <Label>Freebie Text</Label>
+              <Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" />
+              {form.discount_type === "freebie" && (
+                <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
+              )}
+            </div>
+            <div>
+              <Label>Short Card Deal Text <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
+              <Input value={form.card_deal_text || ""} onChange={(e) => set("card_deal_text", e.target.value)} placeholder="e.g. Free breakfast" />
+              <p className="text-xs text-muted-foreground mt-1">
+                Shown in place of the deal text on the listing, homepage and saved cards when the full wording is too long. Leave blank to use the freebie / savings text everywhere.
+              </p>
+            </div>
+            <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
           </div>
-          <div>
-            <Label>Short Card Deal Text <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label>
-            <Input value={form.card_deal_text || ""} onChange={(e) => set("card_deal_text", e.target.value)} placeholder="e.g. Free breakfast" />
-            <p className="text-xs text-muted-foreground mt-1">
-              Shown in place of the deal text on the listing, homepage and saved cards when the full wording is too long. Leave blank to use the freebie / savings text everywhere.
-            </p>
-          </div>
-          <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
 
 
           {/* Tag + sub-tags (same as events) */}
-          <div><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <div className="col-span-2 lg:col-span-1"><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
             <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
             <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
           </div>
@@ -340,14 +349,16 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 falls back to the card cover image.
               </p>
             </div>
-            {SPECIAL_IMAGE_SLOTS.map((slot) => (
-              <ImageSlotField
-                key={slot.key}
-                slot={slot}
-                value={form[slot.field] || ""}
-                onChange={(url) => set(slot.field, url)}
-              />
-            ))}
+            <div className={ADMIN_IMAGE_GRID}>
+              {SPECIAL_IMAGE_SLOTS.map((slot) => (
+                <ImageSlotField
+                  key={slot.key}
+                  slot={slot}
+                  value={form[slot.field] || ""}
+                  onChange={(url) => set(slot.field, url)}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Validity + always active */}
@@ -404,10 +415,11 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           {/* Simplified price block */}
           <div className="border rounded-md p-3 space-y-3">
             <p className="text-sm font-medium">Price</p>
-            <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
-            <div><Label>Price Notes <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
-            <div><Label>Original Price <span className="text-xs text-muted-foreground font-normal">(optional — strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
-            
+            <div className="space-y-3 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-3">
+              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
+              <div><Label>Price Notes <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
+              <div><Label>Original Price <span className="text-xs text-muted-foreground font-normal">(optional — strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
+            </div>
           </div>
 
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
@@ -415,28 +427,30 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             listings={listings || []}
             onApply={(c) => setForm((f: any) => ({ ...f, ...c }))}
           />
-          <MultiContactField
-            label="Contact Phone"
-            type="tel"
-            primary={form.contact_phone || ""}
-            onPrimaryChange={(v) => set("contact_phone", v)}
-            extras={form.additional_phones || []}
-            onExtrasChange={(v) => set("additional_phones", v)}
-            addLabel="Add phone"
-          />
-          <MultiContactField
-            label="WhatsApp"
-            type="tel"
-            primary={form.contact_whatsapp || ""}
-            onPrimaryChange={(v) => set("contact_whatsapp", v)}
-            extras={form.additional_whatsapps || []}
-            onExtrasChange={(v) => set("additional_whatsapps", v)}
-            addLabel="Add WhatsApp"
-          />
-          <div><Label>Contact Email</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} placeholder="e.g. info@example.com" /></div>
-          <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
-          <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
-          
+          <div className={ADMIN_FIELD_GRID_TIGHT}>
+            <MultiContactField
+              label="Contact Phone"
+              type="tel"
+              primary={form.contact_phone || ""}
+              onPrimaryChange={(v) => set("contact_phone", v)}
+              extras={form.additional_phones || []}
+              onExtrasChange={(v) => set("additional_phones", v)}
+              addLabel="Add phone"
+            />
+            <MultiContactField
+              label="WhatsApp"
+              type="tel"
+              primary={form.contact_whatsapp || ""}
+              onPrimaryChange={(v) => set("contact_whatsapp", v)}
+              extras={form.additional_whatsapps || []}
+              onExtrasChange={(v) => set("additional_whatsapps", v)}
+              addLabel="Add WhatsApp"
+            />
+            <div><Label>Contact Email</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} placeholder="e.g. info@example.com" /></div>
+            <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
+            <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
+          </div>
+
           <div>
             <Label>Terms <span className="text-xs text-muted-foreground font-normal">(add one per line — each appears as its own bullet)</span></Label>
             <TermsEditor value={form.terms || ""} onChange={(v) => set("terms", v)} />
