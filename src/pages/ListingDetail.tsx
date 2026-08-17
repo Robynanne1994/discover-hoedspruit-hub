@@ -1646,10 +1646,10 @@ const ListingDetail = () => {
               <span style={{ fontSize: 13, color: MUTED }}>· Never Closes</span>
             )}
             {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-              <span style={{ fontSize: 13, color: MUTED }}>· Closes {openStatus.closes}</span>
+              <span style={{ fontSize: 13, color: MUTED }}>· Closes at {openStatus.closes}</span>
             )}
             {openStatus.state === "closed" && openStatus.opensAt && (
-              <span style={{ fontSize: 13, color: MUTED }}>· Opens {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
+              <span style={{ fontSize: 13, color: MUTED }}>· Opens at {openStatus.opensAt}&nbsp;{openStatus.opensDay || ""}</span>
             )}
             {todayHoliday && (
               <span style={{ fontSize: 13, color: MUTED }}>· {todayHoliday.name} — hours might differ</span>
