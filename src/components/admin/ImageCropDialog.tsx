@@ -10,7 +10,7 @@ import { Pipette, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import CropPreviewImage from "./CropPreviewImage";
 import CropGuides from "./CropGuides";
-import { coverCropArea, exportSize } from "@/lib/cropPreview";
+import { exportSize } from "@/lib/cropPreview";
 import type { SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageCropDialogProps {
@@ -516,14 +516,14 @@ const ImageCropDialog = ({
                 size="icon"
                 className="h-8 w-8 shrink-0"
                 onClick={() => nudgeZoom(-ZOOM_STEP)}
-                disabled={zoom <= MIN_ZOOM}
+                disabled={zoom <= effectiveMinZoom}
                 aria-label="Zoom out"
               >
                 <ZoomOut className="h-4 w-4" />
               </Button>
               <Slider
                 value={[zoom]}
-                min={MIN_ZOOM}
+                min={effectiveMinZoom}
                 max={MAX_ZOOM}
                 step={0.01}
                 onValueChange={(v) => setZoom(v[0])}
