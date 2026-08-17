@@ -41,7 +41,7 @@ export const listingStatus = (
       ? { label: "Open", detail: `Closes ${until}`, tone: SAGE }
       : { label: "Open Now", tone: SAGE };
   }
-  const opens = to12h(opensAt(hours));
+  const opens = to24h(opensAt(hours));
   return opens
     ? { label: "Closed", detail: `Opens ${opens}`, tone: CLAY }
     : { label: "Closed Now", tone: CLAY };
