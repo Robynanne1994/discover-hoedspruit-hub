@@ -49,7 +49,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   website: "URL",
   km_from_town: "numeric km from town centre, e.g. 5",
   good_to_know: `pipe-separated highlights shown as "Good to know" chips, e.g. Self-catering | Rim-flow pool | Pet friendly (leave blank to hide the card)`,
-  whatsapp_cta_label: `text shown instead of the WhatsApp number on the contact tab; leave blank for the default "Chat on WhatsApp"`,
 
   // Restaurant
   meal: `pipe-separated, options: ${MEAL_OPTIONS.join(" | ")}`,

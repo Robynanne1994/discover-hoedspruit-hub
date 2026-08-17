@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Store } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { SPECIAL_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { specialImage, type SpecialCardLike } from "@/lib/specialCard";
@@ -15,7 +16,7 @@ import { type } from "@/lib/type";
 // The columns every specials surface reads. Kept in one place so the select
 // below and the card model can't drift apart.
 const SPECIAL_CARD_COLUMNS =
-  "id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, saved_image_url, " +
+  `id, title, title_override, business_name, ${SPECIAL_IMAGE_COLUMNS}, ` +
   "badge_override, day_of_week, discount_type, discount_value, freebie_text, card_deal_text, card_footer_text, " +
   "valid_from, valid_until, price, price_label, original_price, savings, is_featured, created_at";
 

@@ -305,25 +305,38 @@ const AdminEvents = () => {
           <DialogContent className={ADMIN_EDITOR_DIALOG}>
             <DialogHeader><DialogTitle>{editing ? "Edit Event" : "Add Event"}</DialogTitle></DialogHeader>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
-              <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
-              <div className="space-y-2">
+              <div>
+                <Label>Title</Label>
+                <Input
+                  value={form.title}
+                  // With "use exactly as typed" on, the override follows the
+                  // title field — there is no second box to keep in step.
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      title: e.target.value,
+                      ...(f.title_override.trim() ? { title_override: e.target.value } : {}),
+                    }))
+                  }
+                  required
+                />
+              </div>
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
                 <div className="flex items-center gap-2">
                   <Checkbox
                     id="event-use-title-override"
                     checked={!!(form.title_override && form.title_override.trim())}
-                    onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : "" })}
+                    onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title || "") : "" })}
                   />
                   <Label htmlFor="event-use-title-override" className="text-sm cursor-pointer font-normal">
-                    Use custom title (overrides auto-capitalisation)
+                    Use the title exactly as typed (no auto-capitalisation)
                   </Label>
                 </div>
-                {!!(form.title_override && form.title_override.trim()) && (
-                  <Input
-                    placeholder="Custom title — rendered exactly as typed"
-                    value={form.title_override}
-                    onChange={(e) => setForm({ ...form, title_override: e.target.value })}
-                  />
-                )}
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
+                  <span className="text-sm font-medium">Featured event</span>
+                  <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
+                </label>
               </div>
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
               <div className="grid grid-cols-2 gap-4">
@@ -393,6 +406,7 @@ const AdminEvents = () => {
                 The remaining pictures — Happening Soon, homepage, saved and search — are set from the
                 event's own page, where each one previews in the card it lands in.
               </p>
+              <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
               <div className="grid gap-4 lg:grid-cols-2">
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
@@ -453,12 +467,6 @@ const AdminEvents = () => {
                   addLabel="Add WhatsApp"
                 />
               </div>
-              <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
-              <label className="flex items-center gap-2 cursor-pointer select-none">
-                <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
-                <span className="text-sm font-medium">Featured event</span>
-                <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
-              </label>
               <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
               {(() => {
                 const initial = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;

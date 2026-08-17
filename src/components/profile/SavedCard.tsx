@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, Heart, Instagram, MapPin, MessageCircle, Mountain, ShoppingBag, Store, Tag, Utensils, Wrench } from "lucide-react";
+import { channelImage, eventImage, listingImage, specialSurfaceImage } from "@/lib/imageFallback";
 import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
@@ -288,7 +289,16 @@ const SavedCard = ({
   const locRef = useRef<HTMLSpanElement | null>(null);
   const [titleLines, setTitleLines] = useState(1);
   const [locLines, setLocLines] = useState(1);
-  const src = it.saved_image_url || it.image_url;
+  // The saved tile has its own crop, but a row with only one picture must not
+  // leave this grid full of blank panels — see imageFallback.ts.
+  const src =
+    type === "event"
+      ? eventImage(it, "saved")
+      : type === "special"
+        ? specialSurfaceImage(it, "saved")
+        : type === "resource"
+          ? channelImage(it, "saved")
+          : listingImage(it, "saved");
   const { lines, status, badge, ratingChip, reviewCount } = buildContent(it, type);
   const override = (it.title_override ?? "").toString().trim();
   const title = override || titleCase(it.title);

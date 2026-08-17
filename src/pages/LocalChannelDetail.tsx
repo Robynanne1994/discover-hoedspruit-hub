@@ -6,6 +6,7 @@ import {
   Heart, Share2, Megaphone, Facebook, Instagram,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { channelImage } from "@/lib/imageFallback";
 import ImageLightbox from "@/components/ImageLightbox";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useAuth } from "@/hooks/useAuth";
@@ -165,7 +166,7 @@ const LocalChannelDetail = () => {
   }
 
   const type_ = resource.resource_type || "link";
-  const heroImage = resource.detail_image_url || resource.image_url || resource.qr_image_url;
+  const heroImage = channelImage(resource, "detail");
   const isImageType = type_ === "qr" || type_ === "image";
 
   const handlePrimaryAction = () => {
@@ -231,7 +232,7 @@ const LocalChannelDetail = () => {
           `${displayTitle} — a local Hoedspruit channel on ${resource.platform}.`
         }
         path={`/local-channels/${resource.slug || resource.id}`}
-        image={resource.detail_image_url || resource.image_url || undefined}
+        image={channelImage(resource, "detail") || undefined}
         type="article"
       />
 

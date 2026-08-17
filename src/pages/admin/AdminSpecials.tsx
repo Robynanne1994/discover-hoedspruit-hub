@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { specialImageSlot } from "@/lib/specialImageSlots";
@@ -18,6 +17,7 @@ import { Link } from "react-router-dom";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
+import { TermsEditor } from "@/components/admin/SpecialEditDialog";
 import { parseDays } from "@/lib/specialDays";
 
 
@@ -267,27 +267,36 @@ const AdminSpecials = () => {
             <Button variant="ghost" size="icon" onClick={resetForm}><X className="h-4 w-4" /></Button>
           </div>
 
-          <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
-          <div className="space-y-2">
+          <div>
+            <Label>Title *</Label>
+            <Input
+              value={form.title}
+              // With "use exactly as typed" on, the override follows the title
+              // field — there is no second box to keep in step.
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  title: e.target.value,
+                  ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
+                }))
+              }
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <Switch
                 id="special-use-title-override"
                 checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : null })}
+                onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title || "") : null })}
               />
               <Label htmlFor="special-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use custom title (overrides auto-capitalisation)
+                Use the title exactly as typed (no auto-capitalisation)
               </Label>
             </div>
-            {!!(form.title_override && String(form.title_override).trim()) && (
-              <Textarea
-                rows={2}
-                className="resize-none"
-                placeholder="Custom title — rendered exactly as typed"
-                value={form.title_override || ""}
-                onChange={(e) => setForm({ ...form, title_override: e.target.value })}
-              />
-            )}
+            <div className="flex items-center gap-2">
+              <Switch id="special-featured" checked={!!form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
+              <Label htmlFor="special-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -408,12 +417,6 @@ const AdminSpecials = () => {
           <div><Label>Price Notes (shown next to price, optional)</Label><Input placeholder="e.g. per person" value={form.price_label || ""} onChange={(e) => setForm({ ...form, price_label: e.target.value || null })} /></div>
           <div><Label>Original Price (optional, for showing savings)</Label><Input placeholder="R" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} /></div>
 
-          <GroupLabel>Visibility</GroupLabel>
-          <div className="flex items-center gap-3">
-            <Switch checked={!!form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
-            <Label>Featured</Label>
-          </div>
-
           <GroupLabel>Booking</GroupLabel>
           <div className="flex items-center gap-3">
             <Switch checked={form.booking_required} onCheckedChange={(v) => setForm({ ...form, booking_required: v })} />
@@ -455,7 +458,12 @@ const AdminSpecials = () => {
           <div><Label>Contact Email (optional)</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => setForm({ ...form, contact_email: e.target.value || null })} /></div>
 
           <GroupLabel>Other</GroupLabel>
-          <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
+          <div>
+            <Label>
+              Terms & Conditions <span className="text-xs text-muted-foreground font-normal">(optional — one per line, each shows as its own bullet)</span>
+            </Label>
+            <TermsEditor value={form.terms || ""} onChange={(v) => setForm({ ...form, terms: v || null })} />
+          </div>
 
           <div className="border-t border-border pt-4 mt-4 space-y-4">
             <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.business_name}>

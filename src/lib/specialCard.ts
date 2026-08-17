@@ -11,6 +11,8 @@ import {
   type SpecialLike,
   type SpecialValue,
 } from "./specialValue";
+import { specialSurfaceImage } from "./imageFallback";
+import type { SpecialImageSlotKey } from "./specialImageSlots";
 
 // Specials are heterogeneous — a fixed price, a percentage, a freebie, a weekly
 // night, a seasonal package — but every card that shows one has the same three
@@ -24,39 +26,25 @@ export interface SpecialCardLike extends SpecialLike, SpecialBadgeLike {
   homepage_image_url?: string | null;
   saved_image_url?: string | null;
   featured_image_url?: string | null;
+  search_image_url?: string | null;
 }
 
-export type SpecialSurface = "home" | "list" | "saved" | "detail" | "featured";
+export type SpecialSurface = "home" | "list" | "saved" | "detail" | "featured" | "search";
 
-const str = (v: unknown): string | null => {
-  const s = String(v ?? "").trim();
-  return s ? s : null;
+const SURFACE_SLOT: Record<SpecialSurface, SpecialImageSlotKey> = {
+  home: "homepage",
+  list: "card",
+  saved: "saved",
+  detail: "detail",
+  featured: "featured",
+  search: "search",
 };
 
-// Each surface has a preferred crop and the same fallback chain behind it, so a
-// special missing its surface-specific art still shows a picture everywhere.
-export const specialImage = (s: SpecialCardLike, surface: SpecialSurface): string | null => {
-  const preferred: Record<SpecialSurface, (string | null | undefined)[]> = {
-    home: [s.homepage_image_url],
-    list: [s.image_url],
-    saved: [s.saved_image_url],
-    detail: [s.detail_image_url],
-    featured: [s.featured_image_url],
-  };
-  const chain = [
-    ...preferred[surface],
-    s.image_url,
-    s.homepage_image_url,
-    s.detail_image_url,
-    s.saved_image_url,
-    s.featured_image_url,
-  ];
-  for (const candidate of chain) {
-    const v = str(candidate);
-    if (v) return v;
-  }
-  return null;
-};
+// Each surface has a preferred crop and the same fallback chain behind it — see
+// imageFallback.ts — so a special missing its surface-specific art still shows
+// a picture everywhere rather than a blank panel.
+export const specialImage = (s: SpecialCardLike, surface: SpecialSurface): string | null =>
+  specialSurfaceImage(s as Record<string, unknown>, SURFACE_SLOT[surface]);
 
 export interface SpecialCardModel {
   /** Pill that sits on the image. Always present — every card wears one. */

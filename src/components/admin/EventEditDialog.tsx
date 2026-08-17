@@ -138,34 +138,45 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     onError: (e: any) => toast.error(e.message || "Failed to delete"),
   });
 
-  const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
+  const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={ADMIN_EDITOR_DIALOG}>
         <DialogHeader><DialogTitle>Edit Event</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
-          <div><Label>Title</Label><Textarea rows={2} className="resize-none" value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
-          <div className="space-y-2">
+          <div>
+            <Label>Title</Label>
+            <Textarea
+              rows={2}
+              className="resize-none"
+              value={form.title || ""}
+              // With "use exactly as typed" on, the override follows the title
+              // field — there is no second box to keep in step.
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  title: e.target.value,
+                  ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
+                }))
+              }
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <Switch
                 id="event-dlg-use-title-override"
                 checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => set("title_override", v ? (form.title_override || form.title || "") : "")}
+                onCheckedChange={(v) => set("title_override", v ? (form.title || "") : "")}
               />
               <Label htmlFor="event-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use custom title (overrides auto-capitalisation)
+                Use the title exactly as typed (no auto-capitalisation)
               </Label>
             </div>
-            {!!(form.title_override && String(form.title_override).trim()) && (
-              <Textarea
-                rows={2}
-                className="resize-none"
-                placeholder="Custom title — rendered exactly as typed"
-                value={form.title_override || ""}
-                onChange={(e) => set("title_override", e.target.value)}
-              />
-            )}
+            <div className="flex items-center gap-2">
+              <Switch id="event-dlg-featured" checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
+              <Label htmlFor="event-dlg-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+            </div>
           </div>
           <div><Label>Tag/Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
@@ -287,7 +298,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           <ListingContactPicker
             listings={listings || []}
-            onApply={(c) => setForm((f: any) => ({ ...f, ...c }))}
+            onApply={(c) => setForm((f) => ({ ...f, ...c }))}
           />
           <div className="grid gap-3 lg:grid-cols-3">
             <MultiContactField
@@ -319,7 +330,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               addLabel="Add WhatsApp"
             />
           </div>
-          <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
           <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
           {(() => {
             const hostCount = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
@@ -342,7 +352,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       <Label className="text-sm font-semibold text-slate-950">Host {h.n}</Label>
                       {h.n === shown && shown > 0 && (
                         <Button type="button" variant="ghost" size="sm" onClick={() => {
-                          setForm((f: any) => ({
+                          setForm((f) => ({
                             ...f,
                             [h.nameKey]: "", [h.subKey]: "", [h.imgKey]: "", [h.linkKey]: "", [h.listingKey]: "",
                             __hostsShown: shown - 1,
@@ -356,7 +366,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       key={`${event?.id ?? "new"}-${h.n}`}
                       value={{ link: form[h.linkKey] || "", listingId: form[h.listingKey] || "" }}
                       listings={listings || []}
-                      onChange={(v) => setForm((f: any) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
+                      onChange={(v) => setForm((f) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
                     />
                     <ImageSlotField
                       slot={hostSlot}

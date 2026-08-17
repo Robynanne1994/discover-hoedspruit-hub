@@ -59,7 +59,7 @@ const VENUE_STYLE_TAG_OPTIONS = ["Rustic", "Modern", "Classic", "Boho", "Safari"
 const VENUE_SETTING_OPTIONS = ["Bush", "Garden", "Riverside", "Farm", "Town", "Lodge"];
 const VENUE_INDOOR_OUTDOOR_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
-const emptyForm = { treatments: [] as string[], avg_price_per_person_per_night: "" as string, rooms_count: null as number | null, drive_through: null as boolean | null, title: "", title_override: "" as string, card_primary_subcategory: "" as string, description: "", image_url: "", detail_image_url: "", saved_image_url: "", card_image_url: "", homepage_image_url: "", search_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, whatsapp_cta_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", good_to_know: [] as string[], gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, sleeps_children: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const emptyForm = { treatments: [] as string[], avg_price_per_person_per_night: "" as string, rooms_count: null as number | null, drive_through: null as boolean | null, title: "", title_override: "" as string, card_primary_subcategory: "" as string, description: "", image_url: "", detail_image_url: "", saved_image_url: "", card_image_url: "", homepage_image_url: "", search_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", good_to_know: [] as string[], gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, sleeps_children: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const TreatmentsEditor = ({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) => {
   const items = Array.isArray(value) ? value : [];
@@ -131,8 +131,23 @@ const AdminListings = () => {
   const [showNewSubSub, setShowNewSubSub] = useState(false);
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
+  const [newShopType, setNewShopType] = useState("");
   const [newServiceInput, setNewServiceInput] = useState("");
   const [newEventTypeInput, setNewEventTypeInput] = useState("");
+
+  /**
+   * Add a shop type from the form itself: it joins the dropdown's options and
+   * becomes this listing's type in one action. Typing one that already exists
+   * just selects it rather than adding a near-duplicate.
+   */
+  const addShopType = (existing: string[]) => {
+    const trimmed = newShopType.trim();
+    if (!trimmed) return;
+    const match = existing.find((o) => o.toLowerCase() === trimmed.toLowerCase());
+    if (!match) setCustomShopTypes((prev) => Array.from(new Set([...prev, trimmed])));
+    setForm((f) => ({ ...f, shop_type: match ?? trimmed }));
+    setNewShopType("");
+  };
 
   // Custom (admin-added) Home & Garden services, persisted in site_content
   const { data: customHGServices } = useQuery({
@@ -433,7 +448,6 @@ const AdminListings = () => {
         instagram: values.instagram || null,
         whatsapp: values.whatsapp || null,
         whatsapp_label: (values.whatsapp_label || "").trim() || null,
-        whatsapp_cta_label: (values.whatsapp_cta_label || "").trim() || null,
         additional_emails: sanitizeContactArray(values.additional_emails),
         additional_email_labels: (values.additional_email_labels || []).map((s: string) => (s || "").trim()),
         additional_phones: sanitizeContactArray(values.additional_phones),
@@ -655,6 +669,20 @@ const AdminListings = () => {
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setCatCardLabels({}); setSelectedSubIds([]); setSelectedSubSubIds([]); setCustomRowsVisible(0); setOpen(false); };
 
+  /**
+   * Close without saving — the same path the dialog's own dismiss takes, so a
+   * listing opened from another screen still returns there.
+   */
+  const closeEditor = () => {
+    const ret = returnTo;
+    resetForm();
+    if (ret) {
+      setReturnTo(null);
+      navigate(ret, { replace: true });
+    }
+    setOpen(false);
+  };
+
   const openEdit = (l: Listing) => {
     setEditing(l);
     const hours = l.opening_hours as Record<string, string> | null;
@@ -689,7 +717,6 @@ const AdminListings = () => {
       instagram: (l as any).instagram ?? "",
       whatsapp: (l as any).whatsapp ?? "",
       whatsapp_label: (l as any).whatsapp_label ?? "",
-      whatsapp_cta_label: (l as any).whatsapp_cta_label ?? "",
       additional_emails: ((l as any).additional_emails ?? []) as string[],
       additional_email_labels: ((l as any).additional_email_labels ?? []) as string[],
       additional_phones: ((l as any).additional_phones ?? []) as string[],
@@ -929,27 +956,39 @@ const AdminListings = () => {
             <DialogContent className={ADMIN_EDITOR_DIALOG}>
               <DialogHeader><DialogTitle>{editing ? "Edit Listing" : "Add Listing"}</DialogTitle></DialogHeader>
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
-                <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
-                <div className="space-y-2">
+                <div>
+                  <Label>Title</Label>
+                  <Input
+                    value={form.title}
+                    // With "use exactly as typed" on, the override follows the
+                    // title field — there is no second box to keep in step.
+                    onChange={(e) =>
+                      setForm((f) => ({
+                        ...f,
+                        title: e.target.value,
+                        ...(f.title_override?.trim() ? { title_override: e.target.value } : {}),
+                      }))
+                    }
+                    required
+                  />
+                </div>
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="listing-use-title-override"
                       checked={!!(form.title_override && form.title_override.trim())}
-                      onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : "" })}
+                      onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title || "") : "" })}
                     />
                     <Label htmlFor="listing-use-title-override" className="text-sm cursor-pointer font-normal">
-                      Use custom title (overrides auto-capitalisation)
+                      Use the title exactly as typed (no auto-capitalisation)
                     </Label>
                   </div>
-                  {!!(form.title_override && form.title_override.trim()) && (
-                    <Input
-                      placeholder="Custom title — rendered exactly as typed"
-                      value={form.title_override}
-                      onChange={(e) => setForm({ ...form, title_override: e.target.value })}
-                    />
-                  )}
+                  <div className="flex items-center gap-2">
+                    <Switch id="listing-featured" checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
+                    <Label htmlFor="listing-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+                  </div>
                 </div>
-                
+
                 <div>
                   <Label>Categories</Label>
                   
@@ -1123,10 +1162,7 @@ const AdminListings = () => {
                   <div>
                     <Label>Images</Label>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      One picture per place the listing appears. Each crops to the exact box that
-                      screen paints into and draws whatever the app lays on top of it — the white
-                      title card, the heart, the rating chip — so what you save is what shows.
-                      Anything left empty falls back to the individual page image.
+                      Anything left empty borrows one of the others.
                     </p>
                   </div>
                   <div className={ADMIN_IMAGE_GRID}>
@@ -1147,6 +1183,12 @@ const AdminListings = () => {
                       />
                     ))}
                   </div>
+                  {/* The gallery lives with the rest of the pictures — one place
+                      in the form where every upload for this listing is done. */}
+                  <GalleryUpload
+                    value={form.gallery_images}
+                    onChange={(val) => setForm({ ...form, gallery_images: val })}
+                  />
                 </div>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
@@ -1233,17 +1275,6 @@ const AdminListings = () => {
                     placeholder="e.g. +27791234567"
                     addLabel="Add WhatsApp"
                   />
-                  <div>
-                    <Label>WhatsApp Chat Text</Label>
-                    <Input
-                      value={form.whatsapp_cta_label}
-                      onChange={(e) => setForm({ ...form, whatsapp_cta_label: e.target.value })}
-                      placeholder="Chat on WhatsApp"
-                    />
-                    <p className="text-[11px] text-muted-foreground mt-1">
-                      Shown instead of the WhatsApp number on the listing's Contact tab. Leave blank for the default “Chat on WhatsApp”.
-                    </p>
-                  </div>
                 </div>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
@@ -1253,11 +1284,6 @@ const AdminListings = () => {
                   <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
                    <div><Label>Review Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
-                  <Label>Featured</Label>
-                </div>
-
                 <div className="border-t border-border pt-4 mt-2">
                   <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Detail Page</p>
                 </div>
@@ -1294,11 +1320,6 @@ const AdminListings = () => {
                     placeholder="e.g. Self-catering, then press Enter"
                   />
                 </div>
-
-                <GalleryUpload
-                  value={form.gallery_images}
-                  onChange={(val) => setForm({ ...form, gallery_images: val })}
-                />
 
                 <div className="border-t border-border pt-4 mt-2 space-y-3">
                   <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Custom Detail Rows</p>
@@ -1576,23 +1597,32 @@ const AdminListings = () => {
                                 ))}
                               </SelectContent>
                             </Select>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              className="mt-2"
-                              onClick={() => {
-                                const name = window.prompt("Enter new shop type:");
-                                const trimmed = name?.trim();
-                                if (!trimmed) return;
-                                if (!merged.some((o) => o.toLowerCase() === trimmed.toLowerCase())) {
-                                  setCustomShopTypes((prev) => Array.from(new Set([...prev, trimmed])));
-                                }
-                                setForm({ ...form, shop_type: trimmed });
-                              }}
-                            >
-                              Add New Shop Type
-                            </Button>
+                            {/* Typed in the form, not in a browser prompt: the
+                                new type joins the list and is selected for this
+                                listing in one go. */}
+                            <div className="flex gap-2 mt-2">
+                              <Input
+                                value={newShopType}
+                                onChange={(e) => setNewShopType(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key !== "Enter") return;
+                                  e.preventDefault();
+                                  addShopType(merged);
+                                }}
+                                placeholder="Add another shop type"
+                                className="h-9 text-sm"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="shrink-0"
+                                disabled={!newShopType.trim()}
+                                onClick={() => addShopType(merged)}
+                              >
+                                <Plus className="h-3.5 w-3.5 mr-1" /> Add
+                              </Button>
+                            </div>
                           </>
                         );
                       })()}
@@ -2069,6 +2099,9 @@ const AdminListings = () => {
                       Delete
                     </Button>
                   )}
+                  <Button type="button" variant="outline" onClick={closeEditor} disabled={upsert.isPending}>
+                    Cancel
+                  </Button>
                   <Button type="submit" className="flex-1" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
                 </div>
               </form>

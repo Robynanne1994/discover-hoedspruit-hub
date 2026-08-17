@@ -23,6 +23,7 @@ import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { sharePlainText } from "@/lib/share";
 import Seo from "@/components/Seo";
+import { eventImage, listingImage, LISTING_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import LocationMap from "@/components/LocationMap";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon } from "@/lib/type";
 import {
@@ -243,11 +244,14 @@ const EventDetail = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("listings")
-        .select("id, image_url, card_image_url, detail_image_url")
+        .select(`id, ${LISTING_IMAGE_COLUMNS}`)
         .in("id", hostListingIds);
       const map: Record<string, string> = {};
       (data ?? []).forEach((l: any) => {
-        const url = l.image_url || l.card_image_url || l.detail_image_url;
+        // The Hosted by avatar is a circle, and so is the listing's search
+        // thumbnail — the one picture on the listing that was cropped knowing
+        // its corners get thrown away. Everything else is a fallback behind it.
+        const url = listingImage(l, "search");
         if (url) map[l.id] = url;
       });
       return map;
@@ -984,7 +988,7 @@ const EventDetail = () => {
           `${event.title} in Hoedspruit. Event details, dates and how to book on Hello Hoedspruit.`
         }
         path={`/events/${event.id}`}
-        image={(event as any).detail_image_url || event.image_url || undefined}
+        image={eventImage(event, "detail") || undefined}
         type="article"
         jsonLd={{
           "@context": "https://schema.org",
@@ -993,7 +997,7 @@ const EventDetail = () => {
           description: (event as any).description
             ? String((event as any).description).replace(/<[^>]*>/g, "").trim().slice(0, 500)
             : undefined,
-          image: (event as any).detail_image_url || event.image_url || undefined,
+          image: eventImage(event, "detail") || undefined,
           startDate: (event as any).start_date || (event as any).date || undefined,
           endDate: (event as any).end_date || undefined,
           eventStatus: "https://schema.org/EventScheduled",
@@ -1013,8 +1017,8 @@ const EventDetail = () => {
       />
       {/* Hero (4:3) with floating action buttons */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
-        {((event as any).detail_image_url || event.image_url) && (
-          <img src={(event as any).detail_image_url || event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        {eventImage(event, "detail") && (
+          <img src={eventImage(event, "detail")!} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
 
         )}
         <button
