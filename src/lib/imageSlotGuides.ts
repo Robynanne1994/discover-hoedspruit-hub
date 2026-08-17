@@ -24,9 +24,15 @@ export type GuideShape =
   | {
       kind: "pill";
       text: string;
+      /** A second, lighter run of text after `text` — e.g. a review count. */
+      mutedText?: string;
       height: number;
       paddingX: number;
       fontSize: number;
+      /** Matches the live chip's weight. Defaults to 700. */
+      fontWeight?: number;
+      /** Space between the star / text runs, in box px. Defaults to 4. */
+      gap?: number;
       letterSpacing?: string;
       /** `light` is the frosted white chip; `deal` red; `quiet` olive. */
       tone: "light" | "deal" | "quiet";
@@ -34,11 +40,19 @@ export type GuideShape =
       star?: boolean;
     }
   /** A round button or badge floating on the image. */
-  | { kind: "circle"; size: number; glyph: "heart" | "date" }
+  | {
+      kind: "circle";
+      size: number;
+      glyph: "heart" | "date";
+      /** The lucide icon size the live button uses. Defaults to 55% of `size`. */
+      iconSize?: number;
+      strokeWidth?: number;
+    }
   /** The white sheet that laps over the bottom of a detail hero. */
   | { kind: "sheet"; height: number; radius: number; label: string }
   /** The whole image clipped to a circle, as search rows and avatars do. */
   | { kind: "circleMask"; label: string };
+
 
 export type SlotGuide = {
   key: string;
