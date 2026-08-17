@@ -175,6 +175,9 @@ const ImageCropDialog = ({
       setCroppedArea(null);
       setBgColor("#ffffff");
       setPicking(false);
+      setMediaSize(null);
+      setCropSize(null);
+      fittedRef.current = false;
     }
   }, [open, defaultAspect, lockAspect]);
 
