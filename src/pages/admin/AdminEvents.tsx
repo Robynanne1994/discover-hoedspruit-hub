@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ImageSlotField from "@/components/admin/ImageSlotField";
+import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
@@ -301,7 +302,7 @@ const AdminEvents = () => {
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Event</Button>
           </DialogTrigger>
-          <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogContent className={ADMIN_EDITOR_DIALOG}>
             <DialogHeader><DialogTitle>{editing ? "Edit Event" : "Add Event"}</DialogTitle></DialogHeader>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
               <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
@@ -375,75 +376,83 @@ const AdminEvents = () => {
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
                 </select>
               </div>
-              {(["card", "detail"] as const).map((key) => {
-                const slot = eventImageSlot(key);
-                return (
-                  <ImageSlotField
-                    key={key}
-                    slot={slot}
-                    value={((form as any)[slot.field] as string) || ""}
-                    onChange={(v) => setForm({ ...form, [slot.field]: v } as any)}
-                  />
-                );
-              })}
+              <div className={ADMIN_IMAGE_GRID}>
+                {(["card", "detail"] as const).map((key) => {
+                  const slot = eventImageSlot(key);
+                  return (
+                    <ImageSlotField
+                      key={key}
+                      slot={slot}
+                      value={((form as any)[slot.field] as string) || ""}
+                      onChange={(v) => setForm({ ...form, [slot.field]: v } as any)}
+                    />
+                  );
+                })}
+              </div>
               <p className="text-[11px] text-muted-foreground">
                 The remaining pictures — Happening Soon, homepage, saved and search — are set from the
                 event's own page, where each one previews in the card it lands in.
               </p>
-              <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
-              <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
-              <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
-              <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
+              <div className="grid gap-4 lg:grid-cols-2">
+                <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
+                <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
+                <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
+                <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
+              </div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
-              <div className="space-y-2">
-                <Label>What's Included</Label>
-                <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
-                <IncludedChipsInput value={form.included} onChange={(v) => setForm({ ...form, included: v })} />
-              </div>
-              <div className="space-y-2">
-                <Label>Price Notes</Label>
-                <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines under the price (e.g. "Per person", "Includes wine"). In CSV, separate notes with the <code>|</code> symbol.</p>
-                <IncludedChipsInput value={(form as any).price_notes || []} onChange={(v) => setForm({ ...form, price_notes: v } as any)} placeholder="e.g. Per person, then press Enter" />
-              </div>
-              <div className="space-y-2">
-                <Label>Notes</Label>
-                <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
-                <IncludedChipsInput value={(form as any).notes || []} onChange={(v) => setForm({ ...form, notes: v } as any)} placeholder="e.g. Bring your own chair, then press Enter" />
+              <div className="grid gap-4 lg:grid-cols-3">
+                <div className="space-y-2">
+                  <Label>What's Included</Label>
+                  <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
+                  <IncludedChipsInput value={form.included} onChange={(v) => setForm({ ...form, included: v })} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Price Notes</Label>
+                  <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines under the price (e.g. "Per person", "Includes wine"). In CSV, separate notes with the <code>|</code> symbol.</p>
+                  <IncludedChipsInput value={(form as any).price_notes || []} onChange={(v) => setForm({ ...form, price_notes: v } as any)} placeholder="e.g. Per person, then press Enter" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Notes</Label>
+                  <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
+                  <IncludedChipsInput value={(form as any).notes || []} onChange={(v) => setForm({ ...form, notes: v } as any)} placeholder="e.g. Bring your own chair, then press Enter" />
+                </div>
               </div>
               <ListingContactPicker
                 listings={listings || []}
                 onApply={(c) => setForm({ ...form, ...c })}
               />
-              <MultiContactField
-                label="Contact Email"
-                type="email"
-                primary={form.contact_email}
-                onPrimaryChange={(v) => setForm({ ...form, contact_email: v })}
-                extras={form.additional_emails}
-                onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
-                placeholder="info@example.com"
-                addLabel="Add email"
-              />
-              <MultiContactField
-                label="Contact Phone"
-                type="tel"
-                primary={form.contact_phone}
-                onPrimaryChange={(v) => setForm({ ...form, contact_phone: v })}
-                extras={form.additional_phones}
-                onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
-                placeholder="+27 ..."
-                addLabel="Add phone"
-              />
-              <MultiContactField
-                label="Contact WhatsApp"
-                type="tel"
-                primary={form.contact_whatsapp}
-                onPrimaryChange={(v) => setForm({ ...form, contact_whatsapp: v })}
-                extras={form.additional_whatsapps}
-                onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
-                placeholder="+27 ..."
-                addLabel="Add WhatsApp"
-              />
+              <div className="grid gap-4 lg:grid-cols-3">
+                <MultiContactField
+                  label="Contact Email"
+                  type="email"
+                  primary={form.contact_email}
+                  onPrimaryChange={(v) => setForm({ ...form, contact_email: v })}
+                  extras={form.additional_emails}
+                  onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                  placeholder="info@example.com"
+                  addLabel="Add email"
+                />
+                <MultiContactField
+                  label="Contact Phone"
+                  type="tel"
+                  primary={form.contact_phone}
+                  onPrimaryChange={(v) => setForm({ ...form, contact_phone: v })}
+                  extras={form.additional_phones}
+                  onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                  placeholder="+27 ..."
+                  addLabel="Add phone"
+                />
+                <MultiContactField
+                  label="Contact WhatsApp"
+                  type="tel"
+                  primary={form.contact_whatsapp}
+                  onPrimaryChange={(v) => setForm({ ...form, contact_whatsapp: v })}
+                  extras={form.additional_whatsapps}
+                  onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                  placeholder="+27 ..."
+                  addLabel="Add WhatsApp"
+                />
+              </div>
               <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />

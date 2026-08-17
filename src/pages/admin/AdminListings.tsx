@@ -16,6 +16,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { LISTING_IMAGE_SLOTS } from "@/lib/listingImageSlots";
+import {
+  ADMIN_EDITOR_DIALOG,
+  ADMIN_FIELD_GRID,
+  ADMIN_IMAGE_GRID,
+  ADMIN_PICKER_LIST,
+  ADMIN_TOGGLE_GRID,
+} from "@/lib/adminEditorLayout";
 import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
@@ -919,7 +926,7 @@ const AdminListings = () => {
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="h-4 w-4" /> Add Listing</Button>
             </DialogTrigger>
-            <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className={ADMIN_EDITOR_DIALOG}>
               <DialogHeader><DialogTitle>{editing ? "Edit Listing" : "Add Listing"}</DialogTitle></DialogHeader>
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
                 <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
@@ -946,7 +953,7 @@ const AdminListings = () => {
                 <div>
                   <Label>Categories</Label>
                   
-                  <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 border-gray-950 bg-slate-50">
+                  <div className={ADMIN_PICKER_LIST}>
                     {categories?.map((cat) => (
                       <div key={cat.id} className="flex items-center gap-2">
                         <Checkbox
@@ -974,7 +981,7 @@ const AdminListings = () => {
                   <div>
                     <Label>Subcategories</Label>
                     {availableSubs.length > 0 && (
-                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 border-gray-950 bg-slate-50">
+                      <div className={ADMIN_PICKER_LIST}>
                         {availableSubs.map((sub) => (
                           <div key={sub.id} className="flex items-center gap-2">
                             <Checkbox
@@ -1019,7 +1026,7 @@ const AdminListings = () => {
                             a listing in more than one category can read differently depending on which
                             category page it's being browsed from.
                           </p>
-                          <div className="space-y-3">
+                          <div className="space-y-3 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-6 lg:gap-y-3">
                             {selectedCats.map((cat) => {
                               // Only this category's own selected subcategories are valid options,
                               // plus the category title itself.
@@ -1068,7 +1075,7 @@ const AdminListings = () => {
                   <div>
                     <Label>Sub-subcategories</Label>
                     {availableSubSubs.length > 0 && (
-                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 border-gray-950 bg-slate-50">
+                      <div className={ADMIN_PICKER_LIST}>
                         {availableSubSubs.map((ss) => {
                           const parent = subcategories?.find((s) => s.id === ss.subcategory_id);
                           return (
@@ -1122,68 +1129,74 @@ const AdminListings = () => {
                       Anything left empty falls back to the individual page image.
                     </p>
                   </div>
-                  {LISTING_IMAGE_SLOTS.map((slot) => (
-                    <ImageSlotField
-                      key={slot.key}
-                      slot={slot}
-                      value={(form[slot.field] as string) || ""}
-                      onChange={(url) =>
-                        setForm((f) => ({
-                          ...f,
-                          [slot.field]: url,
-                          // `image_url` is the column every fallback chain reads,
-                          // so the individual page image keeps feeding it.
-                          ...(slot.key === "detail" ? { image_url: url } : {}),
-                        }))
-                      }
-                    />
-                  ))}
+                  <div className={ADMIN_IMAGE_GRID}>
+                    {LISTING_IMAGE_SLOTS.map((slot) => (
+                      <ImageSlotField
+                        key={slot.key}
+                        slot={slot}
+                        value={(form[slot.field] as string) || ""}
+                        onChange={(url) =>
+                          setForm((f) => ({
+                            ...f,
+                            [slot.field]: url,
+                            // `image_url` is the column every fallback chain reads,
+                            // so the individual page image keeps feeding it.
+                            ...(slot.key === "detail" ? { image_url: url } : {}),
+                          }))
+                        }
+                      />
+                    ))}
+                  </div>
                 </div>
-                <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
-                <div>
-                  <Label>KM from Town</Label>
-                  <Input
-                    type="text"
-                    inputMode="decimal"
-                    value={form.km_from_town}
-                    onChange={(e) => {
-                      const v = e.target.value.replace(",", ".").replace(/[^0-9.]/g, "");
-                      setForm({ ...form, km_from_town: v });
-                    }}
-                    placeholder="e.g. 5"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">Numeric kilometres from Hoedspruit town centre. Used by the Distance filter on category pages.</p>
+                <div className={ADMIN_FIELD_GRID}>
+                  <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
+                  <div>
+                    <Label>KM from Town</Label>
+                    <Input
+                      type="text"
+                      inputMode="decimal"
+                      value={form.km_from_town}
+                      onChange={(e) => {
+                        const v = e.target.value.replace(",", ".").replace(/[^0-9.]/g, "");
+                        setForm({ ...form, km_from_town: v });
+                      }}
+                      placeholder="e.g. 5"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">Numeric kilometres from Hoedspruit town centre. Used by the Distance filter on category pages.</p>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <MultiContactField
-                    label="Phone"
-                    type="tel"
-                    primary={form.phone}
-                    onPrimaryChange={(v) => setForm({ ...form, phone: v })}
-                    primaryLabel={form.phone_label}
-                    onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
-                    extras={form.additional_phones}
-                    onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
-                    extraLabels={form.additional_phone_labels}
-                    onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
-                    addLabel="Add phone"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <MultiContactField
-                    label="Email"
-                    type="email"
-                    primary={form.email}
-                    onPrimaryChange={(v) => setForm({ ...form, email: v })}
-                    primaryLabel={form.email_label}
-                    onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
-                    extras={form.additional_emails}
-                    onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
-                    extraLabels={form.additional_email_labels}
-                    onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
-                    addLabel="Add email"
-                  />
+                <div className={ADMIN_FIELD_GRID}>
+                  <div className="space-y-2">
+                    <MultiContactField
+                      label="Phone"
+                      type="tel"
+                      primary={form.phone}
+                      onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                      primaryLabel={form.phone_label}
+                      onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
+                      extras={form.additional_phones}
+                      onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                      extraLabels={form.additional_phone_labels}
+                      onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
+                      addLabel="Add phone"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <MultiContactField
+                      label="Email"
+                      type="email"
+                      primary={form.email}
+                      onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                      primaryLabel={form.email_label}
+                      onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
+                      extras={form.additional_emails}
+                      onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                      extraLabels={form.additional_email_labels}
+                      onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
+                      addLabel="Add email"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <MultiContactField
@@ -1201,8 +1214,10 @@ const AdminListings = () => {
                     addLabel="Add website"
                   />
                 </div>
-                <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
-                <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
+                <div className={ADMIN_FIELD_GRID}>
+                  <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
+                  <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
+                </div>
                 <div className="space-y-2">
                   <MultiContactField
                     label="WhatsApp Number"
@@ -1230,12 +1245,14 @@ const AdminListings = () => {
                     </p>
                   </div>
                 </div>
-                <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className={ADMIN_FIELD_GRID}>
+                  <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
+                  <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." /></div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
                   <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
                    <div><Label>Review Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
                 </div>
-                <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." /></div>
                 <div className="flex items-center gap-2">
                   <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
                   <Label>Featured</Label>
@@ -1350,7 +1367,7 @@ const AdminListings = () => {
                 {!isAccommodationType && (
                 <div>
                   <Label>Opening Hours</Label>
-                  <div className="space-y-2 mt-1">
+                  <div className="space-y-2 mt-1 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
                     {DAY_LABELS.map((day) => (
                       <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
                         <span className="text-sm text-muted-foreground capitalize text-zinc-800">{day}</span>
@@ -1370,7 +1387,7 @@ const AdminListings = () => {
                     {/* Kids Section */}
                     <div>
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Kids</p>
-                      <div className="space-y-3">
+                      <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
                         <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
                         <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
@@ -1382,7 +1399,7 @@ const AdminListings = () => {
                     {/* Accessibility Section */}
                     <div className="border-t border-border pt-3 mt-2">
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Accessibility</p>
-                      <div className="space-y-3">
+                      <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
                         <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
                         <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
@@ -1394,7 +1411,7 @@ const AdminListings = () => {
                     {/* Amenities Section */}
                     <div className="border-t border-border pt-3 mt-2">
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Amenities</p>
-                      <div className="space-y-3">
+                      <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
                         <TriStateToggle label="WiFi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
                         <TriStateToggle label="Free WiFi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
@@ -1408,7 +1425,7 @@ const AdminListings = () => {
                     {/* Drinks Section */}
                     <div className="border-t border-border pt-3 mt-2">
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Drinks</p>
-                      <div className="space-y-3">
+                      <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Wine List" value={form.has_wine_list} onChange={(v) => setForm({ ...form, has_wine_list: v })} />
                         <TriStateToggle label="Cocktails" value={form.has_cocktails} onChange={(v) => setForm({ ...form, has_cocktails: v })} />
                         <TriStateToggle label="Craft Beer" value={form.has_craft_beer} onChange={(v) => setForm({ ...form, has_craft_beer: v })} />
@@ -1508,7 +1525,7 @@ const AdminListings = () => {
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Shopping Fields</p>
 
-                    <div className="space-y-3">
+                    <div className={ADMIN_TOGGLE_GRID}>
                       {[
                         { label: "Air Conditioned", key: "air_conditioned" as const },
                         { label: "Delivery Available", key: "delivery_available" as const },
@@ -1606,7 +1623,7 @@ const AdminListings = () => {
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Accommodation Fields</p>
 
-                    <div className="space-y-3">
+                    <div className={ADMIN_TOGGLE_GRID}>
                       {[
                         { label: "Restaurant", key: "has_restaurant" as const },
                         { label: "Bar", key: "has_bar" as const },
@@ -1640,58 +1657,60 @@ const AdminListings = () => {
                       ))}
                     </div>
 
-                    <div>
-                      <Label>Sleeps (number of guests) (Adults)</Label>
-                      <Input
-                        type="number"
-                        value={form.sleeps ?? ""}
-                        onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
-                        placeholder="e.g. 4"
-                      />
-                    </div>
+                    <div className={ADMIN_FIELD_GRID}>
+                      <div>
+                        <Label>Sleeps (number of guests) (Adults)</Label>
+                        <Input
+                          type="number"
+                          value={form.sleeps ?? ""}
+                          onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 4"
+                        />
+                      </div>
 
-                    <div>
-                      <Label>Sleeps (number of guests) (Children)</Label>
-                      <Input
-                        type="number"
-                        value={form.sleeps_children ?? ""}
-                        onChange={(e) => setForm({ ...form, sleeps_children: e.target.value ? parseInt(e.target.value, 10) : null })}
-                        placeholder="e.g. 2"
-                      />
-                    </div>
+                      <div>
+                        <Label>Sleeps (number of guests) (Children)</Label>
+                        <Input
+                          type="number"
+                          value={form.sleeps_children ?? ""}
+                          onChange={(e) => setForm({ ...form, sleeps_children: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 2"
+                        />
+                      </div>
 
-                    <div>
-                      <Label>Price Range</Label>
-                      <Select value={form.price_range} onValueChange={(v) => setForm({ ...form, price_range: v })}>
-                        <SelectTrigger><SelectValue placeholder="Select price range" /></SelectTrigger>
-                        <SelectContent>
-                          {ACCOMMODATION_PRICE_RANGE_OPTIONS.map((opt) => (
-                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-
+                      <div>
+                        <Label>Price Range</Label>
+                        <Select value={form.price_range} onValueChange={(v) => setForm({ ...form, price_range: v })}>
+                          <SelectTrigger><SelectValue placeholder="Select price range" /></SelectTrigger>
+                          <SelectContent>
+                            {ACCOMMODATION_PRICE_RANGE_OPTIONS.map((opt) => (
+                              <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
 
-                    <div>
-                      <Label>Average Price Per Person Per Night</Label>
-                      <Input
-                        value={form.avg_price_per_person_per_night}
-                        onChange={(e) => setForm({ ...form, avg_price_per_person_per_night: e.target.value })}
-                        placeholder="e.g. R 1 250"
-                      />
-                    </div>
 
-                    <div>
-                      <Label>Number of Rooms</Label>
-                      <Input
-                        type="number"
-                        value={form.rooms_count ?? ""}
-                        onChange={(e) => setForm({ ...form, rooms_count: e.target.value ? parseInt(e.target.value, 10) : null })}
-                        placeholder="e.g. 12"
-                      />
+
+                      <div>
+                        <Label>Average Price Per Person Per Night</Label>
+                        <Input
+                          value={form.avg_price_per_person_per_night}
+                          onChange={(e) => setForm({ ...form, avg_price_per_person_per_night: e.target.value })}
+                          placeholder="e.g. R 1 250"
+                        />
+                      </div>
+
+                      <div>
+                        <Label>Number of Rooms</Label>
+                        <Input
+                          type="number"
+                          value={form.rooms_count ?? ""}
+                          onChange={(e) => setForm({ ...form, rooms_count: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 12"
+                        />
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1699,11 +1718,13 @@ const AdminListings = () => {
                 {isNGOType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">NGO & Volunteering Fields</p>
-                    <div><Label>Cause</Label><Textarea value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} placeholder="What cause does this NGO support?" /></div>
-                    <div><Label>Impact</Label><Textarea value={form.impact} onChange={(e) => setForm({ ...form, impact: e.target.value })} placeholder="What impact have they made?" /></div>
-                    <div><Label>Ways To Give</Label><Textarea value={form.ways_to_give} onChange={(e) => setForm({ ...form, ways_to_give: e.target.value })} placeholder="How can people donate or contribute?" /></div>
-                    <div><Label>Volunteering</Label><Textarea value={form.volunteering} onChange={(e) => setForm({ ...form, volunteering: e.target.value })} placeholder="How can people volunteer?" /></div>
-                    <div><Label>Visiting</Label><Textarea value={form.visiting} onChange={(e) => setForm({ ...form, visiting: e.target.value })} placeholder="Visiting information" /></div>
+                    <div className={ADMIN_FIELD_GRID}>
+                      <div><Label>Cause</Label><Textarea value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} placeholder="What cause does this NGO support?" /></div>
+                      <div><Label>Impact</Label><Textarea value={form.impact} onChange={(e) => setForm({ ...form, impact: e.target.value })} placeholder="What impact have they made?" /></div>
+                      <div><Label>Ways To Give</Label><Textarea value={form.ways_to_give} onChange={(e) => setForm({ ...form, ways_to_give: e.target.value })} placeholder="How can people donate or contribute?" /></div>
+                      <div><Label>Volunteering</Label><Textarea value={form.volunteering} onChange={(e) => setForm({ ...form, volunteering: e.target.value })} placeholder="How can people volunteer?" /></div>
+                      <div><Label>Visiting</Label><Textarea value={form.visiting} onChange={(e) => setForm({ ...form, visiting: e.target.value })} placeholder="Visiting information" /></div>
+                    </div>
                   </div>
                 )}
 
@@ -1744,7 +1765,7 @@ const AdminListings = () => {
                         </div>
                       )}
                     </div>
-                    <div className="space-y-3">
+                    <div className={ADMIN_TOGGLE_GRID}>
                       <TriStateToggle label="After Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
                       <TriStateToggle label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
                     </div>
