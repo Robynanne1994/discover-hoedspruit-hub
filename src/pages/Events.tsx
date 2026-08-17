@@ -5,6 +5,7 @@ import { Search, SlidersHorizontal, MapPin, X, ArrowLeft, Calendar, Clock } from
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
+import { eventImage } from "@/lib/imageFallback";
 import { RefineDrawer, RefineSection, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -187,7 +188,7 @@ const EventCard = ({ event }: { event: any }) => {
   const loc = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
   const price = formatPrice(event.price);
   const dateLine = eventDateLine(event);
-  const image = event.image_url || null;
+  const image = eventImage(event, "card");
 
   return (
     <div
@@ -410,9 +411,9 @@ const PosterCard = ({ event }: { event: any }) => {
       }}
     >
       <div style={{ position: "relative", height: 164, flexShrink: 0, background: "#F4EFE3" }}>
-        {(event.poster_image_url || event.image_url) && (
+        {eventImage(event, "poster") && (
           <img
-            src={event.poster_image_url || event.image_url}
+            src={eventImage(event, "poster")!}
             alt={getDisplayTitle(event)}
             loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}

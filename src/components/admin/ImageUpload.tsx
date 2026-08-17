@@ -66,7 +66,12 @@ const ImageUpload = ({
   const box = guideBox?.(previewWidth);
   const slotGuides: SlotGuide[] = guides?.(previewWidth) ?? [];
   const hasBox = !!box;
-  const hasGuides = slotGuides.length > 0 && !!box;
+  // A slot whose guide is a circle mask is one the app clips to a circle. The
+  // crop tool draws its frame round for those, and the thumbnail matches, so
+  // the corners are never mistaken for part of the picture.
+  const round = slotGuides.some((g) => g.shape.kind === "circleMask");
+  const overlayGuides = slotGuides.filter((g) => g.shape.kind !== "circleMask");
+  const hasGuides = overlayGuides.length > 0 && !!box;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -143,7 +148,7 @@ const ImageUpload = ({
           <div className="space-y-2">
             <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-3">
               <div
-                className="relative overflow-hidden rounded"
+                className="relative overflow-hidden"
                 style={{
                   // Life-size: the card is this many CSS px wide in the app, so
                   // the thumbnail is the picture at the size it will be seen at
@@ -151,10 +156,11 @@ const ImageUpload = ({
                   width: box!.width,
                   maxWidth: "100%",
                   aspectRatio: `${box!.width} / ${box!.height}`,
+                  borderRadius: round ? 9999 : 4,
                 }}
               >
                 <img src={value} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
-                {hasGuides && <CropGuides box={box!} guides={slotGuides} />}
+                {hasGuides && <CropGuides box={box!} guides={overlayGuides} />}
               </div>
               <p className="text-[11px] tabular-nums text-muted-foreground">
                 Life-size — {Math.round(box!.width)} × {Math.round(box!.height)}px on a {previewWidth}px screen
@@ -221,6 +227,7 @@ const ImageUpload = ({
         lockAspect={lockAspect}
         aspectLabel={aspectLabel}
         title={cropTitle}
+        round={round}
         previewRender={previewRender}
         guides={slotGuides}
         guideBox={box}

@@ -32,7 +32,15 @@ interface Props {
   special: any;
 }
 
-const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+/**
+ * The special's terms, one bullet per line.
+ *
+ * Built like the listings' "Good to know" editor — a single line per term and
+ * one line to add the next — rather than a stack of two-row textareas. A term
+ * is a short sentence, so the tall boxes bought nothing and pushed the rest of
+ * the form off the screen.
+ */
+export const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const items = value ? value.split("\n").map((s) => s.trim()).filter(Boolean) : [];
   const [draft, setDraft] = useState("");
   const commit = (next: string[]) => onChange(next.join("\n"));
@@ -45,31 +53,35 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
   const remove = (i: number) => commit(items.filter((_, idx) => idx !== i));
   const edit = (i: number, v: string) => commit(items.map((it, idx) => (idx === i ? v : it)));
   return (
-    <div className="space-y-2 mt-1">
-      {items.length > 0 && (
-        <div className="space-y-2">
-          {items.map((t, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <Textarea rows={2} value={t} onChange={(e) => edit(i, e.target.value)} />
-              <Button type="button" variant="ghost" size="icon" onClick={() => remove(i)} aria-label="Remove term">
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
+    <div className="space-y-1.5 mt-1">
+      {items.map((t, i) => (
+        <div key={i} className="flex items-center gap-1.5">
+          <Input value={t} onChange={(e) => edit(i, e.target.value)} className="h-9 text-sm" />
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0"
+            onClick={() => remove(i)}
+            aria-label="Remove term"
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
-      )}
-      <div className="flex items-start gap-2">
-        <Textarea
-          rows={2}
-          placeholder="Type a term, then click Add"
+      ))}
+      <div className="flex items-center gap-1.5">
+        <Input
+          className="h-9 text-sm"
+          placeholder="e.g. Sit-down only, then press Enter"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); add(); }
+            if (e.key === "Enter") { e.preventDefault(); add(); }
           }}
+          onBlur={add}
         />
-        <Button type="button" variant="outline" onClick={add} disabled={!draft.trim()}>
-          <Plus className="h-4 w-4 mr-1" /> Add
+        <Button type="button" variant="secondary" size="sm" className="shrink-0" onClick={add} disabled={!draft.trim()}>
+          <Plus className="h-3.5 w-3.5 mr-1" /> Add
         </Button>
       </div>
     </div>
@@ -148,7 +160,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     onError: (e: any) => toast.error(e.message || "Failed to delete"),
   });
 
-  const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
+  const set = (k: string, v: any) => setForm((f) => ({ ...f, [k]: v }));
 
   const { data: listings } = useQuery({
     queryKey: ["admin-listings-picker"],
@@ -180,27 +192,42 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       <DialogContent className={ADMIN_EDITOR_DIALOG}>
         <DialogHeader><DialogTitle>Edit Special</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
-          <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
-          <div className="space-y-2">
+          <div>
+            <Label>Title</Label>
+            <Input
+              value={form.title || ""}
+              // With "use exactly as typed" on, the override follows the title
+              // field — there is no second box to keep in step.
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  title: e.target.value,
+                  ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
+                }))
+              }
+            />
+          </div>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <Switch
                 id="special-dlg-use-title-override"
                 checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => set("title_override", v ? (form.title_override || form.title || "") : null)}
+                onCheckedChange={(v) => set("title_override", v ? (form.title || "") : null)}
               />
               <Label htmlFor="special-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use custom title (overrides auto-capitalisation)
+                Use the title exactly as typed (no auto-capitalisation)
               </Label>
             </div>
-            {!!(form.title_override && String(form.title_override).trim()) && (
-              <Textarea
-                rows={2}
-                className="resize-none"
-                placeholder="Custom title — rendered exactly as typed"
-                value={form.title_override || ""}
-                onChange={(e) => set("title_override", e.target.value)}
+            <div className="flex items-center gap-2">
+              <Switch
+                id="special-dlg-featured"
+                checked={!!form.is_featured}
+                onCheckedChange={(v) => set("is_featured", v)}
               />
-            )}
+              <Label htmlFor="special-dlg-featured" className="text-sm cursor-pointer font-normal">
+                Featured — pinned to the top of the specials list and homepage
+              </Label>
+            </div>
           </div>
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
@@ -400,18 +427,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Switch
-              id="special-dlg-featured"
-              checked={!!form.is_featured}
-              onCheckedChange={(v) => set("is_featured", v)}
-            />
-            <Label htmlFor="special-dlg-featured" className="text-sm cursor-pointer font-normal">
-              Featured — pinned to the top of the specials list and homepage
-            </Label>
-          </div>
-
-
           {/* Simplified price block */}
           <div className="border rounded-md p-3 space-y-3">
             <p className="text-sm font-medium">Price</p>
@@ -425,7 +440,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
           <ListingContactPicker
             listings={listings || []}
-            onApply={(c) => setForm((f: any) => ({ ...f, ...c }))}
+            onApply={(c) => setForm((f) => ({ ...f, ...c }))}
           />
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <MultiContactField

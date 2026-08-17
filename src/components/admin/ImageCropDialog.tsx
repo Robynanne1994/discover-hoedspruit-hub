@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo, type ReactNode } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -6,13 +6,13 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
-import { Pipette, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
+import { Pipette, ZoomIn, ZoomOut, RotateCcw, Maximize2, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
 import CropPreviewImage from "./CropPreviewImage";
 import CropGuides from "./CropGuides";
 import { exportSize } from "@/lib/cropPreview";
 import { PREVIEW_VIEWPORTS } from "@/lib/appLayout";
-import { guideLegends, type SlotGuide } from "@/lib/imageSlotGuides";
+import type { SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageCropDialogProps {
   open: boolean;
@@ -28,16 +28,22 @@ interface ImageCropDialogProps {
   /** Dialog heading — name the slot being cropped when there is more than one. */
   title?: string;
   /**
+   * The app clips this picture to a circle — a search row, an avatar, a host
+   * photo. The crop frame is drawn round to match, so what is inside the frame
+   * is exactly what survives and everything dimmed around it is thrown away.
+   */
+  round?: boolean;
+  /**
    * Frame the live crop in whatever chrome it will land in. The callback is
-   * handed a painter that draws the current crop at an exact box size, so the
-   * preview updates as the image is dragged rather than after it is saved.
+   * handed a painter that draws the current crop at an exact box size. Left
+   * unset, the dialog draws its own life-size preview from `guideBox`.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
   /**
    * Chrome the live screen paints over this image — the white title card, the
-   * heart, the rating chip, the round search mask. Drawn inside the crop frame
-   * so nothing important is parked underneath it. `guideBox` is the slot's
-   * life-size box, which is the scale the guides are measured in.
+   * heart, the rating chip. Drawn inside the crop frame so nothing important is
+   * parked underneath it. `guideBox` is the slot's life-size box, which is the
+   * scale the guides are measured in.
    */
   guides?: SlotGuide[];
   guideBox?: { width: number; height: number };
@@ -65,6 +71,8 @@ const ASPECTS: { label: string; value: number | "free" }[] = [
 const MIN_ZOOM = 0.2;
 const MAX_ZOOM = 4;
 const ZOOM_STEP = 0.1;
+/** Slider steps are 0.01, so anything inside this reads as "on the mark". */
+const ZOOM_EPS = 0.006;
 
 async function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -126,6 +134,7 @@ const ImageCropDialog = ({
   lockAspect,
   aspectLabel,
   title,
+  round,
   previewRender,
   guides,
   guideBox,
@@ -142,7 +151,6 @@ const ImageCropDialog = ({
   const [busy, setBusy] = useState(false);
   const [bgColor, setBgColor] = useState("#ffffff");
   const [picking, setPicking] = useState(false);
-  const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
   const [sourceSettled, setSourceSettled] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   // The photo as react-easy-crop lays it out (contained in the container) and
@@ -158,7 +166,17 @@ const ImageCropDialog = ({
   // laid over exactly the part of the crop the app's chrome will cover.
   const [frameBox, setFrameBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
 
-  const hasGuides = !!(guides?.length && guideBox);
+  /**
+   * The round mask is drawn by the cropper itself when `round` is set — its own
+   * frame *is* the circle, and it dims everything outside it. Drawing the guide
+   * version on top of that put a second, differently-shaded circle over the
+   * first, which is what made it impossible to tell kept from trimmed.
+   */
+  const overlayGuides = useMemo(
+    () => (guides ?? []).filter((g) => g.shape.kind !== "circleMask"),
+    [guides],
+  );
+  const hasGuides = !!(overlayGuides.length && guideBox);
 
   /**
    * Where the crop frame sits inside the wrapper, so the guides can be laid
@@ -243,12 +261,10 @@ const ImageCropDialog = ({
     }
   }, [open, defaultAspect, lockAspect]);
 
-  // Preload the source: the offscreen canvas backs eyedropper sampling, and
-  // the natural size is what the opening crop is worked out from. The cropper
-  // waits for this, because `initialCroppedAreaPixels` is only read once, when
-  // the media first loads.
+  // Preload the source: the offscreen canvas backs eyedropper sampling. The
+  // cropper waits for this so the crop it opens on and the picture the
+  // eyedropper samples are the same file.
   useEffect(() => {
-    setNatural(null);
     setSourceSettled(false);
     sampleCanvasRef.current = null;
     sampleImgRef.current = null;
@@ -263,7 +279,6 @@ const ImageCropDialog = ({
         c.getContext("2d")!.drawImage(img, 0, 0);
         sampleCanvasRef.current = c;
         sampleImgRef.current = img;
-        setNatural({ width: img.naturalWidth, height: img.naturalHeight });
         setSourceSettled(true);
       })
       .catch(() => {
@@ -288,17 +303,28 @@ const ImageCropDialog = ({
    * The zoom at which the photo exactly covers the crop frame — the same
    * picture `object-fit: cover` would show. react-easy-crop measures zoom
    * against the *contained* image, so for any crop whose ratio differs from
-   * the photo's this is above 1; letting the user go below it is what left
-   * background bands baked into the export, and passing an opening crop area
-   * instead of a zoom is what made square slots jump on open.
+   * the photo's this is above 1.
    */
   const coverZoom =
     mediaSize && cropSize && mediaSize.width > 0 && mediaSize.height > 0
       ? Math.max(cropSize.width / mediaSize.width, cropSize.height / mediaSize.height)
       : null;
 
-  // Zoom-out is always allowed so the background colour can be used as filler.
-  const effectiveMinZoom = MIN_ZOOM;
+  /** The zoom at which the *whole* photo sits inside the frame, nothing lost. */
+  const containZoom =
+    mediaSize && cropSize && mediaSize.width > 0 && mediaSize.height > 0
+      ? Math.min(cropSize.width / mediaSize.width, cropSize.height / mediaSize.height)
+      : null;
+
+  // Zoom-out is always allowed so the background colour can be used as filler,
+  // and never above the zoom that shows the whole photo — otherwise "show the
+  // whole picture" would be off the bottom of the slider.
+  const effectiveMinZoom = Math.min(MIN_ZOOM, containZoom ?? MIN_ZOOM);
+
+  /** True while the picture covers the frame, so nothing but photo is exported. */
+  const filling = coverZoom == null || zoom >= coverZoom - ZOOM_EPS;
+  /** True once the whole photo is inside the frame, so nothing is trimmed off. */
+  const whole = containZoom != null && zoom <= containZoom + ZOOM_EPS;
 
   // Open on the cover crop, but never force the user back up to it.
   useEffect(() => {
@@ -321,14 +347,27 @@ const ImageCropDialog = ({
     }
   };
 
+  const fillFrame = () => {
+    setCrop({ x: 0, y: 0 });
+    if (coverZoom) setZoom(coverZoom);
+  };
+
+  const showWhole = () => {
+    setCrop({ x: 0, y: 0 });
+    if (containZoom) setZoom(containZoom);
+  };
+
   const reset = () => {
     setCrop({ x: 0, y: 0 });
-    fittedRef.current = false;
-    setZoom(1);
     if (lockAspect && defaultAspect) {
       setLocked(true);
       setAspect(defaultAspect);
     }
+    // Back to the crop the dialog opened on — the picture filling its box —
+    // rather than to a bare 100%, which for an off-ratio photo is a crop with
+    // background bands baked down two of its sides.
+    fittedRef.current = false;
+    setZoom(coverZoom ?? 1);
     setResetKey((k) => k + 1);
   };
 
@@ -405,6 +444,14 @@ const ImageCropDialog = ({
     [imageSrc, croppedArea, bgColor],
   );
 
+  /**
+   * The result, at the size the phone paints it — plus a blown-up copy for the
+   * slots that are painted tiny. A 42px search thumbnail is too small to judge
+   * a face or a logo in, and that is exactly the slot where a bad crop is
+   * hardest to spot once it is live.
+   */
+  const previewScales = guideBox ? (guideBox.width < 130 ? [3, 1] : [1]) : [];
+
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onCancel()}>
       <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
@@ -414,7 +461,7 @@ const ImageCropDialog = ({
         <div className="space-y-4">
           <div
             ref={cropperWrapRef}
-            className="relative w-full h-[340px]"
+            className="relative w-full h-[360px] overflow-hidden rounded-lg"
             style={{ background: bgColor, cursor: picking ? "crosshair" : "default" }}
             onClick={handlePickClick}
           >
@@ -425,10 +472,11 @@ const ImageCropDialog = ({
                 crop={crop}
                 zoom={zoom}
                 aspect={activeAspect}
-                // While the ratio is locked the crop is held inside the source
-                // image: zooming out past fit or dragging past an edge would
-                // bake the background fill into the export, which shows up as
-                // white bands beside the picture on the phone.
+                // The frame is drawn in the shape the app will clip to, so the
+                // bright part of the picture is the part that survives and the
+                // dimmed part is the part thrown away.
+                cropShape={round ? "round" : "rect"}
+                showGrid={!round}
                 minZoom={effectiveMinZoom}
                 maxZoom={MAX_ZOOM}
                 onCropChange={setCrop}
@@ -436,7 +484,10 @@ const ImageCropDialog = ({
                 onCropAreaChange={onCropAreaChange}
                 onMediaLoaded={(m) => setMediaSize({ width: m.width, height: m.height })}
                 onCropSizeChange={(s) => setCropSize({ width: s.width, height: s.height })}
-                restrictPosition={false}
+                // While the picture covers the frame it is held inside it, so a
+                // stray drag can't pull a band of background into the export.
+                // Below that the padding is deliberate, so dragging is free.
+                restrictPosition={filling}
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
@@ -450,68 +501,102 @@ const ImageCropDialog = ({
                   height: frameBox.height,
                 }}
               >
-                <CropGuides box={guideBox!} guides={guides!} />
+                <CropGuides box={guideBox!} guides={overlayGuides} />
               </div>
             )}
             {picking && <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />}
 
           </div>
 
-          {hasGuides && (
-            <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
-              <p className="text-xs font-medium text-foreground">
-                The app paints these over the picture — position it so nothing important lands underneath.
-              </p>
-              <ul className="space-y-1">
-                {guideLegends(guides!).map((legend) => (
-                  <li key={legend} className="flex gap-2 text-[11px] text-muted-foreground">
-                    <span aria-hidden className="text-[#B42318]">
-                      ▸
-                    </span>
-                    {legend}
-                  </li>
-                ))}
-              </ul>
-              {previewWidth && onPreviewWidthChange && (
-                <div className="space-y-1 border-t border-border pt-2">
-                  <div className="flex items-baseline justify-between gap-2">
-                    <Label className="text-xs">Drawn for a</Label>
-                    <span className="text-[11px] tabular-nums text-muted-foreground">
-                      card {Math.round(guideBox!.width)} × {Math.round(guideBox!.height)}px
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {PREVIEW_VIEWPORTS.map((v) => (
-                      <Button
-                        key={v.width}
-                        type="button"
-                        size="sm"
-                        variant={previewWidth === v.width ? "default" : "outline"}
-                        onClick={() => onPreviewWidthChange(v.width)}
-                        title={v.hint}
-                      >
-                        {v.label}
-                      </Button>
+          <p className="text-xs text-muted-foreground">
+            {filling
+              ? round
+                ? "Everything inside the bright circle is kept — the dimmed edges are trimmed off. Drag to reposition."
+                : "Everything inside the bright frame is kept — the dimmed edges are trimmed off. Drag to reposition."
+              : whole
+                ? "The whole picture fits, with the background fill colour around it. Both get baked into the export."
+                : "The picture no longer fills the frame — the background fill colour shows around it, and gets baked into the export."}
+          </p>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              size="sm"
+              variant={filling ? "default" : "outline"}
+              className="gap-1.5"
+              onClick={fillFrame}
+              disabled={!coverZoom}
+            >
+              <Maximize2 className="h-3.5 w-3.5" /> Fill the frame
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={whole && !filling ? "default" : "outline"}
+              className="gap-1.5"
+              onClick={showWhole}
+              disabled={!containZoom}
+            >
+              <Minimize2 className="h-3.5 w-3.5" /> Show the whole picture
+            </Button>
+            <Button type="button" size="sm" variant="ghost" className="gap-1.5" onClick={reset}>
+              <RotateCcw className="h-3.5 w-3.5" /> Reset
+            </Button>
+          </div>
+
+          {(previewRender || previewScales.length > 0) && (
+            <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                <Label className="text-xs">Exactly what the app will show</Label>
+                {guideBox && (
+                  <span className="text-[11px] tabular-nums text-muted-foreground">
+                    {Math.round(guideBox.width)} × {Math.round(guideBox.height)}px
+                    {previewWidth ? ` on a ${previewWidth}px screen` : ""}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-wrap items-end justify-center gap-4">
+                {previewRender
+                  ? previewRender(renderLiveImage)
+                  : previewScales.map((scale) => (
+                      <div key={scale} className="flex flex-col items-center gap-1">
+                        <div
+                          className="relative overflow-hidden border border-border"
+                          style={{
+                            width: guideBox!.width * scale,
+                            height: guideBox!.height * scale,
+                            borderRadius: round ? 9999 : 6,
+                          }}
+                        >
+                          {renderLiveImage(guideBox!.width * scale, guideBox!.height * scale)}
+                          {overlayGuides.length > 0 && (
+                            <CropGuides box={guideBox!} guides={overlayGuides} />
+                          )}
+                        </div>
+                        <span className="text-[10px] text-muted-foreground">
+                          {scale === 1 ? "Life size" : `${scale}× — easier to check`}
+                        </span>
+                      </div>
                     ))}
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">
-                    The chrome is a fixed pixel size, so it covers more of a narrow phone's card than
-                    a wide one's. The app itself stops widening at 480px.
-                  </p>
+              </div>
+              {previewWidth && onPreviewWidthChange && (
+                <div className="flex flex-wrap items-center gap-1.5 border-t border-border pt-2">
+                  <Label className="text-[11px] text-muted-foreground mr-1">Preview on a</Label>
+                  {PREVIEW_VIEWPORTS.map((v) => (
+                    <Button
+                      key={v.width}
+                      type="button"
+                      size="sm"
+                      className="h-7 px-2.5 text-xs"
+                      variant={previewWidth === v.width ? "default" : "outline"}
+                      onClick={() => onPreviewWidthChange(v.width)}
+                      title={v.hint}
+                    >
+                      {v.label}
+                    </Button>
+                  ))}
                 </div>
               )}
-            </div>
-          )}
-
-          {previewRender && (
-            <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
-              <div className="flex items-center justify-between gap-2">
-                <Label className="text-xs">In the app</Label>
-                <span className="text-[11px] text-muted-foreground">
-                  Live — this is exactly what saving will produce.
-                </span>
-              </div>
-              <div className="flex justify-center">{previewRender(renderLiveImage)}</div>
             </div>
           )}
 
@@ -554,40 +639,6 @@ const ImageCropDialog = ({
           )}
 
           <div className="space-y-1.5">
-            <Label className="text-xs">Background fill</Label>
-            <div className="flex items-center gap-2">
-              <div
-                className="h-8 w-8 rounded border border-border shrink-0"
-                style={{ background: bgColor }}
-                aria-label="Current background colour"
-              />
-              <Input
-                value={bgColor}
-                onChange={(e) => setBgColor(e.target.value)}
-                placeholder="#ffffff"
-                className="w-32"
-              />
-              <input
-                type="color"
-                value={/^#[0-9a-fA-F]{6}$/.test(bgColor) ? bgColor : "#ffffff"}
-                onChange={(e) => setBgColor(e.target.value)}
-                className="h-8 w-10 cursor-pointer rounded border border-border bg-transparent"
-                title="Pick any colour"
-              />
-              <Button
-                type="button"
-                size="sm"
-                variant={picking ? "default" : "outline"}
-                onClick={openNativeEyedropper}
-                title="Pick a colour from the image"
-              >
-                <Pipette className="h-4 w-4 mr-1" />
-                {picking ? "Click image…" : "Eyedropper"}
-              </Button>
-            </div>
-          </div>
-
-          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
               <Label className="text-xs">Zoom</Label>
               <span className="text-[11px] tabular-nums text-muted-foreground">
@@ -625,22 +676,40 @@ const ImageCropDialog = ({
               >
                 <ZoomIn className="h-4 w-4" />
               </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="shrink-0 gap-1"
-                onClick={reset}
-              >
-                <RotateCcw className="h-3.5 w-3.5" /> Reset
-              </Button>
             </div>
           </div>
 
-          <p className="text-xs text-muted-foreground">
-            Drag to reposition. Zoom out below 100% to add space around the image — the background
-            fill colour will be baked into the export.
-          </p>
+          {/* Only worth the room once there is background showing to colour in. */}
+          {!filling && (
+            <div className="space-y-1.5">
+              <Label className="text-xs">Background fill</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  placeholder="#ffffff"
+                  className="w-32"
+                />
+                <input
+                  type="color"
+                  value={/^#[0-9a-fA-F]{6}$/.test(bgColor) ? bgColor : "#ffffff"}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  className="h-8 w-10 cursor-pointer rounded border border-border bg-transparent"
+                  aria-label="Pick any colour"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={picking ? "default" : "outline"}
+                  onClick={openNativeEyedropper}
+                  title="Pick a colour from the image"
+                >
+                  <Pipette className="h-4 w-4 mr-1" />
+                  {picking ? "Click image…" : "Eyedropper"}
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>

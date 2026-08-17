@@ -2,6 +2,12 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  CHANNEL_IMAGE_COLUMNS,
+  EVENT_IMAGE_COLUMNS,
+  LISTING_IMAGE_COLUMNS,
+  SPECIAL_IMAGE_COLUMNS,
+} from "@/lib/imageFallback";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts, useFollowRequestCount } from "@/hooks/useFollows";
 import { ChevronDown, ChevronRight, Pencil, Search, Settings, User, UserPlus } from "lucide-react";
@@ -206,7 +212,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, title_override, image_url, saved_image_url, location, google_rating, google_reviews_count, category_id, opening_hours, categories(title)")
+        .select(`id, title, title_override, location, google_rating, google_reviews_count, category_id, opening_hours, categories(title), ${LISTING_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
@@ -229,7 +235,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
         .from("events")
-        .select("id, title, title_override, image_url, saved_image_url, location, start_date, end_date, start_time, date, tag")
+        .select(`id, title, title_override, location, start_date, end_date, start_time, date, tag, ${EVENT_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
@@ -251,7 +257,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, title_override, image_url, saved_image_url, business_name, valid_until, badge_override, day_of_week, discount_type, discount_value, freebie_text, card_deal_text, redemption_note, tag, card_footer_text, price, price_label, original_price, savings")
+        .select(`id, title, title_override, business_name, valid_until, badge_override, day_of_week, discount_type, discount_value, freebie_text, card_deal_text, redemption_note, tag, card_footer_text, price, price_label, original_price, savings, ${SPECIAL_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
@@ -273,7 +279,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
-        .select("id, title, title_override, image_url, saved_image_url, platform, meta, meta_2, slug")
+        .select(`id, title, title_override, platform, meta, meta_2, slug, ${CHANNEL_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);

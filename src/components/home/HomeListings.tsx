@@ -3,6 +3,7 @@ import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepage
 import HomeSectionHead from "./HomeSectionHead";
 
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { listingImage } from "@/lib/imageFallback";
 import { type } from "@/lib/type";
 
 
@@ -29,9 +30,9 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
         <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
           {listings.slice(0, 8).map((l: any) => {
-            // The square tile has its own crop; anything without one falls back
-            // to the listing's main picture, which `cover` centre-trims.
-            const image = l.homepage_image_url || l.image_url;
+            // The square tile has its own crop; anything without one borrows
+            // another of the listing's pictures, which `cover` centre-trims.
+            const image = listingImage(l, "homepage");
             return (
             <Link
               key={l.id}

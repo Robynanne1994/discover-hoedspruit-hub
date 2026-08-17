@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { specialImage } from "@/lib/specialCard";
 import { format } from "date-fns";
 import {
   Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
@@ -663,13 +664,13 @@ const SpecialDetail = () => {
           `${special.title} — a current special in Hoedspruit. See the deal and how to redeem on Hello Hoedspruit.`
         }
         path={`/specials/${special.id}`}
-        image={special.detail_image_url || special.image_url || undefined}
+        image={specialImage(special, "detail") || undefined}
         type="article"
       />
       {/* Hero (4:3) with floating action buttons */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
-        {(special.detail_image_url || special.image_url) && (
-          <img src={special.detail_image_url || special.image_url} alt={special.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        {specialImage(special, "detail") && (
+          <img src={specialImage(special, "detail")!} alt={special.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         )}
         <button
           onClick={() => navigate(-1)}

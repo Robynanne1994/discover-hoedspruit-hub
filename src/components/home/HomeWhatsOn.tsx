@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getEventDates, formatEventDateShort } from "@/lib/eventDates";
+import { eventImage, EVENT_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { INK, type } from "@/lib/type";
@@ -20,7 +21,7 @@ function formatTime(t?: string | null) {
 
 
 const COLUMNS =
-  "id, title, title_override, location, date, start_time, start_date, end_date, image_url, homepage_image_url, is_featured";
+  `id, title, title_override, location, date, start_time, start_date, end_date, is_featured, ${EVENT_IMAGE_COLUMNS}`;
 const TARGET = 6;
 
 const HomeWhatsOn = () => {
@@ -111,9 +112,9 @@ const HomeWhatsOn = () => {
                   display: "block",
                 }}
               >
-                {(e.homepage_image_url || e.image_url) && (
+                {eventImage(e, "homepage") && (
                   <img
-                    src={e.homepage_image_url || e.image_url}
+                    src={eventImage(e, "homepage")!}
                     alt={e.title}
                     loading="lazy"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}

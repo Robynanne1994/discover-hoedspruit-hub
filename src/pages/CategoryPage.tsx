@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { supabase } from "@/integrations/supabase/client";
+import { listingImage } from "@/lib/imageFallback";
 import { SlidersHorizontal, MapPin, Search, X, Heart } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
@@ -1172,9 +1173,9 @@ const CategoryPage = () => {
                 }}
               >
                 <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#F4EFE3" }}>
-                  {((l as any).card_image_url || l.image_url) ? (
+                  {listingImage(l, "card") ? (
                     <img
-                      src={(l as any).card_image_url || l.image_url}
+                      src={listingImage(l, "card")!}
                       alt={l.title}
                       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                       loading="lazy"

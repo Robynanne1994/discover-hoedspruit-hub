@@ -568,24 +568,41 @@ const AdminBushTelegraph = () => {
           <div className="space-y-4">
             <div>
               <Label>Title *</Label>
-              <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+              <Input
+                value={form.title}
+                // With "use exactly as typed" on, the override follows the
+                // title field — there is no second box to keep in step.
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    title: e.target.value,
+                    ...(f.use_title_override ? { title_override: e.target.value } : {}),
+                  }))
+                }
+              />
             </div>
 
-            <div className="rounded-lg border border-border p-3 space-y-2">
-              <div className="flex items-center justify-between">
-                <Label className="text-sm">Use custom display title</Label>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="flex items-center gap-2">
                 <Switch
+                  id="channel-use-title-override"
                   checked={form.use_title_override}
-                  onCheckedChange={(c) => setForm({ ...form, use_title_override: c })}
+                  onCheckedChange={(c) =>
+                    setForm({ ...form, use_title_override: c, title_override: c ? form.title : "" })
+                  }
                 />
+                <Label htmlFor="channel-use-title-override" className="text-sm cursor-pointer font-normal">
+                  Use the title exactly as typed (no auto-capitalisation)
+                </Label>
               </div>
-              {form.use_title_override && (
-                <Input
-                  value={form.title_override}
-                  onChange={(e) => setForm({ ...form, title_override: e.target.value })}
-                  placeholder="Custom title shown to users (exact casing)"
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="channel-featured"
+                  checked={form.is_featured}
+                  onCheckedChange={(c) => setForm({ ...form, is_featured: c })}
                 />
-              )}
+                <Label htmlFor="channel-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
@@ -780,10 +797,6 @@ const AdminBushTelegraph = () => {
               <div>
                 <Label>Sort Order</Label>
                 <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} />
-              </div>
-              <div className="flex items-center gap-2 pb-2">
-                <Switch checked={form.is_featured} onCheckedChange={(c) => setForm({ ...form, is_featured: c })} />
-                <Label>Featured</Label>
               </div>
             </div>
           </div>

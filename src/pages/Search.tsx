@@ -22,6 +22,16 @@ import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
+import {
+  channelImage,
+  eventImage,
+  listingImage,
+  specialSurfaceImage,
+  CHANNEL_IMAGE_COLUMNS,
+  EVENT_IMAGE_COLUMNS,
+  LISTING_IMAGE_COLUMNS,
+  SPECIAL_IMAGE_COLUMNS,
+} from "@/lib/imageFallback";
 import { MUTED as TOKEN_MUTED, type } from "@/lib/type";
 
 
@@ -540,7 +550,7 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
 
 /* -------------------- Results: Listings -------------------- */
 
-const SEARCH_COLUMNS = "id, title, title_override, location, image_url, search_image_url, is_featured";
+const SEARCH_COLUMNS = `id, title, title_override, location, is_featured, ${LISTING_IMAGE_COLUMNS}`;
 const SUGGESTED_LIMIT = 15;
 
 const ListingsResults = ({ query }: { query: string }) => {
@@ -597,7 +607,7 @@ const ListingsResults = ({ query }: { query: string }) => {
         <ResultRow
           key={l.id}
           to={`/listing/${l.id}`}
-          image={(l as any).search_image_url || l.image_url}
+          image={listingImage(l, "search")}
           title={l.title}
           titleOverride={(l as any).title_override}
           subtitle={l.location || null}
@@ -618,7 +628,7 @@ const EventsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, title_override, location, image_url, search_image_url, date, start_date, end_date, is_featured")
+        .select(`id, title, title_override, location, date, start_date, end_date, is_featured, ${EVENT_IMAGE_COLUMNS}`)
         .or(`start_date.is.null,start_date.gte.${today}`)
         // Featured events pin to the top, then the soonest first
         .order("is_featured", { ascending: false })
@@ -639,7 +649,7 @@ const EventsResults = ({ query }: { query: string }) => {
         <ResultRow
           key={e.id}
           to={`/events/${e.id}`}
-          image={(e as any).search_image_url || e.image_url}
+          image={eventImage(e, "search")}
           title={e.title}
           titleOverride={(e as any).title_override}
           subtitle={[eventDateLabel(e as any), e.location].filter(Boolean).join(" · ") || null}
@@ -660,7 +670,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("specials")
-        .select("id, title, title_override, business_name, image_url, search_image_url, valid_until, is_featured")
+        .select(`id, title, title_override, business_name, valid_until, is_featured, ${SPECIAL_IMAGE_COLUMNS}`)
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         // Featured deals pin to the top, then the most recently added
@@ -682,7 +692,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
         <ResultRow
           key={s.id}
           to={`/specials/${s.id}`}
-          image={(s as any).search_image_url || s.image_url}
+          image={specialSurfaceImage(s, "search")}
           title={s.title}
           titleOverride={(s as any).title_override}
           subtitle={[s.business_name, untilLabel(s.valid_until)].filter(Boolean).join(" · ") || null}
@@ -702,7 +712,7 @@ const ChannelsResults = ({ query }: { query: string }) => {
     queryFn: async () => {
       let q = supabase
         .from("bush_telegraph_resources")
-        .select("id, title, title_override, slug, url, platform, meta, image_url, search_image_url, is_featured, sort_order")
+        .select(`id, title, title_override, slug, url, platform, meta, is_featured, sort_order, ${CHANNEL_IMAGE_COLUMNS}`)
         // Same order as the Local Channels page: featured first, then the
         // admin's own arrangement.
         .order("is_featured", { ascending: false })
@@ -725,7 +735,7 @@ const ChannelsResults = ({ query }: { query: string }) => {
           // A channel without a page of its own opens at its platform, exactly
           // as its card does on the Local Channels list.
           to={c.slug ? `/local-channels/${c.slug}` : c.url || "/local-channels"}
-          image={c.search_image_url || c.image_url}
+          image={channelImage(c, "search")}
           title={c.title}
           titleOverride={c.title_override}
           subtitle={[c.platform, c.meta].filter(Boolean).join(" · ") || null}

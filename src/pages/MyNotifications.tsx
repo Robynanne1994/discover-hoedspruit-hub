@@ -6,6 +6,16 @@ import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Sett
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  channelImage,
+  eventImage,
+  listingImage,
+  specialSurfaceImage,
+  CHANNEL_IMAGE_COLUMNS,
+  EVENT_IMAGE_COLUMNS,
+  LISTING_IMAGE_COLUMNS,
+  SPECIAL_IMAGE_COLUMNS,
+} from "@/lib/imageFallback";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowRequestActors, actorForNotif, isFollowActorKind, FollowActor } from "@/hooks/useFollowRequestActors";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
@@ -13,6 +23,22 @@ import { visibleNotifications } from "@/lib/notificationVisibility";
 import { titleCaseSubject } from "@/lib/titleCaseSubject";
 import hhLogo from "@/assets/hh-logo.png";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
+
+// The notification thumbnail is the saved-card crop, with the rest of the row's
+// pictures behind it so a row that only has one never shows a blank circle.
+const REF_IMAGE_COLUMNS: Record<string, string> = {
+  listings: LISTING_IMAGE_COLUMNS,
+  events: EVENT_IMAGE_COLUMNS,
+  specials: SPECIAL_IMAGE_COLUMNS,
+  bush_telegraph_resources: CHANNEL_IMAGE_COLUMNS,
+};
+
+const REF_IMAGE_PICKER: Record<string, (row: any) => string | null> = {
+  listings: (r) => listingImage(r, "saved"),
+  events: (r) => eventImage(r, "saved"),
+  specials: (r) => specialSurfaceImage(r, "saved"),
+  bush_telegraph_resources: (r) => channelImage(r, "saved"),
+};
 
 const isAdminKind = (k: string) => {
   const s = (k || "").toLowerCase();
@@ -237,9 +263,9 @@ export default function MyNotifications() {
       for (const t of tables) {
         const ids = Array.from(refKeysToFetch[t]).filter((id) => !(`${t}:${id}` in refImages));
         if (ids.length === 0) continue;
-        const { data } = await supabase.from(t as any).select("id,image_url,saved_image_url").in("id", ids);
+        const { data } = await supabase.from(t as any).select(`id, ${REF_IMAGE_COLUMNS[t]}`).in("id", ids);
         (data as any[] | null)?.forEach((r) => {
-          const url = r.saved_image_url || r.image_url;
+          const url = REF_IMAGE_PICKER[t](r);
           if (url) updates[`${t}:${r.id}`] = url;
         });
       }

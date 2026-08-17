@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { channelImage } from "@/lib/imageFallback";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
@@ -95,7 +96,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
   const displayTitle = (r.title_override?.trim()) || r.title;
   const memberCount = r.meta_2?.trim();
-  const image = r.image_url;
+  const image = channelImage(r, "listing");
 
   return (
     <div

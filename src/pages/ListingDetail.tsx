@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { listingImage } from "@/lib/imageFallback";
 import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation, ChevronRight, Clock, Flag, Copy,
@@ -433,8 +434,10 @@ const ListingDetail = () => {
   const descriptionText = (longDescription || "").trim();
   const whatsappNum = l.whatsapp as string | null;
   const waClean = whatsappNum ? whatsappNum.replace(/[^0-9]/g, "") : null;
-  // Contact rows show this instead of the raw WhatsApp number.
-  const whatsappCta = ((l.whatsapp_cta_label as string | null) || "").trim() || "Chat on WhatsApp";
+  // Contact rows show this instead of the raw WhatsApp number. It is the same
+  // wording on every listing, so it is written here rather than typed into a
+  // column on every row and every CSV import.
+  const whatsappCta = "Chat on WhatsApp";
   const goodToKnow = ((l.good_to_know as string[] | null) ?? []).map((s) => (s || "").trim()).filter(Boolean);
   // "26km from Town" — shown in the header and on the location tab.
   const kmFromTown = (() => {
@@ -1503,7 +1506,7 @@ const ListingDetail = () => {
     boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
   };
 
-  const heroImgUrl = (listing as any).detail_image_url || listing.image_url;
+  const heroImgUrl = listingImage(listing, "detail");
   const showHero = !!heroImgUrl && !heroImgError;
 
   return (
