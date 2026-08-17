@@ -541,7 +541,7 @@ const ListingDetail = () => {
     const cur = now.getHours() * 60 + now.getMinutes();
     const o = parseTimeStr(m[1]); const c = parseTimeStr(m[2]);
     if (cur >= o && cur <= c) return { state: "open", closes: formatTime(m[2]) };
-    if (cur < o) return { state: "closed", opensAt: formatTime(m[1]), opensDay: "today" };
+    if (cur < o) return { state: "closed", opensAt: formatTime(m[1]), opensDay: "Today" };
     return { state: "closed", ...(findNext(1) || {}) };
   };
   const openStatus = computeOpenStatus();
