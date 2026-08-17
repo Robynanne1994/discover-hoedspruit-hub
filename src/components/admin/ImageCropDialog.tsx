@@ -380,7 +380,7 @@ const ImageCropDialog = ({
                 onCropAreaChange={onCropAreaChange}
                 onMediaLoaded={(m) => setMediaSize({ width: m.width, height: m.height })}
                 onCropSizeChange={(s) => setCropSize({ width: s.width, height: s.height })}
-                restrictPosition={locked ? true : false}
+                restrictPosition={false}
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
