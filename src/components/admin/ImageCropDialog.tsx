@@ -219,8 +219,32 @@ const ImageCropDialog = ({
 
   const activeAspect = aspect === "free" ? undefined : aspect;
 
-  const initialArea =
-    natural && lockAspect && defaultAspect ? coverCropArea(natural, defaultAspect) : undefined;
+  /**
+   * The zoom at which the photo exactly covers the crop frame — the same
+   * picture `object-fit: cover` would show. react-easy-crop measures zoom
+   * against the *contained* image, so for any crop whose ratio differs from
+   * the photo's this is above 1; letting the user go below it is what left
+   * background bands baked into the export, and passing an opening crop area
+   * instead of a zoom is what made square slots jump on open.
+   */
+  const coverZoom =
+    mediaSize && cropSize && mediaSize.width > 0 && mediaSize.height > 0
+      ? Math.max(cropSize.width / mediaSize.width, cropSize.height / mediaSize.height)
+      : null;
+
+  const effectiveMinZoom = locked && coverZoom ? coverZoom : MIN_ZOOM;
+
+  // Open on the cover crop, then keep the crop from ever falling inside it.
+  useEffect(() => {
+    if (!locked || !coverZoom) return;
+    if (!fittedRef.current) {
+      fittedRef.current = true;
+      setZoom(coverZoom);
+      setCrop({ x: 0, y: 0 });
+      return;
+    }
+    setZoom((z) => (z < coverZoom - 0.0001 ? coverZoom : z));
+  }, [locked, coverZoom]);
 
   const handleConfirm = async () => {
     if (!imageSrc || !croppedArea) return;
@@ -233,10 +257,9 @@ const ImageCropDialog = ({
     }
   };
 
-  // Remounting is what puts the opening crop back: react-easy-crop reads
-  // `initialCroppedAreaPixels` once, when the media loads.
   const reset = () => {
     setCrop({ x: 0, y: 0 });
+    fittedRef.current = false;
     setZoom(1);
     if (lockAspect && defaultAspect) {
       setLocked(true);
@@ -246,7 +269,9 @@ const ImageCropDialog = ({
   };
 
   const nudgeZoom = (delta: number) =>
-    setZoom((z) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.round((z + delta) * 100) / 100)));
+    setZoom((z) =>
+      Math.min(MAX_ZOOM, Math.max(effectiveMinZoom, Math.round((z + delta) * 100) / 100)),
+    );
 
   const openNativeEyedropper = async () => {
     // @ts-ignore - EyeDropper is a newer browser API
