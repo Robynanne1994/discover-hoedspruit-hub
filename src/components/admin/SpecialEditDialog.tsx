@@ -117,7 +117,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Special updated");
       qc.invalidateQueries({ queryKey: ["special-detail", special.id] });
       qc.invalidateQueries({ queryKey: ["home-specials"] });
       qc.invalidateQueries({ queryKey: ["homepage-specials"] });

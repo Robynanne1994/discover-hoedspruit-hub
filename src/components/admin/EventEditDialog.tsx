@@ -110,7 +110,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Event updated");
       qc.invalidateQueries({ queryKey: ["event-detail", event.id] });
       qc.invalidateQueries({ queryKey: ["events"] });
       qc.invalidateQueries({ queryKey: ["admin-events"] });

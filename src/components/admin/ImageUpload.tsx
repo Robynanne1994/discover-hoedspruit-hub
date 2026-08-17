@@ -78,7 +78,6 @@ const ImageUpload = ({
     const { data } = supabase.storage.from(bucket).getPublicUrl(path);
     onChange(data.publicUrl);
     setUploading(false);
-    toast.success("Image uploaded");
   };
 
   const handleEditExisting = async () => {
