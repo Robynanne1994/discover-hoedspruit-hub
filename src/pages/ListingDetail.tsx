@@ -917,11 +917,12 @@ const ListingDetail = () => {
 
 
   // ----- Action buttons (fixed bar above the bottom nav) -----
-  // WhatsApp leads and is styled as the primary action when the listing has one.
+  // The first action is always rendered as the primary (filled brown) button,
+  // matching the events detail page.
   const actions = [
     actionWhatsappClean && {
       key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${actionWhatsappClean}`,
-      Icon: WhatsAppIcon, ext: true, filled: true,
+      Icon: WhatsAppIcon, ext: true,
     },
     actionPhone && { key: "call", label: "Call", href: `tel:${actionPhone}`, Icon: Phone, ext: false },
     (l.google_maps_link || listing.location) && {
@@ -953,13 +954,14 @@ const ListingDetail = () => {
       }
       return null;
     })(),
-  ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean; filled?: boolean }>;
+  ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
 
 
   // ----- Sub-components -----
   // Stacked icon-over-label tile used in the fixed action bar.
-  const ActionBtn = ({ a }: { a: typeof actions[number] }) => {
-    const fg = a.filled ? "#FFFFFF" : C.heading;
+  const ActionBtn = ({ a, i }: { a: typeof actions[number]; i: number }) => {
+    const filled = i === 0;
+    const fg = filled ? "#FFFFFF" : C.heading;
     return (
       <a
         href={a.href}
@@ -968,11 +970,11 @@ const ListingDetail = () => {
           flex: 1, minWidth: 0,
           display: "inline-flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
           padding: "12px 6px", borderRadius: 18,
-          background: a.filled ? C.dark : C.surface,
+          background: filled ? C.dark : C.surface,
           border: "none",
           color: fg, textDecoration: "none",
           ...type.tabActive,
-          boxShadow: a.filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
+          boxShadow: filled ? "0 6px 16px rgba(66,51,36,0.28)" : "0 4px 14px rgba(43,36,32,0.10)",
           transition: "transform 150ms ease-out",
         }}
         {...pressScale()}
