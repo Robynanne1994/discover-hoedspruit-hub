@@ -20,6 +20,8 @@ import { isOpenNow } from "@/lib/openHours";
 import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
+import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
+import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
@@ -105,6 +107,17 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
 // Card-internal save heart (matches the events card heart).
 // Reads from the shared favourites cache so a category page with 50 listings
 // only does ONE favourites query instead of 50.
+//
+// Its size and inset come from `cardChrome.ts`, which is also what the admin
+// crop tool draws its guide from — so the heart you position a photo around in
+// the editor is the heart that lands on it here.
+const HEART = CATEGORY_CARD_CHROME.heart;
+const RATING_CHIP = CATEGORY_CARD_CHROME.rating;
+// The two-column grid these cards sit in. `appLayout.ts` works the card's width
+// out from exactly these numbers, which is what makes the crop guides land
+// where the chrome above really lands.
+const GRID = CATEGORY_CARD_GRID;
+
 const CardHeart = ({ listingId }: { listingId: string }) => {
   const saved = useIsFavourited(listingId, "listing");
   const toggle = useToggleFavourite();
@@ -121,26 +134,26 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
       aria-label={saved ? "Remove from favourites" : "Add to favourites"}
       style={{
         position: "absolute",
-        top: 8,
-        right: 8,
-        width: 26,
-        height: 26,
+        top: HEART.top,
+        right: HEART.right,
+        width: HEART.size,
+        height: HEART.size,
         borderRadius: 9999,
-        background: "rgba(255, 255, 255, 0.95)",
+        background: HEART.background,
         border: "none",
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
         cursor: "pointer",
-        boxShadow: "0 1px 4px rgba(0, 5, 5, 0.14)",
-        backdropFilter: "blur(4px)",
+        boxShadow: HEART.shadow,
+        backdropFilter: HEART.blur,
       }}
     >
       <Heart
-        size={16}
-        strokeWidth={2}
-        color={saved ? "#5b4632" : "rgba(18, 18, 20, 0.55)"}
-        fill={saved ? "#5b4632" : "none"}
+        size={HEART.iconSize}
+        strokeWidth={HEART.strokeWidth}
+        color={saved ? HEART.savedColor : HEART.idleColor}
+        fill={saved ? HEART.savedColor : "none"}
       />
     </button>
   );
@@ -1084,7 +1097,7 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 20, paddingRight: 20, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+        <div style={{ paddingLeft: GRID.pageInset, paddingRight: GRID.pageInset, display: "grid", gridTemplateColumns: "1fr 1fr", gap: GRID.gutter }}>
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="w-full" style={{ height: 220, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
           ))}
@@ -1106,7 +1119,7 @@ const CategoryPage = () => {
           </button>
         </div>
       ) : filteredListings.length > 0 ? (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18, paddingLeft: 20, paddingRight: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GRID.gutter, paddingLeft: GRID.pageInset, paddingRight: GRID.pageInset }}>
           {filteredListings.map((l) => {
             const hasDetail = !!(
               l.long_description ||
@@ -1172,25 +1185,27 @@ const CategoryPage = () => {
                     <div
                       style={{
                         position: "absolute",
-                        top: 8,
-                        left: 8,
-                        background: "rgba(255,255,255,0.95)",
+                        top: RATING_CHIP.top,
+                        left: RATING_CHIP.left,
+                        background: RATING_CHIP.background,
                         borderRadius: 9999,
-                        padding: "3px 8px",
+                        padding: `${RATING_CHIP.paddingY}px ${RATING_CHIP.paddingX}px`,
                         display: "inline-flex",
                         alignItems: "center",
-                        gap: 4,
-                        fontFamily: sans,
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: INK,
-                        lineHeight: 1,
+                        gap: RATING_CHIP.gap,
+                        fontFamily: RATING_CHIP.fontFamily,
+                        fontSize: RATING_CHIP.fontSize,
+                        fontWeight: RATING_CHIP.fontWeight,
+                        color: RATING_CHIP.color,
+                        lineHeight: RATING_CHIP.lineHeight,
                       }}
                     >
-                      <span style={{ color: "#E9B417" }}>★</span>
+                      <span style={{ color: RATING_CHIP.starColor }}>★</span>
                       {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
                       {l.google_reviews_count ? (
-                        <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
+                        <span style={{ fontWeight: RATING_CHIP.countWeight, color: RATING_CHIP.countColor }}>
+                          ({l.google_reviews_count})
+                        </span>
                       ) : null}
                     </div>
                   ) : null}

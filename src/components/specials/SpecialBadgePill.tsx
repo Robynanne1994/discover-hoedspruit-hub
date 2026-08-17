@@ -1,18 +1,21 @@
+import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { specialCard, type SpecialCardLike } from "@/lib/specialCard";
 
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const BADGE = SPECIAL_CARD_CHROME.badge;
+const SANS = BADGE.fontFamily;
 
 // Red is the discount voice ("30% Off", "Save R50", "Buy 1 Get 1"); olive is the
 // quieter one (day, season, "Special Offer"). Two tones, one rule, every surface.
 const TONE_BG = {
-  discount: "#C0392B",
-  neutral: "#4F4A38",
+  discount: BADGE.dealBackground,
+  neutral: BADGE.quietBackground,
 } as const;
 
 // `sm` for the narrow cards (2-col grid, homepage rail), `md` for the featured
 // hero. Nothing else varies — same wording, same colours, same shape.
+// `sm` is the one the admin crop guide draws, so it comes from `cardChrome.ts`.
 const SIZE = {
-  sm: { fontSize: 10, padding: "4px 9px" },
+  sm: { fontSize: BADGE.fontSize, padding: `${BADGE.paddingY}px ${BADGE.paddingX}px` },
   md: { fontSize: 10, padding: "6px 12px" },
 } as const;
 
@@ -34,13 +37,13 @@ const SpecialBadgePill = ({
         display: "inline-block",
         maxWidth: "100%",
         background: TONE_BG[badge.tone],
-        color: "#FFFFFF",
+        color: BADGE.color,
         borderRadius: 999,
         fontFamily: SANS,
-        fontWeight: 700,
-        letterSpacing: "0.06em",
+        fontWeight: BADGE.fontWeight,
+        letterSpacing: BADGE.letterSpacing,
         textTransform: "uppercase",
-        lineHeight: 1.1,
+        lineHeight: BADGE.lineHeight,
         whiteSpace: "nowrap",
         overflow: "hidden",
         textOverflow: "ellipsis",

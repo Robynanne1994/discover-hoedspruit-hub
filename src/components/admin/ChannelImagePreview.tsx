@@ -3,6 +3,8 @@ import { ArrowUpRight, Heart, Share2 } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { MUTED, HN, type } from "@/lib/type";
 import type { ChannelImageSlot } from "@/lib/channelImageSlots";
+import { slotBox } from "@/lib/imageSlots";
+import { DETAIL_HERO_CHROME } from "@/lib/cardChrome";
 import ImageBox from "./PreviewImageBox";
 
 /**
@@ -50,15 +52,18 @@ const CARD_SHADOW = "0 1px 4px -1px rgba(0,0,0,0.04)";
 const IMAGE_BG = "#F4EFE3";
 const CARD_MAX = 340;
 
+// The hero is drawn life-size, so its floating buttons are the app's own — 40px
+// circles 16px in from the edges, with 8px between share and save.
+const HERO = DETAIL_HERO_CHROME.button;
 const floatBtn: React.CSSProperties = {
-  width: 32,
-  height: 32,
+  width: HERO.size,
+  height: HERO.size,
   borderRadius: 999,
-  background: "#FFFFFF",
+  background: HERO.background,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+  boxShadow: HERO.shadow,
 };
 
 const displayTitleOf = (c: ChannelPreviewData) =>
@@ -85,7 +90,7 @@ const ListingCard = ({ slot, channel, renderImage }: ChannelImagePreviewProps) =
         position: "relative",
         width: "100%",
         maxWidth: CARD_MAX,
-        height: slot.box.height,
+        height: slotBox(slot).height,
         background: "#FFFFFF",
         borderRadius: 16,
         boxShadow: CARD_SHADOW,
@@ -97,13 +102,13 @@ const ListingCard = ({ slot, channel, renderImage }: ChannelImagePreviewProps) =
     >
       <ImageBox
         style={{
-          width: slot.box.width,
-          height: slot.box.height,
+          width: slotBox(slot).width,
+          height: slotBox(slot).height,
           flexShrink: 0,
           alignSelf: "stretch",
           background: IMAGE_BG,
         }}
-        fallback={slot.box}
+        fallback={slotBox(slot)}
         renderImage={renderImage}
       />
       <div style={{ flex: 1, minWidth: 0, paddingLeft: 12, paddingRight: 10 }}>
@@ -186,13 +191,13 @@ const HomepageRow = ({ slot, channel, renderImage }: ChannelImagePreviewProps) =
     >
       <ImageBox
         style={{
-          width: slot.box.width,
-          minHeight: slot.box.height,
+          width: slotBox(slot).width,
+          minHeight: slotBox(slot).height,
           alignSelf: "stretch",
           background: IMAGE_BG,
           flexShrink: 0,
         }}
-        fallback={slot.box}
+        fallback={slotBox(slot)}
         renderImage={renderImage}
       />
       <div style={{ flex: 1, minWidth: 0, alignSelf: "center", padding: "10px 0" }}>
@@ -218,7 +223,7 @@ const DetailHero = ({ slot, channel, renderImage }: ChannelImagePreviewProps) =>
     <div
       style={{
         width: "100%",
-        maxWidth: slot.box.width,
+        maxWidth: slotBox(slot).width,
         background: "#E6E0CC",
         fontFamily: HN,
         overflow: "hidden",
@@ -236,18 +241,33 @@ const DetailHero = ({ slot, channel, renderImage }: ChannelImagePreviewProps) =>
       >
         <ImageBox
           style={{ position: "absolute", inset: 0 }}
-          fallback={slot.box}
+          fallback={slotBox(slot)}
           renderImage={renderImage}
         />
-        <div style={{ ...floatBtn, position: "absolute", top: 14, left: 14 }}>
-          <BackArrowIcon size={16} color="#1A1A1A" />
+        <div
+          style={{
+            ...floatBtn,
+            position: "absolute",
+            top: DETAIL_HERO_CHROME.overlayTop(0),
+            left: HERO.sideInset,
+          }}
+        >
+          <BackArrowIcon size={HERO.iconSize} color="#1A1A1A" />
         </div>
-        <div style={{ position: "absolute", top: 14, right: 14, display: "flex", gap: 6 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: DETAIL_HERO_CHROME.overlayTop(0),
+            right: HERO.sideInset,
+            display: "flex",
+            gap: HERO.gap,
+          }}
+        >
           <div style={floatBtn}>
-            <Share2 size={16} strokeWidth={1.6} color="#1A1A1A" />
+            <Share2 size={HERO.iconSize} strokeWidth={1.6} color="#1A1A1A" />
           </div>
           <div style={floatBtn}>
-            <Heart size={16} strokeWidth={2} color="#715a3d" />
+            <Heart size={HERO.iconSize} strokeWidth={2} color="#715a3d" />
           </div>
         </div>
       </div>
@@ -287,7 +307,7 @@ const SavedTile = ({ slot, channel, renderImage }: ChannelImagePreviewProps) => 
   <div
     style={{
       width: "100%",
-      maxWidth: slot.box.width,
+      maxWidth: slotBox(slot).width,
       background: "#FFFFFF",
       borderRadius: 16,
       overflow: "hidden",
@@ -298,7 +318,7 @@ const SavedTile = ({ slot, channel, renderImage }: ChannelImagePreviewProps) => 
     <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: IMAGE_BG }}>
       <ImageBox
         style={{ position: "absolute", inset: 0 }}
-        fallback={slot.box}
+        fallback={slotBox(slot)}
         renderImage={renderImage}
       />
     </div>

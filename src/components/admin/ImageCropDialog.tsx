@@ -11,7 +11,8 @@ import { toast } from "sonner";
 import CropPreviewImage from "./CropPreviewImage";
 import CropGuides from "./CropGuides";
 import { exportSize } from "@/lib/cropPreview";
-import type { SlotGuide } from "@/lib/imageSlotGuides";
+import { PREVIEW_VIEWPORTS } from "@/lib/appLayout";
+import { guideLegends, type SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageCropDialogProps {
   open: boolean;
@@ -40,6 +41,13 @@ interface ImageCropDialogProps {
    */
   guides?: SlotGuide[];
   guideBox?: { width: number; height: number };
+  /**
+   * The device width the guides are drawn for. The app's chrome is a fixed
+   * pixel size, so how much of the picture it covers depends on how wide the
+   * card is — see appLayout.ts.
+   */
+  previewWidth?: number;
+  onPreviewWidthChange?: (width: number) => void;
   onCancel: () => void;
   onConfirm: (blob: Blob) => void;
 }
@@ -121,7 +129,8 @@ const ImageCropDialog = ({
   previewRender,
   guides,
   guideBox,
-
+  previewWidth,
+  onPreviewWidthChange,
   onCancel,
   onConfirm,
 }: ImageCropDialogProps) => {
@@ -151,23 +160,70 @@ const ImageCropDialog = ({
 
   const hasGuides = !!(guides?.length && guideBox);
 
+  /**
+   * Where the crop frame sits inside the wrapper, so the guides can be laid
+   * over exactly the pixels that will be exported.
+   *
+   * react-easy-crop derives `croppedAreaPixels` straight from its `cropSize`,
+   * and applies that size to `.reactEasyCrop_CropArea` — which is
+   * `box-sizing: border-box` with a 1px border. So the exported rectangle is
+   * the frame's **border box**, not its content box: measuring off
+   * `clientWidth` shrank the guide by a pixel on each side and shifted it a
+   * pixel down and right.
+   *
+   * Measuring is also driven by observers rather than by a render pass. The
+   * frame is created by the cropper after this effect first runs, and it
+   * resizes whenever the dialog does, neither of which shows up in a
+   * dependency list.
+   */
   useEffect(() => {
     if (!open || !hasGuides) return;
     const wrap = cropperWrapRef.current;
     if (!wrap) return;
-    const frame = wrap.querySelector(".reactEasyCrop_CropArea") as HTMLElement | null;
-    if (!frame) return;
-    const w = wrap.getBoundingClientRect();
-    const f = frame.getBoundingClientRect();
-    // The frame carries a 1px border; only its content box maps to the pixels
-    // that get exported, so the guide is measured off that.
-    setFrameBox({
-      left: f.left - w.left + frame.clientLeft,
-      top: f.top - w.top + frame.clientTop,
-      width: frame.clientWidth,
-      height: frame.clientHeight,
-    });
-  }, [open, hasGuides, croppedArea, zoom, aspect, resetKey, sourceSettled]);
+
+    let frameObserved: Element | null = null;
+    let raf = 0;
+    // Enough frames to cover the cropper mounting; not a loop that spins on
+    // forever if the image never loads.
+    let tries = 120;
+
+    const measure = () => {
+      const frame = wrap.querySelector(".reactEasyCrop_CropArea") as HTMLElement | null;
+      if (!frame) {
+        setFrameBox(null);
+        // The cropper mounts its frame a tick after the media loads.
+        if (tries-- > 0) raf = requestAnimationFrame(measure);
+        return;
+      }
+      if (frame !== frameObserved) {
+        if (frameObserved) ro.unobserve(frameObserved);
+        ro.observe(frame);
+        frameObserved = frame;
+      }
+      const w = wrap.getBoundingClientRect();
+      const f = frame.getBoundingClientRect();
+      const next = { left: f.left - w.left, top: f.top - w.top, width: f.width, height: f.height };
+      setFrameBox((prev) =>
+        prev &&
+        Math.abs(prev.left - next.left) < 0.5 &&
+        Math.abs(prev.top - next.top) < 0.5 &&
+        Math.abs(prev.width - next.width) < 0.5 &&
+        Math.abs(prev.height - next.height) < 0.5
+          ? prev
+          : next,
+      );
+    };
+
+    const ro =
+      typeof ResizeObserver === "undefined" ? ({ observe() {}, unobserve() {}, disconnect() {} } as unknown as ResizeObserver) : new ResizeObserver(measure);
+    ro.observe(wrap);
+    measure();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [open, hasGuides, aspect, resetKey, sourceSettled]);
 
 
 
@@ -402,19 +458,49 @@ const ImageCropDialog = ({
           </div>
 
           {hasGuides && (
-            <ul className="space-y-1 rounded-lg border border-border bg-muted/40 p-3">
-              <li className="text-xs font-medium text-foreground">
+            <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3">
+              <p className="text-xs font-medium text-foreground">
                 The app paints these over the picture — position it so nothing important lands underneath.
-              </li>
-              {guides!.map((g) => (
-                <li key={g.key} className="flex gap-2 text-[11px] text-muted-foreground">
-                  <span aria-hidden className="text-[#B42318]">
-                    ▸
-                  </span>
-                  {g.legend}
-                </li>
-              ))}
-            </ul>
+              </p>
+              <ul className="space-y-1">
+                {guideLegends(guides!).map((legend) => (
+                  <li key={legend} className="flex gap-2 text-[11px] text-muted-foreground">
+                    <span aria-hidden className="text-[#B42318]">
+                      ▸
+                    </span>
+                    {legend}
+                  </li>
+                ))}
+              </ul>
+              {previewWidth && onPreviewWidthChange && (
+                <div className="space-y-1 border-t border-border pt-2">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <Label className="text-xs">Drawn for a</Label>
+                    <span className="text-[11px] tabular-nums text-muted-foreground">
+                      card {Math.round(guideBox!.width)} × {Math.round(guideBox!.height)}px
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {PREVIEW_VIEWPORTS.map((v) => (
+                      <Button
+                        key={v.width}
+                        type="button"
+                        size="sm"
+                        variant={previewWidth === v.width ? "default" : "outline"}
+                        onClick={() => onPreviewWidthChange(v.width)}
+                        title={v.hint}
+                      >
+                        {v.label}
+                      </Button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    The chrome is a fixed pixel size, so it covers more of a narrow phone's card than
+                    a wide one's. The app itself stops widening at 480px.
+                  </p>
+                </div>
+              )}
+            </div>
           )}
 
           {previewRender && (

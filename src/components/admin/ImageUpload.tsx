@@ -6,6 +6,8 @@ import { Upload, X, Image as ImageIcon, Crop } from "lucide-react";
 import { toast } from "sonner";
 import ImageCropDialog from "./ImageCropDialog";
 import CropGuides from "./CropGuides";
+import { DEFAULT_PREVIEW_WIDTH } from "@/lib/appLayout";
+import type { SlotGuides } from "@/lib/imageSlots";
 import type { SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageUploadProps {
@@ -30,9 +32,14 @@ interface ImageUploadProps {
    * positioning, and over the saved thumbnail afterwards so an image uploaded
    * before the guides existed can still be checked at a glance.
    */
-  guides?: SlotGuide[];
-  /** The slot's life-size box — the scale `guides` are measured in. */
-  guideBox?: { width: number; height: number };
+  guides?: SlotGuides;
+  /**
+   * The slot's life-size box at a device width — the scale `guides` are
+   * measured in. Both take the width because the app's chrome is a fixed pixel
+   * size: the share of the picture it covers, and where a detail hero's
+   * floating buttons land under the status bar, depend on how wide the card is.
+   */
+  guideBox?: (viewport: number) => { width: number; height: number };
 }
 
 const ImageUpload = ({
@@ -47,13 +54,19 @@ const ImageUpload = ({
   guides,
   guideBox,
 }: ImageUploadProps) => {
-  // A box means the thumbnail can be drawn at the slot's own ratio; guides are
-  // the chrome laid over it, and not every slot has any.
-  const hasBox = !!guideBox;
-  const hasGuides = !!(guides?.length && guideBox);
   const [uploading, setUploading] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
+  // Which device the guides are drawn for. Held here rather than in the dialog
+  // so the saved thumbnail and the crop frame always show the same card.
+  const [previewWidth, setPreviewWidth] = useState(DEFAULT_PREVIEW_WIDTH);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // A box means the thumbnail can be drawn at the slot's own ratio; guides are
+  // the chrome laid over it, and not every slot has any.
+  const box = guideBox?.(previewWidth);
+  const slotGuides: SlotGuide[] = guides?.(previewWidth) ?? [];
+  const hasBox = !!box;
+  const hasGuides = slotGuides.length > 0 && !!box;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -128,18 +141,24 @@ const ImageUpload = ({
           // only sit in the right place if the box they are measured against is
           // the one on screen.
           <div className="space-y-2">
-            <div className="flex justify-center rounded-lg border border-border bg-muted/40 p-3">
+            <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-3">
               <div
                 className="relative overflow-hidden rounded"
                 style={{
-                  width: "100%",
-                  maxWidth: 320,
-                  aspectRatio: `${guideBox!.width} / ${guideBox!.height}`,
+                  // Life-size: the card is this many CSS px wide in the app, so
+                  // the thumbnail is the picture at the size it will be seen at
+                  // rather than a blown-up version of it.
+                  width: box!.width,
+                  maxWidth: "100%",
+                  aspectRatio: `${box!.width} / ${box!.height}`,
                 }}
               >
                 <img src={value} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
-                {hasGuides && <CropGuides box={guideBox!} guides={guides!} />}
+                {hasGuides && <CropGuides box={box!} guides={slotGuides} />}
               </div>
+              <p className="text-[11px] tabular-nums text-muted-foreground">
+                Life-size — {Math.round(box!.width)} × {Math.round(box!.height)}px on a {previewWidth}px screen
+              </p>
             </div>
             <div className="flex gap-2">
               <Button type="button" variant="outline" size="sm" className="gap-1.5" onClick={handleEditExisting}>
@@ -203,8 +222,10 @@ const ImageUpload = ({
         aspectLabel={aspectLabel}
         title={cropTitle}
         previewRender={previewRender}
-        guides={guides}
-        guideBox={guideBox}
+        guides={slotGuides}
+        guideBox={box}
+        previewWidth={previewWidth}
+        onPreviewWidthChange={setPreviewWidth}
         onCancel={() => setCropSrc(null)}
         onConfirm={async (blob) => {
           setCropSrc(null);
