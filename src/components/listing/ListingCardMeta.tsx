@@ -10,24 +10,21 @@ const BROWN = "#715A3D";
 const SAGE = "#2b7f3f";
 const CLAY = "#C0392B";
 
-const to12h = (raw?: string | null) => {
+const to24h = (raw?: string | null) => {
   if (!raw) return null;
   const m = raw.trim().match(/^(\d{1,2})[:.]?(\d{2})?/);
   if (!m) return null;
-  let h = parseInt(m[1], 10);
+  const h = parseInt(m[1], 10);
   const mm = m[2] ?? "00";
   if (Number.isNaN(h)) return null;
-  const suffix = h >= 12 ? "PM" : "AM";
-  if (h === 0) h = 12;
-  else if (h > 12) h -= 12;
-  return `${h}:${mm}${suffix}`;
+  return `${String(h).padStart(2, "0")}:${mm}`;
 };
 
 const closesAt = (hours: Record<string, string> | null | undefined) => {
   const v = todayHours(hours);
   if (!v) return null;
   const m = v.match(/[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-  return m ? to12h(m[1]) : null;
+  return m ? to24h(m[1]) : null;
 };
 
 // The open/closed footer bar, mirroring the saved cards on the profile page.
@@ -44,7 +41,7 @@ export const listingStatus = (
       ? { label: "Open", detail: `Closes ${until}`, tone: SAGE }
       : { label: "Open Now", tone: SAGE };
   }
-  const opens = to12h(opensAt(hours));
+  const opens = to24h(opensAt(hours));
   return opens
     ? { label: "Closed", detail: `Opens ${opens}`, tone: CLAY }
     : { label: "Closed Now", tone: CLAY };
