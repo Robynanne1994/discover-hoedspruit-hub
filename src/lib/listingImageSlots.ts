@@ -13,12 +13,19 @@
  * nothing left to trim, so the crop preview and the live screen are the same
  * picture. `guides` then draws whatever the app lays on top of it.
  *
- * Keep `aspect` and `box` in step with the screen named beside each slot —
- * `listingImageSlots.test.ts` fails if a ratio and its box drift apart.
+ * Every box that follows the viewport is computed from `appLayout.ts` — the
+ * same page insets and gutters the screens lay themselves out with — so a
+ * change to a grid can't leave a stale width behind here.
  */
 
-import { categoryCardGuides, savedCardGuides, searchCircleGuide, titleSheetGuide } from "./imageSlotGuides";
-import { findSlot, type ImageSlot } from "./imageSlots";
+import { CATEGORY_CARD_GRID, fullBleedWidth, gridCardWidth, SAVED_CARD_GRID, previewViewport } from "./appLayout";
+import {
+  categoryCardGuides,
+  detailHeroGuides,
+  savedCardGuides,
+  searchCircleGuide,
+} from "./imageSlotGuides";
+import { findSlot, fixedBox, fixedGuides, ratioBox, type ImageSlot } from "./imageSlots";
 
 export type ListingImageSlotKey = "detail" | "card" | "homepage" | "saved" | "search";
 
@@ -37,13 +44,13 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     field: "detail_image_url",
     label: "Individual page image",
     where: "The hero at the top of the listing's own page.",
-    // ListingDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width.
+    // ListingDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width of the shell.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    // Life-size on a 390pt phone, which is what the guide below is worked out
-    // from (the title sheet is a fixed 28px, the hero scales).
-    box: { width: 390, height: 292.5 },
-    guides: [titleSheetGuide()],
+    box: ratioBox(fullBleedWidth, 4 / 3),
+    // Back, share and save float over the top; the title sheet laps over the
+    // bottom 28px. Where the buttons land depends on the phone's status bar.
+    guides: (viewport) => detailHeroGuides(previewViewport(viewport).safeTop),
     fallback: "Nothing — the page opens straight onto the title card.",
   },
   {
@@ -52,11 +59,11 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     label: "Category page card image",
     where: "The card on a category page — Where to Eat, Shops, and the rest.",
     // CategoryPage.tsx — card image is `aspectRatio: "4 / 3"` in a two-column
-    // grid: (390 − 40 page padding − 18 gutter) ÷ 2.
+    // grid inside 20px page padding with an 18px gutter.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    box: { width: 166, height: 124.5 },
-    guides: categoryCardGuides(),
+    box: ratioBox((v) => gridCardWidth(CATEGORY_CARD_GRID, v), 4 / 3),
+    guides: fixedGuides(categoryCardGuides()),
     fallback: "Falls back to the individual page image.",
   },
   {
@@ -67,7 +74,7 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     // HomeListings.tsx — tile is `width: 138` with `aspectRatio: "1 / 1"`.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 138, height: 138 },
+    box: fixedBox(138, 138),
     fallback: "Falls back to the individual page image.",
   },
   {
@@ -76,11 +83,11 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     label: "Saved card image",
     where: "The tile on a member's Saved screen.",
     // SavedCard.tsx — tile image is `aspectRatio: "4 / 3"` in a two-column
-    // grid: (390 − 40 page padding − 12 gutter) ÷ 2.
+    // grid inside 20px page padding with a 12px gutter.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    box: { width: 169, height: 126.75 },
-    guides: savedCardGuides("Listing", { kind: "rating" }),
+    box: ratioBox((v) => gridCardWidth(SAVED_CARD_GRID, v), 4 / 3),
+    guides: fixedGuides(savedCardGuides("Listing", { kind: "rating" })),
     fallback: "Falls back to the individual page image.",
   },
   {
@@ -92,8 +99,8 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     // `borderRadius: "50%"`, so anything off-square loses its edges twice over.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 42, height: 42 },
-    guides: [searchCircleGuide()],
+    box: fixedBox(42, 42),
+    guides: fixedGuides([searchCircleGuide()]),
     fallback: "Falls back to the individual page image.",
   },
 ];

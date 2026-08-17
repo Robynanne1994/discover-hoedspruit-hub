@@ -18,6 +18,9 @@ interface ImageSlotFieldProps {
  * hand them to the upload control. The ratio is offered as the starting shape
  * and stays free to change, and the guides are drawn both on the saved
  * thumbnail and inside the crop dialog.
+ *
+ * `box` and `guides` are passed as the slot's own functions of device width —
+ * the upload control picks the width being previewed and calls them.
  */
 const ImageSlotField = ({ slot, value, onChange, label, bucket = "listing-images" }: ImageSlotFieldProps) => (
   <div className="space-y-1">

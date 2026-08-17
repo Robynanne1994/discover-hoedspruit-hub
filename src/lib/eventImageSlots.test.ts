@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { EVENT_IMAGE_SLOTS, eventImageSlot } from "./eventImageSlots";
+import { slotBox } from "./imageSlots";
 
 describe("event image slots", () => {
   it("matches the boxes the app paints", () => {
@@ -21,7 +22,7 @@ describe("event image slots", () => {
 
   it("keeps every box on its slot's ratio", () => {
     for (const slot of EVENT_IMAGE_SLOTS) {
-      expect(slot.box.width / slot.box.height).toBeCloseTo(slot.aspect, 5);
+      expect(slotBox(slot).width / slotBox(slot).height).toBeCloseTo(slot.aspect, 5);
     }
   });
 

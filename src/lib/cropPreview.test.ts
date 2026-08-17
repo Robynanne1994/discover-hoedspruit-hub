@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { coverCropArea, cropPreviewLayout, exportSize } from "./cropPreview";
 import { CHANNEL_IMAGE_SLOTS, channelImageSlot } from "./channelImageSlots";
+import { slotBox } from "./imageSlots";
 
 describe("coverCropArea", () => {
   it("takes the full height of a photo wider than the target", () => {
@@ -115,7 +116,7 @@ describe("channel image slots", () => {
 
   it("keeps every preview box on its slot's ratio", () => {
     for (const slot of CHANNEL_IMAGE_SLOTS) {
-      expect(slot.box.width / slot.box.height).toBeCloseTo(slot.aspect, 5);
+      expect(slotBox(slot).width / slotBox(slot).height).toBeCloseTo(slot.aspect, 5);
     }
   });
 

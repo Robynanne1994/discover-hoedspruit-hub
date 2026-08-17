@@ -13,19 +13,20 @@
  * picture. `guides` then draws whatever the app lays on top of it, so nothing
  * important ends up parked under a heart or the white title card.
  *
- * Keep `aspect` and `box` in step with the screen named beside each slot — the
- * file and line references say where to look, and `eventImageSlots.test.ts`
- * fails if a ratio and its box drift apart.
+ * Boxes that follow the viewport are computed from `appLayout.ts`, so they stay
+ * right at every device width instead of only on the one phone somebody
+ * measured.
  */
 
+import { fullBleedWidth, gridCardWidth, previewViewport, SAVED_CARD_GRID } from "./appLayout";
 import {
   circleMaskGuide,
+  detailHeroGuides,
   posterDateGuide,
   savedCardGuides,
   searchCircleGuide,
-  titleSheetGuide,
 } from "./imageSlotGuides";
-import { findSlot, type ImageSlot } from "./imageSlots";
+import { findSlot, fixedBox, fixedGuides, ratioBox, type ImageSlot } from "./imageSlots";
 
 export type EventImageSlotKey =
   | "card"
@@ -57,7 +58,7 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // column set to `alignSelf: stretch`.
     aspect: 140 / 188,
     aspectLabel: "35:47",
-    box: { width: 140, height: 188 },
+    box: fixedBox(140, 188),
     fallback: "Nothing — the card shows a plain ivory panel instead.",
   },
   {
@@ -68,8 +69,8 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // Events.tsx — PosterCard image area is `width: 196, height: 164`.
     aspect: 196 / 164,
     aspectLabel: "49:41",
-    box: { width: 196, height: 164 },
-    guides: [posterDateGuide()],
+    box: fixedBox(196, 164),
+    guides: fixedGuides([posterDateGuide()]),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -77,15 +78,11 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     field: "detail_image_url",
     label: "Detail Cover Image",
     where: "The hero at the top of the event's own page.",
-    // EventDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width.
+    // EventDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width of the shell.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    // Life-size on a 390pt phone, which is what the guide below is worked out
-    // from (the sheet is a fixed 28px, the hero scales).
-    box: { width: 390, height: 292.5 },
-    // EventDetail.tsx — the title sheet sits `marginTop: -28` over the hero
-    // with `borderRadius: "28px 28px 0 0"`, so it covers the bottom 28px.
-    guides: [titleSheetGuide()],
+    box: ratioBox(fullBleedWidth, 4 / 3),
+    guides: (viewport) => detailHeroGuides(previewViewport(viewport).safeTop),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -96,7 +93,7 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // HomeWhatsOn.tsx — tile is `width: 144, height: 192`.
     aspect: 3 / 4,
     aspectLabel: "3:4",
-    box: { width: 144, height: 192 },
+    box: fixedBox(144, 192),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -105,11 +102,11 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     label: "Saved Card Cover Image",
     where: "The tile on a member's Saved screen.",
     // SavedCard.tsx — tile image is `aspectRatio: "4 / 3"` in a two-column
-    // grid: (390 − 40 page padding − 12 gutter) ÷ 2.
+    // grid inside 20px page padding with a 12px gutter.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    box: { width: 169, height: 126.75 },
-    guides: savedCardGuides("Event"),
+    box: ratioBox((v) => gridCardWidth(SAVED_CARD_GRID, v), 4 / 3),
+    guides: fixedGuides(savedCardGuides("Event")),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -121,8 +118,8 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // `borderRadius: "50%"`, so anything off-square loses its edges twice over.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 42, height: 42 },
-    guides: [searchCircleGuide()],
+    box: fixedBox(42, 42),
+    guides: fixedGuides([searchCircleGuide()]),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -134,8 +131,10 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // `borderRadius: 999`, so anything off-square loses its edges to the circle.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 48, height: 48 },
-    guides: [circleMaskGuide("The host photo is round — everything outside the circle is trimmed off.")],
+    box: fixedBox(48, 48),
+    guides: fixedGuides([
+      circleMaskGuide("The host photo is round — everything outside the circle is trimmed off."),
+    ]),
     fallback: "Nothing — the row shows the host's initial in a circle.",
   },
 ];

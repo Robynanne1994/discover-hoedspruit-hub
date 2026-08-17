@@ -11,6 +11,8 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
+import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
+import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
@@ -34,7 +36,7 @@ const COLOR = {
 // Horizontal gap between featured slides, and how much of the next slide peeks in.
 const SLIDE_GAP = 12;
 const SLIDE_PEEK = 22;
-const PAGE_PAD = 20;
+const PAGE_PAD = SPECIALS_CARD_GRID.pageInset;
 
 const ENDING_SOON_TAB = "__ending_soon__";
 const ALL_TAB = "All Specials";
@@ -867,7 +869,12 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
         )}
         <SpecialBadgePill
           special={special}
-          style={{ position: "absolute", top: 8, left: 8, maxWidth: "calc(100% - 16px)" }}
+          style={{
+            position: "absolute",
+            top: SPECIAL_CARD_CHROME.badge.top,
+            left: SPECIAL_CARD_CHROME.badge.left,
+            maxWidth: "calc(100% - 16px)",
+          }}
         />
       </div>
 

@@ -7,6 +7,7 @@ import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
 import { compactDays, parseDays } from "@/lib/specialDays";
 import { getNextOccurrence } from "@/lib/eventSchedule";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
+import { SAVED_CARD_CHROME as CHROME } from "@/lib/cardChrome";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -21,16 +22,19 @@ const OLIVE = "#4F4A38";
 const IMAGE_BG = "#F4EFE3";
 const MONO = "#A79E88";
 
-const CHIP_BG = "rgba(255,255,255,0.94)";
-const CHIP_SHADOW = "0 1px 4px rgba(0,5,5,0.14)";
+// The floating chrome — chip background, shadow, insets, heart — is described
+// once in `cardChrome.ts` and read from there by the admin crop tool as well,
+// so the guides you position a photo around are these exact shapes.
+const CHIP_BG = CHROME.chip.background;
+const CHIP_SHADOW = CHROME.chip.shadow;
 // Inset from the image edge for the floating pills. The top-left type capsule
 // and the bottom-left rating/deal pills all share this same inset so the
 // padding above and below the image stays visually equal.
-const PILL_INSET = 8;
+const PILL_INSET = CHROME.inset;
 // The heart button's 30px circle starts 4px from the image top, so the type
 // capsule sits at the same 4px to line the two tops up.
-const PILL_TOP = 4;
-const STAR = "#E9B417";
+const PILL_TOP = CHROME.top;
+const STAR = CHROME.rating.starColor;
 
 const titleCase = (s?: string | null) => {
   if (!s) return "";
@@ -244,8 +248,8 @@ const buildContent = (it: any, type: CardType) => {
 const Chip = ({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) => (
   <div
     style={{
-      height: 20,
-      padding: "0 8px",
+      height: CHROME.chip.height,
+      padding: `0 ${CHROME.chip.paddingX}px`,
       borderRadius: 9999,
       display: "inline-flex",
       alignItems: "center",
@@ -384,8 +388,8 @@ const SavedCard = ({
               style={{
                 ...t.label,
                 textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                color: "#1a1a1a",
+                letterSpacing: CHROME.typeCapsule.letterSpacing,
+                color: CHROME.typeCapsule.color,
               }}
             >
               {TYPE_LABEL[type]}
@@ -396,11 +400,11 @@ const SavedCard = ({
         {/* Rating pill (listings) */}
         {ratingChip && !badge && (
           <div style={{ position: "absolute", bottom: PILL_INSET, left: PILL_INSET }}>
-            <Chip style={{ height: 18, padding: "0 6px" }}>
-              <span style={{ ...t.label, color: META, whiteSpace: "nowrap" }}>
+            <Chip style={{ height: CHROME.rating.height, padding: `0 ${CHROME.rating.paddingX}px` }}>
+              <span style={{ ...t.label, color: CHROME.rating.color, whiteSpace: "nowrap" }}>
                 <span style={{ color: STAR }}>★</span> {ratingChip}
                 {reviewCount && (
-                  <span style={{ letterSpacing: "-0.03em" }}> ({reviewCount})</span>
+                  <span style={{ letterSpacing: CHROME.rating.countLetterSpacing }}> ({reviewCount})</span>
                 )}
               </span>
             </Chip>
@@ -416,7 +420,8 @@ const SavedCard = ({
                 badge.tone === "ended"
                   ? undefined
                   : {
-                      background: badge.tone === "deal" ? CLAY : OLIVE,
+                      background:
+                        badge.tone === "deal" ? CHROME.badge.dealBackground : CHROME.badge.quietBackground,
                       backdropFilter: "none",
                       WebkitBackdropFilter: "none",
                       maxWidth: "100%",
@@ -427,8 +432,9 @@ const SavedCard = ({
                 style={{
                   ...t.label,
                   textTransform: "uppercase",
-                  letterSpacing: badge.tone === "ended" ? "0.1em" : "0.06em",
-                  color: badge.tone === "ended" ? MUTED : "#FFFFFF",
+                  letterSpacing:
+                    badge.tone === "ended" ? CHROME.badge.endedLetterSpacing : CHROME.badge.letterSpacing,
+                  color: badge.tone === "ended" ? CHROME.badge.endedColor : CHROME.badge.color,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -447,10 +453,10 @@ const SavedCard = ({
             aria-label="Remove from saved"
             style={{
               position: "absolute",
-              top: -3,
-              right: -3,
-              width: 44,
-              height: 44,
+              top: CHROME.heart.hitOffset,
+              right: CHROME.heart.hitOffset,
+              width: CHROME.heart.hitArea,
+              height: CHROME.heart.hitArea,
               background: "transparent",
               border: "none",
               display: "inline-flex",
@@ -462,10 +468,10 @@ const SavedCard = ({
           >
             <span
               style={{
-                width: 30,
-                height: 30,
+                width: CHROME.heart.size,
+                height: CHROME.heart.size,
                 borderRadius: 9999,
-                background: "rgba(255,255,255,0.95)",
+                background: CHROME.heart.background,
                 backdropFilter: "blur(4px)",
                 WebkitBackdropFilter: "blur(4px)",
                 boxShadow: CHIP_SHADOW,
@@ -474,7 +480,7 @@ const SavedCard = ({
                 justifyContent: "center",
               }}
             >
-              <Heart size={16} strokeWidth={2} color={HEART} fill={HEART} />
+              <Heart size={CHROME.heart.iconSize} strokeWidth={CHROME.heart.strokeWidth} color={HEART} fill={HEART} />
             </span>
           </button>
         )}

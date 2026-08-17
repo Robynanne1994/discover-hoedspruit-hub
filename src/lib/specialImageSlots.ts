@@ -11,16 +11,25 @@
  * into and `cover` has nothing left to trim, so the crop preview and the live
  * screen are the same picture. `guides` draws whatever the app lays on top.
  *
- * Keep `aspect` and `box` in step with the screen named beside each slot.
+ * Boxes that follow the viewport are computed from `appLayout.ts` rather than
+ * fixed at one phone's width, so the guides stay life-size on every device.
  */
 
 import {
+  fullBleedWidth,
+  gridCardWidth,
+  insetWidth,
+  previewViewport,
+  SAVED_CARD_GRID,
+  SPECIALS_CARD_GRID,
+} from "./appLayout";
+import {
+  detailHeroGuides,
   savedCardGuides,
   searchCircleGuide,
   specialCardBadgeGuide,
-  titleSheetGuide,
 } from "./imageSlotGuides";
-import { findSlot, type ImageSlot } from "./imageSlots";
+import { findSlot, fixedBox, fixedGuides, ratioBox, type ImageSlot } from "./imageSlots";
 
 export type SpecialImageSlotKey = "card" | "detail" | "homepage" | "featured" | "saved" | "search";
 
@@ -41,11 +50,11 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     label: "Card cover image",
     where: "The card on the Specials list. Also the picture every other slot falls back to.",
     // Specials.tsx — DealCard image is `aspectRatio: "1 / 1"` in a two-column
-    // grid: (390 − 40 page padding − 12 gutter) ÷ 2.
+    // grid inside 20px page padding with a 12px gutter.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 169, height: 169 },
-    guides: [specialCardBadgeGuide()],
+    box: ratioBox((v) => gridCardWidth(SPECIALS_CARD_GRID, v), 1),
+    guides: fixedGuides([specialCardBadgeGuide()]),
     fallback: "Nothing — the card shows a plain sand panel instead.",
   },
   {
@@ -53,11 +62,11 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     field: "detail_image_url",
     label: "Individual page image",
     where: "The hero at the top of the special's own page.",
-    // SpecialDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width.
+    // SpecialDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width of the shell.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    box: { width: 390, height: 292.5 },
-    guides: [titleSheetGuide()],
+    box: ratioBox(fullBleedWidth, 4 / 3),
+    guides: (viewport) => detailHeroGuides(previewViewport(viewport).safeTop),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -73,7 +82,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     // rather than cutting the top or bottom off.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 190, height: 190 },
+    box: fixedBox(190, 190),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -81,10 +90,11 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     field: "featured_image_url",
     label: "Featured carousel image",
     where: "The Top Deals carousel at the top of the Specials page.",
-    // Specials.tsx — FeaturedCard image is `aspectRatio: "3 / 2"`.
+    // Specials.tsx — FeaturedCard image is `aspectRatio: "3 / 2"`, and the slide
+    // fills the content column inside the page's 20px gutters.
     aspect: 3 / 2,
     aspectLabel: "3:2",
-    box: { width: 348, height: 232 },
+    box: ratioBox((v) => insetWidth(SPECIALS_CARD_GRID.pageInset, v), 3 / 2),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -95,8 +105,8 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     // SavedCard.tsx — tile image is `aspectRatio: "4 / 3"`.
     aspect: 4 / 3,
     aspectLabel: "4:3",
-    box: { width: 169, height: 126.75 },
-    guides: savedCardGuides("Special", { kind: "deal", text: "30% OFF" }),
+    box: ratioBox((v) => gridCardWidth(SAVED_CARD_GRID, v), 4 / 3),
+    guides: fixedGuides(savedCardGuides("Special", { kind: "deal", text: "30% OFF" })),
     fallback: "Falls back to the card cover image.",
   },
   {
@@ -107,8 +117,8 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     // Search.tsx — ResultRow avatar is `width: 42, height: 42`, fully rounded.
     aspect: 1,
     aspectLabel: "1:1",
-    box: { width: 42, height: 42 },
-    guides: [searchCircleGuide()],
+    box: fixedBox(42, 42),
+    guides: fixedGuides([searchCircleGuide()]),
     fallback: "Falls back to the card cover image.",
   },
 ];

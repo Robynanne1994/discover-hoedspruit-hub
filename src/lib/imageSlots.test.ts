@@ -1,9 +1,20 @@
 import { describe, it, expect } from "vitest";
+import {
+  APP_SHELL_MAX_WIDTH,
+  CATEGORY_CARD_GRID,
+  DEFAULT_PREVIEW_WIDTH,
+  gridCardWidth,
+  PREVIEW_VIEWPORTS,
+  SAVED_CARD_GRID,
+  shellWidth,
+} from "./appLayout";
+import { CATEGORY_CARD_CHROME, DETAIL_HERO_CHROME, SAVED_CARD_CHROME } from "./cardChrome";
 import { CHANNEL_IMAGE_SLOTS, channelImageSlot } from "./channelImageSlots";
 import { EVENT_IMAGE_SLOTS } from "./eventImageSlots";
+import { guideHeight } from "./imageSlotGuides";
 import { LISTING_IMAGE_SLOTS, listingImageSlot } from "./listingImageSlots";
 import { SPECIAL_IMAGE_SLOTS, specialImageSlot } from "./specialImageSlots";
-import type { ImageSlot } from "./imageSlots";
+import { slotBox, slotGuides, type ImageSlot } from "./imageSlots";
 
 const FAMILIES: [string, ImageSlot[]][] = [
   ["events", EVENT_IMAGE_SLOTS],
@@ -12,13 +23,18 @@ const FAMILIES: [string, ImageSlot[]][] = [
   ["channels", CHANNEL_IMAGE_SLOTS],
 ];
 
+const WIDTHS = PREVIEW_VIEWPORTS.map((v) => v.width);
+
 describe.each(FAMILIES)("%s image slots", (_name, slots) => {
-  it("keeps every box on its slot's ratio", () => {
+  it("keeps every box on its slot's ratio, at every device width", () => {
     // The box is what the guides are measured against, so a box that has
     // drifted off the ratio puts the chrome in the wrong place as well as
     // cropping to the wrong shape.
     for (const slot of slots) {
-      expect(slot.box.width / slot.box.height).toBeCloseTo(slot.aspect, 5);
+      for (const viewport of WIDTHS) {
+        const box = slotBox(slot, viewport);
+        expect(box.width / box.height).toBeCloseTo(slot.aspect, 5);
+      }
     }
   });
 
@@ -29,20 +45,128 @@ describe.each(FAMILIES)("%s image slots", (_name, slots) => {
 
   it("keeps every guide inside the box it is measured against", () => {
     for (const slot of slots) {
-      for (const guide of slot.guides ?? []) {
-        const { shape } = guide;
-        if (shape.kind === "sheet") {
-          expect(shape.height).toBeLessThan(slot.box.height);
-        }
-        if (shape.kind === "circle") {
-          expect(shape.size + (guide.y ?? 0)).toBeLessThanOrEqual(slot.box.height);
-          expect(shape.size + (guide.x ?? 0)).toBeLessThanOrEqual(slot.box.width);
-        }
-        if (shape.kind === "pill") {
-          expect(shape.height + (guide.y ?? 0)).toBeLessThanOrEqual(slot.box.height);
+      for (const viewport of WIDTHS) {
+        const box = slotBox(slot, viewport);
+        for (const guide of slotGuides(slot, viewport)) {
+          const { shape } = guide;
+          expect(guideHeight(shape) + (guide.y ?? 0)).toBeLessThanOrEqual(box.height);
+          if (shape.kind === "circle") {
+            expect(shape.size + (guide.x ?? 0)).toBeLessThanOrEqual(box.width);
+          }
         }
       }
     }
+  });
+});
+
+/**
+ * The bug these guard against: every "follows the viewport" box was worked out
+ * on a 390pt phone and then frozen, while the app shell actually stops widening
+ * at 480. A category card is 211px wide in any window past that, so guides
+ * drawn against a 166px box came out 27% too big and 27% too far down the
+ * picture — which is what made the editor and the live card disagree.
+ */
+describe("boxes that follow the viewport", () => {
+  it("grows a category card with the shell, and stops where the shell stops", () => {
+    const card = listingImageSlot("card");
+    expect(slotBox(card, 390).width).toBeCloseTo((390 - 40 - 18) / 2, 5);
+    expect(slotBox(card, 480).width).toBeCloseTo((480 - 40 - 18) / 2, 5);
+    // Past the shell's cap the card stops growing, so the guides stop shrinking.
+    expect(slotBox(card, 1440)).toEqual(slotBox(card, APP_SHELL_MAX_WIDTH));
+  });
+
+  it("previews at the shell's widest by default", () => {
+    expect(DEFAULT_PREVIEW_WIDTH).toBe(APP_SHELL_MAX_WIDTH);
+    expect(slotBox(listingImageSlot("card")).width).toBeCloseTo(
+      gridCardWidth(CATEGORY_CARD_GRID, APP_SHELL_MAX_WIDTH),
+      5,
+    );
+  });
+
+  it("gives every saved tile the same box, whichever family it belongs to", () => {
+    // One SavedCard paints all four, so one box has to serve all four.
+    const saved = [
+      listingImageSlot("saved"),
+      specialImageSlot("saved"),
+      channelImageSlot("saved"),
+      EVENT_IMAGE_SLOTS.find((s) => s.key === "saved")!,
+    ];
+    for (const slot of saved) {
+      for (const viewport of WIDTHS) {
+        expect(slotBox(slot, viewport).width).toBeCloseTo(
+          gridCardWidth(SAVED_CARD_GRID, viewport),
+          5,
+        );
+      }
+    }
+  });
+
+  it("gives a detail hero the full width of the shell", () => {
+    for (const viewport of WIDTHS) {
+      expect(slotBox(listingImageSlot("detail"), viewport).width).toBe(shellWidth(viewport));
+    }
+  });
+});
+
+describe("guides drawn from the live chrome", () => {
+  it("puts the category card's rating and heart where CategoryPage does", () => {
+    const guides = slotGuides(listingImageSlot("card"));
+    const rating = guides.find((g) => g.key === "rating")!;
+    const heart = guides.find((g) => g.key === "heart")!;
+
+    expect(rating.anchor).toBe("top-left");
+    expect(rating.x).toBe(CATEGORY_CARD_CHROME.rating.left);
+    expect(rating.y).toBe(CATEGORY_CARD_CHROME.rating.top);
+    // `padding: "3px 8px"` at 11px on a lineHeight of 1 stands 17px tall.
+    expect(guideHeight(rating.shape)).toBeCloseTo(17, 5);
+
+    expect(heart.anchor).toBe("top-right");
+    expect(heart.x).toBe(CATEGORY_CARD_CHROME.heart.right);
+    expect(heart.y).toBe(CATEGORY_CARD_CHROME.heart.top);
+    expect(guideHeight(heart.shape)).toBe(CATEGORY_CARD_CHROME.heart.size);
+  });
+
+  it("draws the heart as CategoryPage draws it before it is saved", () => {
+    const heart = slotGuides(listingImageSlot("card")).find((g) => g.key === "heart")!;
+    expect(heart.shape).toMatchObject({
+      kind: "circle",
+      content: {
+        kind: "icon",
+        icon: "heart-idle",
+        size: CATEGORY_CARD_CHROME.heart.iconSize,
+        strokeWidth: CATEGORY_CARD_CHROME.heart.strokeWidth,
+      },
+    });
+  });
+
+  it("lines the saved tile's heart up with its type capsule", () => {
+    const guides = slotGuides(listingImageSlot("saved"));
+    const capsule = guides.find((g) => g.key === "type-capsule")!;
+    const heart = guides.find((g) => g.key === "heart")!;
+    // The 30px circle sits inside a 44px hit area offset by −3, which is what
+    // puts both tops on the same 4px line.
+    expect(heart.y).toBe(SAVED_CARD_CHROME.heart.hitOffset + (44 - 30) / 2);
+    expect(capsule.y).toBe(heart.y);
+  });
+
+  it("moves a detail hero's buttons down by the device's status bar", () => {
+    // `--overlay-top` is `max(safe-top + 10px, 16px)`, so the same hero has its
+    // buttons 16px down in a browser and 57px down on a 390pt iPhone.
+    const desktop = slotGuides(listingImageSlot("detail"), 480).find((g) => g.key === "hero-back")!;
+    const phone = slotGuides(listingImageSlot("detail"), 390).find((g) => g.key === "hero-back")!;
+    expect(desktop.y).toBe(16);
+    expect(phone.y).toBe(DETAIL_HERO_CHROME.overlayTop(47));
+    expect(phone.y!).toBeGreaterThan(desktop.y!);
+  });
+
+  it("puts share and save side by side in the hero's top-right corner", () => {
+    const guides = slotGuides(listingImageSlot("detail"));
+    const share = guides.find((g) => g.key === "hero-share")!;
+    const save = guides.find((g) => g.key === "hero-save")!;
+    const { size, gap, sideInset } = DETAIL_HERO_CHROME.button;
+    expect(save.x).toBe(sideInset);
+    expect(share.x).toBe(sideInset + size + gap);
+    expect(share.y).toBe(save.y);
   });
 });
 
@@ -88,7 +212,7 @@ describe("the round surfaces", () => {
       channelImageSlot("search"),
     ];
     for (const slot of rounded) {
-      expect(slot.guides?.some((g) => g.shape.kind === "circleMask")).toBe(true);
+      expect(slotGuides(slot).some((g) => g.shape.kind === "circleMask")).toBe(true);
     }
   });
 });
@@ -104,7 +228,7 @@ describe("the detail heroes", () => {
       EVENT_IMAGE_SLOTS.find((s) => s.key === "detail")!,
     ];
     for (const slot of heroes) {
-      const sheet = slot.guides?.find((g) => g.shape.kind === "sheet");
+      const sheet = slotGuides(slot).find((g) => g.shape.kind === "sheet");
       expect(sheet).toBeDefined();
       expect(sheet!.shape).toMatchObject({ kind: "sheet", height: 28, radius: 28 });
     }

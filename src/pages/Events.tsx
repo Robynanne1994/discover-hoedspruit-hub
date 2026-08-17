@@ -24,10 +24,15 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import Seo from "@/components/Seo";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
+import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+// The date roundel on the Happening Soon poster card. Shared with the admin
+// crop tool, so the guide it draws is this exact circle.
+const DATE_ROUNDEL = POSTER_CARD_CHROME.date;
 
 const C = {
   page: "#E6E0CC",
@@ -417,12 +422,12 @@ const PosterCard = ({ event }: { event: any }) => {
           <div
             style={{
               position: "absolute",
-              top: 10,
-              right: 10,
-              width: 46,
-              height: 46,
+              top: DATE_ROUNDEL.top,
+              right: DATE_ROUNDEL.right,
+              width: DATE_ROUNDEL.size,
+              height: DATE_ROUNDEL.size,
               borderRadius: 999,
-              background: "rgba(255,255,255,0.94)",
+              background: DATE_ROUNDEL.background,
               backdropFilter: "blur(4px)",
               WebkitBackdropFilter: "blur(4px)",
               display: "flex",
@@ -434,25 +439,15 @@ const PosterCard = ({ event }: { event: any }) => {
           >
             <span
               style={{
-                fontFamily: SANS,
-                fontSize: 8.5,
-                fontWeight: 700,
-                letterSpacing: "0.12em",
+                ...DATE_ROUNDEL.month,
                 textTransform: "uppercase",
-                color: "#6B6A5E",
-                lineHeight: 1,
               }}
             >
               {month}
             </span>
             <span
               style={{
-                fontFamily: HEAD,
-                fontSize: 17,
-                fontWeight: 550,
-                color: "#1A1A1A",
-                lineHeight: 1,
-                marginTop: 2,
+                ...DATE_ROUNDEL.day,
               }}
             >
               {day}

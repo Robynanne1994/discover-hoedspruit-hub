@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { Heart } from "lucide-react";
-import type { GuideAnchor, SlotGuide } from "@/lib/imageSlotGuides";
+import { ArrowLeft, Heart, Share2 } from "lucide-react";
+import {
+  pillHeight,
+  type CircleContent,
+  type GuideAnchor,
+  type GuideShape,
+  type SlotGuide,
+} from "@/lib/imageSlotGuides";
 
 /**
  * Draws the app's chrome over a picture while it is being positioned.
@@ -13,15 +19,15 @@ import type { GuideAnchor, SlotGuide } from "@/lib/imageSlotGuides";
  * A heart drawn here is therefore exactly as big, relative to the picture, as
  * the heart the phone will paint on it.
  *
+ * That only holds if `box` is the width the app really paints the card at. It
+ * is: every box is derived from the app shell and the screen's own grid in
+ * `appLayout.ts`, at the device width the editor is previewing.
+ *
  * The component measures its own width, so it just has to be dropped into any
  * `position: relative` box that already carries the slot's ratio.
  */
 
 const GUIDE_LINE = "rgba(180,35,24,0.9)";
-const CHIP_LIGHT = "rgba(255,255,255,0.94)";
-const CHIP_DEAL = "#C0392B";
-const CHIP_QUIET = "#4F4A38";
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const anchorStyle = (anchor: GuideAnchor, x: number, y: number, scale: number): CSSProperties => {
   const [vertical, horizontal] = anchor.split("-") as ["top" | "bottom", "left" | "right"];
@@ -31,6 +37,12 @@ const anchorStyle = (anchor: GuideAnchor, x: number, y: number, scale: number): 
     bottom: vertical === "bottom" ? y * scale : undefined,
     left: horizontal === "left" ? x * scale : undefined,
     right: horizontal === "right" ? x * scale : undefined,
+    // A block wrapper would lay its chip out as an inline box on a text
+    // baseline, and the line box's leading pushed the chip about 2px past the
+    // inset it was supposed to sit at — 5px once scaled up in the dialog, which
+    // is the crop tool's chrome sitting visibly lower than the app's. A flex
+    // wrapper has no line box, so the chip starts exactly at the inset.
+    display: "flex",
     transform: `scale(${scale})`,
     // Scaling from the pinned corner keeps the inset honest: the chip grows
     // inward, exactly as it does on the phone.
@@ -38,40 +50,112 @@ const anchorStyle = (anchor: GuideAnchor, x: number, y: number, scale: number): 
   };
 };
 
+const CircleGlyph = ({ content }: { content: CircleContent }) => {
+  if (content.kind === "date") {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          lineHeight: 1,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 8.5,
+            fontWeight: 700,
+            letterSpacing: "0.12em",
+            textTransform: "uppercase",
+            color: "#6B6A5E",
+            lineHeight: 1,
+          }}
+        >
+          {content.month}
+        </span>
+        <span
+          style={{
+            fontFamily: "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 17,
+            fontWeight: 550,
+            color: "#1A1A1A",
+            lineHeight: 1,
+            marginTop: 2,
+          }}
+        >
+          {content.day}
+        </span>
+      </div>
+    );
+  }
+
+  const Icon = content.icon === "back" ? ArrowLeft : content.icon === "share" ? Share2 : Heart;
+  const filled = content.icon === "heart";
+  return (
+    <Icon
+      size={content.size}
+      strokeWidth={content.strokeWidth}
+      color={content.color}
+      fill={filled ? content.color : "none"}
+    />
+  );
+};
+
+/**
+ * The text inside a chip.
+ *
+ * A chip whose runs are separate flex items — the category card's ★ / score /
+ * count, spaced by a `gap` — renders one span per run. An `inline` chip is a
+ * single run of text on the phone, spaces and all, so its runs have to share
+ * one span here too: as flex items the browser strips the leading space off
+ * " 4.3" and " (294)", which came out 6px narrower than the chip the app
+ * paints.
+ */
+const PillRuns = ({ shape }: { shape: Extract<GuideShape, { kind: "pill" }> }) => {
+  const runs = shape.runs.map((run, i) => (
+    <span
+      key={`${run.text}-${i}`}
+      style={{ color: run.color, fontWeight: run.fontWeight, letterSpacing: run.letterSpacing }}
+    >
+      {shape.inline && i > 0 ? " " : ""}
+      {run.text}
+    </span>
+  ));
+  return shape.inline ? <span style={{ whiteSpace: "nowrap" }}>{runs}</span> : <>{runs}</>;
+};
+
 const GuideBody = ({ guide }: { guide: SlotGuide }) => {
   const { shape } = guide;
 
   if (shape.kind === "pill") {
-    const light = shape.tone === "light";
     return (
       <div
         style={{
           boxSizing: "border-box",
-          height: shape.height,
+          height: pillHeight(shape),
           padding: `0 ${shape.paddingX}px`,
           borderRadius: 9999,
           display: "inline-flex",
           alignItems: "center",
-          gap: shape.gap ?? (shape.star ? 4 : 0),
+          gap: shape.inline ? 0 : shape.gap ?? 0,
           whiteSpace: "nowrap",
-          background: light ? CHIP_LIGHT : shape.tone === "deal" ? CHIP_DEAL : CHIP_QUIET,
-          color: light ? "#2b2420" : "#FFFFFF",
-          // Inset outline: a border would push the chip past the size the phone
-          // paints it at.
-          boxShadow: `inset 0 0 0 1px ${GUIDE_LINE}`,
-          fontFamily: SANS,
+          background: shape.background,
+          color: shape.color,
+          // The chip's own shadow, plus an inset outline so the guide reads as
+          // a guide. A border would push the chip past the size the phone
+          // paints it at, so the outline is drawn inside.
+          boxShadow: [shape.shadow, `inset 0 0 0 1px ${GUIDE_LINE}`].filter(Boolean).join(", "),
+          fontFamily: shape.fontFamily,
           fontSize: shape.fontSize,
-          fontWeight: shape.fontWeight ?? 700,
+          fontWeight: shape.fontWeight,
           letterSpacing: shape.letterSpacing,
-          textTransform: shape.letterSpacing ? "uppercase" : undefined,
-          lineHeight: 1,
+          textTransform: shape.uppercase ? "uppercase" : undefined,
+          lineHeight: shape.lineHeight,
         }}
       >
-        {shape.star && <span style={{ color: "#E9B417" }}>★</span>}
-        {shape.text}
-        {shape.mutedText ? (
-          <span style={{ fontWeight: 400, color: light ? "#6B6A5E" : "#FFFFFF" }}>{shape.mutedText}</span>
-        ) : null}
+        <PillRuns shape={shape} />
       </div>
     );
   }
@@ -84,35 +168,21 @@ const GuideBody = ({ guide }: { guide: SlotGuide }) => {
           width: shape.size,
           height: shape.size,
           borderRadius: 9999,
-          background: CHIP_LIGHT,
-          boxShadow: `inset 0 0 0 1px ${GUIDE_LINE}`,
+          background: shape.background,
+          boxShadow: [shape.shadow, `inset 0 0 0 1px ${GUIDE_LINE}`].filter(Boolean).join(", "),
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: SANS,
-          fontSize: shape.size * 0.3,
-          fontWeight: 700,
-          color: "#2b2420",
           lineHeight: 1,
         }}
       >
-        {shape.glyph === "heart" ? (
-          <Heart
-            size={shape.iconSize ?? shape.size * 0.55}
-            strokeWidth={shape.strokeWidth ?? 2}
-            color="#5b4632"
-            fill="#5b4632"
-          />
-        ) : (
-          <span>18</span>
-        )}
+        <CircleGlyph content={shape.content} />
       </div>
     );
   }
 
   return null;
 };
-
 
 const CropGuides = ({ box, guides }: { box: { width: number; height: number }; guides: SlotGuide[] }) => {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -126,6 +196,7 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
       setSize({ width: r.width, height: r.height });
     };
     measure();
+    if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
