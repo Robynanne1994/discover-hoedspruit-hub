@@ -241,18 +241,17 @@ const ImageCropDialog = ({
       ? Math.max(cropSize.width / mediaSize.width, cropSize.height / mediaSize.height)
       : null;
 
-  const effectiveMinZoom = locked && coverZoom ? coverZoom : MIN_ZOOM;
+  // Zoom-out is always allowed so the background colour can be used as filler.
+  const effectiveMinZoom = MIN_ZOOM;
 
-  // Open on the cover crop, then keep the crop from ever falling inside it.
+  // Open on the cover crop, but never force the user back up to it.
   useEffect(() => {
     if (!locked || !coverZoom) return;
     if (!fittedRef.current) {
       fittedRef.current = true;
       setZoom(coverZoom);
       setCrop({ x: 0, y: 0 });
-      return;
     }
-    setZoom((z) => (z < coverZoom - 0.0001 ? coverZoom : z));
   }, [locked, coverZoom]);
 
   const handleConfirm = async () => {
@@ -381,7 +380,7 @@ const ImageCropDialog = ({
                 onCropAreaChange={onCropAreaChange}
                 onMediaLoaded={(m) => setMediaSize({ width: m.width, height: m.height })}
                 onCropSizeChange={(s) => setCropSize({ width: s.width, height: s.height })}
-                restrictPosition={locked ? true : false}
+                restrictPosition={false}
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
