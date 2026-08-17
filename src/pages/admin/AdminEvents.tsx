@@ -214,7 +214,6 @@ const AdminEvents = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-events"] });
-      toast.success(editing ? "Event updated" : "Event created");
       resetForm();
     },
     onError: (e) => toast.error(e.message),

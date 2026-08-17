@@ -173,7 +173,6 @@ const AdminSpecials = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
-      toast.success(editing ? "Special updated" : "Special created");
       resetForm();
     },
     onError: (e) => toast.error(e.message),

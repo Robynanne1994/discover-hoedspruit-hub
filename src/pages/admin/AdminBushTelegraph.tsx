@@ -219,7 +219,6 @@ const AdminBushTelegraph = () => {
       qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["home-local-channels"] });
-      toast.success(editing ? "Resource updated" : "Resource added");
       setOpen(false);
       setEditing(null);
       setForm(emptyForm);

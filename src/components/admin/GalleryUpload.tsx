@@ -68,7 +68,6 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
       setEditingIndex(null);
       setCropSrc(null);
       setUploading(false);
-      toast.success("Image updated");
       return;
     }
 
@@ -82,7 +81,6 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
     } else {
       setQueue([]);
       setCropSrc(null);
-      toast.success("Images uploaded");
     }
     setUploading(false);
   };
