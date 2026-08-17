@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
-import ChannelImageField from "@/components/admin/ChannelImageField";
+import ImageSlotField from "@/components/admin/ImageSlotField";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
@@ -41,6 +41,7 @@ type Resource = {
   detail_image_url: string | null;
   homepage_image_url: string | null;
   saved_image_url: string | null;
+  search_image_url: string | null;
   qr_image_url: string | null;
   admin_name: string | null;
   admins: AdminEntry[] | null;
@@ -69,6 +70,7 @@ const emptyForm = {
   detail_image_url: "",
   homepage_image_url: "",
   saved_image_url: "",
+  search_image_url: "",
   qr_image_url: "",
   admins: [] as AdminEntry[],
   years_mode: "years" as YearsMode,
@@ -194,6 +196,7 @@ const AdminBushTelegraph = () => {
         detail_image_url: rest.detail_image_url || null,
         homepage_image_url: rest.homepage_image_url || null,
         saved_image_url: rest.saved_image_url || null,
+        search_image_url: rest.search_image_url || null,
         qr_image_url: rest.qr_image_url || null,
         admins: cleanAdmins,
         admin_name: cleanAdmins.map((a) => a.name).join("|") || null,
@@ -265,6 +268,7 @@ const AdminBushTelegraph = () => {
       detail_image_url: r.detail_image_url ?? "",
       homepage_image_url: r.homepage_image_url ?? "",
       saved_image_url: r.saved_image_url ?? "",
+      search_image_url: r.search_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
       admins: Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => ({ name: a?.name ?? "" })).filter((a: any) => a.name)
@@ -649,7 +653,7 @@ const AdminBushTelegraph = () => {
                 </p>
               </div>
               {CHANNEL_IMAGE_SLOTS.map((slot) => (
-                <ChannelImageField
+                <ImageSlotField
                   key={slot.key}
                   slot={slot}
                   value={(form[slot.field] as string) || ""}

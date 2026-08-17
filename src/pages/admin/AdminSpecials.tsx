@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import ImageUpload from "@/components/admin/ImageUpload";
+import ImageSlotField from "@/components/admin/ImageSlotField";
+import { specialImageSlot } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
@@ -382,10 +383,15 @@ const AdminSpecials = () => {
             </select>
           </div>
           <div><Label>Description</Label><Textarea value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} /></div>
-          <div>
-            <Label>Image</Label>
-            <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => setForm({ ...form, image_url: url })} />
-          </div>
+          <ImageSlotField
+            slot={specialImageSlot("card")}
+            value={form.image_url || ""}
+            onChange={(url) => setForm({ ...form, image_url: url })}
+          />
+          <p className="text-[11px] text-muted-foreground">
+            The rest of the pictures — individual page, homepage, Top Deals, saved and search — are
+            set from the special's own page, where each one previews in the card it lands in.
+          </p>
 
           <GroupLabel>Categories</GroupLabel>
           <div><Label>Tag / Main Category</Label><Input placeholder="e.g. Restaurant" value={form.tag || ""} onChange={(e) => setForm({ ...form, tag: e.target.value || null })} /></div>

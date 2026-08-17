@@ -15,6 +15,8 @@ describe("event image slots", () => {
     expect(eventImageSlot("saved").aspect).toBeCloseTo(4 / 3);
     // EventDetail.tsx — host avatar `width: 48, height: 48`, fully rounded.
     expect(eventImageSlot("host").aspect).toBe(1);
+    // Search.tsx — ResultRow avatar `width: 42, height: 42`, fully rounded.
+    expect(eventImageSlot("search").aspect).toBe(1);
   });
 
   it("keeps every box on its slot's ratio", () => {

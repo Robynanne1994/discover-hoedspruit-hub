@@ -7,6 +7,7 @@ import {
   Calendar,
   Tag,
   User as UserIcon,
+  Radio,
   ArrowUpRight,
   UserCircle,
 } from "lucide-react";
@@ -44,17 +45,18 @@ const pressScale = (s = "0.98") => ({
 });
 
 
-type Scope = "listings" | "events" | "specials" | "people";
+type Scope = "listings" | "events" | "specials" | "people" | "channels";
 
 const SCOPES: { id: Scope; label: string; icon: React.ComponentType<any> }[] = [
   { id: "listings", label: "Listings", icon: Folder },
   { id: "events", label: "Events", icon: Calendar },
   { id: "specials", label: "Specials", icon: Tag },
   { id: "people", label: "People", icon: UserIcon },
+  { id: "channels", label: "Local Channels", icon: Radio },
 ];
 
 const isScope = (v: string | null): v is Scope =>
-  v === "listings" || v === "events" || v === "specials" || v === "people";
+  v === "listings" || v === "events" || v === "specials" || v === "people" || v === "channels";
 
 const initialsOf = (displayName?: string | null, username?: string | null): string => {
   if (displayName?.trim()) {
@@ -138,7 +140,7 @@ const Search = () => {
       `}</style>
       <Seo
         title="Search — Hello Hoedspruit"
-        description="Search Hello Hoedspruit listings, events, specials and people across the Lowveld."
+        description="Search Hello Hoedspruit listings, events, specials, people and local channels across the Lowveld."
         path="/search"
         noIndex
       />
@@ -282,10 +284,19 @@ const Search = () => {
           {scope === "events" && <EventsResults query={query} />}
           {scope === "specials" && <SpecialsResults query={query} />}
           {scope === "people" && <PeopleResults query={query} />}
+          {scope === "channels" && <ChannelsResults query={query} />}
         </div>
         {!hasQuery && scope !== "people" && (
           <DiscoverMore
-            to={scope === "listings" ? "/categories" : scope === "events" ? "/events" : "/specials"}
+            to={
+              scope === "listings"
+                ? "/categories"
+                : scope === "events"
+                  ? "/events"
+                  : scope === "channels"
+                    ? "/local-channels"
+                    : "/specials"
+            }
             label="Discover More"
           />
         )}
@@ -396,6 +407,7 @@ const RowFollowButton = ({ targetUserId }: { targetUserId: string }) => {
 /* -------------------- Row -------------------- */
 
 interface RowProps {
+  /** An in-app path, or an `http…` address for a channel with no page of its own. */
   to: string;
   image?: string | null;
   title: string;
@@ -410,19 +422,30 @@ interface RowProps {
 const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, action }: RowProps) => {
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
+  // A Local Channel with no page of its own opens straight at its platform,
+  // the same as tapping its card on the Local Channels list.
+  const external = /^https?:\/\//i.test(to);
+  const rowStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "12px 14px",
+    borderBottom: `1px solid ${ROW_DIVIDER}`,
+    textDecoration: "none",
+  };
+  const Row = external
+    ? ({ children }: { children: React.ReactNode }) => (
+        <a href={to} target="_blank" rel="noopener noreferrer" className="hh-search-row" style={rowStyle}>
+          {children}
+        </a>
+      )
+    : ({ children }: { children: React.ReactNode }) => (
+        <Link to={to} className="hh-search-row" style={rowStyle}>
+          {children}
+        </Link>
+      );
   return (
-    <Link
-      to={to}
-      className="hh-search-row"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 12,
-        padding: "12px 14px",
-        borderBottom: `1px solid ${ROW_DIVIDER}`,
-        textDecoration: "none",
-      }}
-    >
+    <Row>
       <div
         style={{
           width: 42,
@@ -483,7 +506,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, 
       {action ?? (
         <ArrowUpRight size={18} strokeWidth={2} color="#715A3D" style={{ flexShrink: 0 }} />
       )}
-    </Link>
+    </Row>
   );
 };
 
@@ -517,7 +540,7 @@ const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
 
 /* -------------------- Results: Listings -------------------- */
 
-const SEARCH_COLUMNS = "id, title, title_override, location, image_url, is_featured";
+const SEARCH_COLUMNS = "id, title, title_override, location, image_url, search_image_url, is_featured";
 const SUGGESTED_LIMIT = 15;
 
 const ListingsResults = ({ query }: { query: string }) => {
@@ -574,7 +597,7 @@ const ListingsResults = ({ query }: { query: string }) => {
         <ResultRow
           key={l.id}
           to={`/listing/${l.id}`}
-          image={l.image_url}
+          image={(l as any).search_image_url || l.image_url}
           title={l.title}
           titleOverride={(l as any).title_override}
           subtitle={l.location || null}
@@ -595,7 +618,7 @@ const EventsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, title_override, location, image_url, date, start_date, end_date, is_featured")
+        .select("id, title, title_override, location, image_url, search_image_url, date, start_date, end_date, is_featured")
         .or(`start_date.is.null,start_date.gte.${today}`)
         // Featured events pin to the top, then the soonest first
         .order("is_featured", { ascending: false })
@@ -616,7 +639,7 @@ const EventsResults = ({ query }: { query: string }) => {
         <ResultRow
           key={e.id}
           to={`/events/${e.id}`}
-          image={e.image_url}
+          image={(e as any).search_image_url || e.image_url}
           title={e.title}
           titleOverride={(e as any).title_override}
           subtitle={[eventDateLabel(e as any), e.location].filter(Boolean).join(" · ") || null}
@@ -637,7 +660,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("specials")
-        .select("id, title, title_override, business_name, image_url, valid_until, is_featured")
+        .select("id, title, title_override, business_name, image_url, search_image_url, valid_until, is_featured")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         // Featured deals pin to the top, then the most recently added
@@ -659,11 +682,54 @@ const SpecialsResults = ({ query }: { query: string }) => {
         <ResultRow
           key={s.id}
           to={`/specials/${s.id}`}
-          image={s.image_url}
+          image={(s as any).search_image_url || s.image_url}
           title={s.title}
           titleOverride={(s as any).title_override}
           subtitle={[s.business_name, untilLabel(s.valid_until)].filter(Boolean).join(" · ") || null}
           initials={initialsOf((s as any).title_override || s.title)}
+        />
+      ))}
+    </>
+  );
+};
+
+/* -------------------- Results: Local Channels -------------------- */
+
+const ChannelsResults = ({ query }: { query: string }) => {
+  const term = query.trim();
+  const { data, isError, refetch, isFetching } = useQuery({
+    queryKey: ["search-channels", term],
+    queryFn: async () => {
+      let q = supabase
+        .from("bush_telegraph_resources")
+        .select("id, title, title_override, slug, url, platform, meta, image_url, search_image_url, is_featured, sort_order")
+        // Same order as the Local Channels page: featured first, then the
+        // admin's own arrangement.
+        .order("is_featured", { ascending: false })
+        .order("sort_order", { ascending: true })
+        .limit(term ? 50 : SUGGESTED_LIMIT);
+      if (term) q = q.ilike("title", `%${term}%`);
+      const { data, error } = await q;
+      if (error) throw error;
+      return data || [];
+    },
+  });
+  if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
+  if (!data) return <LoadingRow />;
+  if (data.length === 0) return <EmptyState query={query} fallback="No local channels yet" />;
+  return (
+    <>
+      {data.map((c: any) => (
+        <ResultRow
+          key={c.id}
+          // A channel without a page of its own opens at its platform, exactly
+          // as its card does on the Local Channels list.
+          to={c.slug ? `/local-channels/${c.slug}` : c.url || "/local-channels"}
+          image={c.search_image_url || c.image_url}
+          title={c.title}
+          titleOverride={c.title_override}
+          subtitle={[c.platform, c.meta].filter(Boolean).join(" · ") || null}
+          initials={initialsOf(c.title_override || c.title)}
         />
       ))}
     </>
