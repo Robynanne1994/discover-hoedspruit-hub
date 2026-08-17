@@ -10,7 +10,8 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
-import ImageUpload from "@/components/admin/ImageUpload";
+import ImageSlotField from "@/components/admin/ImageSlotField";
+import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
@@ -72,7 +73,7 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
-  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "badge_override",
+  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "search_image_url", "badge_override",
   "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "card_deal_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
@@ -329,34 +330,25 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </p>
           </div>
 
-          {/* Dual images with locked default crop */}
-          <div>
-            <Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the specials listing — 3:4)</span></Label>
-            <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={4/3} />
-          </div>
-          <div>
-            <Label>Detail Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the individual special page — 4:3)</span></Label>
-            <ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} />
-          </div>
-          <div>
-            <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Active Specials section — 1:1. Falls back to card image if empty.)</span></Label>
-            <ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={1} />
-          </div>
-          <div>
-            <Label>Featured Carousel Image <span className="text-xs text-muted-foreground font-normal">(shown in the Top Deals carousel at the top of the specials page — 3:2. Falls back to card image if empty.)</span></Label>
-            <ImageUpload
-              bucket="listing-images"
-              value={form.featured_image_url || ""}
-              onChange={(url) => set("featured_image_url", url)}
-              aspect={3 / 2}
-              lockAspect
-              aspectLabel="3:2"
-              cropTitle="Featured carousel image (3:2)"
-            />
-          </div>
-          <div>
-            <Label>Saved Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on user Saved cards — 4:3. Falls back to card image if empty.)</span></Label>
-            <ImageUpload bucket="listing-images" value={form.saved_image_url || ""} onChange={(url) => set("saved_image_url", url)} aspect={4/3} />
+          {/* One picture per place the special appears, each locked to that
+              screen's box and drawn with the chrome it lands under. */}
+          <div className="space-y-3">
+            <div>
+              <Label>Images</Label>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Each crops to the exact box that screen paints into and draws whatever the app lays
+                on top of it — the deal badge, the heart, the white title card. Anything left empty
+                falls back to the card cover image.
+              </p>
+            </div>
+            {SPECIAL_IMAGE_SLOTS.map((slot) => (
+              <ImageSlotField
+                key={slot.key}
+                slot={slot}
+                value={form[slot.field] || ""}
+                onChange={(url) => set(slot.field, url)}
+              />
+            ))}
           </div>
 
           {/* Validity + always active */}

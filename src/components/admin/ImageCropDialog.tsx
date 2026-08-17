@@ -9,7 +9,9 @@ import { Switch } from "@/components/ui/switch";
 import { Pipette, ZoomIn, ZoomOut, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import CropPreviewImage from "./CropPreviewImage";
+import CropGuides from "./CropGuides";
 import { coverCropArea, exportSize } from "@/lib/cropPreview";
+import type { SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageCropDialogProps {
   open: boolean;
@@ -31,11 +33,13 @@ interface ImageCropDialogProps {
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
   /**
-   * Chrome the live screen paints over the bottom of this image. Drawn inside
-   * the crop frame as a guide so nothing important is parked underneath it.
-   * `heightRatio` and `radiusRatio` are fractions of the frame's height/width.
+   * Chrome the live screen paints over this image — the white title card, the
+   * heart, the rating chip, the round search mask. Drawn inside the crop frame
+   * so nothing important is parked underneath it. `guideBox` is the slot's
+   * life-size box, which is the scale the guides are measured in.
    */
-  bottomGuide?: { heightRatio: number; radiusRatio: number; label: string };
+  guides?: SlotGuide[];
+  guideBox?: { width: number; height: number };
   onCancel: () => void;
   onConfirm: (blob: Blob) => void;
 }
@@ -115,7 +119,8 @@ const ImageCropDialog = ({
   aspectLabel,
   title,
   previewRender,
-  bottomGuide,
+  guides,
+  guideBox,
 
   onCancel,
   onConfirm,
@@ -138,8 +143,10 @@ const ImageCropDialog = ({
   // laid over exactly the part of the crop the app's chrome will cover.
   const [frameBox, setFrameBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
 
+  const hasGuides = !!(guides?.length && guideBox);
+
   useEffect(() => {
-    if (!open || !bottomGuide) return;
+    if (!open || !hasGuides) return;
     const wrap = cropperWrapRef.current;
     if (!wrap) return;
     const frame = wrap.querySelector(".reactEasyCrop_CropArea") as HTMLElement | null;
@@ -154,7 +161,7 @@ const ImageCropDialog = ({
       width: frame.clientWidth,
       height: frame.clientHeight,
     });
-  }, [open, bottomGuide, croppedArea, zoom, aspect, resetKey, sourceSettled]);
+  }, [open, hasGuides, croppedArea, zoom, aspect, resetKey, sourceSettled]);
 
 
 
@@ -343,32 +350,38 @@ const ImageCropDialog = ({
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
-            {bottomGuide && frameBox && (
+            {hasGuides && frameBox && (
               <div
                 className="pointer-events-none absolute"
                 style={{
                   left: frameBox.left,
+                  top: frameBox.top,
                   width: frameBox.width,
-                  top: frameBox.top + frameBox.height * (1 - bottomGuide.heightRatio),
-                  height: frameBox.height * bottomGuide.heightRatio,
-                  background: "rgba(255,255,255,0.72)",
-                  borderTop: "1.5px dashed rgba(180,35,24,0.9)",
-                  borderTopLeftRadius: frameBox.width * bottomGuide.radiusRatio,
-                  borderTopRightRadius: frameBox.width * bottomGuide.radiusRatio,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  overflow: "hidden",
+                  height: frameBox.height,
                 }}
               >
-                <span style={{ fontSize: 9, lineHeight: 1, color: "#B42318", textAlign: "center", padding: "0 6px" }}>
-                  {bottomGuide.label}
-                </span>
+                <CropGuides box={guideBox!} guides={guides!} />
               </div>
             )}
             {picking && <div className="pointer-events-none absolute inset-0 ring-2 ring-primary/60" />}
 
           </div>
+
+          {hasGuides && (
+            <ul className="space-y-1 rounded-lg border border-border bg-muted/40 p-3">
+              <li className="text-xs font-medium text-foreground">
+                The app paints these over the picture — position it so nothing important lands underneath.
+              </li>
+              {guides!.map((g) => (
+                <li key={g.key} className="flex gap-2 text-[11px] text-muted-foreground">
+                  <span aria-hidden className="text-[#B42318]">
+                    ▸
+                  </span>
+                  {g.legend}
+                </li>
+              ))}
+            </ul>
+          )}
 
           {previewRender && (
             <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">

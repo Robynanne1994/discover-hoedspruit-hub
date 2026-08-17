@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
 
 const COLUMNS =
-  "id, title, title_override, image_url, google_rating, google_reviews_count, location, is_featured";
+  "id, title, title_override, image_url, homepage_image_url, google_rating, google_reviews_count, location, is_featured";
 
 export const useHomepageSection = (
   sectionKey: string,

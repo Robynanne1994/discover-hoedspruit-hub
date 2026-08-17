@@ -28,7 +28,11 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
       <HomeSectionHead primary={title || defaultTitle} actionHref={seeAllHref} />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
         <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
-          {listings.slice(0, 8).map((l: any) => (
+          {listings.slice(0, 8).map((l: any) => {
+            // The square tile has its own crop; anything without one falls back
+            // to the listing's main picture, which `cover` centre-trims.
+            const image = l.homepage_image_url || l.image_url;
+            return (
             <Link
               key={l.id}
               to={`/listing/${l.id}`}
@@ -54,9 +58,9 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                   marginBottom: 8,
                 }}
               >
-                {l.image_url && (
+                {image && (
                   <img
-                    src={l.image_url}
+                    src={image}
                     alt={l.title}
                     loading="lazy"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
@@ -80,7 +84,8 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                 </div>
               )}
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

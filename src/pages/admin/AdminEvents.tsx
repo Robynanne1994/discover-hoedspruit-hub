@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import ImageUpload from "@/components/admin/ImageUpload";
+import ImageSlotField from "@/components/admin/ImageSlotField";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
@@ -379,21 +379,18 @@ const AdminEvents = () => {
               {(["card", "detail"] as const).map((key) => {
                 const slot = eventImageSlot(key);
                 return (
-                  <div key={key} className="space-y-1">
-                    <Label>{slot.label}</Label>
-                    <p className="text-[11px] text-muted-foreground">
-                      Cropped to {slot.aspectLabel}. {slot.where} {slot.fallback}
-                    </p>
-                    <ImageUpload
-                      bucket="listing-images"
-                      value={((form as any)[slot.field] as string) || ""}
-                      onChange={(v) => setForm({ ...form, [slot.field]: v } as any)}
-                      aspect={slot.aspect}
-                      cropTitle={`Crop — ${slot.label}`}
-                    />
-                  </div>
+                  <ImageSlotField
+                    key={key}
+                    slot={slot}
+                    value={((form as any)[slot.field] as string) || ""}
+                    onChange={(v) => setForm({ ...form, [slot.field]: v } as any)}
+                  />
                 );
               })}
+              <p className="text-[11px] text-muted-foreground">
+                The remaining pictures — Happening Soon, homepage, saved and search — are set from the
+                event's own page, where each one previews in the card it lands in.
+              </p>
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
@@ -488,19 +485,12 @@ const AdminEvents = () => {
                             listings={(listings || []) as { id: string; title: string }[]}
                             onChange={(v) => setForm((f) => ({ ...f, [linkKey]: v.link, [listingKey]: v.listingId }))}
                           />
-                          <div className="space-y-1">
-                            <Label>Photo</Label>
-                            <p className="text-[11px] text-muted-foreground">
-                              Cropped to {hostSlot.aspectLabel}. {hostSlot.where} {hostSlot.fallback}
-                            </p>
-                            <ImageUpload
-                              bucket="listing-images"
-                              value={(form[imgKey] as string) || ""}
-                              onChange={(url) => setForm({ ...form, [imgKey]: url })}
-                              aspect={hostSlot.aspect}
-                              cropTitle={`Crop — ${hostSlot.label}`}
-                            />
-                          </div>
+                          <ImageSlotField
+                            slot={hostSlot}
+                            label="Photo"
+                            value={(form[imgKey] as string) || ""}
+                            onChange={(url) => setForm({ ...form, [imgKey]: url })}
+                          />
                         </div>
                       );
                     })}

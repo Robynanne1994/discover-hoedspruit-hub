@@ -16,7 +16,7 @@ import { sanitizeContactArray } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
-import EventImageField from "./EventImageField";
+import ImageSlotField from "./ImageSlotField";
 
 interface Props {
   open: boolean;
@@ -26,7 +26,7 @@ interface Props {
 
 const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "poster_image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "recurrence", "performances", "price", "included", "price_notes", "notes", "booking_link", "booking_link_label",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "poster_image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "search_image_url", "recurrence", "performances", "price", "included", "price_notes", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
   "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link", "hosted_by_listing_id",
@@ -206,10 +206,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
             </p>
           </div>
-          {(["card", "poster", "detail", "homepage", "saved"] as const).map((key) => {
+          {(["card", "poster", "detail", "homepage", "saved", "search"] as const).map((key) => {
             const slot = eventImageSlot(key);
             return (
-              <EventImageField
+              <ImageSlotField
                 key={key}
                 slot={slot}
                 value={form[slot.field] || ""}
@@ -344,7 +344,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       listings={listings || []}
                       onChange={(v) => setForm((f: any) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
                     />
-                    <EventImageField
+                    <ImageSlotField
                       slot={hostSlot}
                       label="Photo"
                       value={form[h.imgKey] || ""}

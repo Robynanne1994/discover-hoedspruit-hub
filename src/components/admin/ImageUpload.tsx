@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Upload, X, Image as ImageIcon, Crop } from "lucide-react";
 import { toast } from "sonner";
 import ImageCropDialog from "./ImageCropDialog";
+import CropGuides from "./CropGuides";
+import type { SlotGuide } from "@/lib/imageSlotGuides";
 
 interface ImageUploadProps {
   bucket: string;
@@ -23,8 +25,14 @@ interface ImageUploadProps {
    * so what you position and what you see afterwards are one picture.
    */
   previewRender?: (renderImage: (width: number, height: number) => ReactNode) => ReactNode;
-  /** Guide drawn over the part of the crop the app's chrome covers. */
-  bottomGuide?: { heightRatio: number; radiusRatio: number; label: string };
+  /**
+   * Chrome the app paints over this picture. Drawn inside the crop frame while
+   * positioning, and over the saved thumbnail afterwards so an image uploaded
+   * before the guides existed can still be checked at a glance.
+   */
+  guides?: SlotGuide[];
+  /** The slot's life-size box — the scale `guides` are measured in. */
+  guideBox?: { width: number; height: number };
 }
 
 const ImageUpload = ({
@@ -36,8 +44,13 @@ const ImageUpload = ({
   aspectLabel,
   cropTitle,
   previewRender,
-  bottomGuide,
+  guides,
+  guideBox,
 }: ImageUploadProps) => {
+  // A box means the thumbnail can be drawn at the slot's own ratio; guides are
+  // the chrome laid over it, and not every slot has any.
+  const hasBox = !!guideBox;
+  const hasGuides = !!(guides?.length && guideBox);
   const [uploading, setUploading] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -110,6 +123,34 @@ const ImageUpload = ({
               </Button>
             </div>
           </div>
+        ) : hasBox ? (
+          // The thumbnail is drawn at the slot's own ratio rather than a generic
+          // 160px strip: this is the picture the phone will show, and the guides
+          // only sit in the right place if the box they are measured against is
+          // the one on screen.
+          <div className="space-y-2">
+            <div className="flex justify-center rounded-lg border border-border bg-muted/40 p-3">
+              <div
+                className="relative overflow-hidden rounded"
+                style={{
+                  width: "100%",
+                  maxWidth: 320,
+                  aspectRatio: `${guideBox!.width} / ${guideBox!.height}`,
+                }}
+              >
+                <img src={value} alt="Preview" className="absolute inset-0 h-full w-full object-cover" />
+                {hasGuides && <CropGuides box={guideBox!} guides={guides!} />}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button type="button" variant="outline" size="sm" className="gap-1.5" onClick={handleEditExisting}>
+                <Crop className="h-3.5 w-3.5" /> Crop / reposition
+              </Button>
+              <Button type="button" variant="ghost" size="sm" className="gap-1.5" onClick={() => onChange("")}>
+                <X className="h-3.5 w-3.5" /> Remove
+              </Button>
+            </div>
+          </div>
         ) : (
           <div className="relative w-full h-40 rounded-none overflow-hidden border border-border">
             <img src={value} alt="Preview" className="w-full h-full object-cover" />
@@ -163,7 +204,8 @@ const ImageUpload = ({
         aspectLabel={aspectLabel}
         title={cropTitle}
         previewRender={previewRender}
-        bottomGuide={bottomGuide}
+        guides={guides}
+        guideBox={guideBox}
         onCancel={() => setCropSrc(null)}
         onConfirm={async (blob) => {
           setCropSrc(null);
