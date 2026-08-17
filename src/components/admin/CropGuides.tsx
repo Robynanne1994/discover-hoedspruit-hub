@@ -46,19 +46,22 @@ const GuideBody = ({ guide }: { guide: SlotGuide }) => {
     return (
       <div
         style={{
+          boxSizing: "border-box",
           height: shape.height,
           padding: `0 ${shape.paddingX}px`,
           borderRadius: 9999,
           display: "inline-flex",
           alignItems: "center",
-          gap: shape.star ? 4 : 0,
+          gap: shape.gap ?? (shape.star ? 4 : 0),
           whiteSpace: "nowrap",
           background: light ? CHIP_LIGHT : shape.tone === "deal" ? CHIP_DEAL : CHIP_QUIET,
           color: light ? "#2b2420" : "#FFFFFF",
-          border: `1px dashed ${GUIDE_LINE}`,
+          // Inset outline: a border would push the chip past the size the phone
+          // paints it at.
+          boxShadow: `inset 0 0 0 1px ${GUIDE_LINE}`,
           fontFamily: SANS,
           fontSize: shape.fontSize,
-          fontWeight: 700,
+          fontWeight: shape.fontWeight ?? 700,
           letterSpacing: shape.letterSpacing,
           textTransform: shape.letterSpacing ? "uppercase" : undefined,
           lineHeight: 1,
@@ -66,6 +69,9 @@ const GuideBody = ({ guide }: { guide: SlotGuide }) => {
       >
         {shape.star && <span style={{ color: "#E9B417" }}>★</span>}
         {shape.text}
+        {shape.mutedText ? (
+          <span style={{ fontWeight: 400, color: light ? "#6B6A5E" : "#FFFFFF" }}>{shape.mutedText}</span>
+        ) : null}
       </div>
     );
   }
@@ -74,11 +80,12 @@ const GuideBody = ({ guide }: { guide: SlotGuide }) => {
     return (
       <div
         style={{
+          boxSizing: "border-box",
           width: shape.size,
           height: shape.size,
           borderRadius: 9999,
           background: CHIP_LIGHT,
-          border: `1px dashed ${GUIDE_LINE}`,
+          boxShadow: `inset 0 0 0 1px ${GUIDE_LINE}`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -90,7 +97,12 @@ const GuideBody = ({ guide }: { guide: SlotGuide }) => {
         }}
       >
         {shape.glyph === "heart" ? (
-          <Heart size={shape.size * 0.55} strokeWidth={2} color="#5b4632" fill="#5b4632" />
+          <Heart
+            size={shape.iconSize ?? shape.size * 0.55}
+            strokeWidth={shape.strokeWidth ?? 2}
+            color="#5b4632"
+            fill="#5b4632"
+          />
         ) : (
           <span>18</span>
         )}
@@ -100,6 +112,7 @@ const GuideBody = ({ guide }: { guide: SlotGuide }) => {
 
   return null;
 };
+
 
 const CropGuides = ({ box, guides }: { box: { width: number; height: number }; guides: SlotGuide[] }) => {
   const ref = useRef<HTMLDivElement | null>(null);
