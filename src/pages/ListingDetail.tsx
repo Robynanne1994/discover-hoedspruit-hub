@@ -1724,7 +1724,7 @@ const ListingDetail = () => {
           padding: "0 14px", boxSizing: "border-box",
           display: "flex", gap: 8,
         }}>
-          {actions.map((a) => <ActionBtn key={a.key} a={a} />)}
+          {actions.map((a, i) => <ActionBtn key={a.key} a={a} i={i} />)}
         </div>
       )}
 
