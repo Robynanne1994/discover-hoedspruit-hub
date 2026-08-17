@@ -136,6 +136,12 @@ const ImageCropDialog = ({
   const [natural, setNatural] = useState<{ width: number; height: number } | null>(null);
   const [sourceSettled, setSourceSettled] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  // The photo as react-easy-crop lays it out (contained in the container) and
+  // the crop frame it derived from the ratio — the two sizes the cover zoom is
+  // worked out from.
+  const [mediaSize, setMediaSize] = useState<{ width: number; height: number } | null>(null);
+  const [cropSize, setCropSize] = useState<{ width: number; height: number } | null>(null);
+  const fittedRef = useRef(false);
   const sampleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const sampleImgRef = useRef<HTMLImageElement | null>(null);
   const cropperWrapRef = useRef<HTMLDivElement | null>(null);
@@ -368,12 +374,13 @@ const ImageCropDialog = ({
                 // image: zooming out past fit or dragging past an edge would
                 // bake the background fill into the export, which shows up as
                 // white bands beside the picture on the phone.
-                minZoom={locked ? 1 : MIN_ZOOM}
+                minZoom={effectiveMinZoom}
                 maxZoom={MAX_ZOOM}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropAreaChange={onCropAreaChange}
-                initialCroppedAreaPixels={initialArea}
+                onMediaLoaded={(m) => setMediaSize({ width: m.width, height: m.height })}
+                onCropSizeChange={(s) => setCropSize({ width: s.width, height: s.height })}
                 restrictPosition={locked ? true : false}
                 style={{ containerStyle: { background: bgColor } }}
               />
