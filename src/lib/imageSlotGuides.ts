@@ -80,22 +80,33 @@ export const titleSheetGuide = ({ height = 28, radius = 28 } = {}): SlotGuide =>
 });
 
 /** The save button. Sizes and insets differ per card, so they're passed in. */
-export const heartGuide = ({ size, x, y }: { size: number; x: number; y: number }): SlotGuide => ({
+export const heartGuide = ({
+  size,
+  x,
+  y,
+  iconSize,
+}: {
+  size: number;
+  x: number;
+  y: number;
+  iconSize?: number;
+}): SlotGuide => ({
   key: "heart",
   legend: "The save (heart) button sits in the top-right corner.",
   anchor: "top-right",
   x,
   y,
-  shape: { kind: "circle", size, glyph: "heart" },
+  shape: { kind: "circle", size, glyph: "heart", iconSize, strokeWidth: 2 },
 });
 
 /**
  * The category page card — CategoryPage.tsx.
  *
  * The rating chip is `top: 8, left: 8` with `padding: "3px 8px"` at 11px on a
- * lineHeight of 1, so it stands 17px tall. CardHeart is a 26px circle at
- * `top: 8, right: 8`. The sample text is a representative rating and review
- * count; a longer count runs a few px wider.
+ * lineHeight of 1, so it stands 17px tall; the rating runs at weight 600 and
+ * the review count at 400, separated by a 4px gap. CardHeart is a 26px circle
+ * at `top: 8, right: 8` carrying a 16px lucide heart. The sample text is a
+ * representative rating and review count; a longer count runs a few px wider.
  */
 export const categoryCardGuides = (): SlotGuide[] => [
   {
@@ -104,10 +115,22 @@ export const categoryCardGuides = (): SlotGuide[] => [
     anchor: "top-left",
     x: 8,
     y: 8,
-    shape: { kind: "pill", text: "4.3 (294)", star: true, height: 17, paddingX: 8, fontSize: 11, tone: "light" },
+    shape: {
+      kind: "pill",
+      text: "4.3",
+      mutedText: "(294)",
+      star: true,
+      height: 17,
+      paddingX: 8,
+      fontSize: 11,
+      fontWeight: 600,
+      gap: 4,
+      tone: "light",
+    },
   },
-  heartGuide({ size: 26, x: 8, y: 8 }),
+  heartGuide({ size: 26, x: 8, y: 8, iconSize: 16 }),
 ];
+
 
 /**
  * The tile on a member's Saved screen — SavedCard.tsx.
