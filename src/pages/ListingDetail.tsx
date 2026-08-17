@@ -1717,7 +1717,7 @@ const ListingDetail = () => {
       {/* Fixed action bar, parked just above the bottom nav */}
       {actions.length > 0 && (
         <div style={{
-          position: "fixed", bottom: 74, left: "50%", transform: "translateX(-50%)",
+          position: "fixed", bottom: 84, left: "50%", transform: "translateX(-50%)",
           zIndex: 40, width: "100%", maxWidth: 480,
           padding: "0 14px", boxSizing: "border-box",
           display: "flex", gap: 8,
