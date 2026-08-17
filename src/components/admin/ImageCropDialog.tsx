@@ -544,6 +544,79 @@ const ImageCropDialog = ({
             </Button>
           </div>
 
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label className="text-xs">Zoom</Label>
+              <span className="text-[11px] tabular-nums text-muted-foreground">
+                {Math.round(zoom * 100)}%
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+                onClick={() => nudgeZoom(-ZOOM_STEP)}
+                disabled={zoom <= effectiveMinZoom}
+                aria-label="Zoom out"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+              <Slider
+                value={[zoom]}
+                min={effectiveMinZoom}
+                max={MAX_ZOOM}
+                step={0.01}
+                onValueChange={(v) => setZoom(v[0])}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-8 w-8 shrink-0"
+                onClick={() => nudgeZoom(ZOOM_STEP)}
+                disabled={zoom >= MAX_ZOOM}
+                aria-label="Zoom in"
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Only worth the room once there is background showing to colour in. */}
+          {!filling && (
+            <div className="space-y-1.5">
+              <Label className="text-xs">Background fill</Label>
+              <div className="flex items-center gap-2">
+                <Input
+                  value={bgColor}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  placeholder="#ffffff"
+                  className="w-32"
+                />
+                <input
+                  type="color"
+                  value={/^#[0-9a-fA-F]{6}$/.test(bgColor) ? bgColor : "#ffffff"}
+                  onChange={(e) => setBgColor(e.target.value)}
+                  className="h-8 w-10 cursor-pointer rounded border border-border bg-transparent"
+                  aria-label="Pick any colour"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant={picking ? "default" : "outline"}
+                  onClick={openNativeEyedropper}
+                  title="Pick a colour from the image"
+                >
+                  <Pipette className="h-4 w-4 mr-1" />
+                  {picking ? "Click image…" : "Eyedropper"}
+                </Button>
+              </div>
+            </div>
+          )}
+
           {(previewRender || previewScales.length > 0) && (
             <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
@@ -638,78 +711,6 @@ const ImageCropDialog = ({
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label className="text-xs">Zoom</Label>
-              <span className="text-[11px] tabular-nums text-muted-foreground">
-                {Math.round(zoom * 100)}%
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 shrink-0"
-                onClick={() => nudgeZoom(-ZOOM_STEP)}
-                disabled={zoom <= effectiveMinZoom}
-                aria-label="Zoom out"
-              >
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-              <Slider
-                value={[zoom]}
-                min={effectiveMinZoom}
-                max={MAX_ZOOM}
-                step={0.01}
-                onValueChange={(v) => setZoom(v[0])}
-                className="flex-1"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 shrink-0"
-                onClick={() => nudgeZoom(ZOOM_STEP)}
-                disabled={zoom >= MAX_ZOOM}
-                aria-label="Zoom in"
-              >
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Only worth the room once there is background showing to colour in. */}
-          {!filling && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">Background fill</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  value={bgColor}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  placeholder="#ffffff"
-                  className="w-32"
-                />
-                <input
-                  type="color"
-                  value={/^#[0-9a-fA-F]{6}$/.test(bgColor) ? bgColor : "#ffffff"}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  className="h-8 w-10 cursor-pointer rounded border border-border bg-transparent"
-                  aria-label="Pick any colour"
-                />
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={picking ? "default" : "outline"}
-                  onClick={openNativeEyedropper}
-                  title="Pick a colour from the image"
-                >
-                  <Pipette className="h-4 w-4 mr-1" />
-                  {picking ? "Click image…" : "Eyedropper"}
-                </Button>
-              </div>
-            </div>
-          )}
         </div>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={onCancel} disabled={busy}>
