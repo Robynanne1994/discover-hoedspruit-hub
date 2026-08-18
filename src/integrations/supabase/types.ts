@@ -1229,7 +1229,6 @@ export type Database = {
           action_whatsapp_index: number
           additional_email_labels: string[]
           additional_emails: string[]
-          additional_hours: Json | null
           additional_phone_labels: string[]
           additional_phones: string[]
           additional_website_labels: string[]
@@ -1328,7 +1327,6 @@ export type Database = {
           meal: string[] | null
           nappy_changing_station: boolean | null
           opening_hours: Json | null
-          opening_hours_label: string | null
           order_online: boolean | null
           parking_available: boolean | null
           payment_methods: string[] | null
@@ -1385,7 +1383,6 @@ export type Database = {
           action_whatsapp_index?: number
           additional_email_labels?: string[]
           additional_emails?: string[]
-          additional_hours?: Json | null
           additional_phone_labels?: string[]
           additional_phones?: string[]
           additional_website_labels?: string[]
@@ -1484,7 +1481,6 @@ export type Database = {
           meal?: string[] | null
           nappy_changing_station?: boolean | null
           opening_hours?: Json | null
-          opening_hours_label?: string | null
           order_online?: boolean | null
           parking_available?: boolean | null
           payment_methods?: string[] | null
@@ -1541,7 +1537,6 @@ export type Database = {
           action_whatsapp_index?: number
           additional_email_labels?: string[]
           additional_emails?: string[]
-          additional_hours?: Json | null
           additional_phone_labels?: string[]
           additional_phones?: string[]
           additional_website_labels?: string[]
@@ -1640,7 +1635,6 @@ export type Database = {
           meal?: string[] | null
           nappy_changing_station?: boolean | null
           opening_hours?: Json | null
-          opening_hours_label?: string | null
           order_online?: boolean | null
           parking_available?: boolean | null
           payment_methods?: string[] | null
