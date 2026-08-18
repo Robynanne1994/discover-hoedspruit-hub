@@ -63,6 +63,10 @@ export const LISTING_FIELD_SPECS = {
   // ---------- Universal: misc ----------
   is_featured: { type: "bool_default_false" },
   opening_hours: { type: "json" },
+  // What opening_hours is the schedule *of*, and any further schedules the
+  // same listing keeps — a kitchen that shuts at 21:00 and a bar that doesn't.
+  opening_hours_label: { type: "str" },
+  additional_hours: { type: "json" },
   details_display_mode: { type: "json" },
   good_to_know: { type: "str_array" },
 
@@ -204,7 +208,7 @@ export const UNIVERSAL_FIELDS = [
   "facebook", "instagram",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
   "is_featured",
-  "opening_hours", "details_display_mode",
+  "opening_hours", "opening_hours_label", "additional_hours", "details_display_mode",
   "custom_title_1", "custom_text_1",
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",

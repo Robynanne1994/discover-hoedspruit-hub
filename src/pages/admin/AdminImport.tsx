@@ -24,6 +24,7 @@ import {
 } from "@/lib/googlePlaceId";
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 import { isImageCsvColumn } from "@/lib/csvImageColumns";
+import { parseAdditionalHours } from "@/lib/openHours";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 
@@ -686,6 +687,26 @@ const AdminImport = () => {
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
           if (parsed.skip === true) continue;
           if (parsed.skip === false) {
+            if (fieldName === "additional_hours" && parsed.value !== null) {
+              // Extra sets of hours are the one column typed as raw JSON by
+              // hand, so a mistyped cell is read here rather than at the
+              // database, and the row keeps the hours it already had.
+              // An explicit empty list is the same answer as "-": this listing
+              // keeps a single schedule after all.
+              if (Array.isArray(parsed.value) && parsed.value.length === 0) {
+                payloadRecord[fieldName] = null;
+                continue;
+              }
+              const sets = parseAdditionalHours(parsed.value);
+              if (sets.length === 0) {
+                results.errors.push(
+                  `Row ${i + 2}: additional_hours could not be read as a list of extra opening-hours sets — e.g. [{"label":"Bar","hours":{"monday":"16:00 - 00:00"}}]. Left unchanged`,
+                );
+                continue;
+              }
+              payloadRecord[fieldName] = sets;
+              continue;
+            }
             payloadRecord[fieldName] =
               fieldName === "km_from_town" ? normalizeKm(parsed.value) : parsed.value;
           }

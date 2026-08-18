@@ -37,6 +37,8 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   google_rating: "decimal 0–5, e.g. 4.5",
   google_reviews_count: "integer, e.g. 128",
   opening_hours: `JSON, e.g. {"monday":"09:00-17:00","tuesday":"closed"}`,
+  opening_hours_label: `what the opening_hours column above is the hours OF, for a listing that keeps more than one schedule — e.g. Kitchen. Leave blank for the usual single set of hours and the app just says "Opening Hours"`,
+  additional_hours: `JSON list of EXTRA schedules for listings that trade on two clocks (e.g. a kitchen and a bar), same day keys and wording as opening_hours: [{"label":"Bar","hours":{"monday":"16:00 - 00:00","tuesday":"closed"}}]. Leave blank for the usual single set of hours, "-" to clear the extras`,
   details_display_mode: `JSON object, e.g. {"meals":"chips","amenities":"default"}`,
   gallery_images: "pipe-separated image URLs",
   image_url: "single image URL",

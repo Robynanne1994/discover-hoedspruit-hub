@@ -21,6 +21,7 @@ import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
 import { getWeekPublicHolidays, holidayHoursNote, getSADate } from "@/lib/southAfricaHolidays";
+import { getHoursSchedules, DEFAULT_HOURS_LABEL, type HoursSchedule } from "@/lib/openHours";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts, isUsableSocialLink, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
@@ -152,6 +153,9 @@ const ListingDetail = () => {
   const [heroImgError, setHeroImgError] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
   const [descOverflows, setDescOverflows] = useState(false);
+  // Which set of hours the hours card is showing. null = follow the headline
+  // (whichever set is open right now), so the card opens on the useful one.
+  const [hoursTab, setHoursTab] = useState<number | null>(null);
   const descRef = useRef<HTMLDivElement>(null);
 
   const { data: listing, isLoading, isError, refetch, isFetching } = useQuery({
@@ -163,6 +167,10 @@ const ListingDetail = () => {
     },
     enabled: !!id,
   });
+
+  // Landing on a different listing starts its hours card on its own headline
+  // schedule, rather than on whichever tab the last listing was left showing.
+  useEffect(() => { setHoursTab(null); }, [id]);
 
   useEffect(() => {
     if (!listing) return;
@@ -428,8 +436,16 @@ const ListingDetail = () => {
   const isListingWellnessBeauty = listingCategories?.some((c) => isWellnessBeautyCategory(c.title)) ?? false;
   const l = listing as any;
   const galleryImages = (l.gallery_images as string[] | null) || [];
-  const openingHours = l.opening_hours as Record<string, string> | null;
-  const hasHours = !isListingAccommodation && openingHours && Object.values(openingHours).some((v) => v);
+  // A listing can keep more than one set of hours: Sleepers' kitchen closes at
+  // 21:00 while the bar runs to midnight, and stating just one of those is
+  // what makes the card wrong. Nearly every listing has exactly one schedule.
+  const hoursSchedules: HoursSchedule[] = getHoursSchedules(l);
+  // Accommodation alone shows no hours — a lodge doesn't close at five. A
+  // lodge that is also a restaurant does have a kitchen to state hours for, so
+  // the hours card is only suppressed when accommodation is all the listing is.
+  const isAccommodationOnly =
+    (listingCategories?.length ?? 0) > 0 && (listingCategories ?? []).every((c) => isAccommodationCategory(c.title));
+  const hasHours = !isAccommodationOnly && hoursSchedules.length > 0;
   const longDescription = l.long_description as string | null;
   const descriptionText = (longDescription || "").trim();
   const whatsappNum = l.whatsapp as string | null;
@@ -520,7 +536,7 @@ const ListingDetail = () => {
     | { state: "open"; closes?: string; alwaysOpen?: boolean }
     | { state: "closed"; opensAt?: string; opensDay?: string }
     | { state: "temporarily_closed" };
-  const computeOpenStatus = (): OpenStatus | null => {
+  const computeOpenStatus = (openingHours: Record<string, string> | null): OpenStatus | null => {
     if (!openingHours) return null;
     const rawTodayVal = openingHours[todayLabel.toLowerCase()];
     const todayVal = typeof rawTodayVal === "string" ? rawTodayVal : "";
@@ -542,12 +558,29 @@ const ListingDetail = () => {
     if (!m) return { state: "open" };
     const now = new Date();
     const cur = now.getHours() * 60 + now.getMinutes();
-    const o = parseTimeStr(m[1]); const c = parseTimeStr(m[2]);
+    const o = parseTimeStr(m[1]);
+    let c = parseTimeStr(m[2]);
+    // A bar's "18:00 - 00:00" closes on the next day's clock, not before it
+    // opened. Without this the late half of the evening reads as closed —
+    // which is exactly the listing that needs a second set of hours.
+    if (c <= o) {
+      c += 24 * 60;
+      if (cur < o && cur + 24 * 60 <= c) return { state: "open", closes: formatTime(m[2]) };
+    }
     if (cur >= o && cur <= c) return { state: "open", closes: formatTime(m[2]) };
     if (cur < o) return { state: "closed", opensAt: formatTime(m[1]), opensDay: "Today" };
     return { state: "closed", ...(findNext(1) || {}) };
   };
-  const openStatus = computeOpenStatus();
+  // One status per schedule, so the kitchen closing doesn't shut the bar.
+  const scheduleStatuses = hoursSchedules.map((s) => ({ ...s, status: computeOpenStatus(s.hours) }));
+  // The header speaks for whichever schedule is open now, falling back to the
+  // first so a fully closed listing still says when it next opens.
+  const headlineHoursIdx = Math.max(0, scheduleStatuses.findIndex((s) => s.status?.state === "open"));
+  const openStatus = scheduleStatuses[headlineHoursIdx]?.status ?? null;
+  // Only worth naming when there is more than one to tell apart.
+  const headlineHoursLabel = hoursSchedules.length > 1
+    ? scheduleStatuses[headlineHoursIdx]?.label ?? null
+    : null;
 
   // ----- Public holidays -----
   // The hours list is this Monday–Sunday, so holidays come from the calendar
@@ -1088,13 +1121,25 @@ const ListingDetail = () => {
   // Opening hours now live inside the About tab rather than a tab of their own.
   const renderHoursCard = () => {
     if (!hasHours) return null;
-    const alwaysOpen = openStatus?.state === "open" && openStatus?.alwaysOpen;
-    const statusColor = openStatus?.state === "open" ? C.open : C.closed;
-    const statusText = openStatus?.state === "open"
+    // With two schedules the card shows one at a time behind a small switch,
+    // opening on whichever is running now.
+    const multipleSchedules = scheduleStatuses.length > 1;
+    const activeIdx = Math.min(hoursTab ?? headlineHoursIdx, scheduleStatuses.length - 1);
+    const active = scheduleStatuses[activeIdx];
+    const activeHours = active.hours;
+    const activeStatus = active.status;
+    const alwaysOpen = activeStatus?.state === "open" && activeStatus?.alwaysOpen;
+    const statusColor = activeStatus?.state === "open" ? C.open : C.closed;
+    const statusText = activeStatus?.state === "open"
       ? "Open Now"
-      : openStatus?.state === "temporarily_closed"
+      : activeStatus?.state === "temporarily_closed"
         ? "Temporarily Closed"
         : "Closed Now";
+    // One named schedule still reads as its own thing ("Kitchen Hours"); the
+    // unnamed everyday case keeps the heading it has always had.
+    const heading = multipleSchedules
+      ? "Opening Hours"
+      : active.label === DEFAULT_HOURS_LABEL ? "Opening Hours" : `${active.label} Hours`;
     return (
       <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
         <div
@@ -1109,19 +1154,68 @@ const ListingDetail = () => {
               margin: 0, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.16em",
               textTransform: "uppercase", color: C.heading,
             }}>
-              Opening Hours
+              {heading}
             </h3>
           </div>
-          {openStatus ? (
+          {activeStatus ? (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
               <span style={{ fontSize: 13, fontWeight: 600, color: statusColor }}>{statusText}</span>
             </span>
           ) : null}
         </div>
+
+        {/* Two clocks under one roof: the same pill switch the Details tab
+            uses, each pill carrying its own open/closed dot so the one you
+            want is obvious before you tap it. */}
+        {multipleSchedules && (
+          <div
+            role="tablist"
+            style={{
+              display: "flex", gap: 6, padding: "14px 18px 2px",
+              overflowX: "auto", WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {scheduleStatuses.map((sched, i) => {
+              const selected = i === activeIdx;
+              const schedOpen = sched.status?.state === "open";
+              return (
+                <button
+                  key={`${sched.label}-${i}`}
+                  role="tab"
+                  aria-selected={selected}
+                  onClick={() => setHoursTab(i)}
+                  style={{
+                    flexShrink: 0,
+                    display: "inline-flex", alignItems: "center", gap: 7,
+                    padding: "8px 14px",
+                    borderRadius: 999,
+                    border: `1px solid ${selected ? "#423324" : C.border}`,
+                    background: selected ? "#423324" : "transparent",
+                    color: selected ? "#fff" : C.heading,
+                    fontFamily: FONT,
+                    fontSize: 12,
+                    fontWeight: 400,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                  }}
+                >
+                  {sched.label}
+                  <span style={{
+                    width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
+                    background: schedOpen
+                      ? (selected ? "#7BC48C" : C.open)
+                      : (selected ? "#E0A78F" : C.closed),
+                  }} />
+                </button>
+              );
+            })}
+          </div>
+        )}
         <div style={{ padding: "0 18px 6px" }}>
           {DAY_LABELS.map((day, i) => {
-            const v = openingHours![day.toLowerCase()] || "";
+            const v = activeHours[day.toLowerCase()] || "";
             const isAlwaysOpenValue = /always\s*open|24\s*\/?\s*7|open\s*24|24\s*hours?|24h\b/i.test(v);
             const isClosed = !alwaysOpen && !isAlwaysOpenValue && (!v || v.toLowerCase() === "closed");
             const isToday = day === todayLabel;
@@ -1645,6 +1739,7 @@ const ListingDetail = () => {
               fontSize: 13, fontWeight: 600, letterSpacing: "0.01em",
               color: openStatus.state === "open" ? C.open : C.closed,
             }}>
+              {headlineHoursLabel ? `${headlineHoursLabel} ` : ""}
               {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
             </span>
             {openStatus.state === "open" && openStatus.alwaysOpen && (

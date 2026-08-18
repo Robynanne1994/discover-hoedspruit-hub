@@ -17,7 +17,7 @@ import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
-import { isOpenNow } from "@/lib/openHours";
+import { getHoursSchedules, isAnyOpenNow } from "@/lib/openHours";
 import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
@@ -471,7 +471,7 @@ const CategoryPage = () => {
       const [{ data: rows }, { data: subRows }] = await Promise.all([
         supabase
           .from("listings")
-          .select("id, cuisine, vibe, meal, seating, opening_hours")
+          .select("id, cuisine, vibe, meal, seating, opening_hours, opening_hours_label, additional_hours")
           .in("id", allIds),
         supabase
           .from("listing_subcategories")
@@ -498,7 +498,7 @@ const CategoryPage = () => {
         (l.vibe || []).forEach((v: string) => bump(vibe, v));
         (l.meal || []).forEach((v: string) => bump(meal, v));
         (l.seating || []).forEach((v: string) => bump(seating, v));
-        if (isOpenNow(l.opening_hours as Record<string, string> | null)) openNow += 1;
+        if (isAnyOpenNow(l)) openNow += 1;
       });
 
       const savedCount = savedIds
@@ -603,7 +603,7 @@ const CategoryPage = () => {
       if (filterPetFriendly && !l.pets_allowed) return false;
       if (filterWheelchair && !l.wheelchair_friendly) return false;
       if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
-      if (filterOpenNow && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
+      if (filterOpenNow && !isAnyOpenNow(l)) return false;
       if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
       if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
       if (filterMaxKm < MAX_KM) {
@@ -1125,11 +1125,9 @@ const CategoryPage = () => {
             const hasDetail = !!(
               l.long_description ||
               (l.gallery_images && l.gallery_images.length > 0) ||
-              (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
+              getHoursSchedules(l).length > 0 ||
               isRestaurant
             );
-            const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
-            const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
 
             const allCats: string[] = (l as any)._allCategories || [];
             const rawSubTitles: string[] = (l as any)._subTitles || [];
@@ -1226,7 +1224,7 @@ const CategoryPage = () => {
                   }}
                   eyebrow={eyebrow}
                   location={l.location}
-                  hours={l.opening_hours as Record<string, string> | null}
+                  listing={l}
                 />
 
               </article>

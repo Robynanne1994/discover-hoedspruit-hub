@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, Heart, Instagram, MapPin, MessageCircle, Mountain, ShoppingBag, Store, Tag, Utensils, Wrench } from "lucide-react";
 import { channelImage, eventImage, listingImage, specialSurfaceImage } from "@/lib/imageFallback";
-import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
+import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
 import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
 import { compactDays, parseDays } from "@/lib/specialDays";
@@ -161,17 +161,22 @@ const buildContent = (it: any, type: CardType) => {
     lines.push(it.location ? { icon: MapPin, text: it.location } : null);
 
 
-    const hours = it.opening_hours as Record<string, string> | null | undefined;
-    const hasHours = !!hours && Object.values(hours).some((v) => typeof v === "string" && v.trim() !== "");
-    if (hasHours) {
-      if (isAlwaysOpen(todayHours(hours!))) {
-        status = { items: [{ text: "Always Open", tone: SAGE }] };
-      } else if (isOpenNow(hours!)) {
-        const until = closesAt(hours!);
-        status = { items: [{ text: until ? `Open · Closes ${until}` : "Open Now", tone: SAGE }] };
+    // A listing can keep a second set of hours (a bar that outlasts the
+    // kitchen). Report whichever set is open, and name it when there is more
+    // than one so "Open" can't stand for the wrong counter.
+    const schedules = getHoursSchedules(it);
+    const schedule = headlineSchedule(schedules);
+    if (schedule) {
+      const hours = schedule.hours;
+      const prefix = schedules.length > 1 ? `${schedule.label} ` : "";
+      if (isAlwaysOpen(todayHours(hours))) {
+        status = { items: [{ text: `${prefix}Always Open`, tone: SAGE }] };
+      } else if (isOpenNow(hours)) {
+        const until = closesAt(hours);
+        status = { items: [{ text: until ? `${prefix}Open · Closes ${until}` : `${prefix}Open Now`, tone: SAGE }] };
       } else {
-        const opens = to12h(opensAt(hours!));
-        status = { items: [{ text: opens ? `Closed · Opens ${opens}` : "Closed Now", tone: CLAY }] };
+        const opens = to12h(opensAt(hours));
+        status = { items: [{ text: opens ? `${prefix}Closed · Opens ${opens}` : `${prefix}Closed Now`, tone: CLAY }] };
       }
     } else {
       // No hours captured yet: keep the bar so cards stay uniform, in brown.

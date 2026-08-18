@@ -127,7 +127,7 @@ const UserSaved = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select(`id, title, title_override, location, google_rating, google_reviews_count, opening_hours, categories(title), ${LISTING_IMAGE_COLUMNS}`)
+        .select(`id, title, title_override, location, google_rating, google_reviews_count, opening_hours, opening_hours_label, additional_hours, categories(title), ${LISTING_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
