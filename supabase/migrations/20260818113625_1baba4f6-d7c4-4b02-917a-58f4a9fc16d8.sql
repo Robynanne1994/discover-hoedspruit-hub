@@ -1,0 +1,1 @@
+ALTER TABLE public.listing_categories ADD COLUMN IF NOT EXISTS card_primary_subcategory text;
