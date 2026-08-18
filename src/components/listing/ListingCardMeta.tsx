@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
-import { isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
+import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours, type HoursMap } from "@/lib/openHours";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -20,31 +20,45 @@ const to24h = (raw?: string | null) => {
   return `${String(h).padStart(2, "0")}:${mm}`;
 };
 
-const closesAt = (hours: Record<string, string> | null | undefined) => {
+const closesAt = (hours: HoursMap | null | undefined) => {
   const v = todayHours(hours);
   if (!v) return null;
   const m = v.match(/[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
   return m ? to24h(m[1]) : null;
 };
 
+// The listing columns the status bar reads. A listing that keeps two sets of
+// hours — a kitchen and a bar that outlasts it — carries the extra ones in
+// `additional_hours`, and the bar being open still counts as open.
+export type ListingHoursSource = {
+  opening_hours?: unknown;
+  opening_hours_label?: unknown;
+  additional_hours?: unknown;
+};
+
 // The open/closed footer bar, mirroring the saved cards on the profile page.
 // Returns a bold prefix ("Open"/"Closed") plus a lighter detail ("Opens X"/"Closes X").
+// When a listing keeps more than one schedule the prefix names the one being
+// reported ("Bar Open"), so "Open" never quietly means a different counter.
 export const listingStatus = (
-  hours: Record<string, string> | null | undefined
+  listing: ListingHoursSource | null | undefined
 ): { label: string; detail?: string; tone: string } => {
-  const hasHours = !!hours && Object.values(hours).some((v) => typeof v === "string" && v.trim() !== "");
-  if (!hasHours) return { label: "Hours Unknown", tone: BROWN };
-  if (isAlwaysOpen(todayHours(hours))) return { label: "Always Open", tone: SAGE };
+  const schedules = getHoursSchedules(listing);
+  const schedule = headlineSchedule(schedules);
+  if (!schedule) return { label: "Hours Unknown", tone: BROWN };
+  const prefix = schedules.length > 1 ? `${schedule.label} ` : "";
+  const hours = schedule.hours;
+  if (isAlwaysOpen(todayHours(hours))) return { label: `${prefix}Always Open`, tone: SAGE };
   if (isOpenNow(hours)) {
     const until = closesAt(hours);
     return until
-      ? { label: "Open", detail: `Closes ${until}`, tone: SAGE }
-      : { label: "Open Now", tone: SAGE };
+      ? { label: `${prefix}Open`, detail: `Closes ${until}`, tone: SAGE }
+      : { label: `${prefix}Open Now`, tone: SAGE };
   }
   const opens = to24h(opensAt(hours));
   return opens
-    ? { label: "Closed", detail: `Opens ${opens}`, tone: CLAY }
-    : { label: "Closed Now", tone: CLAY };
+    ? { label: `${prefix}Closed`, detail: `Opens ${opens}`, tone: CLAY }
+    : { label: `${prefix}Closed Now`, tone: CLAY };
 };
 
 interface Props {
@@ -53,17 +67,19 @@ interface Props {
   titleProps?: Record<string, unknown>;
   eyebrow?: string | null;
   location?: string | null;
-  hours: Record<string, string> | null | undefined;
+  // The listing row itself: the status bar needs every set of hours on it, not
+  // just the first.
+  listing: ListingHoursSource | null | undefined;
 }
 
 /**
  * Text block plus status bar for a listing card. The location gets two lines
  * only when the title fits on one, so cards never grow past four text lines.
  */
-const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, hours }: Props) => {
+const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, listing }: Props) => {
   const titleRef = useRef<HTMLSpanElement>(null);
   const [titleLines, setTitleLines] = useState(1);
-  const status = listingStatus(hours);
+  const status = listingStatus(listing);
 
   useEffect(() => {
     const el = titleRef.current;

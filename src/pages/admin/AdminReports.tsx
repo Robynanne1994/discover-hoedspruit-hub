@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { downloadCsv } from "@/lib/reports/csv";
 import { checkImagesConcurrent } from "@/lib/reports/checkImage";
 import { Download, Loader2 } from "lucide-react";
+import { getHoursSchedules } from "@/lib/openHours";
 
 const SUPABASE_HOST = (() => {
   try {
@@ -196,16 +197,13 @@ const REPORTS: ReportDef[] = [
   {
     id: "listings-missing-hours",
     title: "Listings — missing opening hours",
-    description: "Listings with no opening_hours data set.",
+    description: "Listings with no opening hours set, in any of their schedules.",
     run: async () => {
-      const rows = await fetchAll<any>("listings", "id, title, opening_hours");
+      const rows = await fetchAll<any>("listings", "id, title, opening_hours, opening_hours_label, additional_hours");
+      // A listing whose hours live only in an extra schedule (a bar with no
+      // kitchen hours captured) has hours, so it doesn't belong on this list.
       const out = rows
-        .filter((r) => {
-          const h = r.opening_hours;
-          if (!h) return true;
-          if (typeof h === "object" && Object.keys(h).length === 0) return true;
-          return false;
-        })
+        .filter((r) => getHoursSchedules(r).length === 0)
         .map((r) => ({ id: r.id, title: r.title, admin_edit_url: editUrl("listing", r.id) }));
       return { rows: out, columns: ["id", "title", "admin_edit_url"], filename: "listings-missing-hours.csv" };
     },

@@ -29,6 +29,7 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 
 import { sanitizeContactArray } from "@/lib/contacts";
+import { parseAdditionalHours } from "@/lib/openHours";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { DISPLAY_SECTIONS, sectionsForGroup, type DisplayMode, type SectionGroup, DISPLAY_DEFAULTS_SECTION } from "@/lib/detailsDisplayModes";
 import { DetailsDisplayModeEditor, DetailsDisplayDefaultsEditor } from "@/components/admin/DetailsDisplayModeEditor";
@@ -37,6 +38,29 @@ import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 type Listing = Tables<"listings">;
 
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
+// An extra, named set of opening hours. Almost no listing needs one; the ones
+// that do trade on two clocks under a single roof — Sleepers' kitchen closes at
+// 21:00 while the bar carries on to midnight — and a single Opening Hours block
+// can only tell one of those two stories.
+type HoursSetForm = { label: string; hours: Record<string, string> };
+
+const emptyHoursSet = (): HoursSetForm => ({ label: "", hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) });
+
+// Drop the days left blank, and the whole set when nothing was filled in — an
+// empty extra block is an abandoned edit, not hours to publish. Unnamed sets
+// still save: the app falls back to "Hours 2", "Hours 3" so they never render
+// nameless.
+const cleanHoursSets = (sets: HoursSetForm[]): HoursSetForm[] =>
+  sets
+    .map((set) => ({
+      label: (set.label || "").trim(),
+      hours: Object.fromEntries(
+        DAY_LABELS.map((d) => [d, (set.hours?.[d] || "").trim()]).filter(([, v]) => v),
+      ) as Record<string, string>,
+    }))
+    .filter((set) => Object.keys(set.hours).length > 0)
+    .map((set, i) => ({ label: set.label || `Hours ${i + 2}`, hours: set.hours }));
 
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite", "Instagrammable", "Quiet Space"];
@@ -59,7 +83,7 @@ const VENUE_STYLE_TAG_OPTIONS = ["Rustic", "Modern", "Classic", "Boho", "Safari"
 const VENUE_SETTING_OPTIONS = ["Bush", "Garden", "Riverside", "Farm", "Town", "Lodge"];
 const VENUE_INDOOR_OUTDOOR_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
-const emptyForm = { treatments: [] as string[], avg_price_per_person_per_night: "" as string, rooms_count: null as number | null, drive_through: null as boolean | null, title: "", title_override: "" as string, card_primary_subcategory: "" as string, description: "", image_url: "", detail_image_url: "", saved_image_url: "", card_image_url: "", homepage_image_url: "", search_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", good_to_know: [] as string[], gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, sleeps_children: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const emptyForm = { treatments: [] as string[], avg_price_per_person_per_night: "" as string, rooms_count: null as number | null, drive_through: null as boolean | null, title: "", title_override: "" as string, card_primary_subcategory: "" as string, description: "", image_url: "", detail_image_url: "", saved_image_url: "", card_image_url: "", homepage_image_url: "", search_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", good_to_know: [] as string[], gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, opening_hours_label: "" as string, additional_hours: [] as HoursSetForm[], good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, sleeps_children: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const TreatmentsEditor = ({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) => {
   const items = Array.isArray(value) ? value : [];
@@ -464,6 +488,11 @@ const AdminListings = () => {
         good_to_know: (values.good_to_know ?? []).map((s: string) => (s || "").trim()).filter(Boolean),
         gallery_images: galleryArr,
         opening_hours: values.opening_hours,
+        opening_hours_label: (values.opening_hours_label || "").trim() || null,
+        additional_hours: (() => {
+          const sets = cleanHoursSets(values.additional_hours ?? []);
+          return sets.length ? sets : null;
+        })(),
         good_for_kids: values.good_for_kids,
         pets_allowed: values.pets_allowed,
         wheelchair_friendly: values.wheelchair_friendly,
@@ -736,6 +765,13 @@ const AdminListings = () => {
       good_to_know: (l as any).good_to_know ?? [],
       gallery_images: gallery?.join("\n") ?? "",
       opening_hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...hours },
+      opening_hours_label: l.opening_hours_label ?? "",
+      // Every stored set is padded back out to all seven days so the editor
+      // shows the same seven rows the primary block does.
+      additional_hours: parseAdditionalHours(l.additional_hours).map((set) => ({
+        label: set.label,
+        hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...set.hours },
+      })),
       good_for_kids: l.good_for_kids ?? null,
       pets_allowed: l.pets_allowed ?? null,
       wheelchair_friendly: l.wheelchair_friendly ?? null,
@@ -932,6 +968,11 @@ const AdminListings = () => {
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
   const isShoppingType = categories?.some((c) => selectedCatIds.includes(c.id) && isShoppingCategory(c.title));
   const isAccommodationType = categories?.some((c) => selectedCatIds.includes(c.id) && isAccommodationCategory(c.title));
+  // Accommodation doesn't keep opening hours — a lodge doesn't shut at five.
+  // But a lodge that is *also* a restaurant does, and hiding the hours editor
+  // on it left the kitchen with nowhere to be typed in at all.
+  const selectedCatTitles = (categories ?? []).filter((c) => selectedCatIds.includes(c.id)).map((c) => c.title);
+  const isAccommodationOnly = selectedCatTitles.length > 0 && selectedCatTitles.every((t) => isAccommodationCategory(t));
   const isNGOType = categories?.some((c) => selectedCatIds.includes(c.id) && isNGOCategory(c.title));
   const isTradesType = categories?.some((c) => selectedCatIds.includes(c.id) && isTradesCategory(c.title));
   const isHomeGardenType = categories?.some((c) => selectedCatIds.includes(c.id) && isHomeGardenCategory(c.title));
@@ -1389,10 +1430,36 @@ const AdminListings = () => {
 
 
 
-                {!isAccommodationType && (
+                {!isAccommodationOnly && (
                 <div>
-                  <Label>Opening Hours</Label>
-                  <div className="space-y-2 mt-1 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <Label>Opening Hours</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setForm({ ...form, additional_hours: [...form.additional_hours, emptyHoursSet()] })}
+                    >
+                      <Plus className="h-4 w-4" /> Add another set of hours
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Most listings need one set. Add a second when the same place keeps two clocks — a kitchen
+                    that closes at 21:00 while the bar stays open to midnight — and name each one so the app
+                    can say which hours are which instead of picking one and misleading people.
+                  </p>
+
+                  {/* A single set needs no name: the app just calls it "Opening Hours". */}
+                  {form.additional_hours.length > 0 && (
+                    <Input
+                      className="mt-3"
+                      value={form.opening_hours_label}
+                      onChange={(e) => setForm({ ...form, opening_hours_label: e.target.value })}
+                      placeholder="Name this set of hours, e.g. Kitchen"
+                    />
+                  )}
+
+                  <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
                     {DAY_LABELS.map((day) => (
                       <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
                         <span className="text-sm text-muted-foreground capitalize text-zinc-800">{day}</span>
@@ -1404,6 +1471,45 @@ const AdminListings = () => {
                       </div>
                     ))}
                   </div>
+
+                  {form.additional_hours.map((set, idx) => (
+                    <div key={idx} className="border-t border-border pt-4 mt-4">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={set.label}
+                          onChange={(e) => setForm({
+                            ...form,
+                            additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
+                          })}
+                          placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setForm({ ...form, additional_hours: form.additional_hours.filter((_, i) => i !== idx) })}
+                        >
+                          <Trash2 className="h-4 w-4" /> Remove
+                        </Button>
+                      </div>
+                      <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
+                        {DAY_LABELS.map((day) => (
+                          <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
+                            <span className="text-sm text-muted-foreground capitalize text-zinc-800">{day}</span>
+                            <Input
+                              value={set.hours[day] ?? ""}
+                              onChange={(e) => setForm({
+                                ...form,
+                                additional_hours: form.additional_hours.map((s2, i) =>
+                                  i === idx ? { ...s2, hours: { ...s2.hours, [day]: e.target.value } } : s2),
+                              })}
+                              placeholder="e.g. 16:00 - 00:00"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 )}
 

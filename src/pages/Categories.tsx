@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
-import { isOpenNow } from "@/lib/openHours";
+import { isAnyOpenNow } from "@/lib/openHours";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
@@ -151,7 +151,7 @@ const Categories = () => {
     queryKey: ["explore-quick-filter-listings", savedActive, savedActive ? savedListArray : "all"],
     queryFn: async () => {
       const cols =
-        "id, title, title_override, image_url, location, category_id, opening_hours, child_friendly, good_for_kids, pets_allowed";
+        "id, title, title_override, image_url, location, category_id, opening_hours, opening_hours_label, additional_hours, child_friendly, good_for_kids, pets_allowed";
 
       // When "Saved" is active the result can only ever be a subset of the
       // user's saved listings, so fetch those rows directly by id. This is
@@ -195,7 +195,7 @@ const Categories = () => {
   const quickFilteredResults = useMemo(() => {
     if (!filteredListings) return [];
     return filteredListings.filter((l: any) => {
-      if (hasQuickFilter("Open Now") && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
+      if (hasQuickFilter("Open Now") && !isAnyOpenNow(l)) return false;
       if (hasQuickFilter("Saved") && !(savedIds?.has(l.id))) return false;
       if (hasQuickFilter("Kid Friendly") && !l.child_friendly && !l.good_for_kids) return false;
       if (hasQuickFilter("Pet Friendly") && !l.pets_allowed) return false;
