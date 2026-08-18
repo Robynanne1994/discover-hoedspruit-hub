@@ -642,7 +642,11 @@ const AdminListings = () => {
 
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-listings"] });
+      // Refresh every cached read, not just the admin table: the same listing
+      // (and its new images) is painted by the home rows, category pages,
+      // search, saved cards and detail page, each under its own query key.
+      qc.invalidateQueries();
+
       const ret = returnTo;
       resetForm();
       if (ret) {
