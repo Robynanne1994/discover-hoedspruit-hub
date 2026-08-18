@@ -1,6 +1,10 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   DEFAULT_HOURS_LABEL,
+  HOURS_COLUMNS,
+  LEGACY_HOURS_COLUMNS,
+  isMissingHoursColumn,
+  withHoursColumns,
   getHoursSchedules,
   headlineSchedule,
   isAnyOpenNow,
@@ -111,5 +115,37 @@ describe("open status across schedules", () => {
     expect(isOpenNow({ wednesday: "18:00 - 02:00" })).toBe(true);
     vi.setSystemTime(at("03:00"));
     expect(isOpenNow({ wednesday: "18:00 - 02:00" })).toBe(false);
+  });
+});
+
+// The columns arrive in a migration, and the app can be deployed against a
+// database that hasn't had it applied yet. Nothing should break in that window.
+describe("withHoursColumns", () => {
+  it("asks for the multi-schedule columns first", async () => {
+    const asked: string[] = [];
+    const got = await withHoursColumns(async (cols) => { asked.push(cols); return "rows"; });
+    expect(asked).toEqual([HOURS_COLUMNS]);
+    expect(got).toBe("rows");
+  });
+
+  it("falls back to the original column when the database hasn't got the new ones", async () => {
+    const asked: string[] = [];
+    const got = await withHoursColumns(async (cols) => {
+      asked.push(cols);
+      if (cols === HOURS_COLUMNS) throw { code: "42703", message: 'column listings.additional_hours does not exist' };
+      return "rows";
+    });
+    expect(asked).toEqual([HOURS_COLUMNS, LEGACY_HOURS_COLUMNS]);
+    expect(got).toBe("rows");
+  });
+
+  it("lets every other failure through rather than retrying blindly", async () => {
+    await expect(withHoursColumns(async () => { throw new Error("network down"); })).rejects.toThrow("network down");
+  });
+
+  it("recognises the schema-cache wording the editor sees on save", () => {
+    expect(isMissingHoursColumn({ message: "Could not find the 'opening_hours_label' column of 'listings' in the schema cache" })).toBe(true);
+    expect(isMissingHoursColumn({ message: "permission denied for table listings" })).toBe(false);
+    expect(isMissingHoursColumn(null)).toBe(false);
   });
 });

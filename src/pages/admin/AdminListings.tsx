@@ -51,6 +51,14 @@ const emptyHoursSet = (): HoursSetForm => ({ label: "", hours: Object.fromEntrie
 // empty extra block is an abandoned edit, not hours to publish. Unnamed sets
 // still save: the app falls back to "Hours 2", "Hours 3" so they never render
 // nameless.
+// What the editor was holding for a column the database turned away, so the
+// warning only fires when something typed in actually failed to save.
+const valuesForColumn = (values: typeof emptyForm, column: string): unknown => {
+  if (column === "opening_hours_label") return values.opening_hours_label;
+  if (column === "additional_hours") return cleanHoursSets(values.additional_hours ?? []);
+  return (values as unknown as Record<string, unknown>)[column];
+};
+
 const cleanHoursSets = (sets: HoursSetForm[]): HoursSetForm[] =>
   sets
     .map((set) => ({
@@ -608,20 +616,34 @@ const AdminListings = () => {
         if (error) throw error;
         return data.id;
       };
-      let listingId: string;
-      try {
-        listingId = await save(payload);
-      } catch (e: any) {
-        // PGRST204: a payload column is missing from the API schema cache (e.g. a
-        // migration not applied yet). Drop that column and retry so the rest of the
-        // listing still saves.
-        const missing = e?.code === "PGRST204" ? /'(\w+)' column/.exec(e?.message ?? "")?.[1] : undefined;
-        if (missing && missing in payload) {
-          delete payload[missing];
+      // PGRST204: a payload column is missing from the API schema cache (e.g. a
+      // migration not applied yet). Drop that column and retry so the rest of the
+      // listing still saves — once per missing column, since a single migration
+      // can add several (opening_hours_label and additional_hours arrived
+      // together) and stopping after the first would still fail the save.
+      const droppedColumns: string[] = [];
+      let listingId: string | undefined;
+      for (;;) {
+        try {
           listingId = await save(payload);
-        } else {
-          throw e;
+          break;
+        } catch (e: any) {
+          const missing = e?.code === "PGRST204" ? /'(\w+)' column/.exec(e?.message ?? "")?.[1] : undefined;
+          if (!missing || !(missing in payload)) throw e;
+          delete payload[missing];
+          droppedColumns.push(missing);
         }
+      }
+      // Saving without a column silently loses whatever was typed into it, so
+      // say so — but only when there was something to lose.
+      const droppedWithValues = droppedColumns.filter((c) => {
+        const v = valuesForColumn(values, c);
+        return Array.isArray(v) ? v.length > 0 : v !== null && v !== undefined && v !== "";
+      });
+      if (droppedWithValues.length > 0) {
+        toast.warning(
+          `Saved, but ${droppedWithValues.join(", ")} could not be stored — the database is missing those columns. Run the latest migration and save again.`,
+        );
       }
 
       // Sync categories junction, carrying the per-category card label

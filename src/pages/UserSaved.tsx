@@ -14,6 +14,7 @@ import PageHeader from "@/components/PageHeader";
 import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
 
 const PAGE_BG = "#E6E0CC";
 const INK = "#1A1A1A";
@@ -125,10 +126,15 @@ const UserSaved = () => {
       });
       if (!favs?.length) return [];
       const ids = favs.map((f: any) => f.item_id);
-      const { data: listings } = await supabase
-        .from("listings")
-        .select(`id, title, title_override, location, google_rating, google_reviews_count, opening_hours, opening_hours_label, additional_hours, categories(title), ${LISTING_IMAGE_COLUMNS}`)
-        .in("id", ids);
+      const listings = await withHoursColumns(async (hoursCols) => {
+        const { data, error } = await supabase
+          .from("listings")
+          .select(`id, title, title_override, location, google_rating, google_reviews_count, ${hoursCols}, categories(title), ${LISTING_IMAGE_COLUMNS}`)
+          .in("id", ids);
+        // Only a missing hours column is worth retrying for.
+        if (error && isMissingHoursColumn(error)) throw error;
+        return data;
+      });
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
     },

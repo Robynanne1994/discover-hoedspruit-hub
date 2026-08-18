@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { downloadCsv } from "@/lib/reports/csv";
 import { checkImagesConcurrent } from "@/lib/reports/checkImage";
 import { Download, Loader2 } from "lucide-react";
-import { getHoursSchedules } from "@/lib/openHours";
+import { getHoursSchedules, withHoursColumns } from "@/lib/openHours";
 
 const SUPABASE_HOST = (() => {
   try {
@@ -199,7 +199,7 @@ const REPORTS: ReportDef[] = [
     title: "Listings — missing opening hours",
     description: "Listings with no opening hours set, in any of their schedules.",
     run: async () => {
-      const rows = await fetchAll<any>("listings", "id, title, opening_hours, opening_hours_label, additional_hours");
+      const rows = await withHoursColumns((hoursCols) => fetchAll<any>("listings", `id, title, ${hoursCols}`));
       // A listing whose hours live only in an extra schedule (a bar with no
       // kitchen hours captured) has hours, so it doesn't belong on this list.
       const out = rows

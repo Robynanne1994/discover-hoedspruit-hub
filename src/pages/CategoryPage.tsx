@@ -17,7 +17,7 @@ import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
-import { getHoursSchedules, isAnyOpenNow } from "@/lib/openHours";
+import { getHoursSchedules, isAnyOpenNow, isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
 import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
@@ -468,11 +468,17 @@ const CategoryPage = () => {
       };
       if (allIds.length === 0) return empty;
 
-      const [{ data: rows }, { data: subRows }] = await Promise.all([
-        supabase
-          .from("listings")
-          .select("id, cuisine, vibe, meal, seating, opening_hours, opening_hours_label, additional_hours")
-          .in("id", allIds),
+      const [rows, { data: subRows }] = await Promise.all([
+        withHoursColumns(async (hoursCols) => {
+          const { data, error } = await supabase
+            .from("listings")
+            .select(`id, cuisine, vibe, meal, seating, ${hoursCols}`)
+            .in("id", allIds);
+          // Only a missing hours column is worth retrying for; every other
+          // error keeps the old behaviour of leaving the facets empty.
+          if (error && isMissingHoursColumn(error)) throw error;
+          return data;
+        }),
         supabase
           .from("listing_subcategories")
           .select("listing_id, subcategory_id")
