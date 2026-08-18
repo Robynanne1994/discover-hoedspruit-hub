@@ -147,3 +147,38 @@ export const headlineSchedule = (schedules: HoursSchedule[]): HoursSchedule | nu
   if (schedules.length === 0) return null;
   return schedules.find((s) => isOpenNow(s.hours)) ?? schedules[0];
 };
+
+// ----- Living with a migration that hasn't landed yet -----
+//
+// The extra-schedule columns arrive in a migration, and this project ships code
+// and migrations separately: the app can be running against a database that
+// still only has `opening_hours`. Naming a column the database doesn't have
+// fails the whole query, which would take out category pages and saved lists
+// over something almost no listing uses. So every query that asks for the new
+// columns can fall back to the ones that have always been there, and simply
+// shows single-schedule hours until the migration is applied.
+
+export const HOURS_COLUMNS = "opening_hours, opening_hours_label, additional_hours";
+export const LEGACY_HOURS_COLUMNS = "opening_hours";
+
+export const isMissingHoursColumn = (error: unknown): boolean => {
+  if (!error || typeof error !== "object") return false;
+  const e = error as { message?: string; details?: string; hint?: string };
+  return /opening_hours_label|additional_hours/.test(
+    `${e.message ?? ""} ${e.details ?? ""} ${e.hint ?? ""}`,
+  );
+};
+
+/**
+ * Run a query with the multi-schedule columns, once more without them if the
+ * database hasn't got them yet. `run` must throw on a query error (the usual
+ * `if (error) throw error`) for the fallback to kick in.
+ */
+export async function withHoursColumns<T>(run: (hoursColumns: string) => Promise<T>): Promise<T> {
+  try {
+    return await run(HOURS_COLUMNS);
+  } catch (e) {
+    if (!isMissingHoursColumn(e)) throw e;
+    return await run(LEGACY_HOURS_COLUMNS);
+  }
+}

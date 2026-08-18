@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
-import { isAnyOpenNow } from "@/lib/openHours";
+import { isAnyOpenNow, withHoursColumns } from "@/lib/openHours";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
@@ -149,9 +149,9 @@ const Categories = () => {
 
   const { data: filteredListings, isLoading: filteredLoading } = useQuery({
     queryKey: ["explore-quick-filter-listings", savedActive, savedActive ? savedListArray : "all"],
-    queryFn: async () => {
+    queryFn: async () => withHoursColumns(async (hoursCols) => {
       const cols =
-        "id, title, title_override, image_url, location, category_id, opening_hours, opening_hours_label, additional_hours, child_friendly, good_for_kids, pets_allowed";
+        `id, title, title_override, image_url, location, category_id, ${hoursCols}, child_friendly, good_for_kids, pets_allowed`;
 
       // When "Saved" is active the result can only ever be a subset of the
       // user's saved listings, so fetch those rows directly by id. This is
@@ -186,7 +186,7 @@ const Categories = () => {
         if (data.length < PAGE) break;
       }
       return all;
-    },
+    }),
     // Wait for the saved set to load before running the "Saved" branch so we
     // never fetch against a half-loaded id list.
     enabled: activeQuick.length > 0 && (!savedActive || savedIds !== undefined),
