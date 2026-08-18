@@ -1316,9 +1316,11 @@ export type Database = {
           kids_menu: boolean | null
           kids_playground: boolean | null
           km_from_town: string | null
+          latitude: number | null
           local_products: boolean | null
           location: string | null
           long_description: string | null
+          longitude: number | null
           meal: string[] | null
           nappy_changing_station: boolean | null
           opening_hours: Json | null
@@ -1468,9 +1470,11 @@ export type Database = {
           kids_menu?: boolean | null
           kids_playground?: boolean | null
           km_from_town?: string | null
+          latitude?: number | null
           local_products?: boolean | null
           location?: string | null
           long_description?: string | null
+          longitude?: number | null
           meal?: string[] | null
           nappy_changing_station?: boolean | null
           opening_hours?: Json | null
@@ -1620,9 +1624,11 @@ export type Database = {
           kids_menu?: boolean | null
           kids_playground?: boolean | null
           km_from_town?: string | null
+          latitude?: number | null
           local_products?: boolean | null
           location?: string | null
           long_description?: string | null
+          longitude?: number | null
           meal?: string[] | null
           nappy_changing_station?: boolean | null
           opening_hours?: Json | null
