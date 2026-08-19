@@ -428,18 +428,26 @@ const AdminImport = () => {
         return all;
       };
 
-      // Build existing listings map
-      let existingMap: Map<string, ListingRow>;
-      if (isAllCategories) {
-        const existing = await fetchAllListings();
-        existingMap = new Map(existing.map((l) => [l.title.toLowerCase(), l]));
-      } else {
+      // Build existing listings map.
+      //
+      // Matching is against *every* listing, not only the ones already in the
+      // category: a category sheet naming a listing that lives elsewhere should
+      // adopt that listing and add the category link, never mint a duplicate.
+      // The narrower in-category map is only used to decide what the sheet has
+      // dropped from this category.
+      const allExisting = await fetchAllListings();
+      const existingMap: Map<string, ListingRow> = new Map(
+        allExisting.map((l) => [l.title.toLowerCase(), l]),
+      );
+      let inCategoryMap: Map<string, ListingRow> = existingMap;
+      if (!isAllCategories) {
         const catJunctions = await fetchAllCategoryJunctions(selectedCategoryId);
         const categoryListingIds = new Set(catJunctions.map((j) => j.listing_id));
-        const existing = await fetchAllListings();
-        const existingInCategory = existing.filter((l) => categoryListingIds.has(l.id));
-        existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l]));
+        inCategoryMap = new Map(
+          allExisting.filter((l) => categoryListingIds.has(l.id)).map((l) => [l.title.toLowerCase(), l]),
+        );
       }
+
 
       const chunkArray = <T,>(items: T[], size: number) => {
         const chunks: T[][] = [];
@@ -950,7 +958,7 @@ const AdminImport = () => {
       // - In category-scoped mode: if the listing belongs to OTHER categories, just remove
       //   it from the selected category (and its subs under that category). Only hard-delete
       //   when the listing has no other category links.
-      const missingItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
+      const missingItems = Array.from(inCategoryMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
       const missingIds = missingItems.map(([, listing]) => listing.id);
 
       if (isAllCategories) {
