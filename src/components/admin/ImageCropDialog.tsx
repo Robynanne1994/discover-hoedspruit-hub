@@ -585,37 +585,37 @@ const ImageCropDialog = ({
             </div>
           </div>
 
-          {/* Only worth the room once there is background showing to colour in. */}
-          {!filling && (
-            <div className="space-y-1.5">
-              <Label className="text-xs">Background fill</Label>
-              <div className="flex items-center gap-2">
-                <Input
-                  value={bgColor}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  placeholder="#ffffff"
-                  className="w-32"
-                />
-                <input
-                  type="color"
-                  value={/^#[0-9a-fA-F]{6}$/.test(bgColor) ? bgColor : "#ffffff"}
-                  onChange={(e) => setBgColor(e.target.value)}
-                  className="h-8 w-10 cursor-pointer rounded border border-border bg-transparent"
-                  aria-label="Pick any colour"
-                />
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={picking ? "default" : "outline"}
-                  onClick={openNativeEyedropper}
-                  title="Pick a colour from the image"
-                >
-                  <Pipette className="h-4 w-4 mr-1" />
-                  {picking ? "Click image…" : "Eyedropper"}
-                </Button>
-              </div>
+          {/* Background fill is always available: even at cover zoom, dragging
+            the image can pull empty space into the frame, and the eyedropper
+            lets that space be matched to the photo. */}
+          <div className="space-y-1.5">
+            <Label className="text-xs">Background fill</Label>
+            <div className="flex items-center gap-2">
+              <Input
+                value={bgColor}
+                onChange={(e) => setBgColor(e.target.value)}
+                placeholder="#ffffff"
+                className="w-32"
+              />
+              <input
+                type="color"
+                value={/^#[0-9a-fA-F]{6}$/.test(bgColor) ? bgColor : "#ffffff"}
+                onChange={(e) => setBgColor(e.target.value)}
+                className="h-8 w-10 cursor-pointer rounded border border-border bg-transparent"
+                aria-label="Pick any colour"
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant={picking ? "default" : "outline"}
+                onClick={openNativeEyedropper}
+                title="Pick a colour from the image"
+              >
+                <Pipette className="h-4 w-4 mr-1" />
+                {picking ? "Click image…" : "Eyedropper"}
+              </Button>
             </div>
-          )}
+          </div>
 
           {(previewRender || previewScales.length > 0) && (
             <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-2">
