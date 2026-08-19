@@ -1128,12 +1128,10 @@ const CategoryPage = () => {
       ) : filteredListings.length > 0 ? (
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: GRID.gutter, paddingLeft: GRID.pageInset, paddingRight: GRID.pageInset }}>
           {filteredListings.map((l) => {
-            const hasDetail = !!(
-              l.long_description ||
-              (l.gallery_images && l.gallery_images.length > 0) ||
-              getHoursSchedules(l).length > 0 ||
-              isRestaurant
-            );
+            // Every listing has a detail page worth opening, even a sparse one —
+            // gating this on content left image-less rows unclickable.
+            const hasDetail = true;
+
 
             const allCats: string[] = (l as any)._allCategories || [];
             const rawSubTitles: string[] = (l as any)._subTitles || [];
