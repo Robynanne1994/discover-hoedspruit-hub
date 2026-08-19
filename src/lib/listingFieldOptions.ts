@@ -32,6 +32,8 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   subcategories: "pipe-separated subcategory names for THIS category only, e.g. Nurseries | Landscaping — the same listing's subcategories under its other categories are filled in on those categories' sheets. Leave blank to keep the stored ones, \"-\" to clear them",
   card_primary_subcategory: "the single label shown on the listing card on THIS category's page only — this category's name, or one of its subcategories. Leave blank to keep the stored label, \"-\" to auto-pick the first populated subcategory",
 
+  title_override: "true / false — true shows the title exactly as typed above (no automatic Title Case), false uses the normal casing. Same as the toggle in the editor",
+
   // Universal scalars with notable formats
   price_level: "integer 1–4 (1 = $, 4 = $$$$)",
   google_rating: "decimal 0–5, e.g. 4.5",

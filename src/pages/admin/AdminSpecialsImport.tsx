@@ -206,7 +206,7 @@ const AdminSpecialsImport = () => {
     // One value per header, in header order — a short row silently shifts every
     // column after it, so the two lists are kept side by side.
     const example = [
-      "Sunset Dinner Deal", "", "50% OFF", "weekly", "Wednesday|Thursday",
+      "Sunset Dinner Deal", "false", "50% OFF", "weekly", "Wednesday|Thursday",
       "percent_off", "50", "", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
