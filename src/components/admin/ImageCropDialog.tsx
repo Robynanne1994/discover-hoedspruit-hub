@@ -484,10 +484,10 @@ const ImageCropDialog = ({
                 onCropAreaChange={onCropAreaChange}
                 onMediaLoaded={(m) => setMediaSize({ width: m.width, height: m.height })}
                 onCropSizeChange={(s) => setCropSize({ width: s.width, height: s.height })}
-                // While the picture covers the frame it is held inside it, so a
-                // stray drag can't pull a band of background into the export.
-                // Below that the padding is deliberate, so dragging is free.
-                restrictPosition={filling}
+                // Dragging is always free, including at exactly the cover zoom,
+                // so the picture can be repositioned; any background pulled in
+                // is painted with the chosen fill colour.
+                restrictPosition={false}
                 style={{ containerStyle: { background: bgColor } }}
               />
             )}
