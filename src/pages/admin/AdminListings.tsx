@@ -2017,39 +2017,16 @@ const AdminListings = () => {
 
 
                     <div className="space-y-2">
-                      <Label>Tenure</Label>
-                      <div className="flex gap-4 text-sm">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" name="tenure_mode_hg" checked={form.tenure_mode === "started"} onChange={() => setForm({ ...form, tenure_mode: "started" })} />
-                          Year business started
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" name="tenure_mode_hg" checked={form.tenure_mode === "years"} onChange={() => setForm({ ...form, tenure_mode: "years" })} />
-                          Years in business
-                        </label>
-                      </div>
-                      {form.tenure_mode === "started" ? (
-                        <div>
-                          <Input
-                            type="number"
-                            value={form.business_started_year ?? ""}
-                            onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
-                            placeholder="e.g. 2008"
-                          />
-                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
-                        </div>
-                      ) : (
-                        <div>
-                          <Input
-                            type="number"
-                            value={form.years_in_business ?? ""}
-                            onChange={(e) => setForm({ ...form, years_in_business: e.target.value ? parseInt(e.target.value, 10) : null })}
-                            placeholder="e.g. 15"
-                          />
-                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "X years in business".</p>
-                        </div>
-                      )}
+                      <Label>Year Business Started</Label>
+                      <Input
+                        type="number"
+                        value={form.business_started_year ?? ""}
+                        onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 2008"
+                      />
+                      <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
                     </div>
+
 
                     <div>
                       <Label>Specialities</Label>
