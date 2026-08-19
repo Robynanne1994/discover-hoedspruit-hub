@@ -1910,39 +1910,16 @@ const AdminListings = () => {
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Trades & Services Fields</p>
                     <div className="space-y-2">
-                      <Label>Tenure</Label>
-                      <div className="flex gap-4 text-sm">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" name="tenure_mode" checked={form.tenure_mode === "started"} onChange={() => setForm({ ...form, tenure_mode: "started" })} />
-                          Year business started
-                        </label>
-                        <label className="flex items-center gap-2 cursor-pointer">
-                          <input type="radio" name="tenure_mode" checked={form.tenure_mode === "years"} onChange={() => setForm({ ...form, tenure_mode: "years" })} />
-                          Years in business
-                        </label>
-                      </div>
-                      {form.tenure_mode === "started" ? (
-                        <div>
-                          <Input
-                            type="number"
-                            value={form.business_started_year ?? ""}
-                            onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
-                            placeholder="e.g. 2008"
-                          />
-                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
-                        </div>
-                      ) : (
-                        <div>
-                          <Input
-                            type="number"
-                            value={form.years_in_business ?? ""}
-                            onChange={(e) => setForm({ ...form, years_in_business: e.target.value ? parseInt(e.target.value, 10) : null })}
-                            placeholder="e.g. 15"
-                          />
-                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "X years in business".</p>
-                        </div>
-                      )}
+                      <Label>Year Business Started</Label>
+                      <Input
+                        type="number"
+                        value={form.business_started_year ?? ""}
+                        onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 2008"
+                      />
+                      <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
                     </div>
+
                     <div className={ADMIN_TOGGLE_GRID}>
                       <TriStateToggle label="After Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
                       <TriStateToggle label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
