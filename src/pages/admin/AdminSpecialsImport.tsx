@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
@@ -120,7 +121,7 @@ const AdminSpecialsImport = () => {
 
         const payload: Record<string, any> = {
           title,
-          title_override: row.title_override?.trim() || null,
+          title_override: titleOverrideValue(parseTitleOverrideCell(row.title_override) === true, title),
           badge_override: row.badge_override || null,
           deal_type: normalizeDealType(row.deal_type),
           day_of_week: days.length ? days : null,
@@ -205,7 +206,7 @@ const AdminSpecialsImport = () => {
     // One value per header, in header order — a short row silently shifts every
     // column after it, so the two lists are kept side by side.
     const example = [
-      "Sunset Dinner Deal", "", "50% OFF", "weekly", "Wednesday|Thursday",
+      "Sunset Dinner Deal", "false", "50% OFF", "weekly", "Wednesday|Thursday",
       "percent_off", "50", "", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
@@ -225,7 +226,7 @@ const AdminSpecialsImport = () => {
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.title ?? "", s.title_override ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
+      s.title ?? "", titleOverrideToCsv(s), s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",

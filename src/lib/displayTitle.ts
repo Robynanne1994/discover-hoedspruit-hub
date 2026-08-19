@@ -17,3 +17,23 @@ export const hasTitleOverride = (item: any): boolean =>
 // is set.
 export const noTitleCaseProps = (item: any) =>
   hasTitleOverride(item) ? { "data-no-title-case": "true" as const } : {};
+
+// ---- CSV representation ----
+// In CSV files the override is a simple true/false toggle (the same switch as
+// in the backend editor): true means "show the title exactly as typed", which
+// is stored by copying the title into title_override.
+export const titleOverrideToCsv = (item: any): string =>
+  hasTitleOverride(item) ? "true" : "false";
+
+// Reads a CSV cell. Returns null when the cell says nothing (blank).
+export const parseTitleOverrideCell = (raw: unknown): boolean | null => {
+  const v = String(raw ?? "").trim().toLowerCase();
+  if (!v) return null;
+  if (["true", "1", "yes", "y", "on"].includes(v)) return true;
+  return false;
+};
+
+// The value to write to the title_override column for a given toggle state.
+export const titleOverrideValue = (on: boolean, title: string): string | null =>
+  on ? (title || "").trim() || null : null;
+

@@ -25,6 +25,8 @@ import {
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 import { isImageCsvColumn } from "@/lib/csvImageColumns";
 import { parseAdditionalHours } from "@/lib/openHours";
+import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
+
 
 const ALL_CATEGORIES_VALUE = "__all__";
 
@@ -676,8 +678,17 @@ const AdminImport = () => {
           if (fieldName === GOOGLE_PLACE_ID_FIELD) continue;   // handled above
           // Images are managed in the backend editor only: never written from CSV.
           if (isImageCsvColumn(fieldName)) continue;
+          // title_override is a true/false toggle in CSV (same switch as the
+          // editor): true stores the title verbatim, false clears the override.
+          if (fieldName === "title_override") {
+            const on = parseTitleOverrideCell(row[fieldName]);
+            if (on === null) { if (!isUpdate) payloadRecord[fieldName] = null; continue; }
+            payloadRecord[fieldName] = titleOverrideValue(on, title);
+            continue;
+          }
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
+
           if (googleOwned && isGoogleSyncedField(fieldName)) {
             // Only flag it when the CSV actually carried a value to lose — a blank
             // or placeholder cell on update was never going to write anything.
@@ -1160,10 +1171,12 @@ const AdminImport = () => {
       for (const h of headers) {
         if (h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
+        if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
         fieldMap[h] = serializeField(lr[h], spec.type);
       }
+
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
     });
