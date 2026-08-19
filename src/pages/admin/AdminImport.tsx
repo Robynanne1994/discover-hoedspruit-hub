@@ -958,7 +958,7 @@ const AdminImport = () => {
       // - In category-scoped mode: if the listing belongs to OTHER categories, just remove
       //   it from the selected category (and its subs under that category). Only hard-delete
       //   when the listing has no other category links.
-      const missingItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
+      const missingItems = Array.from(inCategoryMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
       const missingIds = missingItems.map(([, listing]) => listing.id);
 
       if (isAllCategories) {
