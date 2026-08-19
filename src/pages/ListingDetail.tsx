@@ -770,7 +770,6 @@ const ListingDetail = () => {
   if (isListingTrades) {
     let tenureLabel: string | null = null;
     if (l.business_started_year) tenureLabel = `Since ${l.business_started_year}`;
-    else if (l.years_in_business) tenureLabel = `${l.years_in_business} ${l.years_in_business === 1 ? "year" : "years"} in business`;
     if (tenureLabel) {
       sections.push({ key: "trades-tenure", title: "In business", iconComp: Calendar, fields: [{ label: tenureLabel, on: true }] });
     }
@@ -798,7 +797,6 @@ const ListingDetail = () => {
     }
     let tenureLabel: string | null = null;
     if (l.business_started_year) tenureLabel = `Since ${l.business_started_year}`;
-    else if (l.years_in_business) tenureLabel = `${l.years_in_business} ${l.years_in_business === 1 ? "year" : "years"} in business`;
     if (tenureLabel) {
       sections.push({ key: "hg-tenure", title: "In business", iconComp: Calendar, fields: [{ label: tenureLabel, on: true }] });
     }

@@ -87,7 +87,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
 
   // Trades & Services
   business_started_year: "integer year, e.g. 2010",
-  years_in_business: "integer",
 
   // Wellness & Beauty
   treatments: "pipe-separated free text",
