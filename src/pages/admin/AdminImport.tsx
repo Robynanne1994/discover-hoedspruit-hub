@@ -1172,8 +1172,15 @@ const AdminImport = () => {
 
       // Per-category column, not a listing column: read it off the junction so
       // exporting Home & Garden shows the label chosen there, not the one
-      // chosen for the same listing under Building & Renovation.
-      if (!isAllCategories) fieldMap[CATEGORY_CARD_LABEL_FIELD] = cardLabelByListing.get(l.id) ?? "";
+      // chosen for the same listing under Building & Renovation. Older listings
+      // only carry a listing-level label, so fall back to it — exactly what the
+      // category page renders.
+      if (!isAllCategories) {
+        fieldMap[CATEGORY_CARD_LABEL_FIELD] =
+          cardLabelByListing.get(l.id) ??
+          String((lr[CATEGORY_CARD_LABEL_FIELD] as string | null) ?? "").trim();
+      }
+
 
       // Schema-driven serialization for every other header
       for (const h of headers) {
