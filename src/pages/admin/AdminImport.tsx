@@ -750,8 +750,13 @@ const AdminImport = () => {
               payloadRecord[fieldName] = sets;
               continue;
             }
-            payloadRecord[fieldName] =
-              fieldName === "km_from_town" ? normalizeKm(parsed.value) : parsed.value;
+            if (fieldName === "km_from_town") {
+              payloadRecord[fieldName] = normalizeKm(parsed.value);
+            } else if (fieldName === "avg_price_per_person_per_night") {
+              payloadRecord[fieldName] = formatPriceForImport(parsed.value);
+            } else {
+              payloadRecord[fieldName] = parsed.value;
+            }
           }
         }
 
