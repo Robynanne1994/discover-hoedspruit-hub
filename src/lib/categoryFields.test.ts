@@ -68,11 +68,16 @@ describe("universal vs category CSV columns", () => {
   });
 
   it("carries the category's own fields on its sheet only", () => {
-    // cuisine is a Restaurant field; amenities is an Accommodation one.
+    // cuisine is a Restaurant field; sleeps is an Accommodation one.
     expect(getCSVHeadersForCategory("Restaurants & Cafés")).toContain("cuisine");
     expect(getCSVHeadersForCategory("Accommodation")).not.toContain("cuisine");
-    expect(getCSVHeadersForCategory("Accommodation")).toContain("amenities");
+    expect(getCSVHeadersForCategory("Accommodation")).toContain("sleeps");
     expect(getUniversalCSVHeaders()).not.toContain("cuisine");
+  });
+
+  it("leaves amenities off the Accommodation sheet — each amenity has its own column", () => {
+    expect(getCSVHeadersForCategory("Accommodation")).not.toContain("amenities");
+    expect(getUniversalCSVHeaders()).not.toContain("amenities");
   });
 });
 
