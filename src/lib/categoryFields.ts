@@ -264,12 +264,14 @@ export const SHOPPING_ONLY_FIELDS = [
 export const ACCOMMODATION_ONLY_FIELDS = [
   // `amenities` is deliberately absent: every amenity has its own true/false
   // column below, so the free-text list only ever repeated them.
-  "pets_allowed", "sleeps", "sleeps_children", "price_range",
+  "sleeps", "sleeps_children", "rooms_count",
+  "pets_allowed",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",
   "has_swimming_pool", "has_laundry", "child_friendly", "has_spa", "has_fitness_centre",
   "has_airport_shuttle", "airport_shuttle_free", "has_aircon", "has_wifi_accom",
   "has_free_parking", "has_secure_parking", "wheelchair_friendly",
-  "avg_price_per_person_per_night", "avg_price_per_couple_per_night", "rooms_count",
+  "price_range",
+  "avg_price_per_person_per_night", "avg_price_per_couple_per_night",
 ] as const;
 
 export const NGO_ONLY_FIELDS = [
