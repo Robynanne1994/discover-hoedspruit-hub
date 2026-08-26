@@ -74,6 +74,7 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   sleeps_children: "integer children capacity",
   rooms_count: "integer",
   avg_price_per_person_per_night: "text, e.g. R1 200",
+  avg_price_per_couple_per_night: "text, e.g. R2 400",
 
   // Home & Garden
   services_offered: `pipe-separated, options: ${SERVICES_OFFERED_OPTIONS.join(" | ")}`,
