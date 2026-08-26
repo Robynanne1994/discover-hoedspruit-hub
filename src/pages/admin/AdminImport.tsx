@@ -155,6 +155,18 @@ function serializeField(value: unknown, type: FieldType): string {
   }
 }
 
+// Accommodation average price is stored formatted (e.g. "R4,400") for display.
+// Exports should be plain numbers so spreadsheets can sum and re-import cleanly.
+function normalizePriceForExport(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  const raw = String(value).trim();
+  if (!raw) return "";
+  const digits = raw.replace(/[^0-9.]/g, "");
+  const n = parseFloat(digits);
+  if (!Number.isFinite(n)) return raw;
+  return String(n);
+}
+
 // Parse a CSV cell to a DB value. Returns:
 //   - { skip: true } when the cell is empty AND we're updating (preserve existing value)
 //   - { value: parsed } otherwise (parsed may be null for blank-on-create or "-")
@@ -1187,6 +1199,7 @@ const AdminImport = () => {
         if (h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
+        if (h === "avg_price_per_person_per_night") { fieldMap[h] = normalizePriceForExport(lr[h]); continue; }
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
         fieldMap[h] = serializeField(lr[h], spec.type);
