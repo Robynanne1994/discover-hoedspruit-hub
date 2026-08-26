@@ -1240,6 +1240,7 @@ export type Database = {
           air_conditioned: boolean | null
           airport_shuttle_free: boolean | null
           amenities: string[] | null
+          avg_price_per_couple_per_night: string | null
           avg_price_per_person_per_night: string | null
           breakfast_included: boolean | null
           business_owner_id: string | null
@@ -1395,6 +1396,7 @@ export type Database = {
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
+          avg_price_per_couple_per_night?: string | null
           avg_price_per_person_per_night?: string | null
           breakfast_included?: boolean | null
           business_owner_id?: string | null
@@ -1550,6 +1552,7 @@ export type Database = {
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
+          avg_price_per_couple_per_night?: string | null
           avg_price_per_person_per_night?: string | null
           breakfast_included?: boolean | null
           business_owner_id?: string | null
