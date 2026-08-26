@@ -136,6 +136,18 @@ function normalizeKm(value: unknown): string | null {
   return String(Math.round(n * 100) / 100);
 }
 
+// Accommodation average price: stored formatted as "R4,400". Accepts plain
+// numbers like "4400", already-formatted "R4,400", or "4 400".
+function formatPriceForImport(value: unknown): string | null {
+  if (value === null || value === undefined) return null;
+  const raw = String(value).trim();
+  if (!raw) return null;
+  const digits = raw.replace(/[^0-9]/g, "");
+  const n = parseInt(digits, 10);
+  if (!Number.isFinite(n)) return null;
+  return `R${n.toLocaleString("en-ZA")}`;
+}
+
 
 function serializeField(value: unknown, type: FieldType): string {
   if (value === null || value === undefined) return "";
@@ -738,8 +750,13 @@ const AdminImport = () => {
               payloadRecord[fieldName] = sets;
               continue;
             }
-            payloadRecord[fieldName] =
-              fieldName === "km_from_town" ? normalizeKm(parsed.value) : parsed.value;
+            if (fieldName === "km_from_town") {
+              payloadRecord[fieldName] = normalizeKm(parsed.value);
+            } else if (fieldName === "avg_price_per_person_per_night") {
+              payloadRecord[fieldName] = formatPriceForImport(parsed.value);
+            } else {
+              payloadRecord[fieldName] = parsed.value;
+            }
           }
         }
 
