@@ -1878,6 +1878,15 @@ const AdminListings = () => {
                       </div>
 
                       <div>
+                        <Label>Average Price Per Couple Per Night</Label>
+                        <Input
+                          value={form.avg_price_per_couple_per_night}
+                          onChange={(e) => setForm({ ...form, avg_price_per_couple_per_night: e.target.value })}
+                          placeholder="e.g. R 2 400"
+                        />
+                      </div>
+
+                      <div>
                         <Label>Number of Rooms</Label>
                         <Input
                           type="number"

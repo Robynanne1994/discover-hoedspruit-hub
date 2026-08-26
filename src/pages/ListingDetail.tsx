@@ -686,6 +686,8 @@ const ListingDetail = () => {
     const pricing: { label: string; on: boolean }[] = [];
     const avgPrice = (l as any).avg_price_per_person_per_night;
     if (avgPrice) pricing.push({ label: `Average of ${String(avgPrice).trim()} per person per night`, on: true });
+    const avgCouplePrice = (l as any).avg_price_per_couple_per_night;
+    if (avgCouplePrice) pricing.push({ label: `Average of ${String(avgCouplePrice).trim()} per couple per night`, on: true });
     if (l.price_range) pricing.push({ label: `${String(l.price_range).trim()}`, on: true });
     if (pricing.length) sections.push({ key: "accom-pricing", title: "Pricing", iconComp: Banknote, fields: pricing });
 

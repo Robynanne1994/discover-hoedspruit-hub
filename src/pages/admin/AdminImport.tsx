@@ -752,7 +752,10 @@ const AdminImport = () => {
             }
             if (fieldName === "km_from_town") {
               payloadRecord[fieldName] = normalizeKm(parsed.value);
-            } else if (fieldName === "avg_price_per_person_per_night") {
+            } else if (
+              fieldName === "avg_price_per_person_per_night" ||
+              fieldName === "avg_price_per_couple_per_night"
+            ) {
               payloadRecord[fieldName] = formatPriceForImport(parsed.value);
             } else {
               payloadRecord[fieldName] = parsed.value;
@@ -1216,7 +1219,7 @@ const AdminImport = () => {
         if (h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
-        if (h === "avg_price_per_person_per_night") { fieldMap[h] = normalizePriceForExport(lr[h]); continue; }
+        if (h === "avg_price_per_person_per_night" || h === "avg_price_per_couple_per_night") { fieldMap[h] = normalizePriceForExport(lr[h]); continue; }
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
         fieldMap[h] = serializeField(lr[h], spec.type);
