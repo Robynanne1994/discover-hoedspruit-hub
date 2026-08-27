@@ -72,7 +72,6 @@ const DRINK_OPTIONS: { key: string; label: string }[] = [
 ];
 
 const ACCESSIBILITY_OPTIONS: { key: string; label: string }[] = [
-  { key: "wheelchair_friendly", label: "Wheelchair Friendly" },
   { key: "wheelchair_car_park", label: "Wheelchair Parking" },
   { key: "wheelchair_entrance", label: "Wheelchair Entrance" },
   { key: "wheelchair_seating", label: "Wheelchair Seating" },
