@@ -563,6 +563,7 @@ const CategoryPage = () => {
     filterPropertyTypes.length > 0 ? 1 : 0,
     filterMinNights.length > 0 ? 1 : 0,
     filterGrading.length > 0 ? 1 : 0,
+    filterAccomAmenities.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
