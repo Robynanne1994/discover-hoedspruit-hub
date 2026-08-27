@@ -720,6 +720,10 @@ const CategoryPage = () => {
         const sr = Number((l as any).star_rating) || 0;
         if (!filterGrading.includes(sr)) return false;
       }
+      if (filterAccomAmenities.length > 0) {
+        // Every selected amenity must be present on the listing.
+        if (!filterAccomAmenities.every((k) => (l as any)[k] === true)) return false;
+      }
       return true;
     });
 
