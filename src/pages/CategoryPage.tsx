@@ -178,7 +178,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | null
   >(null);
 
 
@@ -195,6 +195,10 @@ const CategoryPage = () => {
   const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
   const MAX_KM = 25; // "Anywhere"
   const [filterMaxKm, setFilterMaxKm] = useState<number>(persisted?.filterMaxKm ?? MAX_KM);
+  // Accommodation-only filters
+  const [filterPropertyTypes, setFilterPropertyTypes] = useState<string[]>(persisted?.filterPropertyTypes ?? []);
+  const [filterMinNights, setFilterMinNights] = useState<number[]>(persisted?.filterMinNights ?? []);
+  const [filterGrading, setFilterGrading] = useState<number[]>(persisted?.filterGrading ?? []);
 
 
   useEffect(() => {
@@ -208,6 +212,7 @@ const CategoryPage = () => {
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
+          filterPropertyTypes, filterMinNights, filterGrading,
         },
       },
     });
@@ -217,6 +222,7 @@ const CategoryPage = () => {
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
+    filterPropertyTypes, filterMinNights, filterGrading,
   ]);
 
 
@@ -532,6 +538,9 @@ const CategoryPage = () => {
     filterSaved ? 1 : 0,
     filterBeenTo ? 1 : 0,
     filterMaxKm < MAX_KM ? 1 : 0,
+    filterPropertyTypes.length > 0 ? 1 : 0,
+    filterMinNights.length > 0 ? 1 : 0,
+    filterGrading.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
@@ -551,6 +560,9 @@ const CategoryPage = () => {
     setFilterSaved(false);
     setFilterBeenTo(false);
     setFilterMaxKm(MAX_KM);
+    setFilterPropertyTypes([]);
+    setFilterMinNights([]);
+    setFilterGrading([]);
     setOpenSection(null);
   };
 
@@ -562,6 +574,40 @@ const CategoryPage = () => {
   const categoryTitle = category?.title || "Category";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
+
+  // Accommodation filter options derived from what is actually in use.
+  const propertyTypeOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    const seen = new Map<string, string>();
+    (listings as any[]).forEach((l) => {
+      const raw = (l.property_type || "").trim();
+      if (!raw) return;
+      const key = raw.toLowerCase();
+      if (!seen.has(key)) seen.set(key, raw);
+    });
+    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+  }, [isAccom, listings]);
+
+  const gradingOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    const set = new Set<number>();
+    (listings as any[]).forEach((l) => {
+      const sr = Number(l.star_rating);
+      if (sr >= 1 && sr <= 5) set.add(sr);
+    });
+    return Array.from(set).sort((a, b) => a - b);
+  }, [isAccom, listings]);
+
+  const minNightsOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    const set = new Set<number>();
+    (listings as any[]).forEach((l) => {
+      const mn = Number(l.min_nights);
+      if (mn > 1) set.add(mn);
+    });
+    const vals = Array.from(set).sort((a, b) => a - b);
+    return vals.length > 0 ? [1, ...vals.filter((v) => v !== 1)] : [];
+  }, [isAccom, listings]);
 
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
@@ -617,6 +663,20 @@ const CategoryPage = () => {
         const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
         if (!Number.isFinite(km) || km > filterMaxKm) return false;
       }
+      if (filterPropertyTypes.length > 0) {
+        const pt = ((l as any).property_type || "").trim().toLowerCase();
+        if (!pt || !filterPropertyTypes.some((t) => t.toLowerCase() === pt)) return false;
+      }
+      if (filterMinNights.length > 0) {
+        // A place qualifies if its minimum stay fits within any selected
+        // maximum — an empty value is treated as a 1-night minimum.
+        const mn = Number((l as any).min_nights) || 1;
+        if (!filterMinNights.some((n) => mn <= n)) return false;
+      }
+      if (filterGrading.length > 0) {
+        const sr = Number((l as any).star_rating) || 0;
+        if (!filterGrading.includes(sr)) return false;
+      }
       return true;
     });
 
@@ -651,7 +711,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
@@ -944,6 +1004,18 @@ const CategoryPage = () => {
           ...(filterPetFriendly ? [{ label: "Pet Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
           ...(filterWheelchair ? [{ label: "Wheelchair Accessible", onRemove: () => setFilterWheelchair(false) }] : []),
           ...(filterWifi ? [{ label: "WiFi", onRemove: () => setFilterWifi(false) }] : []),
+          ...filterPropertyTypes.map((t) => ({
+            label: t,
+            onRemove: () => setFilterPropertyTypes(filterPropertyTypes.filter((x) => x !== t)),
+          })),
+          ...filterMinNights.map((n) => ({
+            label: `Max ${n}-night min stay`,
+            onRemove: () => setFilterMinNights(filterMinNights.filter((x) => x !== n)),
+          })),
+          ...filterGrading.map((g) => ({
+            label: `${g}-Star Grading`,
+            onRemove: () => setFilterGrading(filterGrading.filter((x) => x !== g)),
+          })),
         ]}
       >
         <RefineSection
@@ -1062,6 +1134,74 @@ const CategoryPage = () => {
           );
         })()}
 
+
+        {isAccom && propertyTypeOptions.length > 0 && (
+          <RefineSection
+            label="Property Type"
+            summary={filterPropertyTypes.length > 0 ? `${filterPropertyTypes.length} selected` : undefined}
+            open={openSection === "proptype"}
+            onToggle={() => setOpenSection(openSection === "proptype" ? null : "proptype")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {propertyTypeOptions.map((t) => (
+                <RefineChip
+                  key={t}
+                  label={t}
+                  active={filterPropertyTypes.includes(t)}
+                  onClick={() => toggleArrayFilter(filterPropertyTypes, t, setFilterPropertyTypes)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isAccom && minNightsOptions.length > 0 && (
+          <RefineSection
+            label="Minimum Stay"
+            summary={filterMinNights.length > 0 ? `${filterMinNights.length} selected` : undefined}
+            open={openSection === "minstay"}
+            onToggle={() => setOpenSection(openSection === "minstay" ? null : "minstay")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {minNightsOptions.map((n) => (
+                <RefineChip
+                  key={n}
+                  label={n === 1 ? "1 night" : `${n} nights`}
+                  active={filterMinNights.includes(n)}
+                  onClick={() =>
+                    setFilterMinNights(filterMinNights.includes(n)
+                      ? filterMinNights.filter((x) => x !== n)
+                      : [...filterMinNights, n])
+                  }
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isAccom && gradingOptions.length > 0 && (
+          <RefineSection
+            label="Star Grading"
+            summary={filterGrading.length > 0 ? `${filterGrading.length} selected` : undefined}
+            open={openSection === "grading"}
+            onToggle={() => setOpenSection(openSection === "grading" ? null : "grading")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {gradingOptions.map((g) => (
+                <RefineChip
+                  key={g}
+                  label={`${g}-Star`}
+                  active={filterGrading.includes(g)}
+                  onClick={() =>
+                    setFilterGrading(filterGrading.includes(g)
+                      ? filterGrading.filter((x) => x !== g)
+                      : [...filterGrading, g])
+                  }
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
 
         <RefineSection label="Max Distance from Town">
           <RefineSlider
