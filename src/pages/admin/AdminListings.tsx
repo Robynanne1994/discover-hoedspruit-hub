@@ -1858,6 +1858,18 @@ const AdminListings = () => {
                       </div>
 
                       <div>
+                        <Label>Star Rating</Label>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={5}
+                          value={form.star_rating ?? ""}
+                          onChange={(e) => setForm({ ...form, star_rating: e.target.value === "" ? null : Number(e.target.value) })}
+                          placeholder="e.g. 5"
+                        />
+                      </div>
+
+                      <div>
                         <Label>Price Range</Label>
                         <Select value={form.price_range} onValueChange={(v) => setForm({ ...form, price_range: v })}>
                           <SelectTrigger><SelectValue placeholder="Select price range" /></SelectTrigger>
