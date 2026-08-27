@@ -682,6 +682,16 @@ const ListingDetail = () => {
   }
 
   if (isListingAccommodation) {
+    const propertyType = (l as any).property_type;
+    if (propertyType && String(propertyType).trim()) {
+      sections.push({
+        key: "accom-property-type",
+        title: "Property Type",
+        iconComp: Home,
+        fields: [{ label: toTitleCase(String(propertyType).trim()), on: true }],
+      });
+    }
+
     const stars = Number((l as any).star_rating);
     if (stars >= 1 && stars <= 5) {
       sections.push({
