@@ -538,6 +538,9 @@ const CategoryPage = () => {
     filterSaved ? 1 : 0,
     filterBeenTo ? 1 : 0,
     filterMaxKm < MAX_KM ? 1 : 0,
+    filterPropertyTypes.length > 0 ? 1 : 0,
+    filterMinNights.length > 0 ? 1 : 0,
+    filterGrading.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
@@ -557,6 +560,9 @@ const CategoryPage = () => {
     setFilterSaved(false);
     setFilterBeenTo(false);
     setFilterMaxKm(MAX_KM);
+    setFilterPropertyTypes([]);
+    setFilterMinNights([]);
+    setFilterGrading([]);
     setOpenSection(null);
   };
 
@@ -623,6 +629,20 @@ const CategoryPage = () => {
         const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
         if (!Number.isFinite(km) || km > filterMaxKm) return false;
       }
+      if (filterPropertyTypes.length > 0) {
+        const pt = ((l as any).property_type || "").trim().toLowerCase();
+        if (!pt || !filterPropertyTypes.some((t) => t.toLowerCase() === pt)) return false;
+      }
+      if (filterMinNights.length > 0) {
+        // A place qualifies if its minimum stay fits within any selected
+        // maximum — an empty value is treated as a 1-night minimum.
+        const mn = Number((l as any).min_nights) || 1;
+        if (!filterMinNights.some((n) => mn <= n)) return false;
+      }
+      if (filterGrading.length > 0) {
+        const sr = Number((l as any).star_rating) || 0;
+        if (!filterGrading.includes(sr)) return false;
+      }
       return true;
     });
 
@@ -657,7 +677,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
