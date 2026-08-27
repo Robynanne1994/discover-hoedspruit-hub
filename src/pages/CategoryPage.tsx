@@ -604,13 +604,19 @@ const CategoryPage = () => {
 
   const minNightsOptions = useMemo(() => {
     if (!isAccom || !listings) return [];
-    const set = new Set<number>();
+    const counts = new Map<number, number>();
     (listings as any[]).forEach((l) => {
-      const mn = Number(l.min_nights);
-      if (mn > 1) set.add(mn);
+      const mn = Number(l.min_nights) || 1;
+      counts.set(mn, (counts.get(mn) || 0) + 1);
     });
-    const vals = Array.from(set).sort((a, b) => a - b);
-    return vals.length > 0 ? [1, ...vals.filter((v) => v !== 1)] : [];
+    const vals = Array.from(counts.keys())
+      .filter((v) => v > 1)
+      .sort((a, b) => a - b);
+    if (vals.length === 0) return [];
+    return [
+      { value: 1, label: withCount("1 Night", counts.get(1)) },
+      ...vals.map((n) => ({ value: n, label: withCount(`${n} Nights`, counts.get(n)) })),
+    ];
   }, [isAccom, listings]);
 
   const displayTitle = categoryTitle;
