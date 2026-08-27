@@ -628,6 +628,11 @@ const CategoryPage = () => {
     setFilterMinNights([]);
     setFilterGrading([]);
     setFilterAccomAmenities([]);
+    setFilterFoods([]);
+    setFilterServiceType([]);
+    setFilterKids([]);
+    setFilterDrinks([]);
+    setFilterAccessibility([]);
     setOpenSection(null);
   };
 
