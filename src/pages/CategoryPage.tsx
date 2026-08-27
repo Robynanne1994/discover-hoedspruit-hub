@@ -178,7 +178,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | null
   >(null);
 
 
@@ -195,6 +195,10 @@ const CategoryPage = () => {
   const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
   const MAX_KM = 25; // "Anywhere"
   const [filterMaxKm, setFilterMaxKm] = useState<number>(persisted?.filterMaxKm ?? MAX_KM);
+  // Accommodation-only filters
+  const [filterPropertyTypes, setFilterPropertyTypes] = useState<string[]>(persisted?.filterPropertyTypes ?? []);
+  const [filterMinNights, setFilterMinNights] = useState<number[]>(persisted?.filterMinNights ?? []);
+  const [filterGrading, setFilterGrading] = useState<number[]>(persisted?.filterGrading ?? []);
 
 
   useEffect(() => {
@@ -208,6 +212,7 @@ const CategoryPage = () => {
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
+          filterPropertyTypes, filterMinNights, filterGrading,
         },
       },
     });
@@ -217,6 +222,7 @@ const CategoryPage = () => {
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
+    filterPropertyTypes, filterMinNights, filterGrading,
   ]);
 
 
