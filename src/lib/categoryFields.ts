@@ -152,6 +152,8 @@ export const LISTING_FIELD_SPECS = {
   avg_price_per_person_per_night: { type: "str" },
   avg_price_per_couple_per_night: { type: "str" },
   rooms_count: { type: "int" },
+  // Graded star rating of the stay (1-5), not a review score.
+  star_rating: { type: "int" },
 
   // ---------- NGO ----------
   cause: { type: "str" },
