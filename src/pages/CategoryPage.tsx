@@ -30,6 +30,27 @@ const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", 
 const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Snacks", "Light Meals"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
+// Accommodation amenities: each is a boolean column on `listings`. Only the
+// ones actually in use on a listing in the category are offered as filters.
+const ACCOM_AMENITY_OPTIONS: { key: string; label: string }[] = [
+  { key: "has_wifi_accom", label: "WiFi" },
+  { key: "has_breakfast", label: "Breakfast" },
+  { key: "breakfast_included", label: "Breakfast Included" },
+  { key: "has_aircon", label: "Air-Con" },
+  { key: "has_swimming_pool", label: "Swimming Pool" },
+  { key: "has_restaurant", label: "Restaurant" },
+  { key: "has_bar", label: "Bar" },
+  { key: "has_room_service", label: "Room Service" },
+  { key: "has_spa", label: "Spa" },
+  { key: "has_fitness_centre", label: "Fitness Centre" },
+  { key: "has_laundry", label: "Laundry" },
+  { key: "has_airport_shuttle", label: "Airport Shuttle" },
+  { key: "has_free_parking", label: "Free Parking" },
+  { key: "has_secure_parking", label: "Secure Parking" },
+  { key: "child_friendly", label: "Child Friendly" },
+  { key: "pets_allowed", label: "Pet Friendly" },
+];
+
 const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const serif = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
