@@ -586,6 +586,7 @@ const CategoryPage = () => {
     setFilterPropertyTypes([]);
     setFilterMinNights([]);
     setFilterGrading([]);
+    setFilterAccomAmenities([]);
     setOpenSection(null);
   };
 
