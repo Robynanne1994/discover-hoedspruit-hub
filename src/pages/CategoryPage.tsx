@@ -643,6 +643,15 @@ const CategoryPage = () => {
     ];
   }, [isAccom, listings]);
 
+  const accomAmenityOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    return ACCOM_AMENITY_OPTIONS.map(({ key, label }) => {
+      const count = (listings as any[]).filter((l) => l[key] === true).length;
+      return { key, label: withCount(label, count), count };
+    }).filter((o) => o.count > 0);
+  }, [isAccom, listings]);
+
+
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
