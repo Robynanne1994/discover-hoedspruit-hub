@@ -233,7 +233,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | "kids" | "drinks" | "foods" | "servicetype" | "access" | "shoptype" | "pricerange" | "shopservices" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | "kids" | "drinks" | "foods" | "servicetype" | "access" | "shoptype" | "pricerange" | "shopservices" | "prodcat" | null
   >(null);
 
 
@@ -265,6 +265,7 @@ const CategoryPage = () => {
   const [filterShopTypes, setFilterShopTypes] = useState<string[]>(persisted?.filterShopTypes ?? []);
   const [filterPriceRanges, setFilterPriceRanges] = useState<string[]>(persisted?.filterPriceRanges ?? []);
   const [filterShopServices, setFilterShopServices] = useState<string[]>(persisted?.filterShopServices ?? []);
+  const [filterProductCategories, setFilterProductCategories] = useState<string[]>(persisted?.filterProductCategories ?? []);
 
 
   useEffect(() => {
@@ -280,7 +281,7 @@ const CategoryPage = () => {
           filterMaxKm,
           filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
           filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
-          filterShopTypes, filterPriceRanges, filterShopServices,
+          filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories,
         },
       },
     });
@@ -292,7 +293,7 @@ const CategoryPage = () => {
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
     filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
     filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
-    filterShopTypes, filterPriceRanges, filterShopServices,
+    filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories,
   ]);
 
 
@@ -620,6 +621,7 @@ const CategoryPage = () => {
     filterShopTypes.length > 0 ? 1 : 0,
     filterPriceRanges.length > 0 ? 1 : 0,
     filterShopServices.length > 0 ? 1 : 0,
+    filterProductCategories.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
@@ -651,6 +653,7 @@ const CategoryPage = () => {
     setFilterShopTypes([]);
     setFilterPriceRanges([]);
     setFilterShopServices([]);
+    setFilterProductCategories([]);
     setOpenSection(null);
   };
 
@@ -775,6 +778,24 @@ const CategoryPage = () => {
 
   const shopTypeOptions = useMemo(() => scalarFacetOptions("shop_type"), [isShopping, listings]);
   const priceRangeOptions = useMemo(() => scalarFacetOptions("price_range"), [isShopping, listings]);
+  const productCategoryOptions = useMemo(() => {
+    if (!isShopping || !listings) return [];
+    const counts = new Map<string, number>();
+    const labels = new Map<string, string>();
+    (listings as any[]).forEach((l) => {
+      ((l.product_categories as string[]) || []).forEach((raw) => {
+        const val = (raw || "").trim();
+        if (!val) return;
+        const key = val.toLowerCase();
+        if (!labels.has(key)) labels.set(key, val);
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+    });
+    return Array.from(labels.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([key, label]) => ({ value: key, label: withCount(label, counts.get(key)), plain: label }));
+  }, [isShopping, listings]);
+
   const shopServiceOptions = useMemo(() => {
     if (!isShopping || !listings) return [];
     return SHOPPING_SERVICE_OPTIONS.map(({ key, label }) => {
@@ -871,6 +892,10 @@ const CategoryPage = () => {
         const pr = ((l as any).price_range || "").trim().toLowerCase();
         if (!pr || !filterPriceRanges.includes(pr)) return false;
       }
+      if (filterProductCategories.length > 0) {
+        const pcs = (((l as any).product_categories as string[]) || []).map((v) => (v || "").trim().toLowerCase());
+        if (!filterProductCategories.some((v) => pcs.includes(v))) return false;
+      }
       if (filterShopServices.length > 0) {
         if (!filterShopServices.every((k) => (l as any)[k] === true)) return false;
       }
@@ -912,7 +937,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, filterShopTypes, filterPriceRanges, filterShopServices, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
@@ -1249,6 +1274,10 @@ const CategoryPage = () => {
             label: priceRangeOptions.find((o) => o.value === t)?.plain ?? t,
             onRemove: () => setFilterPriceRanges(filterPriceRanges.filter((x) => x !== t)),
           })),
+          ...filterProductCategories.map((t) => ({
+            label: productCategoryOptions.find((o) => o.value === t)?.plain ?? t,
+            onRemove: () => setFilterProductCategories(filterProductCategories.filter((x) => x !== t)),
+          })),
           ...filterShopServices.map((k) => ({
             label: SHOPPING_SERVICE_OPTIONS.find((o) => o.key === k)?.label ?? k,
             onRemove: () => setFilterShopServices(filterShopServices.filter((x) => x !== k)),
@@ -1565,6 +1594,26 @@ const CategoryPage = () => {
                   label={t.label}
                   active={filterPriceRanges.includes(t.value)}
                   onClick={() => toggleArrayFilter(filterPriceRanges, t.value, setFilterPriceRanges)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isShopping && productCategoryOptions.length > 0 && (
+          <RefineSection
+            label="Product Categories"
+            summary={filterProductCategories.length > 0 ? `${filterProductCategories.length} selected` : undefined}
+            open={openSection === "prodcat"}
+            onToggle={() => setOpenSection(openSection === "prodcat" ? null : "prodcat")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {productCategoryOptions.map((t) => (
+                <RefineChip
+                  key={t.value}
+                  label={t.label}
+                  active={filterProductCategories.includes(t.value)}
+                  onClick={() => toggleArrayFilter(filterProductCategories, t.value, setFilterProductCategories)}
                 />
               ))}
             </div>
