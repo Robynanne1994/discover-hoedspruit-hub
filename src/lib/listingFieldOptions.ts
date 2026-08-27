@@ -75,6 +75,7 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   rooms_count: "integer",
   avg_price_per_person_per_night: "text, e.g. R1 200",
   avg_price_per_couple_per_night: "text, e.g. R2 400",
+  star_rating: "integer 1-5, the graded star rating of the stay",
 
   // Home & Garden
   services_offered: `pipe-separated, options: ${SERVICES_OFFERED_OPTIONS.join(" | ")}`,

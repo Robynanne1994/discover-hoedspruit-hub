@@ -152,6 +152,8 @@ export const LISTING_FIELD_SPECS = {
   avg_price_per_person_per_night: { type: "str" },
   avg_price_per_couple_per_night: { type: "str" },
   rooms_count: { type: "int" },
+  // Graded star rating of the stay (1-5), not a review score.
+  star_rating: { type: "int" },
 
   // ---------- NGO ----------
   cause: { type: "str" },
@@ -264,6 +266,7 @@ export const SHOPPING_ONLY_FIELDS = [
 export const ACCOMMODATION_ONLY_FIELDS = [
   // `amenities` is deliberately absent: every amenity has its own true/false
   // column below, so the free-text list only ever repeated them.
+  "star_rating",
   "sleeps", "sleeps_children", "rooms_count",
   "pets_allowed",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",

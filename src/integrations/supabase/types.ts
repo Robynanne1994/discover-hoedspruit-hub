@@ -1353,6 +1353,7 @@ export type Database = {
           sleeps_children: number | null
           smoking_allowed: boolean | null
           specialities: string | null
+          star_rating: number | null
           title: string
           title_override: string | null
           treatments: string[] | null
@@ -1509,6 +1510,7 @@ export type Database = {
           sleeps_children?: number | null
           smoking_allowed?: boolean | null
           specialities?: string | null
+          star_rating?: number | null
           title: string
           title_override?: string | null
           treatments?: string[] | null
@@ -1665,6 +1667,7 @@ export type Database = {
           sleeps_children?: number | null
           smoking_allowed?: boolean | null
           specialities?: string | null
+          star_rating?: number | null
           title?: string
           title_override?: string | null
           treatments?: string[] | null
