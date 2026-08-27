@@ -723,6 +723,8 @@ const ListingDetail = () => {
       capacity.push({ label: `Sleeps ${sleepsChildren} ${Number(sleepsChildren) === 1 ? "Child" : "Children"}`, on: true });
     }
     if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "Room" : "Rooms"}`, on: true });
+    const minNights = (l as any).min_nights;
+    if (minNights) capacity.push({ label: `Minimum stay of ${minNights} ${Number(minNights) === 1 ? "Night" : "Nights"}`, on: true });
     if (capacity.length) sections.push({ key: "accom-capacity", title: "Capacity", iconComp: Users, fields: capacity });
 
     const breakfastLabel = l.has_breakfast === true

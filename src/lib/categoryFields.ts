@@ -133,6 +133,7 @@ export const LISTING_FIELD_SPECS = {
   amenities: { type: "str_array" },
   sleeps: { type: "int" },
   sleeps_children: { type: "int" },
+  min_nights: { type: "int" },
   km_from_town: { type: "str" },
   has_restaurant: { type: "bool" },
   has_bar: { type: "bool" },
@@ -269,7 +270,7 @@ export const ACCOMMODATION_ONLY_FIELDS = [
   // column below, so the free-text list only ever repeated them.
   "property_type",
   "star_rating",
-  "sleeps", "sleeps_children", "rooms_count",
+  "sleeps", "sleeps_children", "rooms_count", "min_nights",
   "pets_allowed",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",
   "has_swimming_pool", "has_laundry", "child_friendly", "has_spa", "has_fitness_centre",
