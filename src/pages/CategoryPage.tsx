@@ -234,7 +234,7 @@ const CategoryPage = () => {
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
-          filterPropertyTypes, filterMinNights, filterGrading,
+          filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
         },
       },
     });
@@ -244,7 +244,7 @@ const CategoryPage = () => {
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
-    filterPropertyTypes, filterMinNights, filterGrading,
+    filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
   ]);
 
 
