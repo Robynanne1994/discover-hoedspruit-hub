@@ -1238,7 +1238,6 @@ const CategoryPage = () => {
           const cuisines = filterOpts(CUISINE_OPTIONS, facetCounts?.cuisine);
           const vibes = filterOpts(VIBE_OPTIONS, facetCounts?.vibe);
           const meals = filterOpts(MEAL_OPTIONS, facetCounts?.meal);
-          const seatings = filterOpts(SEATING_OPTIONS, facetCounts?.seating);
           return (
             <>
               {cuisines.length > 0 && (
