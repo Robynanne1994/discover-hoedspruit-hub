@@ -578,14 +578,18 @@ const CategoryPage = () => {
   // Accommodation filter options derived from what is actually in use.
   const propertyTypeOptions = useMemo(() => {
     if (!isAccom || !listings) return [];
-    const seen = new Map<string, string>();
+    const counts = new Map<string, number>();
+    const labels = new Map<string, string>();
     (listings as any[]).forEach((l) => {
       const raw = (l.property_type || "").trim();
       if (!raw) return;
       const key = raw.toLowerCase();
-      if (!seen.has(key)) seen.set(key, raw);
+      if (!labels.has(key)) labels.set(key, raw);
+      counts.set(key, (counts.get(key) || 0) + 1);
     });
-    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+    return Array.from(labels.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([key, label]) => ({ value: label, label: withCount(label, counts.get(key)) }));
   }, [isAccom, listings]);
 
   const gradingOptions = useMemo(() => {
