@@ -775,6 +775,17 @@ const CategoryPage = () => {
         const lm = (l.meal || []).map((m) => m.toLowerCase());
         if (!filterMeal.some((m) => lm.includes(m.toLowerCase()))) return false;
       }
+      if (filterFoods.length > 0) {
+        const lf = ((l as any).foods || []).map((f: string) => f.toLowerCase());
+        if (!filterFoods.some((f) => lf.includes(f.toLowerCase()))) return false;
+      }
+      if (filterServiceType.length > 0) {
+        const lst = ((l as any).service_type || []).map((s: string) => s.toLowerCase());
+        if (!filterServiceType.some((s) => lst.includes(s.toLowerCase()))) return false;
+      }
+      if (filterKids.length > 0 && !filterKids.every((k) => (l as any)[k] === true)) return false;
+      if (filterDrinks.length > 0 && !filterDrinks.every((k) => (l as any)[k] === true)) return false;
+      if (filterAccessibility.length > 0 && !filterAccessibility.every((k) => (l as any)[k] === true)) return false;
       if (filterSeating.length > 0) {
         const ls = (l.seating || []).map((s) => s.toLowerCase());
         if (!filterSeating.some((s) => ls.includes(s.toLowerCase()))) return false;
