@@ -129,6 +129,7 @@ export const LISTING_FIELD_SPECS = {
   price_range: { type: "str" },
 
   // ---------- Accommodation ----------
+  property_type: { type: "str" },
   amenities: { type: "str_array" },
   sleeps: { type: "int" },
   sleeps_children: { type: "int" },
