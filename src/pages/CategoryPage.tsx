@@ -220,6 +220,7 @@ const CategoryPage = () => {
   const [filterPropertyTypes, setFilterPropertyTypes] = useState<string[]>(persisted?.filterPropertyTypes ?? []);
   const [filterMinNights, setFilterMinNights] = useState<number[]>(persisted?.filterMinNights ?? []);
   const [filterGrading, setFilterGrading] = useState<number[]>(persisted?.filterGrading ?? []);
+  const [filterAccomAmenities, setFilterAccomAmenities] = useState<string[]>(persisted?.filterAccomAmenities ?? []);
 
 
   useEffect(() => {
