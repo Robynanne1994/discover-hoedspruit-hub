@@ -1135,8 +1135,28 @@ const CategoryPage = () => {
             onRemove: () => setFilterMeal(filterMeal.filter((x) => x !== m)),
           })),
           ...filterSeating.map((s) => ({
-            label: s,
+            label: formatServiceLabel(s),
             onRemove: () => setFilterSeating(filterSeating.filter((x) => x !== s)),
+          })),
+          ...filterFoods.map((f) => ({
+            label: formatServiceLabel(f),
+            onRemove: () => setFilterFoods(filterFoods.filter((x) => x !== f)),
+          })),
+          ...filterServiceType.map((s) => ({
+            label: formatServiceLabel(s),
+            onRemove: () => setFilterServiceType(filterServiceType.filter((x) => x !== s)),
+          })),
+          ...filterKids.map((k) => ({
+            label: KIDS_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterKids(filterKids.filter((x) => x !== k)),
+          })),
+          ...filterDrinks.map((k) => ({
+            label: DRINK_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterDrinks(filterDrinks.filter((x) => x !== k)),
+          })),
+          ...filterAccessibility.map((k) => ({
+            label: ACCESSIBILITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterAccessibility(filterAccessibility.filter((x) => x !== k)),
           })),
           ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
           ...(user && filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
