@@ -783,7 +783,7 @@ const CategoryPage = () => {
     const counts = new Map<string, number>();
     const labels = new Map<string, string>();
     (listings as any[]).forEach((l) => {
-      ((l.product_categories as string[]) || []).forEach((raw) => {
+      ((l.primary_product_categories as string[]) || []).forEach((raw) => {
         const val = (raw || "").trim();
         if (!val) return;
         const key = val.toLowerCase();
@@ -893,7 +893,7 @@ const CategoryPage = () => {
         if (!pr || !filterPriceRanges.includes(pr)) return false;
       }
       if (filterProductCategories.length > 0) {
-        const pcs = (((l as any).product_categories as string[]) || []).map((v) => (v || "").trim().toLowerCase());
+        const pcs = (((l as any).primary_product_categories as string[]) || []).map((v) => (v || "").trim().toLowerCase());
         if (!filterProductCategories.some((v) => pcs.includes(v))) return false;
       }
       if (filterShopServices.length > 0) {

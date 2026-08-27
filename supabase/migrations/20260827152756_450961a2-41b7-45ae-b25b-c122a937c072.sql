@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS primary_product_categories text[] NOT NULL DEFAULT '{}'::text[];

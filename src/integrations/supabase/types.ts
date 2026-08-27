@@ -1340,6 +1340,7 @@ export type Database = {
           plant_types: string[] | null
           price_level: number | null
           price_range: string | null
+          primary_product_categories: string[]
           product_categories: string[] | null
           property_type: string | null
           refresh_priority: string
@@ -1499,6 +1500,7 @@ export type Database = {
           plant_types?: string[] | null
           price_level?: number | null
           price_range?: string | null
+          primary_product_categories?: string[]
           product_categories?: string[] | null
           property_type?: string | null
           refresh_priority?: string
@@ -1658,6 +1660,7 @@ export type Database = {
           plant_types?: string[] | null
           price_level?: number | null
           price_range?: string | null
+          primary_product_categories?: string[]
           product_categories?: string[] | null
           property_type?: string | null
           refresh_priority?: string
