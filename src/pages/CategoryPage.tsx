@@ -1063,6 +1063,10 @@ const CategoryPage = () => {
             label: `${g}-Star Grading`,
             onRemove: () => setFilterGrading(filterGrading.filter((x) => x !== g)),
           })),
+          ...filterAccomAmenities.map((k) => ({
+            label: ACCOM_AMENITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterAccomAmenities(filterAccomAmenities.filter((x) => x !== k)),
+          })),
         ]}
       >
         <RefineSection
