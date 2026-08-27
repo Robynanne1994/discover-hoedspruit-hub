@@ -49,6 +49,36 @@ const ACCOM_AMENITY_OPTIONS: { key: string; label: string }[] = [
   { key: "pets_allowed", label: "Pet Friendly" },
 ];
 
+// Restaurant boolean facets. Each is a boolean column on `listings`; only the
+// ones actually true on a listing in the category are offered as filters.
+const KIDS_OPTIONS: { key: string; label: string }[] = [
+  { key: "kids_playground", label: "Kids Playground" },
+  { key: "kids_menu", label: "Kids Menu" },
+  { key: "nappy_changing_station", label: "Nappy Changing Station" },
+  { key: "high_chairs", label: "High Chairs" },
+];
+
+const DRINK_OPTIONS: { key: string; label: string }[] = [
+  { key: "has_wine_list", label: "Wine List" },
+  { key: "has_cocktails", label: "Cocktails" },
+  { key: "has_craft_beer", label: "Craft Beer" },
+  { key: "has_beers_ciders", label: "Beers / Ciders" },
+  { key: "has_champagne", label: "Champagne" },
+  { key: "has_mocktails", label: "Mocktails" },
+  { key: "has_smoothies", label: "Smoothies" },
+  { key: "has_milkshakes", label: "Milkshakes" },
+  { key: "has_coffee", label: "Coffee" },
+  { key: "has_iced_coffee", label: "Iced Coffee" },
+];
+
+const ACCESSIBILITY_OPTIONS: { key: string; label: string }[] = [
+  { key: "wheelchair_friendly", label: "Wheelchair Friendly" },
+  { key: "wheelchair_car_park", label: "Wheelchair Parking" },
+  { key: "wheelchair_entrance", label: "Wheelchair Entrance" },
+  { key: "wheelchair_seating", label: "Wheelchair Seating" },
+  { key: "wheelchair_toilet", label: "Wheelchair Toilet" },
+];
+
 const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const serif = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
