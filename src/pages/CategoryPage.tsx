@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
+import { formatServiceLabel } from "@/lib/serviceLabels";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
@@ -28,7 +29,6 @@ import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite"];
 const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Snacks", "Light Meals"];
-const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
 // Accommodation amenities: each is a boolean column on `listings`. Only the
 // ones actually in use on a listing in the category are offered as filters.
@@ -47,6 +47,36 @@ const ACCOM_AMENITY_OPTIONS: { key: string; label: string }[] = [
   { key: "has_secure_parking", label: "Secure Parking" },
   { key: "child_friendly", label: "Child Friendly" },
   { key: "pets_allowed", label: "Pet Friendly" },
+];
+
+// Restaurant boolean facets. Each is a boolean column on `listings`; only the
+// ones actually true on a listing in the category are offered as filters.
+const KIDS_OPTIONS: { key: string; label: string }[] = [
+  { key: "kids_playground", label: "Kids Playground" },
+  { key: "kids_menu", label: "Kids Menu" },
+  { key: "nappy_changing_station", label: "Nappy Changing Station" },
+  { key: "high_chairs", label: "High Chairs" },
+];
+
+const DRINK_OPTIONS: { key: string; label: string }[] = [
+  { key: "has_wine_list", label: "Wine List" },
+  { key: "has_cocktails", label: "Cocktails" },
+  { key: "has_craft_beer", label: "Craft Beer" },
+  { key: "has_beers_ciders", label: "Beers / Ciders" },
+  { key: "has_champagne", label: "Champagne" },
+  { key: "has_mocktails", label: "Mocktails" },
+  { key: "has_smoothies", label: "Smoothies" },
+  { key: "has_milkshakes", label: "Milkshakes" },
+  { key: "has_coffee", label: "Coffee" },
+  { key: "has_iced_coffee", label: "Iced Coffee" },
+];
+
+const ACCESSIBILITY_OPTIONS: { key: string; label: string }[] = [
+  { key: "wheelchair_friendly", label: "Wheelchair Friendly" },
+  { key: "wheelchair_car_park", label: "Wheelchair Parking" },
+  { key: "wheelchair_entrance", label: "Wheelchair Entrance" },
+  { key: "wheelchair_seating", label: "Wheelchair Seating" },
+  { key: "wheelchair_toilet", label: "Wheelchair Toilet" },
 ];
 
 const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -197,7 +227,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | "kids" | "drinks" | "foods" | "servicetype" | "access" | null
   >(null);
 
 
@@ -205,6 +235,12 @@ const CategoryPage = () => {
   const [filterVibe, setFilterVibe] = useState<string[]>(persisted?.filterVibe ?? []);
   const [filterMeal, setFilterMeal] = useState<string[]>(persisted?.filterMeal ?? []);
   const [filterSeating, setFilterSeating] = useState<string[]>(persisted?.filterSeating ?? []);
+  // Restaurant & cafe facets
+  const [filterFoods, setFilterFoods] = useState<string[]>(persisted?.filterFoods ?? []);
+  const [filterServiceType, setFilterServiceType] = useState<string[]>(persisted?.filterServiceType ?? []);
+  const [filterKids, setFilterKids] = useState<string[]>(persisted?.filterKids ?? []);
+  const [filterDrinks, setFilterDrinks] = useState<string[]>(persisted?.filterDrinks ?? []);
+  const [filterAccessibility, setFilterAccessibility] = useState<string[]>(persisted?.filterAccessibility ?? []);
   const [filterChildFriendly, setFilterChildFriendly] = useState<boolean>(persisted?.filterChildFriendly ?? false);
   const [filterPetFriendly, setFilterPetFriendly] = useState<boolean>(persisted?.filterPetFriendly ?? false);
   const [filterWheelchair, setFilterWheelchair] = useState<boolean>(persisted?.filterWheelchair ?? false);
@@ -233,6 +269,7 @@ const CategoryPage = () => {
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
           filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
+          filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
         },
       },
     });
@@ -243,6 +280,7 @@ const CategoryPage = () => {
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
     filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
+    filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
   ]);
 
 
@@ -562,6 +600,11 @@ const CategoryPage = () => {
     filterMinNights.length > 0 ? 1 : 0,
     filterGrading.length > 0 ? 1 : 0,
     filterAccomAmenities.length > 0 ? 1 : 0,
+    filterFoods.length > 0 ? 1 : 0,
+    filterServiceType.length > 0 ? 1 : 0,
+    filterKids.length > 0 ? 1 : 0,
+    filterDrinks.length > 0 ? 1 : 0,
+    filterAccessibility.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
@@ -585,6 +628,11 @@ const CategoryPage = () => {
     setFilterMinNights([]);
     setFilterGrading([]);
     setFilterAccomAmenities([]);
+    setFilterFoods([]);
+    setFilterServiceType([]);
+    setFilterKids([]);
+    setFilterDrinks([]);
+    setFilterAccessibility([]);
     setOpenSection(null);
   };
 
@@ -596,6 +644,44 @@ const CategoryPage = () => {
   const categoryTitle = category?.title || "Category";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
+
+  // Restaurant & cafe facets, all derived from what the listings actually carry
+  // so that values added later show up as filters on their own.
+  const arrayFacetOptions = (field: string) => {
+    if (!isRestaurant || !listings) return [];
+    const counts = new Map<string, number>();
+    const labels = new Map<string, string>();
+    (listings as any[]).forEach((l) => {
+      (l[field] || []).forEach((raw: string) => {
+        const val = (raw || "").trim();
+        if (!val) return;
+        const key = val.toLowerCase();
+        if (!labels.has(key)) labels.set(key, formatServiceLabel(val));
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+    });
+    return Array.from(labels.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([key, label]) => ({ value: key, label: withCount(label, counts.get(key)) }));
+  };
+
+  const boolFacetOptions = (opts: { key: string; label: string }[]) => {
+    if (!isRestaurant || !listings) return [];
+    return opts
+      .map(({ key, label }) => {
+        const count = (listings as any[]).filter((l) => l[key] === true).length;
+        return { key, label: withCount(label, count), count };
+      })
+      .filter((o) => o.count > 0);
+  };
+
+  const foodsOptions = useMemo(() => arrayFacetOptions("foods"), [isRestaurant, listings]);
+  const serviceTypeOptions = useMemo(() => arrayFacetOptions("service_type"), [isRestaurant, listings]);
+  const seatingOptions = useMemo(() => arrayFacetOptions("seating"), [isRestaurant, listings]);
+  const kidsOptions = useMemo(() => boolFacetOptions(KIDS_OPTIONS), [isRestaurant, listings]);
+  const drinkOptions = useMemo(() => boolFacetOptions(DRINK_OPTIONS), [isRestaurant, listings]);
+  const accessibilityOptions = useMemo(() => boolFacetOptions(ACCESSIBILITY_OPTIONS), [isRestaurant, listings]);
+
 
   // Accommodation filter options derived from what is actually in use.
   const propertyTypeOptions = useMemo(() => {
@@ -688,6 +774,17 @@ const CategoryPage = () => {
         const lm = (l.meal || []).map((m) => m.toLowerCase());
         if (!filterMeal.some((m) => lm.includes(m.toLowerCase()))) return false;
       }
+      if (filterFoods.length > 0) {
+        const lf = ((l as any).foods || []).map((f: string) => f.toLowerCase());
+        if (!filterFoods.some((f) => lf.includes(f.toLowerCase()))) return false;
+      }
+      if (filterServiceType.length > 0) {
+        const lst = ((l as any).service_type || []).map((s: string) => s.toLowerCase());
+        if (!filterServiceType.some((s) => lst.includes(s.toLowerCase()))) return false;
+      }
+      if (filterKids.length > 0 && !filterKids.every((k) => (l as any)[k] === true)) return false;
+      if (filterDrinks.length > 0 && !filterDrinks.every((k) => (l as any)[k] === true)) return false;
+      if (filterAccessibility.length > 0 && !filterAccessibility.every((k) => (l as any)[k] === true)) return false;
       if (filterSeating.length > 0) {
         const ls = (l.seating || []).map((s) => s.toLowerCase());
         if (!filterSeating.some((s) => ls.includes(s.toLowerCase()))) return false;
@@ -756,7 +853,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
@@ -1037,8 +1134,28 @@ const CategoryPage = () => {
             onRemove: () => setFilterMeal(filterMeal.filter((x) => x !== m)),
           })),
           ...filterSeating.map((s) => ({
-            label: s,
+            label: formatServiceLabel(s),
             onRemove: () => setFilterSeating(filterSeating.filter((x) => x !== s)),
+          })),
+          ...filterFoods.map((f) => ({
+            label: formatServiceLabel(f),
+            onRemove: () => setFilterFoods(filterFoods.filter((x) => x !== f)),
+          })),
+          ...filterServiceType.map((s) => ({
+            label: formatServiceLabel(s),
+            onRemove: () => setFilterServiceType(filterServiceType.filter((x) => x !== s)),
+          })),
+          ...filterKids.map((k) => ({
+            label: KIDS_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterKids(filterKids.filter((x) => x !== k)),
+          })),
+          ...filterDrinks.map((k) => ({
+            label: DRINK_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterDrinks(filterDrinks.filter((x) => x !== k)),
+          })),
+          ...filterAccessibility.map((k) => ({
+            label: ACCESSIBILITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterAccessibility(filterAccessibility.filter((x) => x !== k)),
           })),
           ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
           ...(user && filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
@@ -1120,7 +1237,6 @@ const CategoryPage = () => {
           const cuisines = filterOpts(CUISINE_OPTIONS, facetCounts?.cuisine);
           const vibes = filterOpts(VIBE_OPTIONS, facetCounts?.vibe);
           const meals = filterOpts(MEAL_OPTIONS, facetCounts?.meal);
-          const seatings = filterOpts(SEATING_OPTIONS, facetCounts?.seating);
           return (
             <>
               {cuisines.length > 0 && (
@@ -1165,7 +1281,7 @@ const CategoryPage = () => {
                   </div>
                 </RefineSection>
               )}
-              {seatings.length > 0 && (
+              {seatingOptions.length > 0 && (
                 <RefineSection
                   label="Seating"
                   summary={filterSeating.length > 0 ? `${filterSeating.length} selected` : undefined}
@@ -1173,13 +1289,84 @@ const CategoryPage = () => {
                   onToggle={() => setOpenSection(openSection === "seating" ? null : "seating")}
                 >
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {seatings.map((s) => (
-                      <RefineChip key={s} label={withCount(s, facetCounts?.seating.get(s.toLowerCase()))} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
+                    {seatingOptions.map((s) => (
+                      <RefineChip key={s.value} label={s.label} active={filterSeating.includes(s.value)} onClick={() => toggleArrayFilter(filterSeating, s.value, setFilterSeating)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {foodsOptions.length > 0 && (
+                <RefineSection
+                  label="Foods"
+                  summary={filterFoods.length > 0 ? `${filterFoods.length} selected` : undefined}
+                  open={openSection === "foods"}
+                  onToggle={() => setOpenSection(openSection === "foods" ? null : "foods")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {foodsOptions.map((f) => (
+                      <RefineChip key={f.value} label={f.label} active={filterFoods.includes(f.value)} onClick={() => toggleArrayFilter(filterFoods, f.value, setFilterFoods)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {drinkOptions.length > 0 && (
+                <RefineSection
+                  label="Drinks"
+                  summary={filterDrinks.length > 0 ? `${filterDrinks.length} selected` : undefined}
+                  open={openSection === "drinks"}
+                  onToggle={() => setOpenSection(openSection === "drinks" ? null : "drinks")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {drinkOptions.map((d) => (
+                      <RefineChip key={d.key} label={d.label} active={filterDrinks.includes(d.key)} onClick={() => toggleArrayFilter(filterDrinks, d.key, setFilterDrinks)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {serviceTypeOptions.length > 0 && (
+                <RefineSection
+                  label="Service Type"
+                  summary={filterServiceType.length > 0 ? `${filterServiceType.length} selected` : undefined}
+                  open={openSection === "servicetype"}
+                  onToggle={() => setOpenSection(openSection === "servicetype" ? null : "servicetype")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {serviceTypeOptions.map((s) => (
+                      <RefineChip key={s.value} label={s.label} active={filterServiceType.includes(s.value)} onClick={() => toggleArrayFilter(filterServiceType, s.value, setFilterServiceType)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {kidsOptions.length > 0 && (
+                <RefineSection
+                  label="Kids"
+                  summary={filterKids.length > 0 ? `${filterKids.length} selected` : undefined}
+                  open={openSection === "kids"}
+                  onToggle={() => setOpenSection(openSection === "kids" ? null : "kids")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {kidsOptions.map((k) => (
+                      <RefineChip key={k.key} label={k.label} active={filterKids.includes(k.key)} onClick={() => toggleArrayFilter(filterKids, k.key, setFilterKids)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {accessibilityOptions.length > 0 && (
+                <RefineSection
+                  label="Accessibility"
+                  summary={filterAccessibility.length > 0 ? `${filterAccessibility.length} selected` : undefined}
+                  open={openSection === "access"}
+                  onToggle={() => setOpenSection(openSection === "access" ? null : "access")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {accessibilityOptions.map((a) => (
+                      <RefineChip key={a.key} label={a.label} active={filterAccessibility.includes(a.key)} onClick={() => toggleArrayFilter(filterAccessibility, a.key, setFilterAccessibility)} />
                     ))}
                   </div>
                 </RefineSection>
               )}
             </>
+
           );
         })()}
 
