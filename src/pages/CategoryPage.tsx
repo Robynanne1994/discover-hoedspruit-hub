@@ -10,7 +10,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
-import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isAccommodationCategory, isShoppingCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -77,6 +77,13 @@ const ACCESSIBILITY_OPTIONS: { key: string; label: string }[] = [
   { key: "wheelchair_seating", label: "Wheelchair Seating" },
   { key: "wheelchair_toilet", label: "Wheelchair Toilet" },
 ];
+
+// Shopping boolean facets.
+const SHOPPING_SERVICE_OPTIONS: { key: string; label: string }[] = [
+  { key: "order_online", label: "Order Online" },
+  { key: "delivery_available", label: "Delivery" },
+];
+
 
 const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const serif = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -226,7 +233,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | "kids" | "drinks" | "foods" | "servicetype" | "access" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | "kids" | "drinks" | "foods" | "servicetype" | "access" | "shoptype" | "pricerange" | "shopservices" | null
   >(null);
 
 
@@ -254,6 +261,10 @@ const CategoryPage = () => {
   const [filterMinNights, setFilterMinNights] = useState<number[]>(persisted?.filterMinNights ?? []);
   const [filterGrading, setFilterGrading] = useState<number[]>(persisted?.filterGrading ?? []);
   const [filterAccomAmenities, setFilterAccomAmenities] = useState<string[]>(persisted?.filterAccomAmenities ?? []);
+  // Shopping-only filters
+  const [filterShopTypes, setFilterShopTypes] = useState<string[]>(persisted?.filterShopTypes ?? []);
+  const [filterPriceRanges, setFilterPriceRanges] = useState<string[]>(persisted?.filterPriceRanges ?? []);
+  const [filterShopServices, setFilterShopServices] = useState<string[]>(persisted?.filterShopServices ?? []);
 
 
   useEffect(() => {
@@ -269,6 +280,7 @@ const CategoryPage = () => {
           filterMaxKm,
           filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
           filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
+          filterShopTypes, filterPriceRanges, filterShopServices,
         },
       },
     });
@@ -280,6 +292,7 @@ const CategoryPage = () => {
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
     filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
     filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
+    filterShopTypes, filterPriceRanges, filterShopServices,
   ]);
 
 
@@ -604,6 +617,9 @@ const CategoryPage = () => {
     filterKids.length > 0 ? 1 : 0,
     filterDrinks.length > 0 ? 1 : 0,
     filterAccessibility.length > 0 ? 1 : 0,
+    filterShopTypes.length > 0 ? 1 : 0,
+    filterPriceRanges.length > 0 ? 1 : 0,
+    filterShopServices.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
@@ -632,6 +648,9 @@ const CategoryPage = () => {
     setFilterKids([]);
     setFilterDrinks([]);
     setFilterAccessibility([]);
+    setFilterShopTypes([]);
+    setFilterPriceRanges([]);
+    setFilterShopServices([]);
     setOpenSection(null);
   };
 
@@ -643,6 +662,7 @@ const CategoryPage = () => {
   const categoryTitle = category?.title || "Category";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
+  const isShopping = category ? isShoppingCategory(category.title) : false;
 
   // Restaurant & cafe facets, all derived from what the listings actually carry
   // so that values added later show up as filters on their own.
@@ -735,6 +755,35 @@ const CategoryPage = () => {
   }, [isAccom, listings]);
 
 
+  // Shopping facets, all derived from the listings themselves so new shop types
+  // or price ranges appear as filters on their own.
+  const scalarFacetOptions = (field: string) => {
+    if (!isShopping || !listings) return [];
+    const counts = new Map<string, number>();
+    const labels = new Map<string, string>();
+    (listings as any[]).forEach((l) => {
+      const raw = (l[field] || "").trim();
+      if (!raw) return;
+      const key = raw.toLowerCase();
+      if (!labels.has(key)) labels.set(key, raw);
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+    return Array.from(labels.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([key, label]) => ({ value: key, label: withCount(label, counts.get(key)), plain: label }));
+  };
+
+  const shopTypeOptions = useMemo(() => scalarFacetOptions("shop_type"), [isShopping, listings]);
+  const priceRangeOptions = useMemo(() => scalarFacetOptions("price_range"), [isShopping, listings]);
+  const shopServiceOptions = useMemo(() => {
+    if (!isShopping || !listings) return [];
+    return SHOPPING_SERVICE_OPTIONS.map(({ key, label }) => {
+      const count = (listings as any[]).filter((l) => l[key] === true).length;
+      return { key, label: withCount(label, count), count };
+    }).filter((o) => o.count > 0);
+  }, [isShopping, listings]);
+
+
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
@@ -814,6 +863,17 @@ const CategoryPage = () => {
         const sr = Number((l as any).star_rating) || 0;
         if (!filterGrading.includes(sr)) return false;
       }
+      if (filterShopTypes.length > 0) {
+        const st = ((l as any).shop_type || "").trim().toLowerCase();
+        if (!st || !filterShopTypes.includes(st)) return false;
+      }
+      if (filterPriceRanges.length > 0) {
+        const pr = ((l as any).price_range || "").trim().toLowerCase();
+        if (!pr || !filterPriceRanges.includes(pr)) return false;
+      }
+      if (filterShopServices.length > 0) {
+        if (!filterShopServices.every((k) => (l as any)[k] === true)) return false;
+      }
       if (filterAccomAmenities.length > 0) {
         // Every selected amenity must be present on the listing.
         if (!filterAccomAmenities.every((k) => (l as any)[k] === true)) return false;
@@ -852,7 +912,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, filterShopTypes, filterPriceRanges, filterShopServices, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
@@ -1181,6 +1241,18 @@ const CategoryPage = () => {
             label: ACCOM_AMENITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
             onRemove: () => setFilterAccomAmenities(filterAccomAmenities.filter((x) => x !== k)),
           })),
+          ...filterShopTypes.map((t) => ({
+            label: shopTypeOptions.find((o) => o.value === t)?.plain ?? t,
+            onRemove: () => setFilterShopTypes(filterShopTypes.filter((x) => x !== t)),
+          })),
+          ...filterPriceRanges.map((t) => ({
+            label: priceRangeOptions.find((o) => o.value === t)?.plain ?? t,
+            onRemove: () => setFilterPriceRanges(filterPriceRanges.filter((x) => x !== t)),
+          })),
+          ...filterShopServices.map((k) => ({
+            label: SHOPPING_SERVICE_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterShopServices(filterShopServices.filter((x) => x !== k)),
+          })),
         ]}
       >
         <RefineSection
@@ -1458,6 +1530,66 @@ const CategoryPage = () => {
           </RefineSection>
         )}
 
+
+        {isShopping && shopTypeOptions.length > 0 && (
+          <RefineSection
+            label="Shop Type"
+            summary={filterShopTypes.length > 0 ? `${filterShopTypes.length} selected` : undefined}
+            open={openSection === "shoptype"}
+            onToggle={() => setOpenSection(openSection === "shoptype" ? null : "shoptype")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {shopTypeOptions.map((t) => (
+                <RefineChip
+                  key={t.value}
+                  label={t.label}
+                  active={filterShopTypes.includes(t.value)}
+                  onClick={() => toggleArrayFilter(filterShopTypes, t.value, setFilterShopTypes)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isShopping && priceRangeOptions.length > 0 && (
+          <RefineSection
+            label="Price Range"
+            summary={filterPriceRanges.length > 0 ? `${filterPriceRanges.length} selected` : undefined}
+            open={openSection === "pricerange"}
+            onToggle={() => setOpenSection(openSection === "pricerange" ? null : "pricerange")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {priceRangeOptions.map((t) => (
+                <RefineChip
+                  key={t.value}
+                  label={t.label}
+                  active={filterPriceRanges.includes(t.value)}
+                  onClick={() => toggleArrayFilter(filterPriceRanges, t.value, setFilterPriceRanges)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isShopping && shopServiceOptions.length > 0 && (
+          <RefineSection
+            label="Shopping Options"
+            summary={filterShopServices.length > 0 ? `${filterShopServices.length} selected` : undefined}
+            open={openSection === "shopservices"}
+            onToggle={() => setOpenSection(openSection === "shopservices" ? null : "shopservices")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {shopServiceOptions.map((o) => (
+                <RefineChip
+                  key={o.key}
+                  label={o.label}
+                  active={filterShopServices.includes(o.key)}
+                  onClick={() => toggleArrayFilter(filterShopServices, o.key, setFilterShopServices)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
 
         <RefineSection label="Max Distance from Town">
           <RefineSlider
