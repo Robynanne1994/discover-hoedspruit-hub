@@ -269,6 +269,7 @@ const CategoryPage = () => {
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
           filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
+          filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
         },
       },
     });
@@ -279,6 +280,7 @@ const CategoryPage = () => {
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
     filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
+    filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
   ]);
 
 
