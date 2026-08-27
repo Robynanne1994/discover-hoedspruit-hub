@@ -30,6 +30,27 @@ const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", 
 const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Snacks", "Light Meals"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
+// Accommodation amenities: each is a boolean column on `listings`. Only the
+// ones actually in use on a listing in the category are offered as filters.
+const ACCOM_AMENITY_OPTIONS: { key: string; label: string }[] = [
+  { key: "has_wifi_accom", label: "WiFi" },
+  { key: "has_breakfast", label: "Breakfast" },
+  { key: "breakfast_included", label: "Breakfast Included" },
+  { key: "has_aircon", label: "Air-Con" },
+  { key: "has_swimming_pool", label: "Swimming Pool" },
+  { key: "has_restaurant", label: "Restaurant" },
+  { key: "has_bar", label: "Bar" },
+  { key: "has_room_service", label: "Room Service" },
+  { key: "has_spa", label: "Spa" },
+  { key: "has_fitness_centre", label: "Fitness Centre" },
+  { key: "has_laundry", label: "Laundry" },
+  { key: "has_airport_shuttle", label: "Airport Shuttle" },
+  { key: "has_free_parking", label: "Free Parking" },
+  { key: "has_secure_parking", label: "Secure Parking" },
+  { key: "child_friendly", label: "Child Friendly" },
+  { key: "pets_allowed", label: "Pet Friendly" },
+];
+
 const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const serif = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -178,7 +199,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | null
   >(null);
 
 
@@ -199,6 +220,7 @@ const CategoryPage = () => {
   const [filterPropertyTypes, setFilterPropertyTypes] = useState<string[]>(persisted?.filterPropertyTypes ?? []);
   const [filterMinNights, setFilterMinNights] = useState<number[]>(persisted?.filterMinNights ?? []);
   const [filterGrading, setFilterGrading] = useState<number[]>(persisted?.filterGrading ?? []);
+  const [filterAccomAmenities, setFilterAccomAmenities] = useState<string[]>(persisted?.filterAccomAmenities ?? []);
 
 
   useEffect(() => {
@@ -212,7 +234,7 @@ const CategoryPage = () => {
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
-          filterPropertyTypes, filterMinNights, filterGrading,
+          filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
         },
       },
     });
@@ -222,7 +244,7 @@ const CategoryPage = () => {
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
-    filterPropertyTypes, filterMinNights, filterGrading,
+    filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
   ]);
 
 
@@ -541,6 +563,7 @@ const CategoryPage = () => {
     filterPropertyTypes.length > 0 ? 1 : 0,
     filterMinNights.length > 0 ? 1 : 0,
     filterGrading.length > 0 ? 1 : 0,
+    filterAccomAmenities.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
@@ -563,6 +586,7 @@ const CategoryPage = () => {
     setFilterPropertyTypes([]);
     setFilterMinNights([]);
     setFilterGrading([]);
+    setFilterAccomAmenities([]);
     setOpenSection(null);
   };
 
@@ -618,6 +642,15 @@ const CategoryPage = () => {
       ...vals.map((n) => ({ value: n, label: withCount(`${n} Nights`, counts.get(n)) })),
     ];
   }, [isAccom, listings]);
+
+  const accomAmenityOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    return ACCOM_AMENITY_OPTIONS.map(({ key, label }) => {
+      const count = (listings as any[]).filter((l) => l[key] === true).length;
+      return { key, label: withCount(label, count), count };
+    }).filter((o) => o.count > 0);
+  }, [isAccom, listings]);
+
 
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
@@ -687,6 +720,10 @@ const CategoryPage = () => {
         const sr = Number((l as any).star_rating) || 0;
         if (!filterGrading.includes(sr)) return false;
       }
+      if (filterAccomAmenities.length > 0) {
+        // Every selected amenity must be present on the listing.
+        if (!filterAccomAmenities.every((k) => (l as any)[k] === true)) return false;
+      }
       return true;
     });
 
@@ -721,7 +758,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
@@ -1026,6 +1063,10 @@ const CategoryPage = () => {
             label: `${g}-Star Grading`,
             onRemove: () => setFilterGrading(filterGrading.filter((x) => x !== g)),
           })),
+          ...filterAccomAmenities.map((k) => ({
+            label: ACCOM_AMENITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
+            onRemove: () => setFilterAccomAmenities(filterAccomAmenities.filter((x) => x !== k)),
+          })),
         ]}
       >
         <RefineSection
@@ -1212,6 +1253,27 @@ const CategoryPage = () => {
             </div>
           </RefineSection>
         )}
+
+        {isAccom && accomAmenityOptions.length > 0 && (
+          <RefineSection
+            label="Amenities"
+            summary={filterAccomAmenities.length > 0 ? `${filterAccomAmenities.length} selected` : undefined}
+            open={openSection === "accomamen"}
+            onToggle={() => setOpenSection(openSection === "accomamen" ? null : "accomamen")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {accomAmenityOptions.map((a) => (
+                <RefineChip
+                  key={a.key}
+                  label={a.label}
+                  active={filterAccomAmenities.includes(a.key)}
+                  onClick={() => toggleArrayFilter(filterAccomAmenities, a.key, setFilterAccomAmenities)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
 
         <RefineSection label="Max Distance from Town">
           <RefineSlider
