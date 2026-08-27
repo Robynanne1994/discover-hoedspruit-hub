@@ -1157,7 +1157,7 @@ const CategoryPage = () => {
 
         {isAccom && minNightsOptions.length > 0 && (
           <RefineSection
-            label="Minimum Stay"
+            label="Minimum Nights Stay"
             summary={filterMinNights.length > 0 ? `${filterMinNights.length} selected` : undefined}
             open={openSection === "minstay"}
             onToggle={() => setOpenSection(openSection === "minstay" ? null : "minstay")}
