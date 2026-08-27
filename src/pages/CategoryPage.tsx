@@ -578,14 +578,18 @@ const CategoryPage = () => {
   // Accommodation filter options derived from what is actually in use.
   const propertyTypeOptions = useMemo(() => {
     if (!isAccom || !listings) return [];
-    const seen = new Map<string, string>();
+    const counts = new Map<string, number>();
+    const labels = new Map<string, string>();
     (listings as any[]).forEach((l) => {
       const raw = (l.property_type || "").trim();
       if (!raw) return;
       const key = raw.toLowerCase();
-      if (!seen.has(key)) seen.set(key, raw);
+      if (!labels.has(key)) labels.set(key, raw);
+      counts.set(key, (counts.get(key) || 0) + 1);
     });
-    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+    return Array.from(labels.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([key, label]) => ({ value: label, label: withCount(label, counts.get(key)) }));
   }, [isAccom, listings]);
 
   const gradingOptions = useMemo(() => {
@@ -600,13 +604,19 @@ const CategoryPage = () => {
 
   const minNightsOptions = useMemo(() => {
     if (!isAccom || !listings) return [];
-    const set = new Set<number>();
+    const counts = new Map<number, number>();
     (listings as any[]).forEach((l) => {
-      const mn = Number(l.min_nights);
-      if (mn > 1) set.add(mn);
+      const mn = Number(l.min_nights) || 1;
+      counts.set(mn, (counts.get(mn) || 0) + 1);
     });
-    const vals = Array.from(set).sort((a, b) => a - b);
-    return vals.length > 0 ? [1, ...vals.filter((v) => v !== 1)] : [];
+    const vals = Array.from(counts.keys())
+      .filter((v) => v > 1)
+      .sort((a, b) => a - b);
+    if (vals.length === 0) return [];
+    return [
+      { value: 1, label: withCount("1 Night", counts.get(1)) },
+      ...vals.map((n) => ({ value: n, label: withCount(`${n} Nights`, counts.get(n)) })),
+    ];
   }, [isAccom, listings]);
 
   const displayTitle = categoryTitle;
@@ -1145,10 +1155,10 @@ const CategoryPage = () => {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {propertyTypeOptions.map((t) => (
                 <RefineChip
-                  key={t}
-                  label={t}
-                  active={filterPropertyTypes.includes(t)}
-                  onClick={() => toggleArrayFilter(filterPropertyTypes, t, setFilterPropertyTypes)}
+                  key={t.value}
+                  label={t.label}
+                  active={filterPropertyTypes.includes(t.value)}
+                  onClick={() => toggleArrayFilter(filterPropertyTypes, t.value, setFilterPropertyTypes)}
                 />
               ))}
             </div>
@@ -1165,13 +1175,13 @@ const CategoryPage = () => {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {minNightsOptions.map((n) => (
                 <RefineChip
-                  key={n}
-                  label={n === 1 ? "1 night" : `${n} nights`}
-                  active={filterMinNights.includes(n)}
+                  key={n.value}
+                  label={n.label}
+                  active={filterMinNights.includes(n.value)}
                   onClick={() =>
-                    setFilterMinNights(filterMinNights.includes(n)
-                      ? filterMinNights.filter((x) => x !== n)
-                      : [...filterMinNights, n])
+                    setFilterMinNights(filterMinNights.includes(n.value)
+                      ? filterMinNights.filter((x) => x !== n.value)
+                      : [...filterMinNights, n.value])
                   }
                 />
               ))}
