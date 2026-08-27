@@ -1327,6 +1327,7 @@ export type Database = {
           long_description: string | null
           longitude: number | null
           meal: string[] | null
+          min_nights: number | null
           nappy_changing_station: boolean | null
           opening_hours: Json | null
           opening_hours_label: string | null
@@ -1485,6 +1486,7 @@ export type Database = {
           long_description?: string | null
           longitude?: number | null
           meal?: string[] | null
+          min_nights?: number | null
           nappy_changing_station?: boolean | null
           opening_hours?: Json | null
           opening_hours_label?: string | null
@@ -1643,6 +1645,7 @@ export type Database = {
           long_description?: string | null
           longitude?: number | null
           meal?: string[] | null
+          min_nights?: number | null
           nappy_changing_station?: boolean | null
           opening_hours?: Json | null
           opening_hours_label?: string | null
