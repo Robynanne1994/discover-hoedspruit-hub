@@ -682,6 +682,16 @@ const ListingDetail = () => {
   }
 
   if (isListingAccommodation) {
+    const stars = Number((l as any).star_rating);
+    if (stars >= 1 && stars <= 5) {
+      sections.push({
+        key: "accom-grading",
+        title: "Grading",
+        iconComp: Star,
+        fields: [{ label: `${stars}-Star Stay`, on: true }],
+      });
+    }
+
     // Pricing: average price per person per night & price range
     const pricing: { label: string; on: boolean }[] = [];
     const avgPrice = (l as any).avg_price_per_person_per_night;
