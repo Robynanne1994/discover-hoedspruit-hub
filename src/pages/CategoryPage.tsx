@@ -575,6 +575,40 @@ const CategoryPage = () => {
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
 
+  // Accommodation filter options derived from what is actually in use.
+  const propertyTypeOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    const seen = new Map<string, string>();
+    (listings as any[]).forEach((l) => {
+      const raw = (l.property_type || "").trim();
+      if (!raw) return;
+      const key = raw.toLowerCase();
+      if (!seen.has(key)) seen.set(key, raw);
+    });
+    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+  }, [isAccom, listings]);
+
+  const gradingOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    const set = new Set<number>();
+    (listings as any[]).forEach((l) => {
+      const sr = Number(l.star_rating);
+      if (sr >= 1 && sr <= 5) set.add(sr);
+    });
+    return Array.from(set).sort((a, b) => a - b);
+  }, [isAccom, listings]);
+
+  const minNightsOptions = useMemo(() => {
+    if (!isAccom || !listings) return [];
+    const set = new Set<number>();
+    (listings as any[]).forEach((l) => {
+      const mn = Number(l.min_nights);
+      if (mn > 1) set.add(mn);
+    });
+    const vals = Array.from(set).sort((a, b) => a - b);
+    return vals.length > 0 ? [1, ...vals.filter((v) => v !== 1)] : [];
+  }, [isAccom, listings]);
+
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
@@ -970,6 +1004,18 @@ const CategoryPage = () => {
           ...(filterPetFriendly ? [{ label: "Pet Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
           ...(filterWheelchair ? [{ label: "Wheelchair Accessible", onRemove: () => setFilterWheelchair(false) }] : []),
           ...(filterWifi ? [{ label: "WiFi", onRemove: () => setFilterWifi(false) }] : []),
+          ...filterPropertyTypes.map((t) => ({
+            label: t,
+            onRemove: () => setFilterPropertyTypes(filterPropertyTypes.filter((x) => x !== t)),
+          })),
+          ...filterMinNights.map((n) => ({
+            label: `Max ${n}-night min stay`,
+            onRemove: () => setFilterMinNights(filterMinNights.filter((x) => x !== n)),
+          })),
+          ...filterGrading.map((g) => ({
+            label: `${g}-Star Grading`,
+            onRemove: () => setFilterGrading(filterGrading.filter((x) => x !== g)),
+          })),
         ]}
       >
         <RefineSection
