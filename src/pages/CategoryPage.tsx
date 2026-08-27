@@ -1283,7 +1283,7 @@ const CategoryPage = () => {
                   </div>
                 </RefineSection>
               )}
-              {seatings.length > 0 && (
+              {seatingOptions.length > 0 && (
                 <RefineSection
                   label="Seating"
                   summary={filterSeating.length > 0 ? `${filterSeating.length} selected` : undefined}
@@ -1291,13 +1291,84 @@ const CategoryPage = () => {
                   onToggle={() => setOpenSection(openSection === "seating" ? null : "seating")}
                 >
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {seatings.map((s) => (
-                      <RefineChip key={s} label={withCount(s, facetCounts?.seating.get(s.toLowerCase()))} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
+                    {seatingOptions.map((s) => (
+                      <RefineChip key={s.value} label={s.label} active={filterSeating.includes(s.value)} onClick={() => toggleArrayFilter(filterSeating, s.value, setFilterSeating)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {foodsOptions.length > 0 && (
+                <RefineSection
+                  label="Foods"
+                  summary={filterFoods.length > 0 ? `${filterFoods.length} selected` : undefined}
+                  open={openSection === "foods"}
+                  onToggle={() => setOpenSection(openSection === "foods" ? null : "foods")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {foodsOptions.map((f) => (
+                      <RefineChip key={f.value} label={f.label} active={filterFoods.includes(f.value)} onClick={() => toggleArrayFilter(filterFoods, f.value, setFilterFoods)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {drinkOptions.length > 0 && (
+                <RefineSection
+                  label="Drinks"
+                  summary={filterDrinks.length > 0 ? `${filterDrinks.length} selected` : undefined}
+                  open={openSection === "drinks"}
+                  onToggle={() => setOpenSection(openSection === "drinks" ? null : "drinks")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {drinkOptions.map((d) => (
+                      <RefineChip key={d.key} label={d.label} active={filterDrinks.includes(d.key)} onClick={() => toggleArrayFilter(filterDrinks, d.key, setFilterDrinks)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {serviceTypeOptions.length > 0 && (
+                <RefineSection
+                  label="Service Type"
+                  summary={filterServiceType.length > 0 ? `${filterServiceType.length} selected` : undefined}
+                  open={openSection === "servicetype"}
+                  onToggle={() => setOpenSection(openSection === "servicetype" ? null : "servicetype")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {serviceTypeOptions.map((s) => (
+                      <RefineChip key={s.value} label={s.label} active={filterServiceType.includes(s.value)} onClick={() => toggleArrayFilter(filterServiceType, s.value, setFilterServiceType)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {kidsOptions.length > 0 && (
+                <RefineSection
+                  label="Kids"
+                  summary={filterKids.length > 0 ? `${filterKids.length} selected` : undefined}
+                  open={openSection === "kids"}
+                  onToggle={() => setOpenSection(openSection === "kids" ? null : "kids")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {kidsOptions.map((k) => (
+                      <RefineChip key={k.key} label={k.label} active={filterKids.includes(k.key)} onClick={() => toggleArrayFilter(filterKids, k.key, setFilterKids)} />
+                    ))}
+                  </div>
+                </RefineSection>
+              )}
+              {accessibilityOptions.length > 0 && (
+                <RefineSection
+                  label="Accessibility"
+                  summary={filterAccessibility.length > 0 ? `${filterAccessibility.length} selected` : undefined}
+                  open={openSection === "access"}
+                  onToggle={() => setOpenSection(openSection === "access" ? null : "access")}
+                >
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {accessibilityOptions.map((a) => (
+                      <RefineChip key={a.key} label={a.label} active={filterAccessibility.includes(a.key)} onClick={() => toggleArrayFilter(filterAccessibility, a.key, setFilterAccessibility)} />
                     ))}
                   </div>
                 </RefineSection>
               )}
             </>
+
           );
         })()}
 
