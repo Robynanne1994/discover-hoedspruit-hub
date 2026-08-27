@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
+import { formatServiceLabel } from "@/lib/serviceLabels";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
