@@ -227,7 +227,7 @@ const CategoryPage = () => {
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
-    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | null
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | "proptype" | "minstay" | "grading" | "accomamen" | "kids" | "drinks" | "foods" | "servicetype" | "access" | null
   >(null);
 
 
