@@ -645,6 +645,44 @@ const CategoryPage = () => {
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
 
+  // Restaurant & cafe facets, all derived from what the listings actually carry
+  // so that values added later show up as filters on their own.
+  const arrayFacetOptions = (field: string) => {
+    if (!isRestaurant || !listings) return [];
+    const counts = new Map<string, number>();
+    const labels = new Map<string, string>();
+    (listings as any[]).forEach((l) => {
+      (l[field] || []).forEach((raw: string) => {
+        const val = (raw || "").trim();
+        if (!val) return;
+        const key = val.toLowerCase();
+        if (!labels.has(key)) labels.set(key, formatServiceLabel(val));
+        counts.set(key, (counts.get(key) || 0) + 1);
+      });
+    });
+    return Array.from(labels.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .map(([key, label]) => ({ value: key, label: withCount(label, counts.get(key)) }));
+  };
+
+  const boolFacetOptions = (opts: { key: string; label: string }[]) => {
+    if (!isRestaurant || !listings) return [];
+    return opts
+      .map(({ key, label }) => {
+        const count = (listings as any[]).filter((l) => l[key] === true).length;
+        return { key, label: withCount(label, count), count };
+      })
+      .filter((o) => o.count > 0);
+  };
+
+  const foodsOptions = useMemo(() => arrayFacetOptions("foods"), [isRestaurant, listings]);
+  const serviceTypeOptions = useMemo(() => arrayFacetOptions("service_type"), [isRestaurant, listings]);
+  const seatingOptions = useMemo(() => arrayFacetOptions("seating"), [isRestaurant, listings]);
+  const kidsOptions = useMemo(() => boolFacetOptions(KIDS_OPTIONS), [isRestaurant, listings]);
+  const drinkOptions = useMemo(() => boolFacetOptions(DRINK_OPTIONS), [isRestaurant, listings]);
+  const accessibilityOptions = useMemo(() => boolFacetOptions(ACCESSIBILITY_OPTIONS), [isRestaurant, listings]);
+
+
   // Accommodation filter options derived from what is actually in use.
   const propertyTypeOptions = useMemo(() => {
     if (!isAccom || !listings) return [];
