@@ -600,6 +600,11 @@ const CategoryPage = () => {
     filterMinNights.length > 0 ? 1 : 0,
     filterGrading.length > 0 ? 1 : 0,
     filterAccomAmenities.length > 0 ? 1 : 0,
+    filterFoods.length > 0 ? 1 : 0,
+    filterServiceType.length > 0 ? 1 : 0,
+    filterKids.length > 0 ? 1 : 0,
+    filterDrinks.length > 0 ? 1 : 0,
+    filterAccessibility.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
 
