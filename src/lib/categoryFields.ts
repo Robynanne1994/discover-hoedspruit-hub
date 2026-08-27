@@ -125,6 +125,7 @@ export const LISTING_FIELD_SPECS = {
   local_products: { type: "bool" },
   shop_type: { type: "str" },
   curio_or_gifts: { type: "bool" },
+  primary_product_categories: { type: "str_array" },
   product_categories: { type: "str_array" },
   price_range: { type: "str" },
 
@@ -262,7 +263,7 @@ export const RESTAURANT_ONLY_FIELDS = [
 export const SHOPPING_ONLY_FIELDS = [
   "air_conditioned", "payment_methods", "delivery_available",
   "order_online", "parking_available", "wheelchair_friendly", "local_products",
-  "shop_type", "curio_or_gifts", "product_categories", "price_range",
+  "shop_type", "curio_or_gifts", "primary_product_categories", "product_categories", "price_range",
 ] as const;
 
 export const ACCOMMODATION_ONLY_FIELDS = [
