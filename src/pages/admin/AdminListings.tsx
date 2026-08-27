@@ -355,6 +355,17 @@ const AdminListings = () => {
     },
   });
 
+  // Property types are free-form: suggest the presets plus anything already used,
+  // grouped case-insensitively so "lodge" snaps to an existing "Lodge".
+  const propertyTypeSuggestions = useMemo(() => {
+    const seen = new Map<string, string>();
+    [...PROPERTY_TYPE_OPTIONS, ...((listings ?? []) as any[]).map((l) => l.property_type)]
+      .map((v) => (typeof v === "string" ? v.trim() : ""))
+      .filter(Boolean)
+      .forEach((v) => { if (!seen.has(v.toLowerCase())) seen.set(v.toLowerCase(), v); });
+    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+  }, [listings]);
+
 
   // Fetch listing_categories for the editing listing, along with the per-category
   // card label. The label column may not exist yet (migration not applied), so
