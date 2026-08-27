@@ -129,6 +129,7 @@ export const LISTING_FIELD_SPECS = {
   price_range: { type: "str" },
 
   // ---------- Accommodation ----------
+  property_type: { type: "str" },
   amenities: { type: "str_array" },
   sleeps: { type: "int" },
   sleeps_children: { type: "int" },
@@ -266,6 +267,7 @@ export const SHOPPING_ONLY_FIELDS = [
 export const ACCOMMODATION_ONLY_FIELDS = [
   // `amenities` is deliberately absent: every amenity has its own true/false
   // column below, so the free-text list only ever repeated them.
+  "property_type",
   "star_rating",
   "sleeps", "sleeps_children", "rooms_count",
   "pets_allowed",

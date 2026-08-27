@@ -17,6 +17,7 @@ const SERVICE_TYPE_OPTIONS = ["Sit Down", "Takeaway", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Stationery Shop", "Other"];
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
+const PROPERTY_TYPE_OPTIONS = ["Lodge", "Hotel", "Guest House", "Bed & Breakfast", "Self-Catering", "Villa", "Cottage", "Chalet", "Apartment", "Camping", "Glamping", "Bush Camp", "Backpackers", "Farm Stay", "Other"];
 const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance", "Irrigation", "Tree felling/pruning", "Bush Clearing", "Swimming Pool Services", "Interior design", "Upholstery", "Equipment rental", "Equipment servicing/repairs"];
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 const EVENT_TYPES_OPTIONS = ["Weddings", "Corporate", "Birthdays", "Private functions", "Conferences", "Baby showers", "Kids parties", "Fundraisers", "Festivals"];
@@ -76,6 +77,7 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   avg_price_per_person_per_night: "text, e.g. R1 200",
   avg_price_per_couple_per_night: "text, e.g. R2 400",
   star_rating: "integer 1-5, the graded star rating of the stay",
+  property_type: `one of: ${PROPERTY_TYPE_OPTIONS.join(" | ")}`,
 
   // Home & Garden
   services_offered: `pipe-separated, options: ${SERVICES_OFFERED_OPTIONS.join(" | ")}`,

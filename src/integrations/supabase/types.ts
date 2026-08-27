@@ -1340,6 +1340,7 @@ export type Database = {
           price_level: number | null
           price_range: string | null
           product_categories: string[] | null
+          property_type: string | null
           refresh_priority: string
           rooms_count: number | null
           saved_image_url: string | null
@@ -1497,6 +1498,7 @@ export type Database = {
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
+          property_type?: string | null
           refresh_priority?: string
           rooms_count?: number | null
           saved_image_url?: string | null
@@ -1654,6 +1656,7 @@ export type Database = {
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
+          property_type?: string | null
           refresh_priority?: string
           rooms_count?: number | null
           saved_image_url?: string | null
