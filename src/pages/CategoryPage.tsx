@@ -1135,6 +1135,74 @@ const CategoryPage = () => {
         })()}
 
 
+        {isAccom && propertyTypeOptions.length > 0 && (
+          <RefineSection
+            label="Property Type"
+            summary={filterPropertyTypes.length > 0 ? `${filterPropertyTypes.length} selected` : undefined}
+            open={openSection === "proptype"}
+            onToggle={() => setOpenSection(openSection === "proptype" ? null : "proptype")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {propertyTypeOptions.map((t) => (
+                <RefineChip
+                  key={t}
+                  label={t}
+                  active={filterPropertyTypes.includes(t)}
+                  onClick={() => toggleArrayFilter(filterPropertyTypes, t, setFilterPropertyTypes)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isAccom && minNightsOptions.length > 0 && (
+          <RefineSection
+            label="Minimum Stay"
+            summary={filterMinNights.length > 0 ? `${filterMinNights.length} selected` : undefined}
+            open={openSection === "minstay"}
+            onToggle={() => setOpenSection(openSection === "minstay" ? null : "minstay")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {minNightsOptions.map((n) => (
+                <RefineChip
+                  key={n}
+                  label={n === 1 ? "1 night" : `${n} nights`}
+                  active={filterMinNights.includes(n)}
+                  onClick={() =>
+                    setFilterMinNights(filterMinNights.includes(n)
+                      ? filterMinNights.filter((x) => x !== n)
+                      : [...filterMinNights, n])
+                  }
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+        {isAccom && gradingOptions.length > 0 && (
+          <RefineSection
+            label="Star Grading"
+            summary={filterGrading.length > 0 ? `${filterGrading.length} selected` : undefined}
+            open={openSection === "grading"}
+            onToggle={() => setOpenSection(openSection === "grading" ? null : "grading")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {gradingOptions.map((g) => (
+                <RefineChip
+                  key={g}
+                  label={`${g}-Star`}
+                  active={filterGrading.includes(g)}
+                  onClick={() =>
+                    setFilterGrading(filterGrading.includes(g)
+                      ? filterGrading.filter((x) => x !== g)
+                      : [...filterGrading, g])
+                  }
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
         <RefineSection label="Max Distance from Town">
           <RefineSlider
             value={filterMaxKm}
