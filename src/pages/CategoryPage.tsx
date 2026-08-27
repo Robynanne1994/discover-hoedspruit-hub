@@ -1254,6 +1254,27 @@ const CategoryPage = () => {
           </RefineSection>
         )}
 
+        {isAccom && accomAmenityOptions.length > 0 && (
+          <RefineSection
+            label="Amenities"
+            summary={filterAccomAmenities.length > 0 ? `${filterAccomAmenities.length} selected` : undefined}
+            open={openSection === "accomamen"}
+            onToggle={() => setOpenSection(openSection === "accomamen" ? null : "accomamen")}
+          >
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+              {accomAmenityOptions.map((a) => (
+                <RefineChip
+                  key={a.key}
+                  label={a.label}
+                  active={filterAccomAmenities.includes(a.key)}
+                  onClick={() => toggleArrayFilter(filterAccomAmenities, a.key, setFilterAccomAmenities)}
+                />
+              ))}
+            </div>
+          </RefineSection>
+        )}
+
+
         <RefineSection label="Max Distance from Town">
           <RefineSlider
             value={filterMaxKm}
