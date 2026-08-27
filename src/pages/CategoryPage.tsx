@@ -1155,10 +1155,10 @@ const CategoryPage = () => {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {propertyTypeOptions.map((t) => (
                 <RefineChip
-                  key={t}
-                  label={t}
-                  active={filterPropertyTypes.includes(t)}
-                  onClick={() => toggleArrayFilter(filterPropertyTypes, t, setFilterPropertyTypes)}
+                  key={t.value}
+                  label={t.label}
+                  active={filterPropertyTypes.includes(t.value)}
+                  onClick={() => toggleArrayFilter(filterPropertyTypes, t.value, setFilterPropertyTypes)}
                 />
               ))}
             </div>
@@ -1175,13 +1175,13 @@ const CategoryPage = () => {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {minNightsOptions.map((n) => (
                 <RefineChip
-                  key={n}
-                  label={n === 1 ? "1 night" : `${n} nights`}
-                  active={filterMinNights.includes(n)}
+                  key={n.value}
+                  label={n.label}
+                  active={filterMinNights.includes(n.value)}
                   onClick={() =>
-                    setFilterMinNights(filterMinNights.includes(n)
-                      ? filterMinNights.filter((x) => x !== n)
-                      : [...filterMinNights, n])
+                    setFilterMinNights(filterMinNights.includes(n.value)
+                      ? filterMinNights.filter((x) => x !== n.value)
+                      : [...filterMinNights, n.value])
                   }
                 />
               ))}
