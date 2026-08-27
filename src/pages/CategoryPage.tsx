@@ -235,6 +235,12 @@ const CategoryPage = () => {
   const [filterVibe, setFilterVibe] = useState<string[]>(persisted?.filterVibe ?? []);
   const [filterMeal, setFilterMeal] = useState<string[]>(persisted?.filterMeal ?? []);
   const [filterSeating, setFilterSeating] = useState<string[]>(persisted?.filterSeating ?? []);
+  // Restaurant & cafe facets
+  const [filterFoods, setFilterFoods] = useState<string[]>(persisted?.filterFoods ?? []);
+  const [filterServiceType, setFilterServiceType] = useState<string[]>(persisted?.filterServiceType ?? []);
+  const [filterKids, setFilterKids] = useState<string[]>(persisted?.filterKids ?? []);
+  const [filterDrinks, setFilterDrinks] = useState<string[]>(persisted?.filterDrinks ?? []);
+  const [filterAccessibility, setFilterAccessibility] = useState<string[]>(persisted?.filterAccessibility ?? []);
   const [filterChildFriendly, setFilterChildFriendly] = useState<boolean>(persisted?.filterChildFriendly ?? false);
   const [filterPetFriendly, setFilterPetFriendly] = useState<boolean>(persisted?.filterPetFriendly ?? false);
   const [filterWheelchair, setFilterWheelchair] = useState<boolean>(persisted?.filterWheelchair ?? false);
