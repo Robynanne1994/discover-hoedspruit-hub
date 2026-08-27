@@ -266,6 +266,7 @@ export const SHOPPING_ONLY_FIELDS = [
 export const ACCOMMODATION_ONLY_FIELDS = [
   // `amenities` is deliberately absent: every amenity has its own true/false
   // column below, so the free-text list only ever repeated them.
+  "star_rating",
   "sleeps", "sleeps_children", "rooms_count",
   "pets_allowed",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",
