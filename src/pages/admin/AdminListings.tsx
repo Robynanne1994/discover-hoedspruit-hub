@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -354,6 +354,17 @@ const AdminListings = () => {
       } as Record<string, string[]>;
     },
   });
+
+  // Property types are free-form: suggest the presets plus anything already used,
+  // grouped case-insensitively so "lodge" snaps to an existing "Lodge".
+  const propertyTypeSuggestions = useMemo(() => {
+    const seen = new Map<string, string>();
+    [...PROPERTY_TYPE_OPTIONS, ...((listings ?? []) as any[]).map((l) => l.property_type)]
+      .map((v) => (typeof v === "string" ? v.trim() : ""))
+      .filter(Boolean)
+      .forEach((v) => { if (!seen.has(v.toLowerCase())) seen.set(v.toLowerCase(), v); });
+    return Array.from(seen.values()).sort((a, b) => a.localeCompare(b));
+  }, [listings]);
 
 
   // Fetch listing_categories for the editing listing, along with the per-category
@@ -1862,15 +1873,25 @@ const AdminListings = () => {
 
                       <div>
                         <Label>Property Type</Label>
-                        <Select value={form.property_type || undefined} onValueChange={(v) => setForm({ ...form, property_type: v })}>
-                          <SelectTrigger><SelectValue placeholder="Select property type" /></SelectTrigger>
-                          <SelectContent>
-                            {PROPERTY_TYPE_OPTIONS.map((opt) => (
-                              <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Input
+                          list="property-type-options"
+                          value={form.property_type}
+                          onChange={(e) => setForm({ ...form, property_type: e.target.value })}
+                          onBlur={(e) => {
+                            const raw = e.target.value.trim();
+                            if (!raw) { setForm({ ...form, property_type: "" }); return; }
+                            const match = propertyTypeSuggestions.find((o) => o.toLowerCase() === raw.toLowerCase());
+                            setForm({ ...form, property_type: match ?? raw });
+                          }}
+                          placeholder="e.g. Lodge (type to add a new one)"
+                        />
+                        <datalist id="property-type-options">
+                          {propertyTypeSuggestions.map((opt) => (
+                            <option key={opt} value={opt} />
+                          ))}
+                        </datalist>
                       </div>
+
 
                       <div>
                         <Label>Star Rating</Label>
