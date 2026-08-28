@@ -1797,24 +1797,25 @@ const AdminListings = () => {
 
 
                     <div>
-                      <Label>Primary Product Categories</Label>
-                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">
-                        Up to 3. Only these appear as Product Categories filters on the shopping page. They still show on the listing page with the others.
-                      </p>
-                      <TreatmentsEditor
-                        value={form.primary_product_categories}
-                        onChange={(v) => setForm({ ...form, primary_product_categories: v.slice(0, 3) })}
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Other Product Categories</Label>
-                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">Add one at a time. Shown on the listing page alongside the primary ones, never used as filters.</p>
+                      <Label>Product Categories</Label>
+                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">Add one at a time. Shown on the listing page. Not used for filters.</p>
                       <TreatmentsEditor
                         value={form.product_categories}
                         onChange={(v) => setForm({ ...form, product_categories: v })}
                       />
                     </div>
+
+                    <div>
+                      <Label>Product Categories (Filters Only)</Label>
+                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">
+                        Add one at a time. These are the only values offered as Product Categories filters on the shopping page. Never shown on the front end.
+                      </p>
+                      <TreatmentsEditor
+                        value={form.primary_product_categories}
+                        onChange={(v) => setForm({ ...form, primary_product_categories: v })}
+                      />
+                    </div>
+
 
                     <div>
                       <Label>Price Range</Label>
