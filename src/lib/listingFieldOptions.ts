@@ -66,8 +66,8 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   // Shopping
   payment_methods: `pipe-separated, options: ${PAYMENT_METHOD_OPTIONS.join(" | ")}`,
   shop_type: `one of: ${SHOP_TYPE_OPTIONS.join(" | ")}`,
-  primary_product_categories: "pipe-separated free text, max 3 — only these are offered as Product Categories filters on the shopping page. They still show on the listing page together with product_categories",
-  product_categories: "pipe-separated free text — extra product categories, shown on the listing page alongside the primary ones but never used as filters",
+  primary_product_categories: "pipe-separated free text — filters only: the values offered as Product Categories filters on the shopping page. Never shown on the front end",
+  product_categories: "pipe-separated free text — the product categories shown on the listing page. Never used as filters",
   price_range: `one of: ${ACCOMMODATION_PRICE_RANGE_OPTIONS.join(" | ")} (Accommodation), or free text (Shopping)`,
 
   // Accommodation

@@ -780,33 +780,25 @@ const CategoryPage = () => {
   const priceRangeOptions = useMemo(() => scalarFacetOptions("price_range"), [isShopping, listings]);
   const productCategoryOptions = useMemo(() => {
     if (!isShopping || !listings) return [];
-    // Only primary product categories define which filters exist…
+    // Filter-only field: the displayed `product_categories` never contribute.
     const labels = new Map<string, string>();
+    const counts = new Map<string, number>();
     (listings as any[]).forEach((l) => {
+      const seen = new Set<string>();
       ((l.primary_product_categories as string[]) || []).forEach((raw) => {
         const val = (raw || "").trim();
         if (!val) return;
         const key = val.toLowerCase();
         if (!labels.has(key)) labels.set(key, val);
+        seen.add(key);
       });
-    });
-    // …but a listing counts towards one if it carries that value in either list.
-    const counts = new Map<string, number>();
-    (listings as any[]).forEach((l) => {
-      const all = new Set<string>();
-      [
-        ...(((l.primary_product_categories as string[]) || [])),
-        ...(((l.product_categories as string[]) || [])),
-      ].forEach((raw) => {
-        const key = (raw || "").trim().toLowerCase();
-        if (key && labels.has(key)) all.add(key);
-      });
-      all.forEach((key) => counts.set(key, (counts.get(key) || 0) + 1));
+      seen.forEach((key) => counts.set(key, (counts.get(key) || 0) + 1));
     });
     return Array.from(labels.entries())
       .sort((a, b) => a[1].localeCompare(b[1]))
       .map(([key, label]) => ({ value: key, label: withCount(label, counts.get(key)), plain: label }));
   }, [isShopping, listings]);
+
 
 
   const shopServiceOptions = useMemo(() => {
@@ -906,12 +898,11 @@ const CategoryPage = () => {
         if (!pr || !filterPriceRanges.includes(pr)) return false;
       }
       if (filterProductCategories.length > 0) {
-        const pcs = [
-          ...((((l as any).primary_product_categories as string[]) || [])),
-          ...((((l as any).product_categories as string[]) || [])),
-        ].map((v) => (v || "").trim().toLowerCase());
+        const pcs = ((((l as any).primary_product_categories as string[]) || []))
+          .map((v) => (v || "").trim().toLowerCase());
         if (!filterProductCategories.some((v) => pcs.includes(v))) return false;
       }
+
 
       if (filterShopServices.length > 0) {
         if (!filterShopServices.every((k) => (l as any)[k] === true)) return false;
