@@ -898,12 +898,11 @@ const CategoryPage = () => {
         if (!pr || !filterPriceRanges.includes(pr)) return false;
       }
       if (filterProductCategories.length > 0) {
-        const pcs = [
-          ...((((l as any).primary_product_categories as string[]) || [])),
-          ...((((l as any).product_categories as string[]) || [])),
-        ].map((v) => (v || "").trim().toLowerCase());
+        const pcs = ((((l as any).primary_product_categories as string[]) || []))
+          .map((v) => (v || "").trim().toLowerCase());
         if (!filterProductCategories.some((v) => pcs.includes(v))) return false;
       }
+
 
       if (filterShopServices.length > 0) {
         if (!filterShopServices.every((k) => (l as any)[k] === true)) return false;
