@@ -769,19 +769,9 @@ const ListingDetail = () => {
     ]);
     if (shop.length) sections.push({ key: "shop-amenities", title: "Amenities", iconComp: ShoppingBag, fields: shop });
     if (l.payment_methods?.length) sections.push({ key: "shop-payment", title: "Payment", iconComp: CreditCard, fields: l.payment_methods.map((p: string) => ({ label: toTitleCase(p), on: true })) });
-    // Primary and extra product categories are one list on the page — the split
-    // only exists to keep the filter options short.
-    const allProducts = [
-      ...((l as any).primary_product_categories ?? []),
-      ...(l.product_categories ?? []),
-    ].filter((p: string) => (p || "").trim() !== "");
-    const seenProducts = new Set<string>();
-    const products = allProducts.filter((p: string) => {
-      const k = p.trim().toLowerCase();
-      if (seenProducts.has(k)) return false;
-      seenProducts.add(k);
-      return true;
-    });
+    // Only the displayed list shows here; the filter-only list is never rendered.
+    const products = (l.product_categories ?? []).filter((p: string) => (p || "").trim() !== "");
+
     if (products.length) sections.push({ key: "shop-products", title: "Products", iconComp: Package, fields: products.map((p: string) => ({ label: toTitleCase(p), on: true })) });
   }
 
