@@ -566,7 +566,7 @@ const AdminListings = () => {
         local_products: values.local_products,
         shop_type: values.shop_type || null,
         curio_or_gifts: values.curio_or_gifts,
-        primary_product_categories: (values.primary_product_categories ?? []).slice(0, 3),
+        primary_product_categories: values.primary_product_categories ?? [],
         product_categories: values.product_categories ?? [],
         price_range: values.price_range || null,
         amenities: values.amenities,
