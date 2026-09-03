@@ -1998,6 +1998,33 @@ export type Database = {
         }
         Relationships: []
       }
+      push_devices: {
+        Row: {
+          created_at: string
+          id: string
+          last_seen: string
+          platform: string
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_seen?: string
+          platform?: string
+          token: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_seen?: string
+          platform?: string
+          token?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -2606,6 +2633,10 @@ export type Database = {
           msg_id: number
           read_ct: number
         }[]
+      }
+      register_push_device: {
+        Args: { _platform: string; _token: string }
+        Returns: undefined
       }
       respond_to_follow_request: {
         Args: { _accept: boolean; _request_id: string }
