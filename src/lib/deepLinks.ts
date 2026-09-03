@@ -13,12 +13,6 @@
 //      `ingestRecoveryDeepLink()` / `ingestEmailChangeDeepLink()` first.
 //   3. The custom-scheme fallback `za.co.hellohoedspruit.app://<path>`, for
 //      environments where the https association isn't verified.
-//   4. `za.co.hellohoedspruit.app://auth-callback` — the PKCE redirect from
-//      the iOS Google sign-in browser round trip (src/lib/nativeAuth.ts). That
-//      module has its own `appUrlOpen` listener to consume it (it needs the
-//      full URL, including `?code=`, before this one strips it down to a
-//      path), so `route()` below just ignores it rather than trying to
-//      navigate to a screen that doesn't exist.
 //
 // Native-only: `initDeepLinks()` returns immediately in a browser.
 import { App } from "@capacitor/app";
@@ -79,9 +73,6 @@ function route(navigate: (path: string) => void, rawUrl: string | undefined | nu
   if (!rawUrl) return;
   const path = deepLinkToPath(rawUrl);
   if (!path) return;
-
-  // Consumed by nativeAuth.ts's own listener — nothing to navigate to here.
-  if (path.startsWith("/auth-callback")) return;
 
   // Account-email links have to be redeemed by their own screens; hand them the
   // raw URL, then send the user there.
