@@ -260,15 +260,23 @@ body {
   }
 
   /* iOS (Safari and the app's WKWebView alike) auto-zooms the page on focus
-     for any text input under 16px, then doesn't zoom back out on blur. The
+     for any text input under 16px, then doesn't zoom back out on blur --
+     which is what was cutting off the bottom nav and leaving the page
+     horizontally scrollable in production (the zoom never resets). The
      app's inputs use text-sm (14px) for visual consistency with the rest of
      the UI, so raise just the effective font size on the input itself, only
-     at phone widths, rather than bumping text-sm everywhere. */
+     at phone widths, rather than bumping text-sm everywhere.
+
+     !important is required here: Tailwind's `.text-sm` utility is a class
+     selector (specificity 0,1,0), which beats a bare `input` element
+     selector (0,0,1) regardless of media-query nesting or source order --
+     that's why the first version of this rule silently lost the cascade and
+     never actually applied. */
   @media (max-width: 767px) {
     input,
     textarea,
     select {
-      font-size: 16px;
+      font-size: 16px !important;
     }
   }
 

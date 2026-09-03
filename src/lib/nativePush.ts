@@ -17,6 +17,13 @@ type NavigateFn = (path: string) => void;
 
 let initialised = false;
 
+// The last token APNs/FCM handed us, kept so it can be saved once a session
+// exists. The OS fires "registration" once per launch, and on a cold start it
+// usually wins the race against Supabase restoring the session from storage —
+// so the very first save attempt often has no user to attach the token to.
+// Without this the token was simply dropped and never saved at all.
+let lastToken: string | null = null;
+
 export async function initNativePush(navigate: NavigateFn): Promise<void> {
   if (initialised || !isNativeApp()) return;
   initialised = true;
@@ -55,11 +62,18 @@ export async function initNativePush(navigate: NavigateFn): Promise<void> {
 }
 
 async function saveToken(token: string): Promise<void> {
+  if (!token) return;
+  lastToken = token;
   try {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user || !token) return;
+    if (!user) {
+      // Not signed in yet — keep the token; savePendingPushToken() retries
+      // this as soon as a session appears (see useAuth.tsx).
+      console.warn("[nativePush] token held, no session yet");
+      return;
+    }
     // RPC is SECURITY DEFINER so it upserts cleanly even when a device switches
     // between accounts on a shared phone.
     await supabase.rpc("register_push_device" as any, {
@@ -69,6 +83,19 @@ async function saveToken(token: string): Promise<void> {
   } catch (err) {
     console.warn("[nativePush] saveToken failed", err);
   }
+}
+
+/**
+ * Save the token the OS already gave us, now that somebody is signed in.
+ *
+ * Called on every sign-in, because the token almost always arrives before the
+ * session does on a cold start. Safe to call repeatedly — the RPC upserts on
+ * the token, so re-saving the same one just refreshes `last_seen` (and moves
+ * the row to the new user when accounts switch on a shared phone).
+ */
+export async function savePendingPushToken(): Promise<void> {
+  if (!isNativeApp() || !lastToken) return;
+  await saveToken(lastToken);
 }
 
 // Call on sign-out so a shared device stops receiving the previous user's pushes.

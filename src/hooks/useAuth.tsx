@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { startSignup, type SignupDetails } from "@/lib/emailVerification";
-import { unregisterNativePush } from "@/lib/nativePush";
+import { savePendingPushToken, unregisterNativePush } from "@/lib/nativePush";
 
 /**
  * Everything the signup form knows about the new account. It all travels as
@@ -107,6 +107,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
+          // The device's push token usually arrives before the session does
+          // (cold start) or a user only just signed in — either way, this is
+          // the first moment a token saved earlier can actually be attached
+          // to somebody. No-ops if there's nothing pending.
+          void savePendingPushToken();
           checkAdmin(session.user.id).finally(() => {
             if (mounted) setLoading(false);
           });
