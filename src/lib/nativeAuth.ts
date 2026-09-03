@@ -5,40 +5,52 @@
 // a native web view: the provider page either can't hand control back to the
 // app, or Google refuses the embedded user-agent outright.
 //
-// Here the OS does the sign-in, the same way on both platforms:
-//   * Google — `@capgo/capacitor-social-login` opens the real account picker
-//     and returns an OpenID Connect ID token. Same plugin, version, and
-//     recipe as the Neatby app (iOSServerClientId, split nonce, the
-//     Info.plist reversed-client-id URL scheme) — `^8.3.9`, installed here
-//     with `--legacy-peer-deps` since its declared peer dependency
-//     (`@capacitor/core >=8.0.0`) is only an npm-level advisory: the actual
-//     Swift/Kotlin plugin API (`CAPPlugin`/`CAPBridgedPlugin`) is unchanged
-//     since early Capacitor and compiles fine against this project's
-//     Capacitor 6. Its iOS pod needs iOS 15+, hence the deployment target
-//     bump in ios/App/Podfile and App.xcodeproj.
-//
-//     An earlier attempt pinned `^6.0.1` instead, the newest release whose
-//     npm peer dependency actually matches Capacitor 6 — but its iOS
-//     provider (confirmed by reading the Swift source) never forwarded a
-//     nonce to Google's SDK, while the SDK embedded its own anyway, so
-//     Supabase rejected every sign-in ("nonce mismatch") no matter what the
-//     app sent. `8.3.9`'s iOS provider does forward it (also confirmed by
-//     reading the source), which is what makes this version worth the
-//     deployment-target bump.
-//   * Apple  — `@capacitor-community/apple-sign-in` shows the native
-//     "Sign in with Apple" sheet and returns an identity token.
-// Either token goes straight to Supabase via `signInWithIdToken`, which verifies
-// it with the provider and mints the same session the web flow produces.
+// Here the OS does the sign-in:
+//   * Google on Android — `@capgo/capacitor-social-login` opens the real
+//     account picker and returns an OpenID Connect ID token, verified via
+//     `signInWithIdToken`. Same plugin/recipe as the Neatby app
+//     (iOSServerClientId, split nonce) but pinned to `^6.0.1`, not Neatby's
+//     `^8.3.9`: this project is still on Capacitor 6, and every
+//     `@capgo/capacitor-social-login` release from 7.x onward requires
+//     Capacitor >=7/8. `6.0.1` is the last release with the same API on a
+//     Capacitor-6-compatible peer dependency.
+//   * Google on iOS — a real system-browser OAuth round trip instead
+//     (`signInWithGoogleBrowser`, below). NOT the native account-picker SDK.
+//     Confirmed on-device (2026-09-03): this plugin version's iOS provider
+//     never lets the app supply a nonce, yet GoogleSignIn's iOS SDK embeds its
+//     own self-generated nonce claim in the ID token regardless — Supabase then
+//     rejects it ("Passed nonce and nonce in id_token should either both exist
+//     or not"), because there's no way for the app to know or reproduce a
+//     value it never chose. This project's Supabase instance is Lovable-managed
+//     with no dashboard access to the "skip nonce checks" provider setting that
+//     would otherwise paper over it, and upgrading the plugin to a version that
+//     does forward the nonce means upgrading the whole app off Capacitor 6. The
+//     browser round trip sidesteps the ID-token/nonce path entirely — it's the
+//     same PKCE code exchange the web build already uses, just opened in an
+//     in-app `SFSafariViewController`/`ASWebAuthenticationSession` (a real
+//     system browser context, not an embedded webview — the thing Apple
+//     actually disallows) and handed back to the app via the custom URL scheme,
+//     the same way a password-reset email link already comes back in
+//     (deepLinks.ts).
+//   * Apple — `@capacitor-community/apple-sign-in` shows the native
+//     "Sign in with Apple" sheet and returns an identity token, verified via
+//     `signInWithIdToken`. Unaffected by the above: `ASAuthorizationController`
+//     manages its own nonce, and this plugin does let the app supply and
+//     verify it (confirmed working).
 //
 // Everything is dynamically imported and guarded by `isNativeApp()`, so the web
 // bundle never pulls the native plugins in and this module is inert in a
 // browser.
 //
 // Required build-time config (Vite env — set in .env / the host's env):
-//   VITE_GOOGLE_WEB_CLIENT_ID   Google OAuth *Web* client id. Used as the ID
-//                               token audience on Android and as the value
+//   VITE_GOOGLE_WEB_CLIENT_ID   Google OAuth *Web* client id. Passed as both
+//                               `webClientId` and `iOSServerClientId` — the
+//                               latter is what makes the ID token's audience
+//                               the web client, which is what
 //                               Supabase → Auth → Providers → Google →
-//                               "Authorized Client IDs" must contain.
+//                               "Authorized Client IDs" must contain. Without
+//                               it the token comes back addressed to the iOS
+//                               client and Supabase rejects it.
 //   VITE_GOOGLE_IOS_CLIENT_ID   Google OAuth *iOS* client id. Its reversed form
 //                               (com.googleusercontent.apps.…) also has to be a
 //                               URL scheme in ios/App/App/Info.plist.
@@ -63,6 +75,13 @@ const APPLE_SERVICES_ID = import.meta.env.VITE_APPLE_SERVICES_ID as string | und
 // iOS ignores this constant (the OS signs with the real bundle id
 // automatically); it only matters for the Android/web Apple-login fallback.
 const APP_BUNDLE_ID = "Hello-Hoedspruit";
+
+// Must match CUSTOM_SCHEME in src/lib/deepLinks.ts — that module owns the
+// custom-scheme registration and routes every other deep link; this is the
+// one path ("/auth-callback") it deliberately ignores so this module's own
+// listener can consume it instead (see deepLinks.ts).
+const CUSTOM_SCHEME = "za.co.hellohoedspruit.app";
+const OAUTH_CALLBACK_URL = `${CUSTOM_SCHEME}://auth-callback`;
 
 export type NativeAuthResult = { error: (Error & { code?: string }) | null };
 
@@ -112,14 +131,13 @@ function isCancellation(err: unknown): boolean {
   return /cancel|canceled|cancelled|closed|dismiss|1001|12501|popup_closed|user.?cancel|abort/.test(text);
 }
 
-async function signInWithGoogle(): Promise<NativeAuthResult> {
-  if (!GOOGLE_WEB_CLIENT_ID) {
-    throw new Error("Google sign-in isn't configured yet (VITE_GOOGLE_WEB_CLIENT_ID is not set).");
-  }
+async function signInWithGoogleNative(): Promise<NativeAuthResult> {
   await ensureGoogleInitialised();
   const { SocialLogin } = await import("@capgo/capacitor-social-login");
 
-  // Hand Google the *hashed* nonce; hand Supabase the *raw* one.
+  // Hand Google the *hashed* nonce; hand Supabase the *raw* one. (Android
+  // only — see the file-level note for why iOS takes signInWithGoogleBrowser
+  // instead.)
   const rawNonce = randomNonce();
   const hashedNonce = await sha256Hex(rawNonce);
 
@@ -140,6 +158,84 @@ async function signInWithGoogle(): Promise<NativeAuthResult> {
     nonce: rawNonce,
   });
   return { error: (error as Error) ?? null };
+}
+
+/**
+ * Google sign-in via a system-browser PKCE round trip — the iOS path. See the
+ * file-level note for why: the native SDK path can't be trusted to produce a
+ * nonce Supabase will accept on this plugin version.
+ *
+ * `signInWithOAuth({ skipBrowserRedirect: true })` hands back the provider's
+ * auth URL instead of navigating the page (there is no "page" to navigate,
+ * this is a native app). That URL opens in `@capacitor/browser` — a real
+ * system browser context — and Google/Supabase eventually redirect to
+ * `OAUTH_CALLBACK_URL`, which the OS hands back to the app as an
+ * `appUrlOpen` event (the same mechanism a password-reset email link arrives
+ * through). Whichever happens first — the callback lands, or the user closes
+ * the browser without finishing — resolves this promise exactly once.
+ */
+async function signInWithGoogleBrowser(): Promise<NativeAuthResult> {
+  const [{ Browser }, { App }] = await Promise.all([
+    import("@capacitor/browser"),
+    import("@capacitor/app"),
+  ]);
+
+  const { data, error: urlError } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: OAUTH_CALLBACK_URL, skipBrowserRedirect: true },
+  });
+  if (urlError) throw urlError;
+  if (!data?.url) throw new Error("Could not start Google sign-in.");
+
+  return new Promise<NativeAuthResult>((resolve) => {
+    let settled = false;
+
+    const finish = (result: NativeAuthResult) => {
+      if (settled) return;
+      settled = true;
+      urlOpenHandle.then((h) => h.remove()).catch(() => {});
+      browserFinishedHandle.then((h) => h.remove()).catch(() => {});
+      void Browser.close().catch(() => {});
+      resolve(result);
+    };
+
+    const urlOpenHandle = App.addListener("appUrlOpen", (event) => {
+      if (!event.url.startsWith(OAUTH_CALLBACK_URL)) return;
+      // exchangeCodeForSession wants the bare auth code, not the callback URL.
+      const code = new URL(event.url).searchParams.get("code");
+      if (!code) {
+        const err = new URL(event.url).searchParams.get("error_description");
+        finish({ error: new Error(err || "Google sign-in didn't return an auth code.") });
+        return;
+      }
+      supabase.auth
+        .exchangeCodeForSession(code)
+        .then(({ error }) => finish({ error: (error as Error) ?? null }))
+        .catch((err) => finish({ error: err instanceof Error ? err : new Error(String(err)) }));
+    });
+
+    // The user backed out of the browser without completing sign-in — not an
+    // error, `isCancellation` reads this "cancelled" code the same as the
+    // native-sheet dismissals below.
+    const browserFinishedHandle = Browser.addListener("browserFinished", () => {
+      finish({ error: Object.assign(new Error("cancelled"), { code: CANCELLED }) });
+    });
+
+    Browser.open({ url: data.url, windowName: "_self" }).catch((err) =>
+      finish({ error: err instanceof Error ? err : new Error(String(err)) }),
+    );
+  });
+}
+
+async function signInWithGoogle(): Promise<NativeAuthResult> {
+  // The Android native picker needs the client ids up front; the iOS browser
+  // round trip is just an OAuth redirect (same as the web build) and needs
+  // none of them — Supabase's own Google provider config covers it.
+  if (nativePlatform() === "ios") return signInWithGoogleBrowser();
+  if (!GOOGLE_WEB_CLIENT_ID) {
+    throw new Error("Google sign-in isn't configured yet (VITE_GOOGLE_WEB_CLIENT_ID is not set).");
+  }
+  return signInWithGoogleNative();
 }
 
 async function signInWithApple(): Promise<NativeAuthResult> {
@@ -192,7 +288,12 @@ export async function nativeSignIn(provider: "google" | "apple"): Promise<Native
 
 /** True once the required client ids for `provider` are present in the build. */
 export function nativeAuthConfigured(provider: "google" | "apple"): boolean {
-  if (provider === "google") return !!GOOGLE_WEB_CLIENT_ID;
+  if (provider === "google") {
+    // iOS goes through the browser/PKCE path, which needs no client id here —
+    // just Supabase's own Google provider config. Android's native picker
+    // does need one.
+    return nativePlatform() === "ios" || !!GOOGLE_WEB_CLIENT_ID;
+  }
   // Native Apple on iOS needs nothing extra; Android/web also needs a Services ID.
   return nativePlatform() === "ios" || !!APPLE_SERVICES_ID;
 }

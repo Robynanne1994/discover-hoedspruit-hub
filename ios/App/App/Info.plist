@@ -51,14 +51,6 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
-	<!-- "Add to Calendar" on an event opens the native EventKit prompt
-	     (@ebarooni/capacitor-calendar's createEventWithPrompt) — iOS shows a
-	     permission dialog the first time using this text, and crashes on
-	     launch without it once the plugin's calendar code path is reachable. -->
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Hello Hoedspruit adds events to your calendar when you tap "Add to Calendar".</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Hello Hoedspruit adds events to your calendar when you tap "Add to Calendar".</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

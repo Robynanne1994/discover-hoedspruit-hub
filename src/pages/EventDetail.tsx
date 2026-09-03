@@ -22,7 +22,7 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { sharePlainText } from "@/lib/share";
-import { isNativeApp, nativePlatform } from "@/lib/nativeBridge";
+import { isNativeApp } from "@/lib/nativeBridge";
 import Seo from "@/components/Seo";
 import { eventImage, listingImage, LISTING_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import LocationMap from "@/components/LocationMap";
@@ -201,45 +201,49 @@ const downloadIcsInBrowser = (e: any, ics: string) => {
 };
 
 /**
- * Opens the OS's own "Add Event" screen (EventKit on iOS, a calendar intent
- * on Android) — prefilled and ready to save, not a share sheet the person has
- * to pick "Add to Calendar" out of. iOS presents its own permission dialog
- * automatically the first time; nothing to request up front there. Android
- * does need `readCalendar` requested first — untested/on hold along with the
- * rest of the Android native work, but the call is guarded by platform so it
- * only matters once that resumes.
+ * `<a download>` on a blob: URL — what downloadIcsInBrowser does — is a real
+ * browser download. Capacitor's WKWebView/Android WebView has no download
+ * manager to catch it, so it silently does nothing there; that was the whole
+ * "can't add to calendar" bug on-device. In the native app the file has to
+ * actually exist on disk before anything can open it: write the .ics into
+ * the app's cache dir with @capacitor/filesystem, then hand that file to
+ * @capacitor/share, which opens the OS share sheet — iOS recognises a .ics
+ * attachment and surfaces "Add to Calendar" as one of the sheet's own
+ * actions, no EventKit integration required.
  */
-const addToCalendarNative = async (e: any, range: { start: Date; end: Date }): Promise<boolean> => {
+const addToCalendarNative = async (e: any, ics: string): Promise<boolean> => {
   try {
-    const { CapacitorCalendar } = await import("@ebarooni/capacitor-calendar");
-    if (nativePlatform() === "android") {
-      await CapacitorCalendar.requestFullCalendarAccess();
-    }
-    await CapacitorCalendar.createEventWithPrompt({
-      title: e.title || "Event",
-      startDate: range.start.getTime(),
-      endDate: range.end.getTime(),
-      location: e.location || undefined,
-      notes: e.description ? String(e.description).replace(/<[^>]*>/g, "") : undefined,
+    const [{ Filesystem, Directory, Encoding }, { Share }] = await Promise.all([
+      import("@capacitor/filesystem"),
+      import("@capacitor/share"),
+    ]);
+    const path = icsFileName(e);
+    await Filesystem.writeFile({
+      path,
+      data: ics,
+      directory: Directory.Cache,
+      encoding: Encoding.UTF8,
     });
+    const { uri } = await Filesystem.getUri({ path, directory: Directory.Cache });
+    await Share.share({ title: e.title || "Event", url: uri, dialogTitle: "Add to Calendar" });
     return true;
   } catch (err) {
-    // A user backing out of the native prompt also rejects the promise —
-    // that's not a failure worth falling back from.
+    // A user backing out of the share sheet also rejects the promise — that's
+    // not a failure worth falling back from.
     const msg = (err as { message?: string })?.message?.toLowerCase() || "";
     if (msg.includes("cancel") || msg.includes("dismiss")) return true;
-    console.warn("[addToCalendar] native EventKit prompt failed", err);
+    console.warn("[addToCalendar] native share failed", err);
     return false;
   }
 };
 
 const addToCalendar = async (e: any) => {
   if (isNativeApp()) {
-    const range = resolveCalendarRange(e);
-    if (!range) { toast.error("This event has no start date."); return; }
-    const ok = await addToCalendarNative(e, range);
+    const ics = buildIcs(e);
+    if (!ics) { toast.error("This event has no start date."); return; }
+    const ok = await addToCalendarNative(e, ics);
     if (ok) return;
-    // The native prompt failed outright (not just "no start date") — Google
+    // Native share failed outright (not just "no start date") — Google
     // Calendar's web flow still works everywhere, including Android in-app.
     const url = buildGoogleCalUrl(e);
     if (url) window.open(url, "_blank", "noopener,noreferrer");
