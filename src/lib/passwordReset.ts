@@ -147,14 +147,44 @@ export function parseRecoveryUrl(
 let cachedLink: RecoveryLinkInfo | null = null;
 
 /**
+ * A reset link that reached the app as a native deep link rather than in the
+ * address bar.
+ *
+ * Inside the iOS/Android shell the URL the web view loads is
+ * `capacitor://localhost/` — the emailed link's credentials arrive separately,
+ * through `@capacitor/app`'s `appUrlOpen` (see src/lib/deepLinks.ts). This holds
+ * that URL's parts so `readRecoveryLink()` can see them; it takes precedence
+ * over the start-up snapshot, which on native is always empty.
+ */
+let deepLinkUrl: { search: string; hash: string; pathname: string } | null = null;
+
+/**
+ * Feed a native deep link to the reset flow. Returns true when the URL really
+ * carried recovery credentials (so the caller can route to the reset screen).
+ */
+export function ingestRecoveryDeepLink(rawUrl: string): boolean {
+  try {
+    const u = new URL(rawUrl);
+    const parsed = parseRecoveryUrl(u.search, u.hash, u.pathname);
+    if (parsed.link.kind === "none") return false;
+    deepLinkUrl = { search: u.search, hash: u.hash, pathname: u.pathname };
+    cachedLink = null;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * The recovery link this page load started with. Memoised, so it keeps
  * answering truthfully after the Supabase client (or `clearRecoveryParams()`)
  * has tidied the address bar, and stays consistent across re-mounts.
  */
 export function readRecoveryLink(): RecoveryLinkInfo {
   if (!cachedLink) {
-    cachedLink = initialUrl
-      ? parseRecoveryUrl(initialUrl.search, initialUrl.hash, initialUrl.pathname)
+    const source = deepLinkUrl ?? initialUrl;
+    cachedLink = source
+      ? parseRecoveryUrl(source.search, source.hash, source.pathname)
       : { link: { kind: "none" }, issuedAt: null };
   }
   return cachedLink;
@@ -171,6 +201,7 @@ export function hasRecoveryLink(): boolean {
  */
 export function forgetRecoveryLink(): void {
   cachedLink = { link: { kind: "none" }, issuedAt: null };
+  deepLinkUrl = null;
 }
 
 /** Take the reset parameters out of the address bar without reloading. */

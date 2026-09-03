@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "REPLACE_APPLE_TEAM_ID.Hello-Hoedspruit",
+        "paths": [
+          "NOT /admin/*",
+          "/*"
+        ]
+      }
+    ]
+  }
+}

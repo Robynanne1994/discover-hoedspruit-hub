@@ -1839,10 +1839,12 @@ const ListingDetail = () => {
         {activeTab === "location" && renderLocation()}
       </section>
 
-      {/* Fixed action bar, parked just above the bottom nav */}
+      {/* Fixed action bar, parked just above the bottom nav. BottomNav grows
+          by var(--safe-bottom) for the home-indicator inset, so this has to
+          clear that too or a taller inset pushes the nav up into it. */}
       {actions.length > 0 && (
         <div style={{
-          position: "fixed", bottom: 84, left: "50%", transform: "translateX(-50%)",
+          position: "fixed", bottom: "calc(74px + var(--safe-bottom) + 10px)", left: "50%", transform: "translateX(-50%)",
           zIndex: 40, width: "100%", maxWidth: 480,
           padding: "0 14px", boxSizing: "border-box",
           display: "flex", gap: 8,

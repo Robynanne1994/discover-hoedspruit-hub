@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Native push. Xcode swaps this for "production" in a distribution build. -->
+	<key>aps-environment</key>
+	<string>development</string>
+
+	<!-- Universal Links: https links from these hosts open the app instead of
+	     Safari. The hosts must serve /.well-known/apple-app-site-association
+	     (bundled in the web app's public/ folder). -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:hellohoedspruit.co</string>
+		<string>applinks:www.hellohoedspruit.co</string>
+	</array>
+
+	<!-- Sign in with Apple (native sheet, required by Apple when Google login
+	     is offered). -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
+</dict>
+</plist>

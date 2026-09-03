@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { startSignup, type SignupDetails } from "@/lib/emailVerification";
+import { unregisterNativePush } from "@/lib/nativePush";
 
 /**
  * Everything the signup form knows about the new account. It all travels as
@@ -170,6 +171,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    // Stop this device receiving the signed-out user's pushes (no-op on web).
+    await unregisterNativePush();
     await supabase.auth.signOut();
   };
 

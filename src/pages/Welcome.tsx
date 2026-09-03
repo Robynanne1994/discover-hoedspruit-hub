@@ -27,6 +27,8 @@ import {
   verifySignupCode,
 } from "@/lib/emailVerification";
 import { friendlyOAuthError } from "@/lib/authProviders";
+import { isNativeApp } from "@/lib/nativeBridge";
+import { nativeSignIn, CANCELLED } from "@/lib/nativeAuth";
 import { MUTED, type } from "@/lib/type";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
@@ -154,6 +156,31 @@ const Welcome = () => {
    */
   const handleOAuth = async (provider: "google" | "apple") => {
     setOauthLoading(provider);
+
+    // Native app: the OS does the sign-in (real Google picker / Apple sheet)
+    // and hands back an ID token we swap for a Supabase session. No redirect,
+    // no browser — the Lovable web redirect flow can't hand control back to a
+    // native web view.
+    if (isNativeApp()) {
+      try {
+        const { error } = await nativeSignIn(provider);
+        if (error) {
+          if ((error as { code?: string }).code !== CANCELLED) {
+            toast.error(friendlyOAuthError(error.message, provider), { duration: 8000 });
+          }
+          setOauthLoading(null);
+          return;
+        }
+        localStorage.setItem("hh-keep-signed-in", "1");
+        navigate("/", { replace: true });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        toast.error(friendlyOAuthError(message, provider), { duration: 8000 });
+      }
+      setOauthLoading(null);
+      return;
+    }
+
     try {
       const result = await lovable.auth.signInWithOAuth(provider, {
         redirect_uri: window.location.origin,

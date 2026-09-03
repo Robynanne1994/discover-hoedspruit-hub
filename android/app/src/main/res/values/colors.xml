@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand palette. styles.xml references these; without the file the
+         resource merge fails to build. -->
+    <color name="colorPrimary">#423324</color>
+    <color name="colorPrimaryDark">#2B2420</color>
+    <color name="colorAccent">#423324</color>
+
+    <!-- App background — kept in sync with capacitor.config.ts backgroundColor
+         and index.html theme-color so nothing flashes white at the edges. -->
+    <color name="hh_background">#E6E0CC</color>
+
+    <!-- Tint applied to the small status-bar icon for FCM notifications. -->
+    <color name="notification_accent">#423324</color>
+</resources>

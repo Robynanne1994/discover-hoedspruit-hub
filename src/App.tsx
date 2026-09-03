@@ -3,9 +3,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import BottomNav from "@/components/BottomNav";
+import DeepLinks from "@/components/DeepLinks";
 import NativePush from "@/components/NativePush";
 import OfflineScreen from "@/components/OfflineScreen";
 import ScrollToTop from "@/components/ScrollToTop";
+import StatusBarCover from "@/components/StatusBarCover";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
@@ -244,10 +246,12 @@ const App = () => (
         <Toaster />
         <Sonner />
         <OfflineScreen />
+        <StatusBarCover />
         <BrowserRouter>
           <GuestAuthProvider>
             <ShareProvider>
               <NativePush />
+              <DeepLinks />
               <RecoveryLinkRedirect />
               <EmailChangeLinkRedirect />
               <ProfileSetupGate />

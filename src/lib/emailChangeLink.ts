@@ -110,14 +110,42 @@ export function parseEmailChangeUrl(
 let cachedLink: EmailChangeLink | null = null;
 
 /**
+ * An email-change link that reached the app as a native deep link rather than
+ * in the address bar. Same reasoning as src/lib/passwordReset.ts: inside the
+ * app shell the web view's URL is `capacitor://localhost/`, and the emailed
+ * link's credentials arrive through `@capacitor/app` (see src/lib/deepLinks.ts).
+ * Takes precedence over the start-up snapshot.
+ */
+let deepLinkUrl: { search: string; hash: string; pathname: string } | null = null;
+
+/**
+ * Feed a native deep link to the email-change flow. Returns true when the URL
+ * really carried email-change credentials (so the caller can route to Account
+ * Info to redeem it).
+ */
+export function ingestEmailChangeDeepLink(rawUrl: string): boolean {
+  try {
+    const u = new URL(rawUrl);
+    const parsed = parseEmailChangeUrl(u.search, u.hash, u.pathname);
+    if (parsed.kind === "none") return false;
+    deepLinkUrl = { search: u.search, hash: u.hash, pathname: u.pathname };
+    cachedLink = null;
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * The email-change link this page load started with. Memoised, so it keeps
  * answering truthfully after the Supabase client (or `clearEmailChangeParams()`)
  * has tidied the address bar, and stays consistent across re-mounts.
  */
 export function readEmailChangeLink(): EmailChangeLink {
   if (!cachedLink) {
-    cachedLink = initialUrl
-      ? parseEmailChangeUrl(initialUrl.search, initialUrl.hash, initialUrl.pathname)
+    const source = deepLinkUrl ?? initialUrl;
+    cachedLink = source
+      ? parseEmailChangeUrl(source.search, source.hash, source.pathname)
       : { kind: "none" };
   }
   return cachedLink;
@@ -135,6 +163,7 @@ export function hasEmailChangeLink(): boolean {
  */
 export function forgetEmailChangeLink(): void {
   cachedLink = { kind: "none" };
+  deepLinkUrl = null;
 }
 
 /** Take the confirmation parameters out of the address bar without reloading. */

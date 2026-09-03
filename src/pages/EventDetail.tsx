@@ -22,6 +22,7 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { sharePlainText } from "@/lib/share";
+import { isNativeApp } from "@/lib/nativeBridge";
 import Seo from "@/components/Seo";
 import { eventImage, listingImage, LISTING_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import LocationMap from "@/components/LocationMap";
@@ -184,26 +185,79 @@ const buildGoogleCalUrl = (e: any): string | null => {
   return `https://www.google.com/calendar/render?${params.toString()}`;
 };
 
-const downloadIcs = (e: any) => {
-  const ics = buildIcs(e);
-  if (!ics) { toast.error("This event has no start date."); return; }
+const icsFileName = (e: any) =>
+  `${(e.title || "event").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`;
+
+const downloadIcsInBrowser = (e: any, ics: string) => {
   const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `${(e.title || "event").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`;
+  a.download = icsFileName(e);
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
-const addToCalendar = (e: any) => {
+/**
+ * `<a download>` on a blob: URL — what downloadIcsInBrowser does — is a real
+ * browser download. Capacitor's WKWebView/Android WebView has no download
+ * manager to catch it, so it silently does nothing there; that was the whole
+ * "can't add to calendar" bug on-device. In the native app the file has to
+ * actually exist on disk before anything can open it: write the .ics into
+ * the app's cache dir with @capacitor/filesystem, then hand that file to
+ * @capacitor/share, which opens the OS share sheet — iOS recognises a .ics
+ * attachment and surfaces "Add to Calendar" as one of the sheet's own
+ * actions, no EventKit integration required.
+ */
+const addToCalendarNative = async (e: any, ics: string): Promise<boolean> => {
+  try {
+    const [{ Filesystem, Directory, Encoding }, { Share }] = await Promise.all([
+      import("@capacitor/filesystem"),
+      import("@capacitor/share"),
+    ]);
+    const path = icsFileName(e);
+    await Filesystem.writeFile({
+      path,
+      data: ics,
+      directory: Directory.Cache,
+      encoding: Encoding.UTF8,
+    });
+    const { uri } = await Filesystem.getUri({ path, directory: Directory.Cache });
+    await Share.share({ title: e.title || "Event", url: uri, dialogTitle: "Add to Calendar" });
+    return true;
+  } catch (err) {
+    // A user backing out of the share sheet also rejects the promise — that's
+    // not a failure worth falling back from.
+    const msg = (err as { message?: string })?.message?.toLowerCase() || "";
+    if (msg.includes("cancel") || msg.includes("dismiss")) return true;
+    console.warn("[addToCalendar] native share failed", err);
+    return false;
+  }
+};
+
+const addToCalendar = async (e: any) => {
+  if (isNativeApp()) {
+    const ics = buildIcs(e);
+    if (!ics) { toast.error("This event has no start date."); return; }
+    const ok = await addToCalendarNative(e, ics);
+    if (ok) return;
+    // Native share failed outright (not just "no start date") — Google
+    // Calendar's web flow still works everywhere, including Android in-app.
+    const url = buildGoogleCalUrl(e);
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+    else toast.error("Couldn't add this event to your calendar.");
+    return;
+  }
+
   const ua = navigator.userAgent || "";
   const isAppleMobile = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document);
   // Apple devices open .ics natively into the Calendar app; everyone else gets Google Calendar.
   if (isAppleMobile) {
-    downloadIcs(e);
+    const ics = buildIcs(e);
+    if (!ics) { toast.error("This event has no start date."); return; }
+    downloadIcsInBrowser(e, ics);
     return;
   }
   const url = buildGoogleCalUrl(e);
@@ -1158,10 +1212,16 @@ const EventDetail = () => {
       })()}
 
 
-      {/* Fixed action bar, parked just above the bottom nav */}
+      {/* Fixed action bar, parked just above the bottom nav. BottomNav is
+          `74px + var(--safe-bottom)` tall (it grows for the home-indicator
+          inset) and sits at bottom:0, so this has to clear that same amount
+          or the home indicator on taller-inset phones pushes the nav up into
+          it and clips it — a bare "84" ignored the inset entirely. */}
       {!isPast && actions.length > 0 && (
         <div style={{
-          position: "fixed", bottom: 84, left: "50%", transform: "translateX(-50%)",
+          position: "fixed",
+          bottom: "calc(74px + var(--safe-bottom) + 10px)",
+          left: "50%", transform: "translateX(-50%)",
           zIndex: 40, width: "100%", maxWidth: 480,
           padding: "0 14px", boxSizing: "border-box",
           display: "flex", gap: 8,
