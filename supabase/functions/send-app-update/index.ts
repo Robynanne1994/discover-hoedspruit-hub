@@ -126,19 +126,48 @@ Deno.serve(async (req) => {
     const broadcastId = broadcast.id as string;
     rows.forEach((r) => (r.ref_id = broadcastId));
 
-    // Insert notification rows in chunks.
+    // Insert notification rows in chunks, getting the new ids back so the
+    // pushable ones can be dispatched below.
     let inserted = 0;
+    const pushableIds: string[] = [];
     for (let i = 0; i < rows.length; i += 500) {
       const chunk = rows.slice(i, i + 500);
-      const { error: iErr } = await admin.from("business_notifications").insert(chunk);
+      const { data: insertedRows, error: iErr } = await admin
+        .from("business_notifications")
+        .insert(chunk)
+        .select("id, push");
       if (iErr) throw iErr;
       inserted += chunk.length;
+      (insertedRows ?? []).forEach((r: any) => {
+        if (r.push) pushableIds.push(r.id);
+      });
     }
+
+    // Dispatch the actual device push directly, rather than relying on the
+    // DB trigger (dispatch_push_notification), which reads its target URL
+    // and auth key from Supabase Vault — a one-time setup step that may not
+    // be done yet. This function already has both values as env vars
+    // (auto-injected into every edge function), so it can call send-push
+    // itself with no extra configuration.
+    const pushResults = await Promise.allSettled(
+      pushableIds.map((id) =>
+        fetch(`${supabaseUrl}/functions/v1/send-push`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${serviceKey}`,
+          },
+          body: JSON.stringify({ notification_id: id }),
+        }),
+      ),
+    );
+    const pushFailures = pushResults.filter((r) => r.status === "rejected").length;
 
     return json({
       broadcast_id: broadcastId,
       recipient_count: inserted,
       pushed_count,
+      push_dispatch_failures: pushFailures,
     });
   } catch (err: any) {
     return json({ error: err?.message || "Unknown error" }, 500);
