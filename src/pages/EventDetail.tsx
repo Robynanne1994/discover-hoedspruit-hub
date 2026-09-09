@@ -459,9 +459,9 @@ const EventDetail = () => {
 
   // Action pills
   const actions = [
-    bookingLink && {
-      key: "booking", label: "Book",
-      href: bookingLink, Icon: ExternalLink, ext: true,
+    booking && {
+      key: "booking", label: bookingActionLabel(booking.type),
+      href: booking.href, Icon: BookingIcon, ext: booking.external,
       disabled: isPast,
     },
     socialLink && {
