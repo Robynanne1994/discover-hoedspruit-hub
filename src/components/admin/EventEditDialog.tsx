@@ -72,6 +72,13 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       // uuid columns reject "": a host with no listing picked must go in as null.
       HOST_LISTING_KEYS.forEach((k) => { if (!payload[k]) payload[k] = null; });
+      // A host linked to an app listing shows that listing's image — drop any stored host photo.
+      const HOST_IMG_BY_LISTING: Record<string, string> = {
+        hosted_by_listing_id: "hosted_by_image_url",
+        hosted_by_listing_id_2: "hosted_by_image_url_2",
+        hosted_by_listing_id_3: "hosted_by_image_url_3",
+      };
+      HOST_LISTING_KEYS.forEach((k) => { if (payload[k]) payload[HOST_IMG_BY_LISTING[k]] = null; });
       // Normalize business_ids -> ensure array, sync legacy single business_id to first entry
       const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
       payload.business_ids = ids;
@@ -368,12 +375,15 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       listings={listings || []}
                       onChange={(v) => setForm((f) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
                     />
-                    <ImageSlotField
-                      slot={hostSlot}
-                      label="Photo"
-                      value={form[h.imgKey] || ""}
-                      onChange={(url) => set(h.imgKey, url)}
-                    />
+                    {/* Linked app listings already have their own image — the host photo is only for non-linked hosts. */}
+                    {!form[h.listingKey] && (
+                      <ImageSlotField
+                        slot={hostSlot}
+                        label="Photo"
+                        value={form[h.imgKey] || ""}
+                        onChange={(url) => set(h.imgKey, url)}
+                      />
+                    )}
                   </div>
                 ))}
                 {shown < 3 && (
