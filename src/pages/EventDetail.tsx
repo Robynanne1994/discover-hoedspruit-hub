@@ -430,6 +430,10 @@ const EventDetail = () => {
   const galleryImages: string[] = e.gallery_images ?? [];
   const bookingLink = e.booking_link || null;
   const bookingLinkLabel = e.booking_link_label?.trim() || null;
+  const booking = buildBookingHref(bookingLink, (e as any).booking_link_type);
+  const BookingIcon = booking
+    ? booking.type === "email" ? Mail : booking.type === "phone" ? Phone : booking.type === "whatsapp" ? WhatsAppIcon : ExternalLink
+    : ExternalLink;
   const price = e.price || null;
   const priceNotes: string[] = Array.isArray((e as any).price_notes)
     ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
