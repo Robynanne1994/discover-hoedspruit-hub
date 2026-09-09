@@ -79,9 +79,20 @@ export const RefineDrawer = ({
           maxWidth: 400,
           background: IVORY,
           color: INK,
-          boxShadow: "-12px 0 36px rgba(0,0,0,0.18)",
+          // Only while open. The panel is parked off-screen to the right when
+          // closed, but a shadow with a negative x-offset still paints *left*
+          // — back into the viewport — so a closed drawer drew a permanent
+          // dark band down the right edge of Specials, Events and category
+          // pages. (It appeared to start below the status bar only because
+          // StatusBarCover sits above it and hid the top.)
+          boxShadow: open ? "-12px 0 36px rgba(0,0,0,0.18)" : "none",
           transform: open ? "translateX(0)" : "translateX(100%)",
-          transition: "transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+          // visibility keeps the closed panel out of the tab order and the
+          // a11y tree; delayed on close so the slide-out stays visible.
+          visibility: open ? "visible" : "hidden",
+          transition: open
+            ? "transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s"
+            : "transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s linear 280ms",
           zIndex: 90,
           display: "flex",
           flexDirection: "column",
