@@ -240,7 +240,7 @@ const UserSaved = () => {
   const isPrivate = profile?.activity_private !== false;
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: SANS, color: INK }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: "var(--nav-clearance)", fontFamily: SANS, color: INK }}>
       <Seo title={`${displayName}'s Saved — Hello Hoedspruit`} description={`See what ${displayName} has saved on Hello Hoedspruit.`} path={`/profile/${id}/saved`} noIndex />
       <PageHeader title="Saved" />
 

@@ -784,7 +784,7 @@ const Events = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingBottom: 100,
+        paddingBottom: "var(--nav-clearance)",
         background: C.page,
         fontFamily: SANS,
         color: C.ink,

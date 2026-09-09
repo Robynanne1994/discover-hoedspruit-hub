@@ -126,7 +126,7 @@ const Section = ({ label, items }: { label: string; items: RowItem[] }) => {
 
 const HelpCentre = () => {
   return (
-    <div style={{ minHeight: "100vh", background: BG, paddingBottom: 100, fontFamily: SANS, overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: BG, paddingBottom: "var(--nav-clearance)", fontFamily: SANS, overflowX: "hidden" }}>
       <Seo
         title="Help Centre — Hello Hoedspruit"
         description="Find help, FAQs, contact details and policy information for the Hello Hoedspruit app."

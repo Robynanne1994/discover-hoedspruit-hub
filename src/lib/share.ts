@@ -15,6 +15,8 @@
 // Every link is normalised to the public web origin first: inside the native
 // webview window.location.origin is "capacitor://localhost", so sharing the raw
 // href sent people a link that only resolves on the sharer's own device.
+import { Share } from "@capacitor/share";
+import { Clipboard } from "@capacitor/clipboard";
 import { isNativeApp } from "@/lib/nativeBridge";
 import { PUBLIC_ORIGIN, shareOrigin } from "@/lib/publicOrigin";
 
@@ -96,27 +98,23 @@ export function shareMessage(content: ShareContent): string {
   return [title, blurb && blurb !== title ? blurb : null, url].filter(Boolean).join("\n\n");
 }
 
-type NativeSharePlugin = typeof import("@capacitor/share").Share;
+// The Capacitor plugins are imported statically, NOT with a lazy import().
+//
+// They used to be lazy, to keep them out of the web bundle. On device that
+// dynamic import never settled — it neither resolved nor rejected, so every
+// caller awaiting it hung forever. That is exactly what "the share button
+// does nothing" and "copy address does nothing" were: not a failing plugin
+// call, a plugin call that was never reached, with no error to show for it
+// and no way to fall back (the fallback only runs on a settled "failed").
+// Confirmed on the simulator by logging either side of the await: the line
+// before printed, the line after never did.
+//
+// Both plugins are small and ship web implementations, so importing them up
+// front costs little and removes the whole failure mode.
 
-// The native plugin is loaded once, lazily, and only on a device. Keeping the
-// promise means the second tap never waits on the import again.
-let sharePlugin: Promise<NativeSharePlugin | null> | null = null;
-
-function loadNativeShare(): Promise<NativeSharePlugin | null> {
-  if (!sharePlugin) {
-    sharePlugin = import("@capacitor/share")
-      .then((mod) => mod.Share ?? null)
-      .catch(() => null);
-  }
-  return sharePlugin;
-}
-
-/**
- * Warms the native plugin at start-up so the first Share tap opens the OS sheet
- * immediately instead of stalling on a chunk fetch. No-op in the browser.
- */
+/** Kept for the call site in ShareProvider; nothing to preload any more. */
 export function preloadShare(): void {
-  if (isNativeApp()) void loadNativeShare();
+  /* no-op: the plugins are statically imported */
 }
 
 /**
@@ -142,11 +140,15 @@ export async function openSystemShareSheet(content: ShareContent): Promise<Share
   const text = blurb || title;
 
   if (isNativeApp()) {
-    const Share = await loadNativeShare();
-    if (!Share) return "unsupported";
     try {
       // `text` carries the blurb and `url` the link; iOS shows both, Android
       // concatenates them into the outgoing message.
+      //
+      // Deliberately NOT raced against a timeout. This promise stays pending
+      // for as long as the system sheet is open — that is the user reading
+      // the list and picking WhatsApp, which routinely takes longer than any
+      // timeout worth setting. A race here resolved "failed" mid-decision and
+      // popped the in-app fallback sheet up behind the real one.
       await Share.share({ title, text, url, dialogTitle: title });
       return "shared";
     } catch (err) {
@@ -175,14 +177,11 @@ export async function openSystemShareSheet(content: ShareContent): Promise<Share
  */
 export async function sharePlainText(text: string): Promise<"shared" | "copied" | "failed"> {
   if (isNativeApp()) {
-    const Share = await loadNativeShare();
-    if (Share) {
-      try {
-        await Share.share({ text, dialogTitle: text });
-        return "shared";
-      } catch (err) {
-        if (isDismissal(err)) return "shared";
-      }
+    try {
+      await Share.share({ text, dialogTitle: text });
+      return "shared";
+    } catch (err) {
+      if (isDismissal(err)) return "shared";
     }
   }
 
@@ -203,8 +202,24 @@ export async function sharePlainText(text: string): Promise<"shared" | "copied" 
   return (await copyToClipboard(text)) ? "copied" : "failed";
 }
 
-/** Copies text, with a legacy path for webviews and insecure contexts. */
+/**
+ * Copies text. Native first — the web Clipboard API is unreliable inside
+ * Capacitor's WKWebView/Android WebView (same class of problem as the .ics
+ * blob download and the Share-sheet issues elsewhere in this app: browser
+ * APIs that assume a real browser tab silently do nothing in an embedded
+ * webview instead of throwing something catchable). @capacitor/clipboard
+ * talks to the OS pasteboard directly, so it works regardless.
+ */
 export async function copyToClipboard(value: string): Promise<boolean> {
+  if (isNativeApp()) {
+    try {
+      await Clipboard.write({ string: value });
+      return true;
+    } catch {
+      // Fall through to the web path — harmless if it also fails.
+    }
+  }
+
   try {
     if (navigator.clipboard?.writeText) {
       await navigator.clipboard.writeText(value);

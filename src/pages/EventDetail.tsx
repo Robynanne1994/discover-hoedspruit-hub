@@ -22,8 +22,9 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
-import { sharePlainText } from "@/lib/share";
+import { copyToClipboard } from "@/lib/share";
 import { isNativeApp, nativePlatform } from "@/lib/nativeBridge";
+import { useSuppressStatusBarCover } from "@/lib/statusBarCoverVisibility";
 import Seo from "@/components/Seo";
 import { eventImage, listingImage, LISTING_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import LocationMap from "@/components/LocationMap";
@@ -282,6 +283,13 @@ const EventDetail = () => {
     },
     enabled: !!id,
   });
+
+  // The hero below always renders edge-to-edge behind the status bar once the
+  // event has loaded (unlike the loading/not-found state above it, which uses
+  // ordinary --header-top padding) — called unconditionally, ahead of the
+  // isLoading early return, since a hook can't be skipped on some renders and
+  // not others.
+  useSuppressStatusBarCover(!isLoading && !!event);
 
   // When a host is linked to an app listing, its cover image is the host photo.
   const hostListingIds = [
@@ -947,13 +955,20 @@ const EventDetail = () => {
 
   const renderLocation = () => {
     const isSurrounds = (event.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
-    const addressText = event.location || event.title;
-    const mapHref = directionsHref || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
+    // An event's own title is never its address — falling back to it here (as
+    // this used to) meant "Copy Address" silently copied the event's name
+    // whenever `location` was empty. The maps-search fallback below keeps
+    // its own title fallback — searching by event name is a reasonable
+    // substitute for a missing address; presenting the name *as* an address
+    // is not.
+    const addressText = event.location || null;
+    const mapHref = directionsHref || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(event.location || event.title)}`;
 
     const copyAddress = async () => {
-      const outcome = await sharePlainText(addressText);
-      if (outcome === "copied") toast.success("Address copied");
-      if (outcome === "failed") toast.error("Couldn't copy the address");
+      if (!addressText) return;
+      const ok = await copyToClipboard(addressText);
+      if (ok) toast.success("Address copied");
+      else toast.error("Couldn't copy the address");
     };
 
     // One row of the directions / address card: circled icon, label + value, arrow.
@@ -1026,7 +1041,9 @@ const EventDetail = () => {
         {!isSurrounds && (
           <div style={{ ...cardStyle, padding: "0 20px" }}>
             <LocationRow first Icon={Navigation} label="Directions" value="Open in Google Maps" href={mapHref} />
-            <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
+            {addressText && (
+              <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
+            )}
           </div>
         )}
       </div>
@@ -1035,7 +1052,7 @@ const EventDetail = () => {
 
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: !isPast && actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: !isPast && actions.length > 0 ? "calc(var(--nav-clearance) + 90px)" : "var(--nav-clearance)", fontFamily: FONT, color: C.text }}>
       <Seo
         title={`${event.title} — Hello Hoedspruit`}
         description={

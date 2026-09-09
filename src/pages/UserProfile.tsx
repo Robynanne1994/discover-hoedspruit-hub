@@ -420,7 +420,7 @@ const UserProfile = () => {
         style={{
           minHeight: "100vh",
           background: PAGE_BG,
-          paddingBottom: 100,
+          paddingBottom: "var(--nav-clearance)",
           fontFamily: SANS,
           color: BODY,
         }}
@@ -471,7 +471,7 @@ const UserProfile = () => {
       style={{
         minHeight: "100vh",
         background: PAGE_BG,
-        paddingBottom: 100,
+        paddingBottom: "var(--nav-clearance)",
         fontFamily: SANS,
         color: BODY,
       }}

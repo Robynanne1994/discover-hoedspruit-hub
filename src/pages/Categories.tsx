@@ -378,7 +378,7 @@ const Categories = () => {
         minHeight: "100dvh",
         backgroundColor: COLORS.bg,
         fontFamily: FONT_BODY,
-        paddingBottom: 140,
+        paddingBottom: "var(--nav-clearance)",
       }}
     >
       <Seo

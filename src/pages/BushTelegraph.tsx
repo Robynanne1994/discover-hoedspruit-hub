@@ -250,7 +250,7 @@ const BushTelegraph = () => {
 
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: "var(--nav-clearance)", fontFamily: HN }}>
       <Seo
         title="Local Channels — Hello Hoedspruit"
         description="Discover community WhatsApp groups, newsletters, podcasts and other local channels keeping Hoedspruit connected."

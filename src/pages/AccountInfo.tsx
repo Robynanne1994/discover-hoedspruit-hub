@@ -842,7 +842,7 @@ const AccountInfo = () => {
 
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: "var(--nav-clearance)", fontFamily: FF }}>
       {/* Top bar */}
       <PageHeader title="Account Info" />
 

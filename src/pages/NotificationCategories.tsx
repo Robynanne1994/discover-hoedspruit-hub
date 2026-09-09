@@ -185,7 +185,7 @@ const NotificationCategories = () => {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
-    <div style={{ background: COLORS.bg, minHeight: "100vh", paddingBottom: 120, fontFamily: SANS }}>
+    <div style={{ background: COLORS.bg, minHeight: "100vh", paddingBottom: "var(--nav-clearance)", fontFamily: SANS }}>
       {/* Top bar */}
       <PageHeader title={pageTitle} />
 

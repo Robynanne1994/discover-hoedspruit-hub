@@ -15,6 +15,7 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useShare } from "@/hooks/useShare";
 import Seo from "@/components/Seo";
 import { MUTED, type, metaRow, metaIcon, tab as tabStyle } from "@/lib/type";
+import { useSuppressStatusBarCover } from "@/lib/statusBarCoverVisibility";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -120,6 +121,12 @@ const LocalChannelDetail = () => {
     enabled: !!slug,
   });
 
+  // The hero below always renders edge-to-edge behind the status bar once the
+  // resource has loaded (the loading/not-found state above it uses ordinary
+  // padding instead) — called unconditionally, ahead of the isLoading early
+  // return, since a hook can't be skipped on some renders and not others.
+  useSuppressStatusBarCover(!isLoading && !!resource);
+
   const isFavourited = useIsFavourited(resource?.id ?? "", "resource");
   const toggleFavourite = useToggleFavourite();
 
@@ -224,7 +231,7 @@ const LocalChannelDetail = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 190 }}>
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: "calc(var(--nav-clearance) + 90px)" }}>
       <Seo
         title={`${displayTitle} — Local Channel`}
         description={

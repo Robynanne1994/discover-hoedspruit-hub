@@ -150,7 +150,7 @@ const ContactUs = () => {
       style={{
         minHeight: "100vh",
         background: BG,
-        paddingBottom: 100,
+        paddingBottom: "var(--nav-clearance)",
         fontFamily: FF,
         overflowX: "hidden",
       }}

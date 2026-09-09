@@ -272,7 +272,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 120, fontFamily: SANS }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: "var(--nav-clearance)", fontFamily: SANS }}>
       {/* Top bar */}
       <div
         style={{

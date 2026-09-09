@@ -14,7 +14,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useShare } from "@/hooks/useShare";
-import { sharePlainText } from "@/lib/share";
+import { copyToClipboard } from "@/lib/share";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
@@ -42,6 +42,7 @@ import { getSpecialBadge } from "@/lib/specialBadge";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon, metaIconSolid } from "@/lib/type";
+import { useSuppressStatusBarCover } from "@/lib/statusBarCoverVisibility";
 
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
@@ -172,6 +173,14 @@ const ListingDetail = () => {
   // schedule, rather than on whichever tab the last listing was left showing.
   useEffect(() => { setHoursTab(null); }, [id]);
 
+  // Computed ahead of the loading/not-found early returns below so the hook
+  // it feeds (useSuppressStatusBarCover) is called on every render, loading
+  // included — conditionally skipping a hook call between renders is a rules-
+  // of-hooks violation, not just a style nit.
+  const heroImgUrl = listing ? listingImage(listing, "detail") : null;
+  const showHero = !!heroImgUrl && !heroImgError;
+  useSuppressStatusBarCover(showHero);
+
   useEffect(() => {
     if (!listing) return;
     setMapPlace(null);
@@ -300,7 +309,7 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: "var(--nav-clearance)" }}>
         <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
@@ -334,7 +343,7 @@ const ListingDetail = () => {
 
   if (isError) {
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: "var(--nav-clearance)" }}>
         <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
@@ -375,7 +384,7 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: 100 }}>
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text, paddingBottom: "var(--nav-clearance)" }}>
         <div style={{ padding: "var(--header-top) 16px 0" }}>
           <button
             onClick={() => navigate(-1)}
@@ -1526,12 +1535,21 @@ const ListingDetail = () => {
   const renderLocation = () => {
     const directionsHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
     const isSurrounds = (listing.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
-    const addressText = listing.location || listing.title;
+    // A business's own name is never its address — falling back to the title
+    // here (as this used to) meant "Copy Address" silently copied the
+    // listing's name whenever `location` was empty, which is what "copy
+    // address only copies the title" was actually describing: not a broken
+    // copy mechanism, a wrong value being copied. The "Directions" row below
+    // keeps its own title fallback — searching Google Maps by business name
+    // is a reasonable substitute for a missing address; presenting the name
+    // *as* an address is not.
+    const addressText = listing.location || null;
 
     const copyAddress = async () => {
-      const outcome = await sharePlainText(addressText);
-      if (outcome === "copied") toast.success("Address copied");
-      if (outcome === "failed") toast.error("Couldn't copy the address");
+      if (!addressText) return;
+      const ok = await copyToClipboard(addressText);
+      if (ok) toast.success("Address copied");
+      else toast.error("Couldn't copy the address");
     };
 
     // One row of the directions / address card: circled icon, label + value, arrow.
@@ -1609,7 +1627,9 @@ const ListingDetail = () => {
         {!isSurrounds && (
           <div style={{ ...cardStyle, padding: "0 20px" }}>
             <LocationRow first Icon={Navigation} label="Directions" value="Open in Google Maps" href={directionsHref} />
-            <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
+            {addressText && (
+              <LocationRow Icon={Copy} label="COPY ADDRESS" value={addressText} onClick={copyAddress} />
+            )}
           </div>
         )}
 
@@ -1625,11 +1645,8 @@ const ListingDetail = () => {
     boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
   };
 
-  const heroImgUrl = listingImage(listing, "detail");
-  const showHero = !!heroImgUrl && !heroImgError;
-
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: actions.length > 0 ? "calc(var(--nav-clearance) + 90px)" : "var(--nav-clearance)", fontFamily: FONT, color: C.text }}>
       <Seo
         title={`${listing.title} — Hello Hoedspruit`}
         description={

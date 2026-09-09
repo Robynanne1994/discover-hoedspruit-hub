@@ -450,7 +450,7 @@ const FollowList = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: COLOR.page, paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: COLOR.page, paddingBottom: "var(--nav-clearance)" }}>
       {/* Top bar */}
       <PageHeader title="Connections" />
 

@@ -43,7 +43,7 @@ const FollowRequests = () => {
   const pending = requests?.length ?? 0;
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: SANS }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: "var(--nav-clearance)", fontFamily: SANS }}>
       <PageHeader
         title="Follow Requests"
         subtitle={

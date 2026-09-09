@@ -127,7 +127,7 @@ const Section = ({ label, items }: { label: string; items: RowItem[] }) => {
 
 const TermsPolicies = () => {
   return (
-    <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: "var(--nav-clearance)" }}>
       <Seo
         title="Terms & Policies — Hello Hoedspruit"
         description="Read the terms of use, privacy policy, cookie policy and community guidelines for the Hello Hoedspruit app."

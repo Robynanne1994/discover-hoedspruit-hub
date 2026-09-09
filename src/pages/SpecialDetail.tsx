@@ -25,6 +25,7 @@ import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon } from "@/lib/type";
+import { useSuppressStatusBarCover } from "@/lib/statusBarCoverVisibility";
 import {
   resolveLocation,
   HOEDSPRUIT_CENTRE,
@@ -122,6 +123,13 @@ const SpecialDetail = () => {
     },
     enabled: !!id,
   });
+
+  // The hero below always renders edge-to-edge behind the status bar once the
+  // special has loaded (the loading/not-found state above it uses ordinary
+  // --header-top padding instead) — called unconditionally, ahead of the
+  // isLoading early return, since a hook can't be skipped on some renders and
+  // not others.
+  useSuppressStatusBarCover(!isLoading && !!special);
 
   const [mapPlace, setMapPlace] = useState<ResolvedLocation | null>(null);
 
@@ -524,8 +532,15 @@ const SpecialDetail = () => {
     const b: any = business || {};
     const locText = (b.location as string | null) || null;
     const isSurrounds = (locText || "").trim().toLowerCase() === "hoedspruit & surrounds";
-    const addressText = locText || b.title || special.business_name || special.title;
-    const mapHref = b.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressText)}`;
+    // A business/special's own name is never its address — falling back to
+    // it here (as this used to) meant "Copy Address" silently copied a name
+    // whenever there was no real location. The maps-search fallback below
+    // keeps its own name fallback — searching by name is a reasonable
+    // substitute for a missing address; presenting the name *as* an address
+    // is not.
+    const addressText = locText;
+    const mapQueryText = locText || b.title || special.business_name || special.title;
+    const mapHref = b.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQueryText)}`;
     const kmFromTown = (() => {
       if (!b.km_from_town) return null;
       const n = parseFloat(String(b.km_from_town).replace(",", ".").replace(/[^0-9.]/g, ""));
@@ -534,9 +549,10 @@ const SpecialDetail = () => {
     })();
 
     const copyAddress = async () => {
-      const outcome = await sharePlainText(addressText);
-      if (outcome === "copied") toast.success("Address copied");
-      if (outcome === "failed") toast.error("Couldn't copy the address");
+      if (!addressText) return;
+      const ok = await copyToClipboard(addressText);
+      if (ok) toast.success("Address copied");
+      else toast.error("Couldn't copy the address");
     };
 
     // One row of the directions / address card: circled icon, label + value, arrow.
@@ -656,7 +672,7 @@ const SpecialDetail = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: actions.length > 0 ? 190 : 100, fontFamily: FONT, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: actions.length > 0 ? "calc(var(--nav-clearance) + 90px)" : "var(--nav-clearance)", fontFamily: FONT, color: C.text }}>
       <Seo
         title={`${special.title} — Hoedspruit Special`}
         description={

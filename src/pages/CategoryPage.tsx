@@ -1020,7 +1020,7 @@ const CategoryPage = () => {
 
   if (categoryError) {
     return (
-      <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
+      <div style={{ minHeight: "100vh", paddingBottom: "var(--nav-clearance)", background: PAGE_BG, fontFamily: sans, color: INK }}>
         <PageHeader title="Explore" />
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
           <h2 style={{ ...type.sectionTitle, margin: "0 0 10px" }}>
@@ -1043,7 +1043,7 @@ const CategoryPage = () => {
 
   if (!categoryLoading && !category) {
     return (
-      <div style={{ minHeight: "100vh", paddingBottom: 100, background: PAGE_BG, fontFamily: sans, color: INK }}>
+      <div style={{ minHeight: "100vh", paddingBottom: "var(--nav-clearance)", background: PAGE_BG, fontFamily: sans, color: INK }}>
         <PageHeader title="Explore" />
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
           <h2 style={{ ...type.sectionTitle, margin: "0 0 10px" }}>
@@ -1069,7 +1069,7 @@ const CategoryPage = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingBottom: 100,
+        paddingBottom: "var(--nav-clearance)",
         background: PAGE_BG,
         fontFamily: sans,
         color: INK,

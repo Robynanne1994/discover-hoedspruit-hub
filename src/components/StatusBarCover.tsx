@@ -13,12 +13,24 @@
 // screen that already pads correctly this is invisible — just a second layer
 // of the same colour.
 //
+// Except on the handful of screens that *want* something behind the status
+// bar on purpose — the listing/event/special detail pages' hero photo, which
+// is supposed to run edge-to-edge the same way it does on the web. Painting
+// cream over the top of that photo just chops it off, which is its own bug
+// (and the exact opposite of what this component exists to prevent). Those
+// screens call useSuppressStatusBarCover() while their hero is showing, and
+// this renders nothing for as long as any screen is doing that.
+//
 // Renders nothing on the web: --safe-top resolves to 0px there, so an empty
 // fixed strip would be harmless anyway, but there's no reason to mount it.
+import { useSyncExternalStore } from "react";
 import { isNativeApp } from "@/lib/nativeBridge";
+import { isStatusBarCoverSuppressed, subscribeStatusBarCoverSuppressed } from "@/lib/statusBarCoverVisibility";
 
 export default function StatusBarCover() {
-  if (!isNativeApp()) return null;
+  const suppressed = useSyncExternalStore(subscribeStatusBarCoverSuppressed, isStatusBarCoverSuppressed);
+
+  if (!isNativeApp() || suppressed) return null;
 
   return (
     <div

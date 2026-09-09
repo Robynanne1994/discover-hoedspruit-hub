@@ -440,7 +440,7 @@ const Notifications = () => {
   const masterOn = bools.push_enabled;
 
   return (
-    <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: 100, fontFamily: SANS }}>
+    <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: "var(--nav-clearance)", fontFamily: SANS }}>
       {/* Top bar */}
       <PageHeader title="Notification Preferences" />
 

@@ -182,7 +182,7 @@ const FAQs = () => {
   }, [sections]);
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: "var(--nav-clearance)" }}>
       <Seo
         title="Hello Hoedspruit — FAQs"
         description="Answers to common questions about Hello Hoedspruit: accounts, saving places, listing your business, events and more."

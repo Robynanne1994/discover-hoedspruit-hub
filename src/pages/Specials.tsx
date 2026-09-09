@@ -236,7 +236,7 @@ const Specials = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingBottom: 120,
+        paddingBottom: "var(--nav-clearance)",
         background: COLOR.pageBg,
         fontFamily: SANS,
         color: COLOR.ink,

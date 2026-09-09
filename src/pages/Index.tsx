@@ -43,7 +43,7 @@ const Index = () => {
       style={{
         minHeight: "100vh",
         background: "#E6E0CC",
-        paddingBottom: 100,
+        paddingBottom: "var(--nav-clearance)",
         fontFamily: HN,
       }}
     >

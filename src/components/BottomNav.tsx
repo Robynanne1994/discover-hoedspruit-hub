@@ -7,6 +7,9 @@ const BAR_BG = "#F5F0E8";
 const ACTIVE_BG = "#423324";
 const INACTIVE_FG = "#1A1A1A";
 
+/** Height of the icon row itself, above the home-indicator inset. */
+const NAV_ROW_H = 58;
+
 const BottomNav = () => {
   const location = useLocation();
   const { user } = useAuth();
@@ -32,13 +35,19 @@ const BottomNav = () => {
         borderRadius: "32px 32px 0 0",
         // The app draws edge-to-edge, so the bar grows by the home-indicator
         // inset and pads it out — the icons never sit under the indicator.
-        height: "calc(74px + var(--safe-bottom))",
+        //
+        // NAV_ROW_H is the icon row itself; the only thing below it is the
+        // home-indicator inset, nothing more. It was 74px, which read as "a
+        // big empty gap under the nav" once the inset was added on top of it
+        // — 58px is closer to a standard iOS tab bar and keeps the 40px-tall
+        // pills comfortably centred.
+        height: `calc(${NAV_ROW_H}px + var(--safe-bottom))`,
         padding: "0 10px var(--safe-bottom)",
         borderTop: "1px solid rgba(0,0,0,0.08)",
         boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 74, gap: 4 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: NAV_ROW_H, gap: 4 }}>
         {(() => {
           const path = location.pathname;
           const starts = (...prefixes: string[]) => prefixes.some((p) => path === p || path.startsWith(p + "/"));

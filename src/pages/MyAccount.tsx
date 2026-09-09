@@ -503,7 +503,7 @@ const MyAccount = () => {
       style={{
         minHeight: "100vh",
         background: SETTINGS_BG,
-        paddingBottom: 100,
+        paddingBottom: "var(--nav-clearance)",
         fontFamily: SANS,
       }}
     >

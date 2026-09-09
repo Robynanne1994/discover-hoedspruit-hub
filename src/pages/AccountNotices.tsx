@@ -78,7 +78,7 @@ const AccountNotices = () => {
   const currentStatus = (profile as any)?.moderation_status as string | undefined;
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: "var(--nav-clearance)", fontFamily: FF }}>
       <PageHeader title="Account Notices" />
 
       <div style={{ padding: "16px 20px 0" }}>

@@ -121,6 +121,16 @@ body {
                        the status bar, native-app style
        --masthead-top  slightly airier variant for the Home logo block
        --overlay-top   for buttons floating over a full-bleed hero image
+       --nav-clearance bottom padding for any page that scrolls behind
+                       BottomNav — the nav's own real height (NAV_ROW_H, 58px
+                       + its home-indicator padding) plus a 20px gap, so the
+                       last item on the page never sits under it. A page
+                       hardcoding a flat ~100px here — which most pages did,
+                       until this token replaced it — comes up short on any
+                       phone with a home-indicator inset, since 100px is
+                       barely more than the nav's own content row plus inset: the
+                       "last item is half hidden and there's nothing below
+                       it to scroll to" bug.
 
        The max(...) floor keeps a sensible gap in a desktop browser / Lovable
        preview where the inset resolves to 0.
@@ -130,6 +140,7 @@ body {
     --header-top: max(calc(var(--safe-top) + 10px), 22px);
     --masthead-top: max(calc(var(--safe-top) + 14px), 28px);
     --overlay-top: max(calc(var(--safe-top) + 10px), 16px);
+    --nav-clearance: calc(58px + var(--safe-bottom) + 20px);
 
     --background: 46 34% 85%;
     --foreground: 0 0% 10%;
@@ -249,6 +260,19 @@ body {
     /* Prevent a brief white flash during route swaps / scroll resets by
        painting the html element with the same warm background as body. */
     background-color: hsl(var(--background));
+  }
+
+  /* Nothing in this app is meant to scroll sideways at the document level —
+     the horizontal carousels each scroll their own inner container. Without
+     this, one element overflowing by even a pixel makes the whole page
+     rubber-band sideways on iOS, which is what "a darker strip down the
+     right side" and "it lets me scroll left and right" were both describing:
+     the page slides, and the fixed-position chrome (StatusBarCover, the
+     bottom nav) doesn't slide with it, so the seams show. */
+  html,
+  body {
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
