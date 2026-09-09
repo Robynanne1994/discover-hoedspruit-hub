@@ -13,6 +13,7 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
+import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
