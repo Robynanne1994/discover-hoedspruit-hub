@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -25,7 +26,7 @@ const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimon
 
 // All three host photos land in the same 48px circle, so they share one slot.
 const hostSlot = eventImageSlot("host");
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", booking_link_type: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -182,6 +183,7 @@ const AdminEvents = () => {
         additional_whatsapps: sanitizeContactArray(values.additional_whatsapps),
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
+        booking_link_type: values.booking_link_type || null,
         price: values.price || null,
         included: Array.isArray((values as any).included) ? (values as any).included.map((s: string) => s.trim()).filter(Boolean) : [],
         notes: Array.isArray((values as any).notes) ? (values as any).notes.map((s: string) => s.trim()).filter(Boolean) : (typeof (values as any).notes === "string" && (values as any).notes.trim() ? [(values as any).notes.trim()] : []),
@@ -262,6 +264,7 @@ const AdminEvents = () => {
       additional_whatsapps: ((ev as any).additional_whatsapps ?? []) as string[],
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
+      booking_link_type: (ev as any).booking_link_type ?? "",
       price: (ev as any).price ?? "",
       included: Array.isArray((ev as any).included) ? (ev as any).included : [],
       notes: Array.isArray((ev as any).notes) ? (ev as any).notes : ((ev as any).notes ? [(ev as any).notes] : []),
@@ -411,7 +414,8 @@ const AdminEvents = () => {
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
                 <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
-                <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
+                <div><Label>Booking Type</Label><select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={resolveBookingLinkType(form.booking_link, form.booking_link_type)} onChange={(e) => setForm({ ...form, booking_link_type: e.target.value })}>{BOOKING_LINK_TYPES.map((t) => (<option key={t.value} value={t.value}>{t.label}</option>))}</select></div>
+                <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://… or name@email.com or +27 82 000 0000" /></div>
               </div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
               <div className="grid gap-4 lg:grid-cols-3">

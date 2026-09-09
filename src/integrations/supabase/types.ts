@@ -617,6 +617,7 @@ export type Database = {
           additional_whatsapps: string[]
           booking_link: string | null
           booking_link_label: string | null
+          booking_link_type: string | null
           business_id: string | null
           business_ids: string[] | null
           contact_email: string | null
@@ -676,6 +677,7 @@ export type Database = {
           additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
+          booking_link_type?: string | null
           business_id?: string | null
           business_ids?: string[] | null
           contact_email?: string | null
@@ -735,6 +737,7 @@ export type Database = {
           additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
+          booking_link_type?: string | null
           business_id?: string | null
           business_ids?: string[] | null
           contact_email?: string | null

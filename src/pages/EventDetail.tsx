@@ -20,6 +20,7 @@ import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
+import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { sharePlainText } from "@/lib/share";
 import { isNativeApp, nativePlatform } from "@/lib/nativeBridge";
@@ -430,6 +431,10 @@ const EventDetail = () => {
   const galleryImages: string[] = e.gallery_images ?? [];
   const bookingLink = e.booking_link || null;
   const bookingLinkLabel = e.booking_link_label?.trim() || null;
+  const booking = buildBookingHref(bookingLink, (e as any).booking_link_type);
+  const BookingIcon = booking
+    ? booking.type === "email" ? Mail : booking.type === "phone" ? Phone : booking.type === "whatsapp" ? WhatsAppIcon : ExternalLink
+    : ExternalLink;
   const price = e.price || null;
   const priceNotes: string[] = Array.isArray((e as any).price_notes)
     ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
@@ -454,9 +459,9 @@ const EventDetail = () => {
 
   // Action pills
   const actions = [
-    bookingLink && {
-      key: "booking", label: "Book",
-      href: bookingLink, Icon: ExternalLink, ext: true,
+    booking && {
+      key: "booking", label: bookingActionLabel(booking.type),
+      href: booking.href, Icon: BookingIcon, ext: booking.external,
       disabled: isPast,
     },
     socialLink && {
@@ -714,7 +719,7 @@ const EventDetail = () => {
     const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
   }
-  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true, disabled: isPast });
+  if (booking) contactRows.push({ Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
