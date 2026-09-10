@@ -681,6 +681,16 @@ const FeaturedSection = ({
                 key={s.id}
                 style={{
                   flex: `0 0 calc(100% - ${SLIDE_GAP + SLIDE_PEEK}px)`,
+                  // A flex item defaults to min-width:auto, i.e. it refuses to
+                  // shrink below its content's min-content width — which for a
+                  // card whose value bar reads "R 195,00 per burger + beer
+                  // combo · Tuesday Burger Special" is wider than the slide.
+                  // That silently overrode the basis above: one slide came out
+                  // 365px against the intended 328px, so it ran past the page
+                  // gutter, and its taller 3:2 image set the rail height and
+                  // left a 25px white band under the shorter card. The value
+                  // bar already knows how to ellipsize; this lets it.
+                  minWidth: 0,
                   scrollSnapAlign: "start",
                   // display:flex lets the card stretch to the tallest slide, so
                   // every featured card in the rail is the same height.

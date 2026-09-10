@@ -4,8 +4,8 @@
     {
       "name": "discover-hoedspruit",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["vite"],
-      "port": 5173
+      "runtimeArgs": ["vite", "--port", "5174", "--strictPort"],
+      "port": 5174
     }
   ]
 }
