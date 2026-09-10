@@ -664,6 +664,7 @@ const FeaturedSection = ({
             className="scrollbar-hide"
             style={{
               display: "flex",
+               alignItems: "flex-start",
               gap: SLIDE_GAP,
               overflowX: "auto",
               scrollSnapType: "x mandatory",
@@ -692,9 +693,6 @@ const FeaturedSection = ({
                   // bar already knows how to ellipsize; this lets it.
                   minWidth: 0,
                   scrollSnapAlign: "start",
-                  // display:flex lets the card stretch to the tallest slide, so
-                  // every featured card in the rail is the same height.
-                  display: "flex",
                 }}
               >
                 <FeaturedCard special={s} onClick={() => onSelect(s)} />
@@ -745,10 +743,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
         display: "flex",
         flexDirection: "column",
         boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
-        // Fill the slide so a card sitting next to a taller neighbour matches it
-        // instead of leaving a ragged edge along the rail.
         width: "100%",
-        height: "100%",
       }}
     >
       {/* Image with the headline sitting on the gradient. The 3:2 box is what
