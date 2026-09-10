@@ -751,16 +751,25 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
         height: "100%",
       }}
     >
-      {/* Image with the headline sitting on the gradient. The aspect ratio sets
-          the natural height; flex:1 lets the image absorb any extra height when
-          a neighbouring card's value bar runs taller. */}
+      {/* Image with the headline sitting on the gradient. The 3:2 box is what
+          makes every featured card the same height. */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 2", flex: "0 0 auto", background: "#EEE8DA" }}>
         {image && (
           <img
             src={image}
             alt={special.title}
             loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            // Taken out of flow on purpose. As an in-flow child with
+            // height:100% inside an auto-height parent, the percentage has
+            // nothing to resolve against, so the browser falls back to the
+            // file's own intrinsic ratio and the wrapper grows to match it —
+            // the declared 3:2 is quietly ignored. A 4:3 source then made its
+            // card taller than the rest of the rail, and the shortest card was
+            // left with a white band under its value bar. (It only appeared
+            // once the image had actually decoded, which is why it showed on
+            // the live site but not on a freshly-loaded measurement.)
+            // Absolute positioning lets the wrapper keep its own height.
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
         <div
