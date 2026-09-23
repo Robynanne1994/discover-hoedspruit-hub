@@ -1448,8 +1448,8 @@ const AdminImport = () => {
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {isAllCategories
-                ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields, per-category subcategories and per-category card labels are preserved."
-                : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
+                ? "Listings are matched by the id column (the first column of every export), so renaming a title updates the same listing. Rows with a blank id are new listings, matched by title if one already exists. Listings missing from the file are listed before you import and are only deleted if you tick the box. Category-specific fields, per-category subcategories and per-category card labels are preserved."
+                : "Listings are matched by the id column, then by title (case-insensitive) for rows without an id. Listings missing from the file are listed before you import; they're only removed from this category if you tick the box, and fully deleted only if they don't belong to any other category."}
             </p>
             {isAllCategories ? (
               <>
@@ -1496,15 +1496,17 @@ const AdminImport = () => {
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               google_rating, google_reviews_count and google_reviews_url are only imported for
-              listings the nightly Google sync has never fetched. Where the sync is working, the
-              live numbers are kept and the CSV values for those three columns are ignored.
+              listings without a Google Place ID. For any listing with a Place ID the nightly sync
+              owns them, and the CSV values for those three columns are ignored, "-" included.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               google_place_id is the last column and is back-office only — it never shows anywhere
               in the app. It's how the nightly sync finds a listing on Google, so filling it in for
               listings the sync couldn't match gets their rating and review count updating too.
               Export first: every ID the sync has already matched comes down pre-filled, so you
-              only need to fill the blanks.
+              only need to fill the blanks. A blank cell keeps the stored ID, a new ID is fetched
+              fresh on the next sync, and "-" removes the ID along with its Google rating. Links
+              containing place_id= or placeid= are accepted.
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
@@ -1517,10 +1519,91 @@ const AdminImport = () => {
               <p className="text-sm text-muted-foreground">
                 <strong className="text-foreground">{parsed.rows.length}</strong> rows found{!isAllCategories && <> for <strong className="text-foreground">{selectedCategoryTitle}</strong></>}.
               </p>
-              <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
-                {importMutation.isPending ? "Importing..." : "Import All"}
-              </Button>
+              {!preview && (
+                <Button onClick={() => previewMutation.mutate()} disabled={previewMutation.isPending} className="gap-2">
+                  {previewMutation.isPending ? "Checking..." : "Review Import"}
+                </Button>
+              )}
             </div>
+            {preview && (() => {
+              const placeRisk = preview.place_ids.changed + preview.place_ids.removed;
+              const needsPlaceConfirm = placeRisk > 0 && !confirmPlaceChanges;
+              return (
+                <div className="border border-border rounded-lg p-4 space-y-3">
+                  <p className="text-sm font-medium text-foreground">Import Preview</p>
+                  <p className="text-xs text-muted-foreground">Nothing has been saved yet.</p>
+                  <ul className="text-sm text-foreground space-y-1">
+                    <li><strong>{preview.updated}</strong> listing(s) updated</li>
+                    <li><strong>{preview.created}</strong> listing(s) created</li>
+                    {isAllCategories && (
+                      <li>
+                        Place IDs: <strong>{preview.place_ids.added}</strong> added,{" "}
+                        <strong>{preview.place_ids.changed}</strong> changed,{" "}
+                        <strong>{preview.place_ids.removed}</strong> removed
+                      </li>
+                    )}
+                    <li><strong>{preview.skipped.length}</strong> row(s) skipped</li>
+                    {preview.new_categories.length > 0 && (
+                      <li>New categories or subcategories: {preview.new_categories.join(", ")}</li>
+                    )}
+                  </ul>
+                  {preview.skipped.length > 0 && (
+                    <div className="space-y-0.5">
+                      {preview.skipped.map((reason, i) => (
+                        <p key={i} className="text-xs text-destructive">{reason}</p>
+                      ))}
+                    </div>
+                  )}
+                  {preview.errors.length > 0 && (
+                    <div className="space-y-0.5">
+                      <p className="text-xs font-medium text-foreground">{preview.errors.length} warning(s)</p>
+                      {preview.errors.slice(0, 30).map((err, i) => (
+                        <p key={i} className="text-xs text-muted-foreground">{err}</p>
+                      ))}
+                      {preview.errors.length > 30 && <p className="text-xs text-muted-foreground">… and {preview.errors.length - 30} more</p>}
+                    </div>
+                  )}
+                  {preview.missing.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-xs text-foreground">
+                        <strong>{preview.missing.length}</strong> listing(s) {isAllCategories ? "in the app" : `in ${selectedCategoryTitle}`} aren't in this file. They will be left as they are unless you tick the box below.
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {preview.missing.slice(0, 30).join(", ")}
+                        {preview.missing.length > 30 && ` … and ${preview.missing.length - 30} more`}
+                      </p>
+                      <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
+                        <Checkbox checked={deleteMissing} onCheckedChange={(v) => setDeleteMissing(v === true)} className="mt-0.5" />
+                        <span>
+                          {isAllCategories
+                            ? "Also delete listings not in this file"
+                            : "Also remove listings not in this file from this category (deleting any that sit in no other category)"}
+                        </span>
+                      </label>
+                    </div>
+                  )}
+                  {placeRisk > 0 && (
+                    <label className="flex items-start gap-2 text-sm text-foreground cursor-pointer">
+                      <Checkbox checked={confirmPlaceChanges} onCheckedChange={(v) => setConfirmPlaceChanges(v === true)} className="mt-0.5" />
+                      <span>
+                        I confirm {preview.place_ids.changed} Place ID change(s) and {preview.place_ids.removed} removal(s). Their Google ratings will be cleared until the next sync.
+                      </span>
+                    </label>
+                  )}
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => importMutation.mutate()}
+                      disabled={importMutation.isPending || needsPlaceConfirm}
+                    >
+                      {importMutation.isPending ? "Importing..." : "Confirm Import"}
+                    </Button>
+                    <Button variant="outline" onClick={() => setPreview(null)} disabled={importMutation.isPending}>
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              );
+            })()}
             {importMutation.isPending && importStatus && (
               <p className="text-xs text-muted-foreground">{importStatus}</p>
             )}
@@ -1580,6 +1663,24 @@ const AdminImport = () => {
                 <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
             </div>
+            {isAllCategories && (
+              <p className="text-xs text-muted-foreground">
+                Place IDs: {importResult.place_ids.added} added, {importResult.place_ids.changed} changed, {importResult.place_ids.removed} removed.
+              </p>
+            )}
+            {importResult.skipped.length > 0 && (
+              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 space-y-1">
+                <p className="text-sm font-medium text-destructive">{importResult.skipped.length} row(s) skipped</p>
+                {importResult.skipped.map((reason, i) => (
+                  <p key={i} className="text-xs text-destructive/80">{reason}</p>
+                ))}
+              </div>
+            )}
+            {importResult.missing.length > 0 && importResult.deleted === 0 && importResult.removed_from_category === 0 && (
+              <p className="text-xs text-muted-foreground">
+                {importResult.missing.length} listing(s) weren't in the file and were left as they are.
+              </p>
+            )}
             {importResult.card_labels > 0 && (
               <p className="text-xs text-muted-foreground">
                 <strong className="text-foreground">{importResult.card_labels}</strong> card
@@ -1609,8 +1710,8 @@ const AdminImport = () => {
                   Kept the live Google rating for {importResult.google_locked.length} listing(s)
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  These listings are synced from Google Places, so their google_rating,
-                  google_reviews_count and google_reviews_url came from the nightly sync and
+                  These listings have a Google Place ID, so their google_rating,
+                  google_reviews_count and google_reviews_url are owned by the nightly sync and
                   the CSV values were ignored. Every other column in those rows imported normally.
                 </p>
                 <p className="text-xs text-muted-foreground">
