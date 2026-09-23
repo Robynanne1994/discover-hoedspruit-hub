@@ -84,7 +84,7 @@ const AdminBulkEdit = () => {
       for (const row of dirtyRows) {
         const payload: Record<string, any> = {};
         // A listing with a Place ID has its rating columns owned by the sync.
-        const owned = isGoogleOwned(row);
+        const owned = isGoogleOwned(row as { google_place_id?: string | null });
         for (const col of COLUMNS) {
           if (owned && isGoogleSyncedField(col.key)) continue;
           payload[col.key] = row[col.key];
@@ -164,7 +164,7 @@ const AdminBulkEdit = () => {
                   </td>
                   {COLUMNS.filter((c) => c.key !== "title").map((col) => (
                     <td key={col.key} className="p-1 border-r border-border" style={{ minWidth: col.width }}>
-                      {isGoogleSyncedField(col.key) && isGoogleOwned(row) ? (
+                      {isGoogleSyncedField(col.key) && isGoogleOwned(row as { google_place_id?: string | null }) ? (
                         <div className="h-7 px-3 flex items-center text-xs text-muted-foreground truncate" title="Synced from Google">
                           {row[col.key] ?? "—"} <span className="ml-1 opacity-70">(synced from Google)</span>
                         </div>
