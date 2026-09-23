@@ -20,8 +20,9 @@ import {
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
 import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
 import {
-  GOOGLE_PLACE_ID_FIELD, normalizeGooglePlaceId, placeIdImportUpdate, isPlaceIdRepointed,
+  GOOGLE_PLACE_ID_FIELD, normalizeGooglePlaceId, placeIdImportUpdate, placeIdChangeKind,
 } from "@/lib/googlePlaceId";
+import { Checkbox } from "@/components/ui/checkbox";
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 import { isImageCsvColumn } from "@/lib/csvImageColumns";
 import { parseAdditionalHours } from "@/lib/openHours";
@@ -37,6 +38,22 @@ const ALL_CATEGORIES_VALUE = "__all__";
 const MANUAL_SYNC_LIMIT = 150;
 
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
+
+// First column of every listings export. Rows are matched on it, so a title
+// can be renamed in the CSV without the listing being deleted and recreated.
+const ID_FIELD = "id";
+
+type ImportResults = {
+  created: number; updated: number; deleted: number; removed_from_category: number;
+  google_locked: string[];
+  universal_ignored: { columns: string[]; rows: number };
+  card_labels: number;
+  place_ids: { added: number; changed: number; removed: number };
+  skipped: string[];
+  missing: string[];
+  new_categories: string[];
+  errors: string[];
+};
 type ListingPayload = Database["public"]["Tables"]["listings"]["Insert"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
@@ -237,13 +254,11 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{
-    created: number; updated: number; deleted: number; removed_from_category: number;
-    google_locked: string[];
-    universal_ignored: { columns: string[]; rows: number };
-    card_labels: number;
-    errors: string[];
-  } | null>(null);
+  const [importResult, setImportResult] = useState<ImportResults | null>(null);
+  // Dry-run of the file: what would happen, before anything is written.
+  const [preview, setPreview] = useState<ImportResults | null>(null);
+  const [deleteMissing, setDeleteMissing] = useState(false);
+  const [confirmPlaceChanges, setConfirmPlaceChanges] = useState(false);
   const [importStatus, setImportStatus] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
@@ -314,7 +329,10 @@ const AdminImport = () => {
   const isAllCategories = selectedCategoryId === ALL_CATEGORIES_VALUE;
   const selectedCategory = categories?.find((c) => c.id === selectedCategoryId);
   const selectedCategoryTitle = isAllCategories ? null : (selectedCategory?.title ?? null);
-  const csvHeaders = isAllCategories ? getUniversalCSVHeaders() : getCSVHeadersForCategory(selectedCategoryTitle);
+  const csvHeaders = [
+    ID_FIELD,
+    ...(isAllCategories ? getUniversalCSVHeaders() : getCSVHeadersForCategory(selectedCategoryTitle)),
+  ];
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
   const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
   const isAccommodation = selectedCategoryTitle ? isAccommodationCategory(selectedCategoryTitle) : false;
@@ -333,6 +351,9 @@ const AdminImport = () => {
     }
     setFileName(file.name);
     setImportResult(null);
+    setPreview(null);
+    setDeleteMissing(false);
+    setConfirmPlaceChanges(false);
     const reader = new FileReader();
     reader.onload = (ev) => {
       const text = ev.target?.result as string;
@@ -385,8 +406,9 @@ const AdminImport = () => {
     reader.readAsText(file);
   };
 
-  const importMutation = useMutation({
-    mutationFn: async () => {
+  // One pass for both the preview and the real import: `dryRun` reads the
+  // database and builds every row's payload but writes nothing at all.
+  const runImport = async ({ dryRun, deleteMissing }: { dryRun: boolean; deleteMissing: boolean }): Promise<ImportResults> => {
       if (!parsed || !categories) throw new Error("No data");
 
       const catMap = new Map(categories.map((c) => [c.title.toLowerCase(), c.id]));
@@ -394,8 +416,14 @@ const AdminImport = () => {
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = {
+      const results: ImportResults = {
         created: 0, updated: 0, deleted: 0, removed_from_category: 0,
+        place_ids: { added: 0, changed: 0, removed: 0 },
+        // Rows not imported at all, with the reason.
+        skipped: [],
+        // Listings the sheet covers that aren't in the file.
+        missing: [],
+        new_categories: [],
         // Listings whose CSV rating cells were ignored because the Google sync owns them.
         google_locked: [] as string[],
         // Universal cells a category upload read past (the universal sheet owns them).
@@ -404,7 +432,11 @@ const AdminImport = () => {
         card_labels: 0,
         errors: [] as string[],
       };
-      const csvTitles = new Set<string>();
+      const hasIdColumn = parsed.headers.includes(ID_FIELD);
+      const hasPlaceIdColumn = parsed.headers.includes(GOOGLE_PLACE_ID_FIELD);
+      // Existing listings this file names, by id. Anything the sheet covers that
+      // isn't in here is "missing from the file".
+      const matchedIds = new Set<string>();
 
       // Universal columns this file carries that a category upload won't write.
       // Counted per row so the result panel can say how much was actually
@@ -460,16 +492,16 @@ const AdminImport = () => {
       // The narrower in-category map is only used to decide what the sheet has
       // dropped from this category.
       const allExisting = await fetchAllListings();
+      const existingById = new Map(allExisting.map((l) => [l.id, l]));
+      // Title lookup is only the fallback for rows without an id.
       const existingMap: Map<string, ListingRow> = new Map(
-        allExisting.map((l) => [l.title.toLowerCase(), l]),
+        allExisting.map((l) => [l.title.trim().toLowerCase(), l]),
       );
-      let inCategoryMap: Map<string, ListingRow> = existingMap;
+      let inCategoryList: ListingRow[] = allExisting;
       if (!isAllCategories) {
         const catJunctions = await fetchAllCategoryJunctions(selectedCategoryId);
         const categoryListingIds = new Set(catJunctions.map((j) => j.listing_id));
-        inCategoryMap = new Map(
-          allExisting.filter((l) => categoryListingIds.has(l.id)).map((l) => [l.title.toLowerCase(), l]),
-        );
+        inCategoryList = allExisting.filter((l) => categoryListingIds.has(l.id));
       }
 
 
@@ -505,9 +537,10 @@ const AdminImport = () => {
           .map((s) => s.title.trim().toLowerCase()),
       );
 
-      // Detect duplicate titles in CSV (title-based matching is risky otherwise)
+      // Duplicate titles among rows without an id (those match by title).
       const titleSeen = new Map<string, number>();
       for (const r of parsed.rows) {
+        if (hasIdColumn && !isBlankPlaceholder(r[ID_FIELD])) continue;
         const t = (r.title || "").trim().toLowerCase();
         if (!t) continue;
         titleSeen.set(t, (titleSeen.get(t) || 0) + 1);
@@ -518,14 +551,34 @@ const AdminImport = () => {
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
-        const title = isBlankPlaceholder(row.title) ? "" : row.title.trim();
-        if (!title) {
-          results.errors.push(`Row ${i + 2}: Missing title, skipped`);
-          continue;
-        }
-        csvTitles.add(title.toLowerCase());
+        const rawTitle = isBlankPlaceholder(row.title) ? "" : (row.title ?? "").trim();
+        const rawId = hasIdColumn && !isBlankPlaceholder(row[ID_FIELD]) ? row[ID_FIELD].trim() : "";
 
-        const existing = existingMap.get(title.toLowerCase());
+        // Match by id when the row has one; title only for rows without (new
+        // listings). An id that matches nothing is never turned into a new row.
+        let existing: ListingRow | undefined;
+        if (rawId) {
+          existing = existingById.get(rawId);
+          if (!existing) {
+            results.skipped.push(`Row ${i + 2}: id "${rawId.slice(0, 40)}" doesn't match any listing. Leave id blank to create a new listing`);
+            continue;
+          }
+        } else {
+          if (!rawTitle) {
+            results.skipped.push(`Row ${i + 2}: no id and no title`);
+            continue;
+          }
+          existing = existingMap.get(rawTitle.toLowerCase());
+        }
+        if (existing) {
+          if (matchedIds.has(existing.id)) {
+            results.skipped.push(`Row ${i + 2}: "${existing.title}" appears more than once in the file, only the first row was used`);
+            continue;
+          }
+          matchedIds.add(existing.id);
+        }
+        // Blank title on a matched row keeps the stored one.
+        const title = rawTitle || existing!.title;
         const isUpdate = !!existing;
         const listingId = existing?.id ?? crypto.randomUUID();
 
@@ -570,6 +623,8 @@ const AdminImport = () => {
             const catId = catMap.get(key) ?? null;
             if (catId) {
               if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
+            } else if (dryRun) {
+              if (!results.new_categories.includes(catName)) results.new_categories.push(catName);
             } else {
               const { data: newCat, error: catErr } = await supabase
                 .from("categories").insert({ title: catName }).select("id").single();
@@ -607,6 +662,11 @@ const AdminImport = () => {
           const key = `${selectedCategoryId}::${subName.toLowerCase()}`;
           const subId = subMap.get(key);
           if (subId) { resolvedSubIdsRaw.push(subId); continue; }
+          if (dryRun) {
+            const label = `${selectedCategoryTitle} > ${subName}`;
+            if (!results.new_categories.includes(label)) results.new_categories.push(label);
+            continue;
+          }
           // Unknown name: create it under the category this sheet is for, which
           // is the only category whose subcategories this sheet may touch.
           const { data: newSub, error: subErr } = await supabase
@@ -674,36 +734,33 @@ const AdminImport = () => {
         // leaves the stored ID alone — a stale copy on an older category export
         // is reported with the other universal columns rather than written back.
         let incomingPlaceId: string | null | undefined;
-        if (isAllCategories) {
-          const placeIdCell = parseField(row[GOOGLE_PLACE_ID_FIELD], "str", isUpdate);
-          if (placeIdCell.skip === true) {
-            incomingPlaceId = undefined;          // blank on update: leave whatever is stored
-          } else if (placeIdCell.value === null) {
-            incomingPlaceId = null;               // "-" (or blank on create): no ID for this listing
+        if (isAllCategories && hasPlaceIdColumn) {
+          const cell = (row[GOOGLE_PLACE_ID_FIELD] ?? "").trim();
+          if (cell === "") {
+            incomingPlaceId = undefined;          // blank: always keep what's stored
+          } else if (isBlankPlaceholder(cell)) {
+            incomingPlaceId = null;               // "-": remove the Place ID
           } else {
-            incomingPlaceId = normalizeGooglePlaceId(placeIdCell.value);
+            incomingPlaceId = normalizeGooglePlaceId(cell);
             if (incomingPlaceId === null) {
-              // An unreadable ID is dropped rather than stored: a wrong ID would
-              // point the sync at somebody else's business and import their rating.
+              // A wrong ID would point the sync at somebody else's business.
               results.errors.push(
-                `Row ${i + 2}: google_place_id "${String(placeIdCell.value).slice(0, 40)}" is not a Google Place ID, left unchanged`,
+                `Row ${i + 2}: google_place_id "${cell.slice(0, 40)}" is not a Google Place ID, existing value kept`,
               );
               incomingPlaceId = undefined;
             }
           }
         }
 
-        // Once the nightly Google sync has successfully fetched this listing, its
-        // rating columns are live data and the CSV is a stale snapshot — so the CSV
-        // loses. For every other listing (never matched, match confidence too low,
-        // awaiting re-match) Google never writes anything, so the CSV is the only
-        // source and wins as normal.
-        //
-        // Re-pointing the listing at a different Place ID is the exception: what
-        // the sync fetched belongs to the old place, so it is no longer live and
-        // the CSV takes the rating columns back until the next run.
+        const placeChange = placeIdChangeKind(incomingPlaceId, existing);
+        if (placeChange) results.place_ids[placeChange]++;
+
+        // A listing with a Place ID (stored, or given in this row) has its rating
+        // columns owned by the sync, so the CSV cells are ignored whatever they
+        // hold, "-" included. Only listings with no Place ID take them from here.
+        // A removed ID has its rating cleared by placeIdImportUpdate below.
         const googleOwned =
-          isUpdate && isGoogleOwned(existing) && !isPlaceIdRepointed(incomingPlaceId ?? null, existing);
+          isGoogleOwned(existing) || (typeof incomingPlaceId === "string" && incomingPlaceId !== "");
         let googleCellsIgnored = false;
 
         for (const fieldName of allFieldNames) {
@@ -724,7 +781,7 @@ const AdminImport = () => {
           if (googleOwned && isGoogleSyncedField(fieldName)) {
             // Only flag it when the CSV actually carried a value to lose — a blank
             // or placeholder cell on update was never going to write anything.
-            if (!isBlankPlaceholder(row[fieldName])) googleCellsIgnored = true;
+            if ((row[fieldName] ?? "").trim() !== "") googleCellsIgnored = true;
             continue;
           }
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
@@ -765,9 +822,8 @@ const AdminImport = () => {
 
         if (googleCellsIgnored) results.google_locked.push(title);
 
-        // Writes google_place_id plus the sync bookkeeping it implies (status,
-        // confidence, and — on a changed ID — a cleared fetch stamp so the next
-        // run replaces the old place's rating straight away).
+        // Writes google_place_id plus the sync bookkeeping it implies. Nothing for
+        // a blank or unchanged cell; a new ID or "-" resets the rating and stamp.
         Object.assign(payloadRecord, placeIdImportUpdate(incomingPlaceId, existing));
 
         // Remove undefined keys (defensive)
@@ -810,23 +866,69 @@ const AdminImport = () => {
         });
       }
 
-      setImportStatus(`Saving ${importItems.length} listings in batches...`);
-      for (const batch of chunkArray(importItems, 100)) {
-        const { error } = await supabase.from("listings").upsert(batch.map((item) => item.payload), { onConflict: "id" });
-        if (error) {
+      // Listings this sheet covers that the file doesn't name.
+      const missingListings = inCategoryList.filter((l) => !matchedIds.has(l.id));
+      results.missing = missingListings.map((l) => l.title);
+      results.updated = importItems.filter((item) => item.isUpdate).length;
+      results.created = importItems.filter((item) => !item.isUpdate).length;
+      results.universal_ignored.columns = Array.from(universalColumnsUsed);
+      if (dryRun) return results;
+      results.updated = 0;
+      results.created = 0;
+
+      // ---- Save ----
+      // Never one upsert over rows with different keys: supabase-js builds one
+      // column list for the batch and sends NULL for every key a row left out,
+      // which is what wiped synced ratings. Rows are grouped by their exact key
+      // set, so every column in a batch is one each row actually meant to write.
+      // (defaultToNull: false doesn't help updates: PostgREST then writes the
+      // column DEFAULT on conflict, which for most columns is NULL again.)
+      const failedRows = new Set<number>();
+      const groupByKeys = (items: typeof importItems) => {
+        const groups = new Map<string, typeof importItems>();
+        for (const item of items) {
+          const key = Object.keys(item.payload).sort().join(",");
+          const arr = groups.get(key) ?? [];
+          arr.push(item);
+          groups.set(key, arr);
+        }
+        return Array.from(groups.values());
+      };
+      const updates = importItems.filter((item) => item.isUpdate);
+      const creates = importItems.filter((item) => !item.isUpdate);
+
+      setImportStatus(`Saving ${importItems.length} listings...`);
+      for (const group of groupByKeys(updates)) {
+        for (const batch of chunkArray(group, 100)) {
+          const { error } = await supabase.from("listings").upsert(batch.map((item) => item.payload), { onConflict: "id" });
+          if (!error) { results.updated += batch.length; continue; }
+          // Fall back to a plain update per row, which only ever touches the
+          // columns that row carries.
           for (const item of batch) {
-            const { error: singleError } = await supabase.from("listings").upsert(item.payload, { onConflict: "id" });
-            if (singleError) results.errors.push(`Row ${item.rowNumber}: Save failed - ${singleError.message}`);
-            else if (item.isUpdate) results.updated++;
-            else results.created++;
+            const { id: _id, ...fields } = item.payload as Record<string, unknown>;
+            const { error: singleError } = await supabase.from("listings").update(fields as any).eq("id", item.listingId);
+            if (singleError) {
+              failedRows.add(item.rowNumber);
+              results.errors.push(`Row ${item.rowNumber}: Save failed - ${singleError.message}`);
+            } else results.updated++;
           }
-        } else {
-          results.updated += batch.filter((item) => item.isUpdate).length;
-          results.created += batch.filter((item) => !item.isUpdate).length;
+        }
+      }
+      for (const group of groupByKeys(creates)) {
+        for (const batch of chunkArray(group, 100)) {
+          const { error } = await supabase.from("listings").insert(batch.map((item) => item.payload), { defaultToNull: false });
+          if (!error) { results.created += batch.length; continue; }
+          for (const item of batch) {
+            const { error: singleError } = await supabase.from("listings").insert(item.payload, { defaultToNull: false });
+            if (singleError) {
+              failedRows.add(item.rowNumber);
+              results.errors.push(`Row ${item.rowNumber}: Save failed - ${singleError.message}`);
+            } else results.created++;
+          }
         }
       }
 
-      const successfulItems = importItems.filter((item) => !results.errors.some((err) => err.startsWith(`Row ${item.rowNumber}: Save failed`)));
+      const successfulItems = importItems.filter((item) => !failedRows.has(item.rowNumber));
       const successfulIds = successfulItems.map((item) => item.listingId);
 
       // Build map of subcategoryId -> categoryId so we can scope subcategory sync
@@ -985,15 +1087,14 @@ const AdminImport = () => {
 
       }
 
-      // Handle listings present in the selected category but missing from the CSV.
-      // - In "All Categories" mode: hard-delete (legacy behavior).
-      // - In category-scoped mode: if the listing belongs to OTHER categories, just remove
-      //   it from the selected category (and its subs under that category). Only hard-delete
-      //   when the listing has no other category links.
-      const missingItems = Array.from(inCategoryMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
-      const missingIds = missingItems.map(([, listing]) => listing.id);
+      // Listings missing from the file are only listed, never removed, unless
+      // "Also delete listings not in this file" was ticked.
+      // - All Categories: hard-delete.
+      // - Category sheet: remove from this category; hard-delete only when the
+      //   listing belongs to no other category.
+      const missingIds = deleteMissing ? missingListings.map((l) => l.id) : [];
 
-      if (isAllCategories) {
+      if (isAllCategories && missingIds.length > 0) {
         setImportStatus(`Removing ${missingIds.length} listings not in the CSV...`);
         for (const idBatch of chunkArray(missingIds, 200)) {
           await supabase.from("listing_categories").delete().in("listing_id", idBatch);
@@ -1059,12 +1160,23 @@ const AdminImport = () => {
         }
       }
 
-      results.universal_ignored.columns = Array.from(universalColumnsUsed);
-
       return results;
+  };
+
+  const previewMutation = useMutation({
+    mutationFn: () => runImport({ dryRun: true, deleteMissing: false }),
+    onSuccess: (results) => {
+      setPreview(results);
+      setConfirmPlaceChanges(false);
     },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const importMutation = useMutation({
+    mutationFn: () => runImport({ dryRun: false, deleteMissing }),
     onSuccess: (results) => {
       setImportStatus("");
+      setPreview(null);
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
@@ -1186,7 +1298,7 @@ const AdminImport = () => {
     const headers = csvHeaders;
 
     const rows = listings.map((l) => {
-      const fieldMap: Record<string, string> = {};
+      const fieldMap: Record<string, string> = { [ID_FIELD]: l.id };
       const lr = l as unknown as Record<string, unknown>;
 
       // Virtual (junction) columns, each on the one sheet that owns it.
@@ -1216,7 +1328,7 @@ const AdminImport = () => {
 
       // Schema-driven serialization for every other header
       for (const h of headers) {
-        if (h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
+        if (h === ID_FIELD || h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
         if (h === "avg_price_per_person_per_night" || h === "avg_price_per_couple_per_night") { fieldMap[h] = normalizePriceForExport(lr[h]); continue; }
@@ -1241,6 +1353,9 @@ const AdminImport = () => {
     setParsed(null);
     setFileName("");
     setImportResult(null);
+    setPreview(null);
+    setDeleteMissing(false);
+    setConfirmPlaceChanges(false);
     setImportStatus("");
     if (fileRef.current) fileRef.current.value = "";
   };
