@@ -43,6 +43,11 @@ verify_jwt = false
 [functions.refresh-google-ratings]
 verify_jwt = false
 
+# Map image proxy, loaded as a plain <img>, so no auth header is possible.
+# The function clamps inputs to the Hoedspruit area and small sizes itself.
+[functions.static-map]
+verify_jwt = false
+
 
 [functions.process-email-queue]
 verify_jwt = true

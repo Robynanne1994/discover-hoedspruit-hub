@@ -1,18 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { buildTileGrid, TILE_SIZE, type LatLon } from "@/lib/tileMap";
+import { useEffect, useRef, useState } from "react";
+import type { LatLon } from "@/lib/tileMap";
 
-// CARTO Voyager raster basemap: OpenStreetMap data, no API key, no account.
-// Swap this single line to change the map's look (e.g. "light_all" for the
-// muted grey Positron style).
-const TILE_STYLE = "voyager";
-const SUBDOMAINS = ["a", "b", "c", "d"];
-
-const tileUrl = (z: number, x: number, y: number, retina: boolean) =>
-  `https://${SUBDOMAINS[Math.abs(x + y) % SUBDOMAINS.length]}.basemaps.cartocdn.com/rastertiles/${TILE_STYLE}/${z}/${x}/${y}${retina ? "@2x" : ""}.png`;
-
-/** Straight OpenStreetMap tiles, used only if a CARTO tile fails to load. */
-const fallbackTileUrl = (z: number, x: number, y: number) =>
-  `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+const PROJECT_ID = import.meta.env["VITE_SUPABASE_PROJECT_ID"];
+const MAP_ENDPOINT = `https://${PROJECT_ID}.supabase.co/functions/v1/static-map`;
 
 type Props = {
   coords: LatLon | null;
@@ -20,11 +10,7 @@ type Props = {
   href?: string;
   /** Accessible name, e.g. the listing title. */
   label?: string;
-  /**
-   * False when `coords` is only the town centre fallback. The map then zooms
-   * out to show Hoedspruit in context instead of framing a street the listing
-   * may well not be on.
-   */
+  /** False when `coords` is only the town centre fallback. */
   precise?: boolean;
   zoom?: number;
   height?: number;
@@ -32,14 +18,14 @@ type Props = {
 };
 
 /** Street level for a real address; town level for the fallback. */
-const PRECISE_ZOOM = 16;
+const PRECISE_ZOOM = 15;
 const APPROXIMATE_ZOOM = 13;
+/** Google Static Maps caps size at 640 per side (before scale=2). */
+const MAX_SIDE = 640;
 
 /**
- * A real, street-level map rendered from raster tiles — no SDK, no API key and
- * none of the chrome the OpenStreetMap iframe embed forces on us. It is
- * deliberately static: tapping it opens directions rather than panning, so it
- * never traps the page scroll on mobile.
+ * A static Google map served through our own backend so the API key never
+ * ships in the app. Tapping it opens directions rather than panning.
  */
 const LocationMap = ({
   coords,
@@ -52,14 +38,14 @@ const LocationMap = ({
 }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
-  const [failed, setFailed] = useState(0);
-  const retina = typeof window !== "undefined" && window.devicePixelRatio > 1.2;
+  const [failed, setFailed] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const level = zoom ?? (precise ? PRECISE_ZOOM : APPROXIMATE_ZOOM);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const measure = () => setWidth(el.getBoundingClientRect().width);
+    const measure = () => setWidth(Math.round(el.getBoundingClientRect().width));
     measure();
     if (typeof ResizeObserver === "undefined") {
       window.addEventListener("resize", measure);
@@ -70,20 +56,20 @@ const LocationMap = ({
     return () => ro.disconnect();
   }, []);
 
-  const tiles = useMemo(
-    () =>
-      coords && width
-        ? buildTileGrid({ lat: coords.lat, lon: coords.lon, zoom: level, width, height })
-        : [],
-    [coords, width, height, level]
-  );
+  // Bucket width to 20px steps so small resizes reuse the cached image.
+  const reqW = Math.min(MAX_SIDE, Math.max(50, Math.ceil(width / 20) * 20));
+  const reqH = Math.min(MAX_SIDE, Math.max(50, Math.round(height)));
+  const src =
+    coords && width
+      ? `${MAP_ENDPOINT}?lat=${coords.lat.toFixed(5)}&lon=${coords.lon.toFixed(5)}&zoom=${level}&width=${reqW}&height=${reqH}`
+      : null;
 
-  // Re-attempt the grid from scratch when the framing changes.
-  useEffect(() => setFailed(0), [coords, level]);
+  useEffect(() => {
+    setFailed(false);
+    setLoaded(false);
+  }, [src]);
 
-  // Both CARTO and the OpenStreetMap fallback are unreachable — say so rather
-  // than leaving an empty panel that reads as "this place has no location".
-  const unreachable = tiles.length > 0 && failed >= tiles.length;
+  const unreachable = !!src && failed;
 
   return (
     <div
@@ -96,46 +82,28 @@ const LocationMap = ({
         isolation: "isolate",
       }}
     >
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          inset: 0,
-          // Warms the tiles a touch so they sit with the ivory palette and let
-          // the pin carry the colour.
-          filter: "saturate(0.82) sepia(0.1) brightness(1.02)",
-        }}
-      >
-        {tiles.map((t) => (
-          <img
-            key={t.key}
-            src={tileUrl(t.z, t.x, t.y, retina)}
-            alt=""
-            draggable={false}
-            decoding="async"
-            style={{
-              position: "absolute",
-              left: t.left,
-              top: t.top,
-              width: TILE_SIZE,
-              height: TILE_SIZE,
-              opacity: 0,
-              transition: "opacity 250ms ease-out",
-              userSelect: "none",
-            }}
-            onLoad={(e) => (e.currentTarget.style.opacity = "1")}
-            onError={(e) => {
-              const img = e.currentTarget;
-              if (img.dataset.fallback) {
-                setFailed((n) => n + 1);
-                return;
-              }
-              img.dataset.fallback = "1";
-              img.src = fallbackTileUrl(t.z, t.x, t.y);
-            }}
-          />
-        ))}
-      </div>
+      {src && !failed && (
+        <img
+          src={src}
+          alt=""
+          aria-hidden
+          draggable={false}
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          onError={() => setFailed(true)}
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: reqW,
+            height: reqH,
+            transform: "translate(-50%, -50%)",
+            opacity: loaded ? 1 : 0,
+            transition: "opacity 250ms ease-out",
+            userSelect: "none",
+          }}
+        />
+      )}
 
       {unreachable && (
         <div
@@ -152,7 +120,7 @@ const LocationMap = ({
             color: "rgba(43,36,32,0.55)",
           }}
         >
-          Map unavailable offline — tap for directions
+          Map unavailable offline. Tap for directions.
         </div>
       )}
 
@@ -209,28 +177,25 @@ const LocationMap = ({
       )}
 
       {!unreachable && (
-      <a
-        href="https://www.openstreetmap.org/copyright"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          position: "absolute",
-          right: 0,
-          bottom: 0,
-          zIndex: 2,
-          padding: "2px 6px",
-          borderTopLeftRadius: 8,
-          background: "rgba(255,255,255,0.74)",
-          color: "rgba(43,36,32,0.6)",
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: 9,
-          lineHeight: "12px",
-          letterSpacing: "0.02em",
-          textDecoration: "none",
-        }}
-      >
-        © OpenStreetMap, © CARTO
-      </a>
+        <span
+          style={{
+            position: "absolute",
+            right: 0,
+            bottom: 0,
+            zIndex: 2,
+            padding: "2px 6px",
+            borderTopLeftRadius: 8,
+            background: "rgba(255,255,255,0.74)",
+            color: "rgba(43,36,32,0.6)",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 9,
+            lineHeight: "12px",
+            letterSpacing: "0.02em",
+            pointerEvents: "none",
+          }}
+        >
+          © Google
+        </span>
       )}
     </div>
   );
