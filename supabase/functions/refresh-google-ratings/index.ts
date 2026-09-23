@@ -12,11 +12,11 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 
-// Listings fetched per run. The nightly cron sends no limit of its own, so this
-// is what it gets. It has to clear more than the refresh windows below generate,
-// or the queue only grows: those windows come to roughly 22 fetches a night at
-// today's listing count. The rest is headroom, so a backlog of newly matched or
-// hand-entered Place IDs drains in a few nights rather than a fortnight.
+// Listings fetched per run when the caller sends no limit. The nightly cron job
+// (refresh-google-ratings-nightly) sends its own `limit` in the request body
+// (100), and the manual "Sync now" button sends 150, so this default only
+// applies to callers that send nothing. Either way it has to clear more than the
+// refresh windows below generate, or the queue only grows.
 //
 // Raising this does not raise the bill — the windows decide how many fetches are
 // due, this only caps how fast they get made.
@@ -511,6 +511,29 @@ async function selectNeverFetched(admin: ReturnType<typeof createClient>, limit:
   return (data ?? []) as Listing[];
 }
 
+// Self-heal: a listing holding a Place ID but no rating and no reviews link at
+// all (e.g. wiped by a bad import) is due even if it was fetched recently. Only
+// once per SELF_HEAL_DAYS, so a place Google genuinely has no reviews for
+// doesn't get re-fetched every night.
+const SELF_HEAL_DAYS = 7;
+
+async function selectMissingRating(admin: ReturnType<typeof createClient>, limit: number) {
+  if (limit <= 0) return [] as Listing[];
+  const cutoff = new Date(Date.now() - SELF_HEAL_DAYS * 86400000).toISOString();
+  const { data, error } = await admin
+    .from("listings")
+    .select("id, title, google_place_id")
+    .not("google_place_id", "is", null)
+    .or(NOT_AWAITING_MATCH)
+    .is("google_rating", null)
+    .is("google_reviews_url", null)
+    .lt("google_synced_at", cutoff)
+    .order("google_synced_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as Listing[];
+}
+
 async function selectDue(
   admin: ReturnType<typeof createClient>,
   priority: "high" | "normal",
@@ -534,14 +557,16 @@ async function selectDue(
 
 async function runRefresh(admin: ReturnType<typeof createClient>, limit: number) {
   const fresh = await selectNeverFetched(admin, limit);
-  const high = await selectDue(admin, "high", HIGH_PRIORITY_DAYS, limit - fresh.length);
-  const normal = await selectDue(admin, "normal", NORMAL_PRIORITY_DAYS, limit - fresh.length - high.length);
+  const healing = await selectMissingRating(admin, limit - fresh.length);
+  const used = fresh.length + healing.length;
+  const high = await selectDue(admin, "high", HIGH_PRIORITY_DAYS, limit - used);
+  const normal = await selectDue(admin, "normal", NORMAL_PRIORITY_DAYS, limit - used - high.length);
 
   // The three queries overlap (a never-fetched row is also a due row), so dedupe
   // by id before spending a Google call on the same listing twice.
   const seen = new Set<string>();
   const work: Listing[] = [];
-  for (const listing of [...fresh, ...high, ...normal]) {
+  for (const listing of [...fresh, ...healing, ...high, ...normal]) {
     if (seen.has(listing.id)) continue;
     seen.add(listing.id);
     work.push(listing);
@@ -597,6 +622,8 @@ async function runRefresh(admin: ReturnType<typeof createClient>, limit: number)
     // How much of this run went to listings getting their first ever fetch —
     // the newly matched and the hand-entered Place IDs from the CSV.
     neverFetched: fresh.length,
+    // Listings with a Place ID but no rating or reviews link, re-fetched early.
+    selfHealed: healing.length,
     succeeded,
     failedCount: failed.length,
     failed,

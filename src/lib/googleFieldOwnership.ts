@@ -1,14 +1,16 @@
 // Who owns a listing's Google rating columns: the nightly Places sync, or the CSV?
 //
-// supabase/functions/refresh-google-ratings only reaches listings it has managed
-// to match to a Google Place ID. Everything else (no match, confidence below the
-// 0.75 bar, a duplicate Place ID, a listing still awaiting a stricter re-match)
-// never gets a rating from Google, so those rows have to be filled by hand via
-// the CSV import.
+// supabase/functions/refresh-google-ratings reaches every listing that holds a
+// Google Place ID. Those listings' rating columns belong to the sync: a CSV (a
+// snapshot of whatever the numbers were the day it was exported) or a form in
+// the editor must never write them, or it rolls live data back.
 //
-// The two sources must not fight. Once the sync has successfully written a row,
-// its numbers are live and a CSV — which is a snapshot of whatever the numbers
-// were the day it was exported — would silently roll them back.
+// Listings with no Place ID are never fetched, so for them the CSV and the
+// editor are the only source and may set the numbers by hand.
+//
+// Ownership is decided by *having a Place ID*, not by google_synced_at: an ID
+// that has been entered but not fetched yet is about to be written by the sync,
+// and letting the CSV write in the meantime is how stale numbers get back in.
 
 /** Columns written by a successful Places fetch in refresh-google-ratings. */
 export const GOOGLE_SYNCED_FIELDS = [
@@ -26,17 +28,12 @@ export function isGoogleSyncedField(field: string): field is GoogleSyncedField {
 }
 
 /**
- * True when the live sync has written this listing's rating columns, so a CSV
- * import must leave them alone.
- *
- * `google_synced_at` is the signal: refresh-google-ratings stamps it only after
- * Google actually returns the place, and never on a match attempt, a failure, or
- * a backfill. A row with a timestamp therefore has numbers straight from Google;
- * a row without one has never had any, whatever its match status says.
+ * True when the listing holds a Google Place ID, so its rating columns are the
+ * sync's and a CSV import or editor save must leave them alone.
  */
 export function isGoogleOwned(
-  existing: { google_synced_at?: string | null } | null | undefined,
+  existing: { google_place_id?: string | null } | null | undefined,
 ): boolean {
-  const syncedAt = existing?.google_synced_at;
-  return typeof syncedAt === "string" && syncedAt.trim() !== "";
+  const placeId = existing?.google_place_id;
+  return typeof placeId === "string" && placeId.trim() !== "";
 }

@@ -76,8 +76,7 @@ export type PlaceIdSyncState = {
 
 /**
  * True when the CSV is pointing a listing at a different place to the one the
- * sync has been fetching. Its stored rating then belongs to the old place, so it
- * is stale rather than live and the CSV is free to overwrite it.
+ * sync has been fetching.
  */
 export function isPlaceIdRepointed(incoming: string | null, existing: PlaceIdSyncState): boolean {
   if (!incoming) return false;
@@ -85,59 +84,67 @@ export function isPlaceIdRepointed(incoming: string | null, existing: PlaceIdSyn
   return current !== null && current !== incoming;
 }
 
+export type PlaceIdChange = "added" | "changed" | "removed" | null;
+
+/** What a Place ID cell does to a listing, for the import preview. */
+export function placeIdChangeKind(
+  incoming: string | null | undefined,
+  existing: PlaceIdSyncState,
+): PlaceIdChange {
+  const current = existing?.google_place_id ?? null;
+  if (incoming === undefined) return null;
+  if (incoming === null) return current ? "removed" : null;
+  if (incoming === current) return null;
+  return current ? "changed" : "added";
+}
+
+/** Everything the sync writes about a place, reset together. */
+const SYNC_AND_RATING_RESET = {
+  google_place_name: null,
+  google_synced_at: null,
+  google_rating: null,
+  google_reviews_count: null,
+  google_reviews_url: null,
+} as const;
+
 /**
- * The columns a CSV row's Place ID cell writes.
+ * The columns a Place ID cell (CSV or editor) writes.
  *
- * `incoming` is the parsed cell: a normalised ID, `null` to clear (a "-" cell),
- * or `undefined` when the cell was blank on an update and means "leave it".
+ * `incoming` is the parsed cell: a normalised ID, `null` to remove (a "-"
+ * cell), or `undefined` for a blank cell, which always means "keep".
  *
- * Naming a place the row doesn't already hold also has to fix up the sync
- * bookkeeping around it, or the ID lands in a row the refresh still skips:
- *   - status goes to `matched`, because `needs_match` is never refreshed;
- *   - confidence goes to 1, because a person checked it;
- *   - swapping one ID for another also resets the fetch stamp and the cached
- *     place name, so the next run treats it as never fetched and the rating
- *     belonging to the old place gets replaced quickly.
- *
- * A cell that only repeats the ID already stored writes nothing but the ID
- * itself. Exports carry the stored ID back out, so most rows in a re-imported
- * CSV are echoing the database rather than making a decision — and flipping
- * status on an echo would quietly un-flag every listing parked at `needs_match`
- * because its automatic match was wrong.
- *
- * Clearing the ID clears all of it, including the fetch stamp — with no ID the
- * sync will never write those columns again, so the CSV has to own them.
+ *   - blank            -> nothing written
+ *   - same ID          -> nothing written, sync fields untouched
+ *   - new / different  -> the ID, status `matched`, confidence 1, and the old
+ *                         place's name, fetch stamp and rating cleared so the
+ *                         next run fetches it fresh
+ *   - "-"              -> the ID and every sync and rating field cleared, so an
+ *                         old rating isn't left showing (nothing written if the
+ *                         listing had no ID in the first place)
  */
 export function placeIdImportUpdate(
   incoming: string | null | undefined,
   existing: PlaceIdSyncState,
 ): Record<string, unknown> {
+  const current = existing?.google_place_id ?? null;
   if (incoming === undefined) return {};
 
   if (incoming === null) {
+    if (!current) return {};
     return {
       google_place_id: null,
-      google_place_name: null,
       google_sync_status: null,
       google_match_confidence: null,
-      google_synced_at: null,
+      ...SYNC_AND_RATING_RESET,
     };
   }
 
-  if (incoming === (existing?.google_place_id ?? null)) {
-    return { google_place_id: incoming };
-  }
+  if (incoming === current) return {};
 
-  const update: Record<string, unknown> = {
+  return {
     google_place_id: incoming,
     google_sync_status: MATCHED_SYNC_STATUS,
     google_match_confidence: MANUAL_PLACE_ID_CONFIDENCE,
+    ...SYNC_AND_RATING_RESET,
   };
-
-  if (isPlaceIdRepointed(incoming, existing)) {
-    update.google_place_name = null;
-    update.google_synced_at = null;
-  }
-
-  return update;
 }

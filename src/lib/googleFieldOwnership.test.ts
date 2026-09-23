@@ -22,33 +22,21 @@ describe("isGoogleSyncedField", () => {
 });
 
 describe("isGoogleOwned", () => {
-  it("is true once the sync has stamped a fetch", () => {
-    expect(isGoogleOwned({ google_synced_at: "2026-08-01T02:00:00.000Z" })).toBe(true);
+  it("is true for any listing holding a Place ID, fetched or not", () => {
+    expect(isGoogleOwned({ google_place_id: "ChIJdummy" })).toBe(true);
+    // Matched but never fetched still belongs to the sync: the next run writes it.
+    expect(isGoogleOwned({ google_place_id: "ChIJdummy", google_synced_at: null } as any)).toBe(true);
   });
 
-  it("is false for a listing the sync has never fetched", () => {
-    expect(isGoogleOwned({ google_synced_at: null })).toBe(false);
+  it("is false for a listing with no Place ID, even with an old fetch stamp", () => {
+    expect(isGoogleOwned({ google_place_id: null })).toBe(false);
+    expect(isGoogleOwned({ google_place_id: null, google_synced_at: "2026-08-01T02:00:00.000Z" } as any)).toBe(false);
     expect(isGoogleOwned({})).toBe(false);
+    expect(isGoogleOwned({ google_place_id: "   " })).toBe(false);
   });
 
   it("is false for a new listing with no existing row", () => {
     expect(isGoogleOwned(null)).toBe(false);
     expect(isGoogleOwned(undefined)).toBe(false);
-  });
-
-  it("treats a blank timestamp as never synced", () => {
-    expect(isGoogleOwned({ google_synced_at: "" })).toBe(false);
-    expect(isGoogleOwned({ google_synced_at: "   " })).toBe(false);
-  });
-
-  // A listing can be matched to a Place ID (backfill) yet never refreshed, so the
-  // match status alone must not lock the CSV out of the rating columns.
-  it("ignores match status and keys only off the fetch timestamp", () => {
-    const matchedButNeverFetched = {
-      google_sync_status: "matched",
-      google_place_id: "ChIJdummy",
-      google_synced_at: null,
-    };
-    expect(isGoogleOwned(matchedButNeverFetched)).toBe(false);
   });
 });

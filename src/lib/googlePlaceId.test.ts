@@ -5,6 +5,7 @@ import {
   isPlaceIdRepointed,
   normalizeGooglePlaceId,
   placeIdImportUpdate,
+  placeIdChangeKind,
 } from "./googlePlaceId";
 import { getCSVHeadersForCategory, getUniversalCSVHeaders, getUniversalDbFields } from "./categoryFields";
 
@@ -22,6 +23,10 @@ describe("normalizeGooglePlaceId", () => {
   it("reads the ID out of a Maps URL that carries place_id", () => {
     expect(normalizeGooglePlaceId(`https://www.google.com/maps/place/?q=place_id:x&place_id=${PLACE_ID}`))
       .toBe(PLACE_ID);
+  });
+
+  it("reads the ID out of a Google 'ask for reviews' link (placeid=)", () => {
+    expect(normalizeGooglePlaceId(` https://search.google.com/local/writereview?placeid=${PLACE_ID} `)).toBe(PLACE_ID);
   });
 
   it("reads the ID out of a Places API URL", () => {
@@ -58,33 +63,36 @@ describe("isPlaceIdRepointed", () => {
 });
 
 describe("placeIdImportUpdate", () => {
-  it("writes nothing when the cell was blank on an update", () => {
+  const reset = {
+    google_place_name: null,
+    google_synced_at: null,
+    google_rating: null,
+    google_reviews_count: null,
+    google_reviews_url: null,
+  };
+
+  it("writes nothing when the cell was blank", () => {
     expect(placeIdImportUpdate(undefined, { google_place_id: PLACE_ID })).toEqual({});
+    expect(placeIdImportUpdate(undefined, null)).toEqual({});
   });
 
-  it("puts a hand-entered ID somewhere the refresh will actually pick it up", () => {
-    // 'needs_match' is the one status the refresh skips, so a listing parked
-    // there would keep its new ID and still never be fetched.
+  it("writes nothing when the cell repeats what's stored", () => {
+    expect(placeIdImportUpdate(PLACE_ID, {
+      google_place_id: PLACE_ID,
+      google_synced_at: "2026-08-01T02:00:00.000Z",
+    })).toEqual({});
+  });
+
+  it("adds a new ID and resets the rating so the sync fetches it fresh", () => {
     expect(placeIdImportUpdate(PLACE_ID, { google_place_id: null })).toEqual({
       google_place_id: PLACE_ID,
       google_sync_status: "matched",
       google_match_confidence: MANUAL_PLACE_ID_CONFIDENCE,
+      ...reset,
     });
   });
 
-  it("writes the ID and nothing else when the cell repeats what's stored", () => {
-    // An export carries the stored ID back out, so a re-imported CSV echoes it
-    // for nearly every row. Treating that echo as a decision would un-flag every
-    // listing someone parked at needs_match because its auto-match was wrong.
-    expect(placeIdImportUpdate(PLACE_ID, {
-      google_place_id: PLACE_ID,
-      google_synced_at: "2026-08-01T02:00:00.000Z",
-    })).toEqual({ google_place_id: PLACE_ID });
-  });
-
-  it("resets the fetch stamp when the CSV points at a different place", () => {
-    // The stored rating belongs to the old place, so it has to stop counting as
-    // live: cleared stamp means the next run re-fetches it as never fetched.
+  it("resets the rating when the CSV points at a different place", () => {
     expect(placeIdImportUpdate(PLACE_ID, {
       google_place_id: "ChIJsomethingelseentirely",
       google_synced_at: "2026-08-01T02:00:00.000Z",
@@ -92,21 +100,36 @@ describe("placeIdImportUpdate", () => {
       google_place_id: PLACE_ID,
       google_sync_status: "matched",
       google_match_confidence: MANUAL_PLACE_ID_CONFIDENCE,
-      google_place_name: null,
-      google_synced_at: null,
+      ...reset,
     });
   });
 
-  it("clears every synced column when the ID is removed", () => {
-    // With no ID the sync will never write these again, so the CSV takes them back.
+  it("clears the ID and every rating and sync column on '-'", () => {
     expect(placeIdImportUpdate(null, { google_place_id: PLACE_ID, google_synced_at: "2026-08-01T02:00:00.000Z" }))
       .toEqual({
         google_place_id: null,
-        google_place_name: null,
         google_sync_status: null,
         google_match_confidence: null,
-        google_synced_at: null,
+        ...reset,
       });
+  });
+
+  it("writes nothing on '-' for a listing that never had an ID", () => {
+    // Its hand-entered rating must survive.
+    expect(placeIdImportUpdate(null, { google_place_id: null })).toEqual({});
+    expect(placeIdImportUpdate(null, null)).toEqual({});
+  });
+});
+
+describe("placeIdChangeKind", () => {
+  it("classifies each cell", () => {
+    expect(placeIdChangeKind(undefined, { google_place_id: PLACE_ID })).toBeNull();
+    expect(placeIdChangeKind(PLACE_ID, { google_place_id: PLACE_ID })).toBeNull();
+    expect(placeIdChangeKind(PLACE_ID, { google_place_id: null })).toBe("added");
+    expect(placeIdChangeKind(PLACE_ID, null)).toBe("added");
+    expect(placeIdChangeKind(PLACE_ID, { google_place_id: "ChIJsomethingelseentirely" })).toBe("changed");
+    expect(placeIdChangeKind(null, { google_place_id: PLACE_ID })).toBe("removed");
+    expect(placeIdChangeKind(null, { google_place_id: null })).toBeNull();
   });
 });
 
