@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { ArrowLeft, Save } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
 
 type EditableRow = Record<string, any> & { id: string; _dirty: boolean };
 
@@ -82,7 +83,10 @@ const AdminBulkEdit = () => {
     try {
       for (const row of dirtyRows) {
         const payload: Record<string, any> = {};
+        // A listing with a Place ID has its rating columns owned by the sync.
+        const owned = isGoogleOwned(row);
         for (const col of COLUMNS) {
+          if (owned && isGoogleSyncedField(col.key)) continue;
           payload[col.key] = row[col.key];
         }
         const { error } = await supabase.from("listings").update(payload as any).eq("id", row.id);
@@ -160,7 +164,11 @@ const AdminBulkEdit = () => {
                   </td>
                   {COLUMNS.filter((c) => c.key !== "title").map((col) => (
                     <td key={col.key} className="p-1 border-r border-border" style={{ minWidth: col.width }}>
-                      {col.type === "switch" ? (
+                      {isGoogleSyncedField(col.key) && isGoogleOwned(row) ? (
+                        <div className="h-7 px-3 flex items-center text-xs text-muted-foreground truncate" title="Synced from Google">
+                          {row[col.key] ?? "—"} <span className="ml-1 opacity-70">(synced from Google)</span>
+                        </div>
+                      ) : col.type === "switch" ? (
                         <div className="flex justify-center">
                           <Switch
                             checked={row[col.key] === true}

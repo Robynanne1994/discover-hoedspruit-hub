@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { normalizeGooglePlaceId, placeIdImportUpdate } from "@/lib/googlePlaceId";
+import { isGoogleOwned } from "@/lib/googleFieldOwnership";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -500,17 +501,25 @@ const AdminListings = () => {
         additional_whatsapps: sanitizeContactArray(values.additional_whatsapps),
         additional_whatsapp_labels: (values.additional_whatsapp_labels || []).map((s: string) => (s || "").trim()),
           google_maps_link: values.google_maps_link || null,
-          google_rating: values.google_rating,
-          google_reviews_count: values.google_reviews_count,
-          google_reviews_url: values.google_reviews_url || null,
           // Same reading as the CSV column: a Place ID typed here has to fix up
           // the sync bookkeeping around it, or the refresh never picks it up.
+          // Rating fields are only written from the form for a listing with no
+          // Place ID before or after this save; otherwise the sync owns them.
           ...(() => {
             const raw = (values.google_place_id || "").trim();
-            if (raw === "" || raw === "-") return placeIdImportUpdate(null, editing as any);
-            const id = normalizeGooglePlaceId(raw);
-            if (!id) throw new Error("That Google Place ID doesn't look valid — paste the ID itself or a Google Maps link containing place_id=");
-            return placeIdImportUpdate(id, editing as any);
+            let nextId: string | null = null;
+            if (raw !== "" && raw !== "-") {
+              nextId = normalizeGooglePlaceId(raw);
+              if (!nextId) throw new Error("That Google Place ID doesn't look valid. Paste the ID itself or a Google link containing place_id= or placeid=");
+            }
+            const placeUpdate = placeIdImportUpdate(nextId, editing as any);
+            if (isGoogleOwned(editing as any) || nextId) return placeUpdate;
+            return {
+              google_rating: values.google_rating,
+              google_reviews_count: values.google_reviews_count,
+              google_reviews_url: values.google_reviews_url || null,
+              ...placeUpdate,
+            };
           })(),
           category_id: selectedCatIds[0] || null, // keep legacy field in sync
         is_featured: values.is_featured,
@@ -1375,7 +1384,7 @@ const AdminListings = () => {
                 </div>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
-                  <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." /></div>
+                  <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." />{isGoogleOwned(editing as any) && <p className="text-xs text-muted-foreground mt-1">Synced from Google</p>}</div>
                   <div>
                     <Label>Google Place ID</Label>
                     <Input value={form.google_place_id} onChange={(e) => setForm({ ...form, google_place_id: e.target.value })} placeholder="ChIJ... (or paste a Maps link with place_id=)" />
@@ -1383,9 +1392,12 @@ const AdminListings = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-                  <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
-                   <div><Label>Review Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
+                  <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
+                   <div><Label>Review Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
                 </div>
+                {isGoogleOwned(editing as any) && (
+                  <p className="text-xs text-muted-foreground -mt-2">Rating and review count are synced from Google because this listing has a Place ID.</p>
+                )}
                 <div className="border-t border-border pt-4 mt-2">
                   <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Detail Page</p>
                 </div>
