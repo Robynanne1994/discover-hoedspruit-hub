@@ -46,8 +46,8 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="p-0 border-0 max-w-none w-screen h-screen sm:rounded-none flex items-center justify-center [&>button]:hidden"
-        style={{ background: "#E6E0CC" }}
+        className="p-0 border-0 max-w-none w-screen h-screen sm:rounded-none flex-col [&>button]:hidden"
+        style={{ background: "#FFFFFF", display: "flex" }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onClick={(e) => {
@@ -71,7 +71,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
           style={{
             position: "absolute", top: 16, right: 16, zIndex: 20,
             width: 44, height: 44, borderRadius: 999,
-            background: "#ffffff", border: "1px solid #E2DAC6", cursor: "pointer",
+            background: "#E6E0CC", border: "1px solid #E2DAC6", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
             boxShadow: "0 1px 4px -1px rgba(0,0,0,0.06)",
           }}
@@ -79,54 +79,59 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
           <X size={20} color="#1A1A1A" strokeWidth={2} />
         </button>
 
+        <div
+          style={{
+            flex: "1 1 auto", minHeight: 0, width: "100%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            paddingTop: 64, paddingBottom: 16,
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) onOpenChange(false); }}
+        >
+          <img
+            src={images[index]}
+            alt={`${alt} ${index + 1}`}
+            style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" }}
+          />
+        </div>
+
         {images.length > 1 && (
-          <>
+          <div
+            style={{
+              flex: "0 0 auto", width: "100%", padding: "12px 16px 28px",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 24,
+              zIndex: 20,
+            }}
+          >
             <button
               onClick={prev}
               aria-label="Previous image"
               style={{
-                position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 20,
-                width: 44, height: 44, borderRadius: 999,
-                background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
+                width: 48, height: 48, borderRadius: 999,
+                background: "#F5F0E8", border: "1px solid #E2DAC6", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              <ChevronLeft size={24} color="#0a0a0a" strokeWidth={2} />
+              <ChevronLeft size={26} color="#1A1A1A" strokeWidth={2} />
             </button>
+            <div style={{
+              padding: "6px 14px", borderRadius: 999,
+              background: "#F5F0E8", color: "#1A1A1A",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 13, letterSpacing: "0.02em", minWidth: 56, textAlign: "center",
+            }}>
+              {index + 1} / {images.length}
+            </div>
             <button
               onClick={next}
               aria-label="Next image"
               style={{
-                position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", zIndex: 20,
-                width: 44, height: 44, borderRadius: 999,
-                background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
+                width: 48, height: 48, borderRadius: 999,
+                background: "#F5F0E8", border: "1px solid #E2DAC6", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              <ChevronRight size={24} color="#0a0a0a" strokeWidth={2} />
+              <ChevronRight size={26} color="#1A1A1A" strokeWidth={2} />
             </button>
-          </>
-        )}
-
-        <img
-          src={images[index]}
-          alt={`${alt} ${index + 1}`}
-          style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain", display: "block" }}
-        />
-
-        {images.length > 1 && (
-          <div style={{
-            position: "absolute", bottom: 24, left: 0, right: 0, zIndex: 20,
-            display: "flex", justifyContent: "center",
-          }}>
-            <div style={{
-              padding: "6px 12px", borderRadius: 999,
-              background: "rgba(0,0,0,0.08)", color: "#0a0a0a",
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 12, letterSpacing: "0.02em",
-            }}>
-              {index + 1} / {images.length}
-            </div>
           </div>
         )}
       </DialogContent>
