@@ -1038,6 +1038,39 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_import_log: {
+        Row: {
+          created_at: string
+          errors: Json
+          id: string
+          imported_count: number
+          listing_id: string | null
+          mode: string | null
+          new_urls: string[]
+          requested_count: number
+        }
+        Insert: {
+          created_at?: string
+          errors?: Json
+          id?: string
+          imported_count?: number
+          listing_id?: string | null
+          mode?: string | null
+          new_urls?: string[]
+          requested_count?: number
+        }
+        Update: {
+          created_at?: string
+          errors?: Json
+          id?: string
+          imported_count?: number
+          listing_id?: string | null
+          mode?: string | null
+          new_urls?: string[]
+          requested_count?: number
+        }
+        Relationships: []
+      }
       icon_overrides: {
         Row: {
           id: string
@@ -1059,6 +1092,21 @@ export type Database = {
           slot?: string
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      internal_secrets: {
+        Row: {
+          key: string
+          value: string
+        }
+        Insert: {
+          key: string
+          value: string
+        }
+        Update: {
+          key?: string
+          value?: string
         }
         Relationships: []
       }
@@ -2640,6 +2688,10 @@ export type Database = {
       register_push_device: {
         Args: { _platform: string; _token: string }
         Returns: undefined
+      }
+      request_gallery_import: {
+        Args: { p_image_urls: string[]; p_listing_id: string; p_mode?: string }
+        Returns: number
       }
       respond_to_follow_request: {
         Args: { _accept: boolean; _request_id: string }

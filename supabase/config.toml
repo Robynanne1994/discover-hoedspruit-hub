@@ -48,6 +48,11 @@ verify_jwt = false
 [functions.static-map]
 verify_jwt = false
 
+# Gallery image importer. Protected by its own x-import-key header, checked
+# against internal_secrets.gallery_import_key, so the JWT gate stays off.
+[functions.import-gallery-images]
+verify_jwt = false
+
 
 [functions.process-email-queue]
 verify_jwt = true
