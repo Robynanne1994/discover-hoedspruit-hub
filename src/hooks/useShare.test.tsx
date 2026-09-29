@@ -81,7 +81,9 @@ describe("ShareProvider", () => {
     expect(screen.getByRole("button", { name: "Copy link" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Share via WhatsApp" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Share via Email" })).toBeInTheDocument();
-    expect(screen.getByText("hellohoedspruit.co.za/listing/1")).toBeInTheDocument();
+    // The sheet shows the title, not the raw link — the link itself is covered
+    // by the "copies the link" test below.
+    expect(screen.getByText("Mad Dogz")).toBeInTheDocument();
   });
 
   it("falls back to the in-app sheet when the system sheet errors", async () => {

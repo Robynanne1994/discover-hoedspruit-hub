@@ -31,7 +31,7 @@
  * Authentication → URL Configuration → Redirect URLs allow list.
  */
 export const PUBLIC_ORIGIN = (
-  import.meta.env.VITE_PUBLIC_SITE_URL || "https://hello-hoedspruit-hub.lovable.app"
+  import.meta.env.VITE_PUBLIC_SITE_URL || "https://app.hellohoedspruit.co"
 ).replace(/\/+$/, "");
 
 /** Schemes that exist only inside this one webview. Never emailable. */

@@ -27,6 +27,10 @@ const CUSTOM_SCHEME = "za.co.hellohoedspruit.app";
 /** https hosts whose links belong to this app. */
 const APP_HOSTS = new Set(
   [
+    // The app's own home. hellohoedspruit.co itself is a separate marketing
+    // site and does not serve these routes, so shared links point at the
+    // subdomain; the bare domain stays listed in case it ever proxies them.
+    "app.hellohoedspruit.co",
     "hellohoedspruit.co",
     "www.hellohoedspruit.co",
     hostOf(PUBLIC_ORIGIN),

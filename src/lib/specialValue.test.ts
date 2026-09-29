@@ -99,10 +99,14 @@ describe("specialDateLine", () => {
 });
 
 describe("specialMeta", () => {
+  // Local date arithmetic needs a local serialisation. toISOString() converts
+  // to UTC first, so east of Greenwich in the small hours it rendered the day
+  // before and the countdown came out one short.
   const inDays = (n: number) => {
     const d = new Date();
     d.setDate(d.getDate() + n);
-    return d.toISOString().slice(0, 10);
+    const pad = (v: number) => String(v).padStart(2, "0");
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
 
   it("lets urgency override the business's own footer wording", () => {

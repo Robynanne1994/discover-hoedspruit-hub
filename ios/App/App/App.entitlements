@@ -11,6 +11,7 @@
 	     (bundled in the web app's public/ folder). -->
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<string>applinks:app.hellohoedspruit.co</string>
 		<string>applinks:hellohoedspruit.co</string>
 		<string>applinks:www.hellohoedspruit.co</string>
 	</array>
