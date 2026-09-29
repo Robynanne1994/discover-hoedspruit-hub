@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "REPLACE_APPLE_TEAM_ID.Hello-Hoedspruit",
+        "appID": "22PV69HYW3.Hello-Hoedspruit",
         "paths": [
           "NOT /admin/*",
           "/*"
