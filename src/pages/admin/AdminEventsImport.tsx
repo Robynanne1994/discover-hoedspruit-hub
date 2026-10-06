@@ -60,6 +60,17 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
 ]);
 
 
+// Normalise a CSV time cell to "HH:MM". A one-digit hour gets a leading 0
+// ("6:30" → "06:30"); anything that isn't a time returns null.
+const normalizeTime = (v: string | undefined): string | null => {
+  if (!v) return null;
+  const m = v.trim().match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  if (h > 23) return null;
+  return `${String(h).padStart(2, "0")}:${m[2]}`;
+};
+
 // Performances format in CSV: pipe-separated entries, each entry uses
 // semicolons between fields: "YYYY-MM-DD;HH:MM;HH:MM" (date;start;end).
 // End time is optional. Example: "2026-01-15;19:00;21:00|2026-01-16;19:00;"
