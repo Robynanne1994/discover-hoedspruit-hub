@@ -60,6 +60,17 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
 ]);
 
 
+// Normalise a CSV time cell to "HH:MM". A one-digit hour gets a leading 0
+// ("6:30" → "06:30"); anything that isn't a time returns null.
+const normalizeTime = (v: string | undefined): string | null => {
+  if (!v) return null;
+  const m = v.trim().match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  if (h > 23) return null;
+  return `${String(h).padStart(2, "0")}:${m[2]}`;
+};
+
 // Performances format in CSV: pipe-separated entries, each entry uses
 // semicolons between fields: "YYYY-MM-DD;HH:MM;HH:MM" (date;start;end).
 // End time is optional. Example: "2026-01-15;19:00;21:00|2026-01-16;19:00;"
@@ -70,8 +81,8 @@ const parsePerformances = (v: string | undefined): { date: string; time: string 
     const parts = raw.split(";").map((s) => s.trim());
     const date = parts[0];
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-    const time = parts[1] && /^\d{1,2}:\d{2}/.test(parts[1]) ? parts[1].slice(0, 5) : null;
-    const end_time = parts[2] && /^\d{1,2}:\d{2}/.test(parts[2]) ? parts[2].slice(0, 5) : null;
+    const time = normalizeTime(parts[1]);
+    const end_time = normalizeTime(parts[2]);
     out.push({ date, time, end_time });
   }
   return out.length ? out : null;
@@ -214,8 +225,8 @@ const AdminEventsImport = () => {
           tag: row.tag || null,
           sub_tag_1: row.sub_tag_1 || null,
           sub_tag_2: row.sub_tag_2 || null,
-          start_time: row.start_time || null,
-          end_time: row.end_time || null,
+          start_time: normalizeTime(row.start_time) ?? (row.start_time || null),
+          end_time: normalizeTime(row.end_time) ?? (row.end_time || null),
           recurrence: row.recurrence || null,
           google_maps_link: row.google_maps_link || null,
           social_media_link: row.social_media_link || null,
