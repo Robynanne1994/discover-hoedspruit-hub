@@ -81,8 +81,8 @@ const parsePerformances = (v: string | undefined): { date: string; time: string 
     const parts = raw.split(";").map((s) => s.trim());
     const date = parts[0];
     if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
-    const time = parts[1] && /^\d{1,2}:\d{2}/.test(parts[1]) ? parts[1].slice(0, 5) : null;
-    const end_time = parts[2] && /^\d{1,2}:\d{2}/.test(parts[2]) ? parts[2].slice(0, 5) : null;
+    const time = normalizeTime(parts[1]);
+    const end_time = normalizeTime(parts[2]);
     out.push({ date, time, end_time });
   }
   return out.length ? out : null;
@@ -225,8 +225,8 @@ const AdminEventsImport = () => {
           tag: row.tag || null,
           sub_tag_1: row.sub_tag_1 || null,
           sub_tag_2: row.sub_tag_2 || null,
-          start_time: row.start_time || null,
-          end_time: row.end_time || null,
+          start_time: normalizeTime(row.start_time) ?? (row.start_time || null),
+          end_time: normalizeTime(row.end_time) ?? (row.end_time || null),
           recurrence: row.recurrence || null,
           google_maps_link: row.google_maps_link || null,
           social_media_link: row.social_media_link || null,
