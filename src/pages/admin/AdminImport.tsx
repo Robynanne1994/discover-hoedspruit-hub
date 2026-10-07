@@ -25,6 +25,11 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { isBlankPlaceholder } from "@/lib/sanitizeListing";
 import { isImageCsvColumn } from "@/lib/csvImageColumns";
+import {
+  accommodationPriceForExport,
+  formatAccommodationPrice,
+  normalizeAccommodationPriceRange,
+} from "@/lib/accommodationCsv";
 import { parseAdditionalHours } from "@/lib/openHours";
 import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 
@@ -153,19 +158,6 @@ function normalizeKm(value: unknown): string | null {
   return String(Math.round(n * 100) / 100);
 }
 
-// Accommodation average price: stored formatted as "R4,400". Accepts plain
-// numbers like "4400", already-formatted "R4,400", or "4 400".
-function formatPriceForImport(value: unknown): string | null {
-  if (value === null || value === undefined) return null;
-  const raw = String(value).trim();
-  if (!raw) return null;
-  const digits = raw.replace(/[^0-9]/g, "");
-  const n = parseInt(digits, 10);
-  if (!Number.isFinite(n)) return null;
-  return `R${n.toLocaleString("en-ZA")}`;
-}
-
-
 function serializeField(value: unknown, type: FieldType): string {
   if (value === null || value === undefined) return "";
   switch (type) {
@@ -182,18 +174,6 @@ function serializeField(value: unknown, type: FieldType): string {
       return String(value);
     }
   }
-}
-
-// Accommodation average price is stored formatted (e.g. "R4,400") for display.
-// Exports should be plain numbers so spreadsheets can sum and re-import cleanly.
-function normalizePriceForExport(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  const raw = String(value).trim();
-  if (!raw) return "";
-  const digits = raw.replace(/[^0-9.]/g, "");
-  const n = parseFloat(digits);
-  if (!Number.isFinite(n)) return raw;
-  return String(n);
 }
 
 // Parse a CSV cell to a DB value. Returns:
@@ -809,11 +789,20 @@ const AdminImport = () => {
             }
             if (fieldName === "km_from_town") {
               payloadRecord[fieldName] = normalizeKm(parsed.value);
+            } else if (fieldName === "price_range" && isAccommodation) {
+              const priceRange = normalizeAccommodationPriceRange(parsed.value);
+              if (parsed.value !== null && priceRange === null) {
+                results.errors.push(
+                  `Row ${i + 2}: price_range must be Budget, Mid-range or Luxury. Left unchanged`,
+                );
+                continue;
+              }
+              payloadRecord[fieldName] = priceRange;
             } else if (
               fieldName === "avg_price_per_person_per_night" ||
               fieldName === "avg_price_per_couple_per_night"
             ) {
-              payloadRecord[fieldName] = formatPriceForImport(parsed.value);
+              payloadRecord[fieldName] = formatAccommodationPrice(parsed.value);
             } else {
               payloadRecord[fieldName] = parsed.value;
             }
@@ -1331,7 +1320,7 @@ const AdminImport = () => {
         if (h === ID_FIELD || h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
-        if (h === "avg_price_per_person_per_night" || h === "avg_price_per_couple_per_night") { fieldMap[h] = normalizePriceForExport(lr[h]); continue; }
+        if (h === "avg_price_per_person_per_night" || h === "avg_price_per_couple_per_night") { fieldMap[h] = accommodationPriceForExport(lr[h]); continue; }
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
         fieldMap[h] = serializeField(lr[h], spec.type);
