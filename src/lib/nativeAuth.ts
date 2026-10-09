@@ -47,6 +47,7 @@
 //                               bundle id automatically; safe to leave unset for
 //                               an iOS-only launch.
 import { supabase } from "@/integrations/supabase/client";
+import { nameFromProvider } from "@/lib/authProviders";
 import { isNativeApp, nativePlatform } from "@/lib/nativeBridge";
 import { PUBLIC_ORIGIN } from "@/lib/publicOrigin";
 
@@ -157,7 +158,13 @@ async function signInWithApple(): Promise<NativeAuthResult> {
     scopes: "email name",
     nonce: hashedNonce,
     state: rawNonce.slice(0, 12),
-  })) as { response?: { identityToken?: string } };
+  })) as {
+    response?: {
+      identityToken?: string;
+      givenName?: string | null;
+      familyName?: string | null;
+    };
+  };
 
   const idToken = res?.response?.identityToken;
   if (!idToken) throw new Error("Apple didn't return an identity token.");
@@ -166,7 +173,63 @@ async function signInWithApple(): Promise<NativeAuthResult> {
     token: idToken,
     nonce: rawNonce,
   });
-  return { error: (error as Error) ?? null };
+  if (error) return { error: error as Error };
+
+  await rememberAppleName(res.response?.givenName, res.response?.familyName);
+  return { error: null };
+}
+
+/**
+ * Save the name Apple just handed us onto the account.
+ *
+ * Apple is the one provider whose name never arrives on its own. Google's name
+ * rides inside the identity token, so Supabase lands it in user_metadata
+ * without us doing anything; Apple's token carries only the subject and email.
+ * The name exists for exactly one moment — in the authorize() response — and
+ * **only on the very first authorization** for this Apple ID and bundle id.
+ * Every later sign-in returns null for both fields, forever. Drop it here and
+ * it is gone for good.
+ *
+ * That is precisely what App Review rejected under guideline 4: we asked for
+ * "email name", Apple supplied the name, we read only the identity token, and
+ * then the Finish Your Profile screen made the person type a name Apple had
+ * already given us.
+ *
+ * Writing it to user_metadata is enough for the rest of the app: that is where
+ * nameFromProvider() looks, which is what prefills that screen.
+ *
+ * Best-effort on purpose — a failure here must not fail a sign-in that has
+ * already succeeded. The person just types their name, which is the old
+ * behaviour rather than a new breakage.
+ *
+ * Exported for tests.
+ */
+export async function rememberAppleName(
+  givenName?: string | null,
+  familyName?: string | null,
+): Promise<void> {
+  const given = (givenName ?? "").trim();
+  const family = (familyName ?? "").trim();
+  const full = [given, family].filter(Boolean).join(" ");
+  if (!full) return;
+
+  try {
+    const { data } = await supabase.auth.getUser();
+    // Never overwrite a name already on the account. A person who edited their
+    // profile and later re-authorized Apple (after revoking it in Settings)
+    // would otherwise be reset to whatever their Apple ID says.
+    if (nameFromProvider(data.user ?? null)) return;
+
+    await supabase.auth.updateUser({
+      data: {
+        full_name: full,
+        ...(given ? { given_name: given } : {}),
+        ...(family ? { family_name: family } : {}),
+      },
+    });
+  } catch {
+    // Ignore — see above.
+  }
 }
 
 /**

@@ -149,8 +149,13 @@ const CompleteProfile = () => {
     const parts = fullName.trim().split(/\s+/).filter(Boolean);
     const first = parts[0] ?? "";
     const last = parts.slice(1).join(" ");
-    if (!first || !last) {
-      toast.error("Please enter both your first and last name.");
+    // One word is a name. Insisting on a surname turned away anyone who goes by
+    // a single name, and it blocked Sign in with Apple accounts whose Apple ID
+    // carries only a first name — the sheet lets people edit what they send,
+    // and Apple hands back exactly that. Being unable to get past this screen
+    // with the name Apple gave us is the guideline 4 rejection all over again.
+    if (!first) {
+      toast.error("Please enter your name.");
       return;
     }
 
@@ -188,7 +193,7 @@ const CompleteProfile = () => {
     const saved = {
       first_name: first,
       surname: last,
-      display_name: `${first} ${last}`,
+      display_name: [first, last].filter(Boolean).join(" "),
       username: handle,
       location: residency,
     };
