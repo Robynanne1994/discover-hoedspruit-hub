@@ -483,20 +483,41 @@ const AdminEventsImport = () => {
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Events are matched by title (case-insensitive). Missing events will be deleted. Use <code>|</code> to separate list values (gallery, included, additional contacts, business_names).
+            Events are matched by title (case-insensitive). Full Sync updates matches and deletes missing events; Add New Only only adds new ones. Use <code>|</code> to separate list values (gallery, included, additional contacts, business_names).
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
 
         {parsed && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <p className="text-sm text-muted-foreground">
-                <strong className="text-foreground">{parsed.rows.length}</strong> rows found. Matching events by title will be updated, new ones created.
+                <strong className="text-foreground">{parsed.rows.length}</strong> rows found.{" "}
+                {importMode === "sync"
+                  ? "Matching events by title will be updated, new ones created, missing ones deleted."
+                  : "Only new events will be added. Existing events stay exactly as they are."}
               </p>
-              <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
-                {importMutation.isPending ? "Importing..." : "Import All"}
-              </Button>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="flex rounded-lg border border-border overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setImportMode("sync")}
+                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "sync" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                  >
+                    Full Sync
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImportMode("add")}
+                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "add" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                  >
+                    Add New Only
+                  </button>
+                </div>
+                <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
+                  {importMutation.isPending ? "Importing..." : importMode === "add" ? "Add New" : "Import All"}
+                </Button>
+              </div>
             </div>
             <div className="overflow-x-auto max-h-80 overflow-y-auto border border-border rounded-lg">
               <table className="w-full text-xs">
@@ -541,6 +562,12 @@ const AdminEventsImport = () => {
                 <CheckCircle className="h-4 w-4 text-destructive" />
                 <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
+              {(importResult.skipped ?? 0) > 0 && (
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-foreground"><strong>{importResult.skipped}</strong> already existed, left untouched</span>
+                </div>
+              )}
             </div>
             {importResult.errors.length > 0 && (
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 space-y-1">
