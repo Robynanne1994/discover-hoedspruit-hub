@@ -81,7 +81,10 @@ const AdminSpecialsImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; skipped?: number; errors: string[] } | null>(null);
+  // "sync" = current behaviour (update matches, create new, delete missing).
+  // "add" = only insert rows whose title isn't already there; touch nothing else.
+  const [importMode, setImportMode] = useState<"sync" | "add">("sync");
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
