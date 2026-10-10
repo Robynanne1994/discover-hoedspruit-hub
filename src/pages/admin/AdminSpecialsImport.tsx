@@ -81,7 +81,10 @@ const AdminSpecialsImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; skipped?: number; errors: string[] } | null>(null);
+  // "sync" = current behaviour (update matches, create new, delete missing).
+  // "add" = only insert rows whose title isn't already there; touch nothing else.
+  const [importMode, setImportMode] = useState<"sync" | "add">("sync");
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -102,7 +105,7 @@ const AdminSpecialsImport = () => {
   const importMutation = useMutation({
     mutationFn: async () => {
       if (!parsed) throw new Error("No data");
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, skipped: 0, errors: [] as string[] };
 
       const { data: existing } = await supabase.from("specials").select("id, title");
       const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
@@ -165,6 +168,7 @@ const AdminSpecialsImport = () => {
         if (!parsed.headers.includes("title_override")) delete payload.title_override;
 
         const existingId = existingMap.get(title.toLowerCase());
+        if (existingId && importMode === "add") { results.skipped++; continue; }
         if (existingId) {
           const { error } = await supabase.from("specials").update(payload as any).eq("id", existingId);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
@@ -177,6 +181,7 @@ const AdminSpecialsImport = () => {
       }
 
       for (const [existingTitle, existingId] of existingMap) {
+        if (importMode === "add") break;
         if (!csvTitles.has(existingTitle)) {
           const { error } = await supabase.from("specials").delete().eq("id", existingId);
           if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
@@ -270,7 +275,7 @@ const AdminSpecialsImport = () => {
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Specials are matched by title (case-insensitive). Missing specials will be deleted.
+            Specials are matched by title (case-insensitive). Full Sync updates matches and deletes missing specials; Add New Only only adds new ones.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             day_of_week, additional_phones, additional_whatsapps and terms take several
@@ -282,13 +287,34 @@ const AdminSpecialsImport = () => {
 
         {parsed && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <p className="text-sm text-muted-foreground">
-                <strong className="text-foreground">{parsed.rows.length}</strong> rows found. Matching specials by title will be updated, new ones created.
+                <strong className="text-foreground">{parsed.rows.length}</strong> rows found.{" "}
+                {importMode === "sync"
+                  ? "Matching specials by title will be updated, new ones created, missing ones deleted."
+                  : "Only new specials will be added. Existing specials stay exactly as they are."}
               </p>
-              <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
-                {importMutation.isPending ? "Importing..." : "Import All"}
-              </Button>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="flex rounded-lg border border-border overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setImportMode("sync")}
+                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "sync" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                  >
+                    Full Sync
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setImportMode("add")}
+                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "add" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
+                  >
+                    Add New Only
+                  </button>
+                </div>
+                <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
+                  {importMutation.isPending ? "Importing..." : importMode === "add" ? "Add New" : "Import All"}
+                </Button>
+              </div>
             </div>
             <div className="overflow-x-auto max-h-80 overflow-y-auto border border-border rounded-lg">
               <table className="w-full text-xs">
@@ -333,6 +359,12 @@ const AdminSpecialsImport = () => {
                 <CheckCircle className="h-4 w-4 text-destructive" />
                 <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
+              {(importResult.skipped ?? 0) > 0 && (
+                <div className="flex items-center gap-2 text-sm">
+                  <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-foreground"><strong>{importResult.skipped}</strong> already existed, left untouched</span>
+                </div>
+              )}
             </div>
             {importResult.errors.length > 0 && (
               <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 space-y-1">
