@@ -105,7 +105,7 @@ const AdminSpecialsImport = () => {
   const importMutation = useMutation({
     mutationFn: async () => {
       if (!parsed) throw new Error("No data");
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, skipped: 0, errors: [] as string[] };
 
       const { data: existing } = await supabase.from("specials").select("id, title");
       const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
@@ -168,6 +168,7 @@ const AdminSpecialsImport = () => {
         if (!parsed.headers.includes("title_override")) delete payload.title_override;
 
         const existingId = existingMap.get(title.toLowerCase());
+        if (existingId && importMode === "add") { results.skipped++; continue; }
         if (existingId) {
           const { error } = await supabase.from("specials").update(payload as any).eq("id", existingId);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
@@ -180,6 +181,7 @@ const AdminSpecialsImport = () => {
       }
 
       for (const [existingTitle, existingId] of existingMap) {
+        if (importMode === "add") break;
         if (!csvTitles.has(existingTitle)) {
           const { error } = await supabase.from("specials").delete().eq("id", existingId);
           if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
