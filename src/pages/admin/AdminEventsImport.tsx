@@ -180,7 +180,7 @@ const AdminEventsImport = () => {
   const importMutation = useMutation({
     mutationFn: async () => {
       if (!parsed) throw new Error("No data");
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, skipped: 0, errors: [] as string[] };
 
       const { data: existing } = await supabase.from("events").select("id, title");
       const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
@@ -277,6 +277,7 @@ const AdminEventsImport = () => {
         }
 
         const existingId = existingMap.get(title.toLowerCase());
+        if (existingId && importMode === "add") { results.skipped++; continue; }
         if (existingId) {
           const { error } = await supabase.from("events").update(payload as any).eq("id", existingId);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
@@ -289,8 +290,9 @@ const AdminEventsImport = () => {
       }
 
 
-      // Delete events not in CSV
+      // Delete events not in CSV (full sync mode only)
       for (const [existingTitle, existingId] of existingMap) {
+        if (importMode === "add") break;
         if (!csvTitles.has(existingTitle)) {
           const { error } = await supabase.from("events").delete().eq("id", existingId);
           if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
