@@ -2143,6 +2143,7 @@ export type Database = {
           badge_override: string | null
           booking_link: string | null
           booking_link_label: string | null
+          booking_link_type: string | null
           booking_required: boolean
           business_id: string | null
           business_name: string
@@ -2190,6 +2191,7 @@ export type Database = {
           badge_override?: string | null
           booking_link?: string | null
           booking_link_label?: string | null
+          booking_link_type?: string | null
           booking_required?: boolean
           business_id?: string | null
           business_name: string
@@ -2237,6 +2239,7 @@ export type Database = {
           badge_override?: string | null
           booking_link?: string | null
           booking_link_label?: string | null
+          booking_link_type?: string | null
           booking_required?: boolean
           business_id?: string | null
           business_name?: string
