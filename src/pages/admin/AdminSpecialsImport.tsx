@@ -283,6 +283,10 @@ const AdminSpecialsImport = () => {
             values separated by | — e.g. <code>Wednesday|Thursday</code> for a deal that
             runs on both nights.
           </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            price and original_price: a plain number like 4999 is stored as R4,999;
+            free-text prices like R450pp are kept exactly as written.
+          </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
 
