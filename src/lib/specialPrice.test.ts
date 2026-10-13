@@ -26,6 +26,7 @@ describe("formatSpecialPriceCell", () => {
     expect(formatSpecialPriceCell("R450pp")).toBe("R450pp");
     expect(formatSpecialPriceCell("Free")).toBe("Free");
     expect(formatSpecialPriceCell("From R200")).toBe("From R200");
+    expect(formatSpecialPriceCell("From R4,999")).toBe("From R4,999");
   });
 
   it("returns null for blank cells", () => {
