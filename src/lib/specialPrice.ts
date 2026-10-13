@@ -14,9 +14,9 @@ export const formatSpecialPriceCell = (val: string | null | undefined): string |
   // Anything with other letters ("R450pp", "Free") is left exactly as written.
   const m = raw.match(/^R?\s*([\d,]+(?:\.\d+)?)$/i);
   if (!m) return raw;
-  const num = m[1].replace(/,/g, "");
-  const [intPart, decPart] = num.split(".");
-  const trimmedDec = decPart?.replace(/0+$/, "");
+  const [intPart, decPart] = m[1].replace(/,/g, "").split(".");
+  // ".00" is dropped; any real decimal keeps every digit as written.
+  const keptDec = decPart && /[1-9]/.test(decPart) ? decPart : null;
   const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `R${grouped}${trimmedDec ? `.${trimmedDec}` : ""}`;
+  return `R${grouped}${keptDec ? `.${keptDec}` : ""}`;
 };
