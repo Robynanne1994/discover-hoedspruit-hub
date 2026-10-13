@@ -107,12 +107,16 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const [form, setForm] = useState<any>(special);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
+  // Always-active toggle: on means no dates (ongoing). Turning it off unlocks
+  // the date fields so dates can be added.
+  const [isAlwaysActive, setIsAlwaysActive] = useState<boolean>(
+    !special?.valid_from && !special?.valid_until
+  );
+
   useEffect(() => {
     setForm(special);
+    setIsAlwaysActive(!special?.valid_from && !special?.valid_until);
   }, [special, open]);
-
-  // Always-active toggle: no valid_until means ongoing
-  const isAlwaysActive = !form?.valid_from && !form?.valid_until;
 
   const save = useMutation({
     mutationFn: async () => {
@@ -395,7 +399,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 id="special-always-active"
                 checked={isAlwaysActive}
                 onCheckedChange={(v) => {
-                  if (v) {
+                  const on = v === true;
+                  setIsAlwaysActive(on);
+                  if (on) {
                     set("valid_from", null);
                     set("valid_until", null);
                   }
