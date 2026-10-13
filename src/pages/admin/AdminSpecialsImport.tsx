@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { daysToCsv, parseDays } from "@/lib/specialDays";
+import { formatSpecialPriceCell } from "@/lib/specialPrice";
 
 const stripTrailingZeros = (val: string | null | undefined) => {
   if (!val) return val ?? null;
@@ -138,9 +139,9 @@ const AdminSpecialsImport = () => {
           // image_url & detail_image_url ignored — managed via Lovable editor only
           valid_from: row.valid_from || null,
           valid_until: row.valid_until || null,
-          price: stripTrailingZeros(row.price) || null,
+          price: formatSpecialPriceCell(row.price),
           price_label: row.price_label || null,
-          original_price: stripTrailingZeros(row.original_price) || null,
+          original_price: formatSpecialPriceCell(row.original_price),
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
