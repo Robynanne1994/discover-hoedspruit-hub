@@ -14,6 +14,7 @@ import ImageSlotField from "@/components/admin/ImageSlotField";
 import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
+import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
 import { sanitizeContactArray } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
@@ -95,7 +96,7 @@ const FIELDS: (keyof any)[] = [
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
-  "booking_link", "booking_link_label", "terms", "tag", "sub_tag_1", "sub_tag_2",
+  "booking_link", "booking_link_label", "booking_link_type", "terms", "tag", "sub_tag_1", "sub_tag_2",
 ];
 
 const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1";
@@ -468,7 +469,20 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               addLabel="Add WhatsApp"
             />
             <div><Label>Contact Email</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} placeholder="e.g. info@example.com" /></div>
-            <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
+            <div>
+              <Label>Booking Type</Label>
+              <select
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1"
+                value={resolveBookingLinkType(form.booking_link, form.booking_link_type)}
+                onChange={(e) => set("booking_link_type", e.target.value)}
+              >
+                {BOOKING_LINK_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground mt-1">Decides what the Book button opens: website, email, WhatsApp or phone.</p>
+            </div>
+            <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
             <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           </div>
 
