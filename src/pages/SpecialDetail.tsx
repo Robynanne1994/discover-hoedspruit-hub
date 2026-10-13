@@ -1,3 +1,4 @@
+import { buildBookingHref, bookingActionLabel } from "@/lib/bookingLink";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -270,12 +271,13 @@ const SpecialDetail = () => {
   // brown (the primary action) and it is Booking when a booking link exists,
   // falling back to WhatsApp / Call when it doesn't.
   const emailClean = contactEmail;
-  const hasBooking = !!special.booking_link;
+  const bookingHref = buildBookingHref(special.booking_link, (special as any).booking_link_type);
+  const hasBooking = !!bookingHref;
   const primaryKey = hasBooking ? "booking" : waClean ? "whatsapp" : phoneClean ? "call" : null;
   const actions = [
     hasBooking && {
-      key: "booking", label: "Book",
-      href: special.booking_link, Icon: Send, ext: true,
+      key: "booking", label: bookingActionLabel(bookingHref!.type),
+      href: bookingHref!.href, Icon: Send, ext: bookingHref!.external,
     },
     waClean && {
       key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${waClean}`, ext: true,
@@ -487,7 +489,8 @@ const SpecialDetail = () => {
     if (special.booking_link) rows.push({
       Icon: ExternalLink, label: "Booking",
       value: sp.booking_link_label?.trim() || special.booking_link,
-      href: special.booking_link, external: true,
+      href: buildBookingHref(special.booking_link, (special as any).booking_link_type)?.href || special.booking_link,
+      external: buildBookingHref(special.booking_link, (special as any).booking_link_type)?.external ?? true,
     });
 
     return (

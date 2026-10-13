@@ -1,3 +1,4 @@
+import { resolveBookingLinkType } from "@/lib/bookingLink";
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,7 +32,7 @@ const EXPECTED_HEADERS = [
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until",
   "price", "price_label", "original_price",
-  "booking_required", "booking_link", "booking_link_label", "promo_code",
+  "booking_required", "booking_link_type", "booking_link", "booking_link_label", "promo_code",
   "contact_phone", "contact_whatsapp", "contact_email",
   "additional_phones", "additional_whatsapps",
   "terms", "tag", "sub_tag_1", "sub_tag_2",
@@ -143,6 +144,7 @@ const AdminSpecialsImport = () => {
           price_label: row.price_label || null,
           original_price: formatSpecialPriceCell(row.original_price),
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
+          booking_link_type: (() => { const t = (row.booking_link_type || "").trim(); return t ? resolveBookingLinkType(row.booking_link, t) : null; })(),
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           promo_code: row.promo_code || null,
@@ -216,7 +218,7 @@ const AdminSpecialsImport = () => {
       "percent_off", "50", "", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
-      "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
+      "true", "link", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
       "+27 123 456 789", "+27 123 456 789", "info@example.com",
       "", "",
       "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
@@ -236,7 +238,7 @@ const AdminSpecialsImport = () => {
       s.discount_type ?? "", s.discount_value ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
-      s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
+      s.booking_required ? "true" : "false", s.booking_link_type ?? "", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
       (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),

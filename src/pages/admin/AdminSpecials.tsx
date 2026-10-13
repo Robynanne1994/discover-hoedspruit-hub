@@ -1,3 +1,4 @@
+import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,6 +48,7 @@ interface Special {
   original_price: string | null;
   booking_required: boolean;
   booking_link: string | null;
+  booking_link_type?: string | null;
   booking_link_label: string | null;
   promo_code: string | null;
   contact_phone: string | null;
@@ -223,6 +225,7 @@ const AdminSpecials = () => {
       original_price: s.original_price,
       booking_required: s.booking_required,
       booking_link: s.booking_link,
+      booking_link_type: (s as any).booking_link_type ?? null,
       booking_link_label: s.booking_link_label ?? null,
       promo_code: s.promo_code,
       contact_phone: s.contact_phone,
@@ -422,7 +425,20 @@ const AdminSpecials = () => {
             <Switch checked={form.booking_required} onCheckedChange={(v) => setForm({ ...form, booking_required: v })} />
             <Label>Booking required</Label>
           </div>
-          <div><Label>Booking Link (optional)</Label><Input placeholder="https://" value={form.booking_link || ""} onChange={(e) => setForm({ ...form, booking_link: e.target.value || null })} /></div>
+          <div>
+              <Label>Booking Type</Label>
+              <select
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1"
+                value={resolveBookingLinkType(form.booking_link, form.booking_link_type)}
+                onChange={(e) => setForm({ ...form, booking_link_type: e.target.value })}
+              >
+                {BOOKING_LINK_TYPES.map((t) => (
+                  <option key={t.value} value={t.value}>{t.label}</option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground mt-1">Decides what the Book button opens: website, email, WhatsApp or phone.</p>
+            </div>
+          <div><Label>Booking Link / Email / Number (optional)</Label><Input placeholder="https://… or name@email.com or +27 82 000 0000" value={form.booking_link || ""} onChange={(e) => setForm({ ...form, booking_link: e.target.value || null })} /></div>
           <div><Label>Booking Link Display Text (optional)</Label><Input placeholder="e.g. Book on Quicket" value={form.booking_link_label || ""} onChange={(e) => setForm({ ...form, booking_link_label: e.target.value || null })} /></div>
           <div><Label>Promo Code (optional)</Label><Input placeholder="e.g. WINTER2026" value={form.promo_code || ""} onChange={(e) => setForm({ ...form, promo_code: e.target.value || null })} /></div>
 
