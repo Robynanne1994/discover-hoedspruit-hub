@@ -14,9 +14,9 @@ export const formatSpecialPriceCell = (val: string | null | undefined): string |
   // Anything with other letters ("R450pp", "Free") is left exactly as written.
   const m = raw.match(/^R?\s*([\d,]+(?:\.\d+)?)$/i);
   if (!m) return raw;
-  const n = Number(m[1].replace(/,/g, ""));
-  if (!Number.isFinite(n)) return raw;
-  const [intPart, decPart] = String(n).split(".");
+  const num = m[1].replace(/,/g, "");
+  const [intPart, decPart] = num.split(".");
+  const trimmedDec = decPart?.replace(/0+$/, "");
   const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return `R${grouped}${decPart ? `.${decPart}` : ""}`;
+  return `R${grouped}${trimmedDec ? `.${trimmedDec}` : ""}`;
 };
