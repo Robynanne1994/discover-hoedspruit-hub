@@ -2453,7 +2453,7 @@ const AdminListings = () => {
                   <td className="p-3 text-muted-foreground">{l.is_featured ? "Yes" : "No"}</td>
                   <td className="p-3 flex gap-1 justify-end">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(l)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); qc.invalidateQueries({ queryKey: ["admin-used-subcategory-ids"] }); qc.invalidateQueries({ queryKey: ["admin-used-sub-subcategory-ids"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </td>
                 </tr>
               ))}
