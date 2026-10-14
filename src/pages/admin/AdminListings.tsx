@@ -1022,8 +1022,6 @@ const AdminListings = () => {
   };
 
   // Show subcategories for all selected categories
-  const availableSubs = subcategories?.filter((s) => selectedCatIds.includes(s.category_id)) ?? [];
-  const availableSubSubs = subSubcategories?.filter((s) => selectedSubIds.includes(s.subcategory_id)) ?? [];
 
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
@@ -1125,18 +1123,29 @@ const AdminListings = () => {
                 {selectedCatIds.length > 0 && (
                   <div>
                     <Label>Subcategories</Label>
-                    {availableSubs.length > 0 && (
-                      <div className={ADMIN_PICKER_LIST}>
-                        {availableSubs.map((sub) => (
-                          <div key={sub.id} className="flex items-center gap-2">
-                            <Checkbox
-                              id={`sub-${sub.id}`}
-                              checked={selectedSubIds.includes(sub.id)}
-                              onCheckedChange={() => toggleSub(sub.id)}
-                            />
-                            <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
-                          </div>
-                        ))}
+                    {selectedCatIds.length > 0 && (
+                      <div className="space-y-3">
+                        {(categories ?? []).filter((c) => selectedCatIds.includes(c.id)).map((cat) => {
+                          const catSubs = (subcategories ?? []).filter((s) => s.category_id === cat.id);
+                          if (catSubs.length === 0) return null;
+                          return (
+                            <div key={cat.id}>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{cat.title}</p>
+                              <div className={ADMIN_PICKER_LIST}>
+                                {catSubs.map((sub) => (
+                                  <div key={sub.id} className="flex items-center gap-2">
+                                    <Checkbox
+                                      id={`sub-${sub.id}`}
+                                      checked={selectedSubIds.includes(sub.id)}
+                                      onCheckedChange={() => toggleSub(sub.id)}
+                                    />
+                                    <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                     {showNewSub ? (
@@ -1219,23 +1228,26 @@ const AdminListings = () => {
                 {selectedSubIds.length > 0 && (
                   <div>
                     <Label>Sub-subcategories</Label>
-                    {availableSubSubs.length > 0 && (
-                      <div className={ADMIN_PICKER_LIST}>
-                        {availableSubSubs.map((ss) => {
-                          const parent = subcategories?.find((s) => s.id === ss.subcategory_id);
+                    {selectedSubIds.length > 0 && (
+                      <div className="space-y-3">
+                        {(subcategories ?? []).filter((s) => selectedSubIds.includes(s.id)).map((parent) => {
+                          const parentSubs = (subSubcategories ?? []).filter((ss) => ss.subcategory_id === parent.id);
+                          if (parentSubs.length === 0) return null;
                           return (
-                            <div key={ss.id} className="flex items-center gap-2">
-                              <Checkbox
-                                id={`subsub-${ss.id}`}
-                                checked={selectedSubSubIds.includes(ss.id)}
-                                onCheckedChange={() => toggleSubSub(ss.id)}
-                              />
-                              <label htmlFor={`subsub-${ss.id}`} className="text-sm text-foreground cursor-pointer">
-                                {ss.title}
-                                {parent && selectedSubIds.length > 1 && (
-                                  <span className="text-xs text-muted-foreground ml-1">({parent.title})</span>
-                                )}
-                              </label>
+                            <div key={parent.id}>
+                              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{parent.title}</p>
+                              <div className={ADMIN_PICKER_LIST}>
+                                {parentSubs.map((ss) => (
+                                  <div key={ss.id} className="flex items-center gap-2">
+                                    <Checkbox
+                                      id={`subsub-${ss.id}`}
+                                      checked={selectedSubSubIds.includes(ss.id)}
+                                      onCheckedChange={() => toggleSubSub(ss.id)}
+                                    />
+                                    <label htmlFor={`subsub-${ss.id}`} className="text-sm text-foreground cursor-pointer">{ss.title}</label>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           );
                         })}
