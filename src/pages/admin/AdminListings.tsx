@@ -335,6 +335,25 @@ const AdminListings = () => {
     },
   });
 
+  // Which subcategories and sub-subcategories are actually used by at least one
+  // listing. The pickers only show those (plus whatever is already ticked on the
+  // listing being edited), so unused and duplicate entries stay out of the way.
+  const { data: usedSubIds } = useQuery({
+    queryKey: ["admin-used-subcategory-ids"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listing_subcategories").select("subcategory_id");
+      return (data ?? []).map((r: any) => r.subcategory_id as string);
+    },
+  });
+
+  const { data: usedSubSubIds } = useQuery({
+    queryKey: ["admin-used-sub-subcategory-ids"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listing_sub_subcategories").select("sub_subcategory_id");
+      return (data ?? []).map((r: any) => r.sub_subcategory_id as string);
+    },
+  });
+
   // Distinct values used across listings for free-form chip fields
   const { data: distinctChipValues } = useQuery({
     queryKey: ["admin-distinct-chip-values"],
@@ -1038,6 +1057,39 @@ const AdminListings = () => {
   const isWeddingsEventsType = categories?.some((c) => selectedCatIds.includes(c.id) && isWeddingsEventsCategory(c.title));
   const isWellnessBeautyType = categories?.some((c) => selectedCatIds.includes(c.id) && isWellnessBeautyCategory(c.title));
   const isEventVenueSub = subcategories?.some((s) => selectedSubIds.includes(s.id) && /event\s*venue/i.test(s.title)) ?? false;
+
+  // Only subcategories in use by at least one listing (or ticked on this one)
+  // appear in the picker. Case-insensitive duplicate titles are collapsed to the
+  // first used entry; anything explicitly ticked always stays visible.
+  const visibleSubsFor = (categoryId: string) => {
+    const used = new Set(usedSubIds ?? []);
+    const seen = new Set<string>();
+    return (subcategories ?? [])
+      .filter((s) => s.category_id === categoryId)
+      .filter((s) => {
+        if (selectedSubIds.includes(s.id)) return true;
+        if (!used.has(s.id)) return false;
+        const key = s.title.trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  };
+
+  const visibleSubSubsFor = (parentSubId: string) => {
+    const used = new Set(usedSubSubIds ?? []);
+    const seen = new Set<string>();
+    return (subSubcategories ?? [])
+      .filter((ss) => ss.subcategory_id === parentSubId)
+      .filter((ss) => {
+        if (selectedSubSubIds.includes(ss.id)) return true;
+        if (!used.has(ss.id)) return false;
+        const key = ss.title.trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  };
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
