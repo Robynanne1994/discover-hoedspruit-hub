@@ -1009,6 +1009,7 @@ const AdminListings = () => {
     const { data, error } = await supabase.from("subcategories").insert({ title: name, category_id: parentId, sort_order: siblings.length }).select("id, title, category_id").single();
     if (error || !data) { toast.error(error?.message || "Failed to add subcategory"); return; }
     await qc.invalidateQueries({ queryKey: ["admin-subcategories-select"] });
+    await qc.invalidateQueries({ queryKey: ["admin-used-subcategory-ids"] });
     setSelectedSubIds((prev) => [...prev, data.id]);
     setNewSubName(""); setNewSubParent(""); setShowNewSub(false);
     toast.success("Subcategory added");
@@ -1035,6 +1036,7 @@ const AdminListings = () => {
     const { data, error } = await supabase.from("sub_subcategories").insert({ title: name, subcategory_id: parentId, sort_order: siblings.length }).select("id, title, subcategory_id").single();
     if (error || !data) { toast.error(error?.message || "Failed to add sub-subcategory"); return; }
     await qc.invalidateQueries({ queryKey: ["admin-sub-subcategories-select"] });
+    await qc.invalidateQueries({ queryKey: ["admin-used-sub-subcategory-ids"] });
     setSelectedSubSubIds((prev) => [...prev, data.id]);
     setNewSubSubName(""); setNewSubSubParent(""); setShowNewSubSub(false);
     toast.success("Sub-subcategory added");
@@ -1178,7 +1180,7 @@ const AdminListings = () => {
                     {selectedCatIds.length > 0 && (
                       <div className="space-y-3">
                         {(categories ?? []).filter((c) => selectedCatIds.includes(c.id)).map((cat) => {
-                          const catSubs = (subcategories ?? []).filter((s) => s.category_id === cat.id);
+                          const catSubs = visibleSubsFor(cat.id);
                           if (catSubs.length === 0) return null;
                           return (
                             <div key={cat.id}>
@@ -1283,7 +1285,7 @@ const AdminListings = () => {
                     {selectedSubIds.length > 0 && (
                       <div className="space-y-3">
                         {(subcategories ?? []).filter((s) => selectedSubIds.includes(s.id)).map((parent) => {
-                          const parentSubs = (subSubcategories ?? []).filter((ss) => ss.subcategory_id === parent.id);
+                          const parentSubs = visibleSubSubsFor(parent.id);
                           if (parentSubs.length === 0) return null;
                           return (
                             <div key={parent.id}>
