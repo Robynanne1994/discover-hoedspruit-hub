@@ -111,6 +111,13 @@ const AdminSpecialsImport = () => {
 
       const { data: existing } = await supabase.from("specials").select("id, title");
       const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
+      // Link each special to the listing whose title matches its business name.
+      const { data: listingRows } = await supabase.from("listings").select("id, title");
+      const listingByTitle = new Map<string, string>();
+      for (const l of listingRows ?? []) {
+        const key = (l.title ?? "").trim().toLowerCase();
+        if (key && !listingByTitle.has(key)) listingByTitle.set(key, l.id);
+      }
       const csvTitles = new Set<string>();
 
       for (let i = 0; i < parsed.rows.length; i++) {
@@ -169,6 +176,8 @@ const AdminSpecialsImport = () => {
         }
         // An older file without the column must not wipe a stored override.
         if (!parsed.headers.includes("title_override")) delete payload.title_override;
+        const matchedListingId = listingByTitle.get((row.business_name ?? "").trim().toLowerCase());
+        if (matchedListingId) payload.business_id = matchedListingId;
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId && importMode === "add") { results.skipped++; continue; }
