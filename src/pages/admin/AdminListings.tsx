@@ -335,6 +335,25 @@ const AdminListings = () => {
     },
   });
 
+  // Which subcategories and sub-subcategories are actually used by at least one
+  // listing. The pickers only show those (plus whatever is already ticked on the
+  // listing being edited), so unused and duplicate entries stay out of the way.
+  const { data: usedSubIds } = useQuery({
+    queryKey: ["admin-used-subcategory-ids"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listing_subcategories").select("subcategory_id");
+      return (data ?? []).map((r: any) => r.subcategory_id as string);
+    },
+  });
+
+  const { data: usedSubSubIds } = useQuery({
+    queryKey: ["admin-used-sub-subcategory-ids"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listing_sub_subcategories").select("sub_subcategory_id");
+      return (data ?? []).map((r: any) => r.sub_subcategory_id as string);
+    },
+  });
+
   // Distinct values used across listings for free-form chip fields
   const { data: distinctChipValues } = useQuery({
     queryKey: ["admin-distinct-chip-values"],
@@ -990,6 +1009,7 @@ const AdminListings = () => {
     const { data, error } = await supabase.from("subcategories").insert({ title: name, category_id: parentId, sort_order: siblings.length }).select("id, title, category_id").single();
     if (error || !data) { toast.error(error?.message || "Failed to add subcategory"); return; }
     await qc.invalidateQueries({ queryKey: ["admin-subcategories-select"] });
+    await qc.invalidateQueries({ queryKey: ["admin-used-subcategory-ids"] });
     setSelectedSubIds((prev) => [...prev, data.id]);
     setNewSubName(""); setNewSubParent(""); setShowNewSub(false);
     toast.success("Subcategory added");
@@ -1016,6 +1036,7 @@ const AdminListings = () => {
     const { data, error } = await supabase.from("sub_subcategories").insert({ title: name, subcategory_id: parentId, sort_order: siblings.length }).select("id, title, subcategory_id").single();
     if (error || !data) { toast.error(error?.message || "Failed to add sub-subcategory"); return; }
     await qc.invalidateQueries({ queryKey: ["admin-sub-subcategories-select"] });
+    await qc.invalidateQueries({ queryKey: ["admin-used-sub-subcategory-ids"] });
     setSelectedSubSubIds((prev) => [...prev, data.id]);
     setNewSubSubName(""); setNewSubSubParent(""); setShowNewSubSub(false);
     toast.success("Sub-subcategory added");
@@ -1038,6 +1059,39 @@ const AdminListings = () => {
   const isWeddingsEventsType = categories?.some((c) => selectedCatIds.includes(c.id) && isWeddingsEventsCategory(c.title));
   const isWellnessBeautyType = categories?.some((c) => selectedCatIds.includes(c.id) && isWellnessBeautyCategory(c.title));
   const isEventVenueSub = subcategories?.some((s) => selectedSubIds.includes(s.id) && /event\s*venue/i.test(s.title)) ?? false;
+
+  // Only subcategories in use by at least one listing (or ticked on this one)
+  // appear in the picker. Case-insensitive duplicate titles are collapsed to the
+  // first used entry; anything explicitly ticked always stays visible.
+  const visibleSubsFor = (categoryId: string) => {
+    const used = new Set(usedSubIds ?? []);
+    const seen = new Set<string>();
+    return (subcategories ?? [])
+      .filter((s) => s.category_id === categoryId)
+      .filter((s) => {
+        if (selectedSubIds.includes(s.id)) return true;
+        if (!used.has(s.id)) return false;
+        const key = s.title.trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  };
+
+  const visibleSubSubsFor = (parentSubId: string) => {
+    const used = new Set(usedSubSubIds ?? []);
+    const seen = new Set<string>();
+    return (subSubcategories ?? [])
+      .filter((ss) => ss.subcategory_id === parentSubId)
+      .filter((ss) => {
+        if (selectedSubSubIds.includes(ss.id)) return true;
+        if (!used.has(ss.id)) return false;
+        const key = ss.title.trim().toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+  };
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -1126,7 +1180,7 @@ const AdminListings = () => {
                     {selectedCatIds.length > 0 && (
                       <div className="space-y-3">
                         {(categories ?? []).filter((c) => selectedCatIds.includes(c.id)).map((cat) => {
-                          const catSubs = (subcategories ?? []).filter((s) => s.category_id === cat.id);
+                          const catSubs = visibleSubsFor(cat.id);
                           if (catSubs.length === 0) return null;
                           return (
                             <div key={cat.id}>
@@ -1231,7 +1285,7 @@ const AdminListings = () => {
                     {selectedSubIds.length > 0 && (
                       <div className="space-y-3">
                         {(subcategories ?? []).filter((s) => selectedSubIds.includes(s.id)).map((parent) => {
-                          const parentSubs = (subSubcategories ?? []).filter((ss) => ss.subcategory_id === parent.id);
+                          const parentSubs = visibleSubSubsFor(parent.id);
                           if (parentSubs.length === 0) return null;
                           return (
                             <div key={parent.id}>
@@ -2399,7 +2453,7 @@ const AdminListings = () => {
                   <td className="p-3 text-muted-foreground">{l.is_featured ? "Yes" : "No"}</td>
                   <td className="p-3 flex gap-1 justify-end">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(l)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); qc.invalidateQueries({ queryKey: ["admin-used-subcategory-ids"] }); qc.invalidateQueries({ queryKey: ["admin-used-sub-subcategory-ids"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </td>
                 </tr>
               ))}
