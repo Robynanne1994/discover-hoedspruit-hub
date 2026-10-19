@@ -20,6 +20,7 @@ import {
   parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
+import { isRecentPast, PAST_GROUP_LABEL } from "@/lib/eventPastWindow";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
@@ -94,7 +95,7 @@ function getFilterCount(
     if (filter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
     if (filter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
     if (filter === "next-year") return d.getFullYear() === NEXT_YEAR;
-    if (filter === "past") return isBefore(d, today) && !isToday(d);
+    if (filter === "past") return isRecentPast(d, today);
     return true;
   }).length;
 }
@@ -661,7 +662,7 @@ const Events = () => {
         else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
         else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
         else if (activeFilter === "next-year" && d.getFullYear() !== NEXT_YEAR) return;
-        else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
+        else if (activeFilter === "past" && !isRecentPast(d, today)) return;
       }
       const t = (e.tag || "").trim();
       if (t) map.set(t, (map.get(t) || 0) + 1);
@@ -707,7 +708,7 @@ const Events = () => {
       if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
       if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
       if (activeFilter === "next-year") return d.getFullYear() === NEXT_YEAR;
-      if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
+      if (activeFilter === "past") return isRecentPast(d, today);
       return true;
     });
 
@@ -744,7 +745,14 @@ const Events = () => {
 
   // Month groups (recurring events collected into "Every Week")
   const groupedEvents = useMemo(() => {
-    const groups: { key: string; label: string; events: any[] }[] = [];
+    const groups: { key: string; label: string; events: any[]; showCount?: boolean }[] = [];
+    // Past events sit under one heading instead of month groups: the 3-month
+    // window is short enough that splitting it by month just adds noise.
+    if (activeFilter === "past") {
+      return filtered.length
+        ? [{ key: "past", label: PAST_GROUP_LABEL, events: filtered, showCount: false }]
+        : [];
+    }
     const recurring: any[] = [];
     filtered.forEach((e) => {
       if (resolveRecurrenceRule(e) && !hasPerformances(e)) {
@@ -762,7 +770,7 @@ const Events = () => {
     });
     if (recurring.length) groups.push({ key: "recurring", label: "Recurring", events: recurring });
     return groups;
-  }, [filtered]);
+  }, [filtered, activeFilter]);
 
   // Happening Soon — soonest dated events, excluding recurring ones
   const happeningSoon = useMemo(() => {
@@ -1051,16 +1059,18 @@ const Events = () => {
                   >
                     {group.label}
                   </span>
-                  <span
-                    style={{
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 12,
-                      color: C.muted,
-                    }}
-                  >
-                    {group.events.length}
-                  </span>
+                  {group.showCount !== false && (
+                    <span
+                      style={{
+                        fontFamily: SANS,
+                        fontWeight: 400,
+                        fontSize: 12,
+                        color: C.muted,
+                      }}
+                    >
+                      {group.events.length}
+                    </span>
+                  )}
                   <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.10)" }} />
                 </div>
                 {group.events.map((e) => (
