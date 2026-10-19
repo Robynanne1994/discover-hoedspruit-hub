@@ -475,7 +475,7 @@ const Specials = () => {
           onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
         >
           {(() => {
-            const visible = categoryTabs
+            const visible = drawerCategoryTabs
               .filter((c) => c !== ALL_TAB)
               .filter((c) => (categoryCounts.get(c) || 0) > 0);
             const total = totalCount;
