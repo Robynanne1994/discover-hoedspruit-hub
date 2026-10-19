@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
+import TagPresets from "@/components/admin/TagPresets";
 import { specialImageSlot } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
@@ -175,6 +176,9 @@ const AdminSpecials = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
+      qc.invalidateQueries({ queryKey: ["all-specials"] });
+      qc.invalidateQueries({ queryKey: ["home-specials"] });
+      qc.invalidateQueries({ queryKey: ["homepage-specials"] });
       resetForm();
     },
     onError: (e) => toast.error(e.message),
@@ -187,6 +191,9 @@ const AdminSpecials = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
+      qc.invalidateQueries({ queryKey: ["all-specials"] });
+      qc.invalidateQueries({ queryKey: ["home-specials"] });
+      qc.invalidateQueries({ queryKey: ["homepage-specials"] });
       toast.success("Special deleted");
     },
     onError: (e) => toast.error(e.message),
@@ -405,7 +412,7 @@ const AdminSpecials = () => {
           </p>
 
           <GroupLabel>Categories</GroupLabel>
-          <div><Label>Tag / Main Category</Label><Input placeholder="e.g. Restaurant" value={form.tag || ""} onChange={(e) => setForm({ ...form, tag: e.target.value || null })} /></div>
+          <div><Label>Tag / Main Category</Label><Input placeholder="e.g. Restaurant" value={form.tag || ""} onChange={(e) => setForm({ ...form, tag: e.target.value || null })} /><TagPresets value={form.tag} onPick={(t) => setForm({ ...form, tag: t || null })} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value || null })} /></div>
             <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value || null })} /></div>

@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
+import TagPresets from "@/components/admin/TagPresets";
 import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
@@ -355,7 +356,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
           {/* Tag + sub-tags (same as events) */}
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-            <div className="col-span-2 lg:col-span-1"><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
+            <div className="col-span-2 lg:col-span-1"><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /><TagPresets value={form.tag} onPick={(t) => set("tag", t)} /></div>
             <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
             <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
           </div>

@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Star } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Star, Home } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -11,6 +11,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
+import { tagKey, uniqueTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
@@ -48,6 +49,7 @@ const tabIcon = (tab: string) => {
   if (t.includes("restaurant") || t.includes("food") || t.includes("café") || t.includes("cafe")) return <UtensilsCrossed size={13} strokeWidth={1.8} />;
   if (t.includes("accommodation") || t.includes("stay") || t.includes("lodge") || t.includes("hotel")) return <Bed size={13} strokeWidth={1.8} />;
   if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return <MapPin size={13} strokeWidth={1.8} />;
+  if (t.includes("home") || t.includes("lifestyle") || t.includes("garden")) return <Home size={13} strokeWidth={1.8} />;
   if (t.includes("shop") || t.includes("retail") || t.includes("shopping")) return <ShoppingBag size={13} strokeWidth={1.8} />;
   if (t.includes("service") || t.includes("trade") || t.includes("business")) return <Wrench size={13} strokeWidth={1.8} />;
   if (tab === ALL_TAB) return <Percent size={13} strokeWidth={1.8} />;
@@ -117,12 +119,8 @@ const Specials = () => {
 
   const categoryTabs = useMemo(() => {
     if (!specials) return [ALL_TAB];
-    const set = new Set<string>();
-    for (const s of specials as any[]) {
-      // Only main tag drives the top-level pills (sub-tags are filters within)
-      if (s.tag && typeof s.tag === "string") set.add(s.tag.trim());
-    }
-    return [ALL_TAB, ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
+    // Only main tag drives the top-level pills (sub-tags are filters within)
+    return [ALL_TAB, ...uniqueTags((specials as any[]).map((s) => s.tag))];
   }, [specials]);
 
 
@@ -131,6 +129,8 @@ const Specials = () => {
     const map = new Map<string, number>();
     if (!specials) return map;
     const q = search.trim().toLowerCase();
+    const canonical = new Map<string, string>();
+    for (const tab of categoryTabs) if (tab !== ALL_TAB) canonical.set(tagKey(tab), tab);
     for (const s of specials as any[]) {
       if (q) {
         const hit =
@@ -139,11 +139,11 @@ const Specials = () => {
           (s.description && s.description.toLowerCase().includes(q));
         if (!hit) continue;
       }
-      const t = (s.tag || "").toString().trim();
-      if (t) map.set(t, (map.get(t) || 0) + 1);
+      const label = canonical.get(tagKey(s.tag));
+      if (label) map.set(label, (map.get(label) || 0) + 1);
     }
     return map;
-  }, [specials, search]);
+  }, [specials, search, categoryTabs]);
 
   // Totals for the "All" and "Ending Soon" pills — search-aware, category-agnostic.
   const { totalCount, endingSoonCount } = useMemo(() => {
@@ -180,13 +180,13 @@ const Specials = () => {
     if (activeTab === ENDING_SOON_TAB) {
       result = result.filter((s: any) => isEndingSoon(s));
     } else if (activeTab !== ALL_TAB) {
-      const t = activeTab.toLowerCase();
-      result = result.filter((s: any) => (s.tag || "").toString().toLowerCase() === t);
+      const t = tagKey(activeTab);
+      result = result.filter((s: any) => tagKey(s.tag) === t);
     }
     if (filterType.length > 0) {
-      const lc = filterType.map((t) => t.toLowerCase());
+      const lc = filterType.map((x) => tagKey(x));
       result = result.filter((s: any) => {
-        const lcCats = collectTags(s).map((c) => c.toLowerCase());
+        const lcCats = collectTags(s).map((c) => tagKey(c));
         return lc.some((t) => lcCats.includes(t));
       });
     }
