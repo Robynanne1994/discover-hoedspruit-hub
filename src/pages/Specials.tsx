@@ -11,7 +11,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
-import { tagKey, pillCategories, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
+import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
@@ -115,6 +115,13 @@ const Specials = () => {
     return [ALL_TAB, ...pillCategories(specials as any[])];
   }, [specials]);
 
+  // The Filter & Sort drawer's Category list shows every tag in use, not just
+  // the whitelisted pill categories.
+  const drawerCategoryTabs = useMemo(() => {
+    if (!specials) return [ALL_TAB];
+    return [ALL_TAB, ...uniqueTags(specials.flatMap(collectSpecialTags))];
+  }, [specials]);
+
 
   // Counts per category tag, respecting search but not active category/filterType
   const categoryCounts = useMemo(() => {
@@ -128,8 +135,11 @@ const Specials = () => {
           (s.description && s.description.toLowerCase().includes(q))
       );
     });
-    return countSpecialTags(matching, categoryTabs.filter((tab) => tab !== ALL_TAB));
-  }, [specials, search, categoryTabs]);
+    return countSpecialTags(matching, uniqueTags([
+      ...categoryTabs.filter((tab) => tab !== ALL_TAB),
+      ...drawerCategoryTabs.filter((tab) => tab !== ALL_TAB),
+    ]));
+  }, [specials, search, categoryTabs, drawerCategoryTabs]);
 
   // Totals for the "All" and "Ending Soon" pills — search-aware, category-agnostic.
   const { totalCount, endingSoonCount } = useMemo(() => {
