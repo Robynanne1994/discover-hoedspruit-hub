@@ -21,6 +21,7 @@ import {
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { isRecentPast, PAST_GROUP_LABEL } from "@/lib/eventPastWindow";
+import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
@@ -907,10 +908,9 @@ const Events = () => {
           }}
           className="scrollbar-hide"
         >
-          {FILTERS.map((f) => {
+          {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
             const active = activeFilter === f.value;
             const count = getFilterCount(f.value, sortedEvents);
-            if (f.value === "next-year" && count === 0) return null;
             return (
               <button
                 key={f.value}
@@ -1123,7 +1123,7 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
         >
           <div>
-            {FILTERS.filter((f) => f.value !== "next-year" || getFilterCount(f.value, sortedEvents) > 0).map((f) => (
+            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => (
               <RefineRectOption
                 key={f.value}
                 label={`${f.label} (${getFilterCount(f.value, sortedEvents)})`}
