@@ -11,7 +11,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
-import { tagKey, uniqueTags } from "@/lib/specialTags";
+import { tagKey, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
@@ -109,40 +109,25 @@ const Specials = () => {
     },
   });
 
-  const collectTags = (s: any): string[] => {
-    const tags: string[] = [];
-    if (s.tag) tags.push(String(s.tag));
-    if (s.sub_tag_1) tags.push(String(s.sub_tag_1));
-    if (s.sub_tag_2) tags.push(String(s.sub_tag_2));
-    return tags.map((t) => t.trim()).filter(Boolean);
-  };
-
   const categoryTabs = useMemo(() => {
     if (!specials) return [ALL_TAB];
-    // Only main tag drives the top-level pills (sub-tags are filters within)
-    return [ALL_TAB, ...uniqueTags((specials as any[]).map((s) => s.tag))];
+    return [ALL_TAB, ...uniqueTags(specials.flatMap(collectSpecialTags))];
   }, [specials]);
 
 
   // Counts per category tag, respecting search but not active category/filterType
   const categoryCounts = useMemo(() => {
-    const map = new Map<string, number>();
-    if (!specials) return map;
+    if (!specials) return new Map<string, number>();
     const q = search.trim().toLowerCase();
-    const canonical = new Map<string, string>();
-    for (const tab of categoryTabs) if (tab !== ALL_TAB) canonical.set(tagKey(tab), tab);
-    for (const s of specials as any[]) {
-      if (q) {
-        const hit =
+    const matching = specials.filter((s) => {
+      if (!q) return true;
+      return Boolean(
           (s.title && s.title.toLowerCase().includes(q)) ||
           (s.business_name && s.business_name.toLowerCase().includes(q)) ||
-          (s.description && s.description.toLowerCase().includes(q));
-        if (!hit) continue;
-      }
-      const label = canonical.get(tagKey(s.tag));
-      if (label) map.set(label, (map.get(label) || 0) + 1);
-    }
-    return map;
+          (s.description && s.description.toLowerCase().includes(q))
+      );
+    });
+    return countSpecialTags(matching, categoryTabs.filter((tab) => tab !== ALL_TAB));
   }, [specials, search, categoryTabs]);
 
   // Totals for the "All" and "Ending Soon" pills — search-aware, category-agnostic.
@@ -181,12 +166,12 @@ const Specials = () => {
       result = result.filter((s: any) => isEndingSoon(s));
     } else if (activeTab !== ALL_TAB) {
       const t = tagKey(activeTab);
-      result = result.filter((s: any) => tagKey(s.tag) === t);
+      result = result.filter((s) => specialMatchesTag(s, t));
     }
     if (filterType.length > 0) {
       const lc = filterType.map((x) => tagKey(x));
       result = result.filter((s: any) => {
-        const lcCats = collectTags(s).map((c) => tagKey(c));
+        const lcCats = collectSpecialTags(s).map((c) => tagKey(c));
         return lc.some((t) => lcCats.includes(t));
       });
     }
@@ -370,7 +355,7 @@ const Specials = () => {
             />
           )}
           {categoryTabs
-            .filter((tab) => tab !== ALL_TAB)
+            .filter((tab) => tab !== ALL_TAB && (categoryCounts.get(tab) || 0) > 0)
             .map((tab) => (
               <FilterPill
                 key={tab}
@@ -482,7 +467,7 @@ const Specials = () => {
             const visible = categoryTabs
               .filter((c) => c !== ALL_TAB)
               .filter((c) => (categoryCounts.get(c) || 0) > 0);
-            const total = Array.from(categoryCounts.values()).reduce((a, b) => a + b, 0);
+            const total = totalCount;
             if (visible.length === 0) {
               return <p style={{ ...type.meta, margin: 0 }}>No categories available.</p>;
             }
