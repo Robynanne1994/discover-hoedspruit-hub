@@ -109,9 +109,10 @@ const Specials = () => {
     },
   });
 
+  // Fixed pill list only: whitelisted categories with at least one special.
   const categoryTabs = useMemo(() => {
     if (!specials) return [ALL_TAB];
-    return [ALL_TAB, ...uniqueTags(specials.flatMap(collectSpecialTags))];
+    return [ALL_TAB, ...pillCategories(specials as any[])];
   }, [specials]);
 
 

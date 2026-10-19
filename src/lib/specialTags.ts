@@ -23,7 +23,31 @@ export const SPECIAL_TAG_PRESETS = [
   "Services",
   "Beauty",
   "Home & Lifestyle",
+  "Couples",
+  "Buy 1; Get 1",
 ];
+
+// The only tags that ever become filter pills on /specials (Robyn's fixed
+// list). Specials may carry other tags, but those never get a pill.
+export const PILL_CATEGORIES = [
+  "Accommodation",
+  "Food & Drink",
+  "Services",
+  "Activities",
+  "Wellness",
+  "Beauty",
+  "Home & Lifestyle",
+  "Shopping",
+  "Couples",
+  "Buy 1; Get 1",
+];
+
+// The whitelisted categories that at least one special carries, alphabetical.
+export function pillCategories(specials: SpecialCategories[]): string[] {
+  return uniqueTags(PILL_CATEGORIES).filter((category) =>
+    specials.some((special) => specialMatchesTag(special, category))
+  );
+}
 
 // One label per normalised key, first spelling wins so a pill label stays
 // stable, then alphabetical for the pill row.
