@@ -1,12 +1,16 @@
 // All three category tags on a special drive the filter pills on /specials.
 // Tags are typed free text in the editor and in the CSV, so they are compared
-// on a normalised key: trimmed, inner runs of spaces collapsed, lowercased.
-// That keeps "Home & Lifestyle" and "home & lifestyle" one pill instead of two.
+// on a normalised key: trimmed, punctuation removed, inner runs of spaces
+// collapsed, lowercased. That keeps "Home & Lifestyle" and "home & lifestyle"
+// one pill instead of two, and lets "Buy 1; Get 1" match "Buy 1 Get 1".
 export function tagKey(tag: string | null | undefined): string {
   return String(tag ?? "")
-    .trim()
     .replace(/\s+/g, " ")
-    .toLowerCase();
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 // Main categories offered as one-tap picks in the specials editors.
