@@ -11,7 +11,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
-import { tagKey, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
+import { tagKey, pillCategories, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
@@ -109,9 +109,10 @@ const Specials = () => {
     },
   });
 
+  // Fixed pill list only: whitelisted categories with at least one special.
   const categoryTabs = useMemo(() => {
     if (!specials) return [ALL_TAB];
-    return [ALL_TAB, ...uniqueTags(specials.flatMap(collectSpecialTags))];
+    return [ALL_TAB, ...pillCategories(specials as any[])];
   }, [specials]);
 
 

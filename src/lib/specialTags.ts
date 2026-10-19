@@ -1,12 +1,16 @@
 // All three category tags on a special drive the filter pills on /specials.
 // Tags are typed free text in the editor and in the CSV, so they are compared
-// on a normalised key: trimmed, inner runs of spaces collapsed, lowercased.
-// That keeps "Home & Lifestyle" and "home & lifestyle" one pill instead of two.
+// on a normalised key: trimmed, punctuation removed, inner runs of spaces
+// collapsed, lowercased. That keeps "Home & Lifestyle" and "home & lifestyle"
+// one pill instead of two, and lets "Buy 1; Get 1" match "Buy 1 Get 1".
 export function tagKey(tag: string | null | undefined): string {
   return String(tag ?? "")
-    .trim()
     .replace(/\s+/g, " ")
-    .toLowerCase();
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 // Main categories offered as one-tap picks in the specials editors.
@@ -19,7 +23,31 @@ export const SPECIAL_TAG_PRESETS = [
   "Services",
   "Beauty",
   "Home & Lifestyle",
+  "Couples",
+  "Buy 1; Get 1",
 ];
+
+// The only tags that ever become filter pills on /specials (Robyn's fixed
+// list). Specials may carry other tags, but those never get a pill.
+export const PILL_CATEGORIES = [
+  "Accommodation",
+  "Food & Drink",
+  "Services",
+  "Activities",
+  "Wellness",
+  "Beauty",
+  "Home & Lifestyle",
+  "Shopping",
+  "Couples",
+  "Buy 1; Get 1",
+];
+
+// The whitelisted categories that at least one special carries, alphabetical.
+export function pillCategories(specials: SpecialCategories[]): string[] {
+  return uniqueTags(PILL_CATEGORIES).filter((category) =>
+    specials.some((special) => specialMatchesTag(special, category))
+  );
+}
 
 // One label per normalised key, first spelling wins so a pill label stays
 // stable, then alphabetical for the pill row.
