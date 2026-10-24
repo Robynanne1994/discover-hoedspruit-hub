@@ -13,6 +13,7 @@ import StickyHeader from "@/components/StickyHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory, isShoppingCategory } from "@/lib/categoryFields";
+import { buildSubOptions, subIdsForKey, type SubOption } from "@/lib/subcategoryGroups";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
