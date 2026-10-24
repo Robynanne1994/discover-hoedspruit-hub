@@ -187,7 +187,7 @@ const SpecialValueBar = ({
           rather than pushing itself over the money. A special with no money
           and no offer also puts its countdown here — urgency always reads
           bottom right, never drifting to the left slot. */}
-      {((value.kind !== "none" && showMeta) || (value.kind === "none" && !!meta.text)) && (
+      {((value.kind !== "none" && showMeta) || (value.kind === "none" && meta.urgent)) && (
         <span
           style={{
             fontFamily: SANS,
