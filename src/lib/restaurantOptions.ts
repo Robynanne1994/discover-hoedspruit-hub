@@ -20,6 +20,8 @@ export const RETIRED_CUISINE = new Set(
     "farm to fork",
     "snacks",
     "health food",
+    // "South African" is retired as a cuisine option at Robyn's request.
+    "south african",
   ].map((v) => v.toLowerCase()),
 );
 
