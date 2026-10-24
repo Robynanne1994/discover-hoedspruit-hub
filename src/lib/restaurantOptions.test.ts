@@ -50,6 +50,11 @@ describe("Retired cuisine values are hidden", () => {
     expect(isRestaurantOptionAllowed("cuisine", "South African")).toBe(false);
     expect(isRestaurantOptionAllowed("cuisine", " south african ")).toBe(false);
   });
+  it("hides Breakfast as a cuisine option but keeps it as a meal", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "Breakfast")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", " breakfast ")).toBe(false);
+    expect(isRestaurantOptionAllowed("meal", "Breakfast")).toBe(true);
+  });
   it("still allows real cuisines and other fields", () => {
     expect(isRestaurantOptionAllowed("cuisine", "Italian")).toBe(true);
     expect(isRestaurantOptionAllowed("cuisine", "Baked Goods")).toBe(true);
