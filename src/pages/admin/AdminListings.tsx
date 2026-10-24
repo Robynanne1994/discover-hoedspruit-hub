@@ -1765,7 +1765,11 @@ const AdminListings = () => {
                                 const val = (customChipOption[key] ?? "").trim();
                                 if (!val) return;
                                 if (!isRestaurantOptionAllowed(key, val)) {
-                                  toast.error("Desserts belongs in the Meal field.");
+                                  toast.error(
+                                    key === "cuisine"
+                                      ? "That value is no longer offered under Cuisine."
+                                      : "Desserts belongs in the Meal field.",
+                                  );
                                   return;
                                 }
                                 if (!form[key].includes(val)) {
