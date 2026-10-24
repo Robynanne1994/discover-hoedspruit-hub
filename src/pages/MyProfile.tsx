@@ -398,7 +398,15 @@ const MyProfile = () => {
   );
 
   const tabs = useMemo(() => {
-    const count = (t: Tab) => (t === "all" ? items.length : items.filter((it) => TAB_FOR_TYPE[it.type] === t).length);
+    // Deals and events count only what's still live on the top pill — expired
+    // deals and past events stay saved under their own sub-pill, but a bracket
+    // that includes them oversells what's actually on.
+    const count = (t: Tab) => {
+      if (t === "all") return items.length;
+      const list = items.filter((it) => TAB_FOR_TYPE[it.type] === t);
+      if (t === "deals" || t === "events") return list.filter((it) => !it.isPast).length;
+      return list.length;
+    };
     return ([
       { id: "all" as Tab, label: "All" },
       { id: "listings" as Tab, label: "Listings" },
