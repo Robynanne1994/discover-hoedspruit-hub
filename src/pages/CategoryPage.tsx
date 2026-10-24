@@ -8,6 +8,8 @@ import { SlidersHorizontal, MapPin, Search, X, Heart, Loader2 } from "lucide-rea
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
+import StickyHeader from "@/components/StickyHeader";
+
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory, isShoppingCategory } from "@/lib/categoryFields";
