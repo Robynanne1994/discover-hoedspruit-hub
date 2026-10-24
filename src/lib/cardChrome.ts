@@ -163,6 +163,28 @@ export const SPECIAL_CARD_CHROME = {
     quietBackground: DEAL_OLIVE,
     color: "#FFFFFF",
   },
+  /**
+   * The urgency tab ("7 days left"). Not a pill: it is cut into the
+   * bottom-right corner of the picture, flush to both edges and rounded only
+   * where it meets the photo. It only exists in a deal's last week, so the crop
+   * tool can't assume it is there — nothing in the guides reserves it.
+   *
+   * `charWidth` is the rough width of one bold face at this size, used to keep
+   * text that sits *on* the picture (the featured hero's headline) clear of it.
+   */
+  countdown: {
+    radius: 8,
+    paddingX: 8,
+    paddingY: 3,
+    fontFamily: HN,
+    fontSize: 11,
+    fontWeight: 700,
+    lineHeight: 1,
+    letterSpacing: "-0.1px",
+    background: "#FFFFFF",
+    color: DEAL_RED,
+    charWidth: 6,
+  },
 } as const;
 
 /** The date roundel on the Happening Soon poster card — Events.tsx. */
