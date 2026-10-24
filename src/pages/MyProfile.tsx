@@ -398,7 +398,15 @@ const MyProfile = () => {
   );
 
   const tabs = useMemo(() => {
-    const count = (t: Tab) => (t === "all" ? items.length : items.filter((it) => TAB_FOR_TYPE[it.type] === t).length);
+    // Deals and events count only what's still live on the top pill — expired
+    // deals and past events stay saved under their own sub-pill, but a bracket
+    // that includes them oversells what's actually on.
+    const count = (t: Tab) => {
+      if (t === "all") return items.length;
+      const list = items.filter((it) => TAB_FOR_TYPE[it.type] === t);
+      if (t === "deals" || t === "events") return list.filter((it) => !it.isPast).length;
+      return list.length;
+    };
     return ([
       { id: "all" as Tab, label: "All" },
       { id: "listings" as Tab, label: "Listings" },
@@ -413,24 +421,26 @@ const MyProfile = () => {
   // offer: a listing's category and a resource's platform. Deals and events are
   // filtered by time instead, which is the axis that actually matters there.
   const categories = useMemo(() => {
-    if (tab !== "listings" && tab !== "resources") return [];
+    if (tab !== "listings" && tab !== "resources") return [] as { label: string; count: number }[];
     const counts = new Map<string, number>();
     tabItems.forEach((it) => it.tags.forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)));
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([t]) => t);
+      .map(([label, count]) => ({ label, count }));
   }, [tabItems, tab]);
 
   // The sub-filter row for the current tab. Time state where the content
   // expires, categories where it doesn't, nothing at all on All.
   const subFilter = useMemo(() => {
+    const liveCount = tabItems.filter((it) => !it.isPast).length;
+    const overCount = tabItems.length - liveCount;
     if (tab === "events")
       return {
         value: eventsSub,
         onChange: (v: string) => setEventsSub(v as "upcoming" | "past"),
         options: [
-          { id: "upcoming", label: "Upcoming" },
-          { id: "past", label: "Past" },
+          { id: "upcoming", label: "Upcoming", count: liveCount },
+          { id: "past", label: "Past", count: overCount },
         ],
       };
     if (tab === "deals")
@@ -438,19 +448,24 @@ const MyProfile = () => {
         value: dealsSub,
         onChange: (v: string) => setDealsSub(v as "active" | "expired"),
         options: [
-          { id: "active", label: "Active" },
-          { id: "expired", label: "Expired" },
+          { id: "active", label: "Active", count: liveCount },
+          { id: "expired", label: "Expired", count: overCount },
         ],
       };
-    // A lone category chip filters nothing — every item on the tab carries it.
-    if (categories.length > 1)
+    // Resources always surface their platform chips so you can see at a glance
+    // which platforms you've saved from; listings skip a lone chip since it
+    // would filter nothing. An "All" chip only earns its place past one.
+    if (categories.length > (tab === "resources" ? 0 : 1))
       return {
         value: category ?? "all",
         onChange: (v: string) => setCategory(v === "all" ? null : v),
-        options: [{ id: "all", label: "All" }, ...categories.map((c) => ({ id: c, label: c }))],
+        options: [
+          ...(categories.length > 1 ? [{ id: "all", label: "All", count: tabItems.length }] : []),
+          ...categories.map((c) => ({ id: c.label, label: c.label, count: c.count })),
+        ],
       };
     return null;
-  }, [tab, eventsSub, dealsSub, categories, category]);
+  }, [tab, tabItems, eventsSub, dealsSub, categories, category]);
 
   // The grid, split into what is still ahead of you and what has already been
   // and gone. Past events and expired deals are real clutter in a saved list,
@@ -885,7 +900,7 @@ const MyProfile = () => {
                   lineHeight: 1.2,
                 }}
               >
-                {o.label}
+                {o.label} ({o.count})
               </button>
             );
           })}
