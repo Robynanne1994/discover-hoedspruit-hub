@@ -22,6 +22,8 @@ export const RETIRED_CUISINE = new Set(
     "health food",
     // "South African" is retired as a cuisine option at Robyn's request.
     "south african",
+    // "Breakfast" is a meal, not a cuisine — it stays available under Meal.
+    "breakfast",
   ].map((v) => v.toLowerCase()),
 );
 

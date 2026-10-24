@@ -1418,7 +1418,7 @@ const CategoryPage = () => {
         {isRestaurant && (() => {
           const filterOpts = (opts: string[], map?: Map<string, number>) =>
             opts.filter((o) => !map || (map.get(o.toLowerCase()) || 0) > 0);
-          const cuisines = filterOpts(CUISINE_OPTIONS, facetCounts?.cuisine);
+          const cuisines = filterOpts(CUISINE_OPTIONS, facetCounts?.cuisine).filter((c) => isRestaurantOptionAllowed("cuisine", c));
           const vibes = filterOpts(VIBE_OPTIONS, facetCounts?.vibe);
           const meals = filterOpts(MEAL_OPTIONS, facetCounts?.meal);
           return (
