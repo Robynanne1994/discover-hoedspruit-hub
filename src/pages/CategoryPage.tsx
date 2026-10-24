@@ -380,12 +380,14 @@ const CategoryPage = () => {
       (legacyData || []).forEach((r: any) => idSet.add(r.id as string));
       let listingIds = Array.from(idSet);
       if (listingIds.length === 0) return [];
-      if (activeSubId) {
-        // Include listings assigned directly to this subcategory
-        // OR to any sub-subcategory under it (hierarchical refinement)
+      if (activeSubIds === undefined) return []; // merged key not resolvable yet
+      if (activeSubIds) {
+        // Include listings assigned directly to these subcategories (one, or
+        // every member of a merged group) OR to any sub-subcategory under them
+        // (hierarchical refinement)
         const [{ data: subJunction, error: sErr }, { data: ssList }] = await Promise.all([
-          supabase.from("listing_subcategories").select("listing_id").eq("subcategory_id", activeSubId),
-          supabase.from("sub_subcategories").select("id").eq("subcategory_id", activeSubId),
+          supabase.from("listing_subcategories").select("listing_id").in("subcategory_id", activeSubIds),
+          supabase.from("sub_subcategories").select("id").in("subcategory_id", activeSubIds),
         ]);
         if (sErr) throw sErr;
         const matchingListingIds = new Set<string>((subJunction || []).map((r: any) => r.listing_id as string));
