@@ -61,6 +61,23 @@ describe("Retired cuisine values are hidden", () => {
     expect(isRestaurantOptionAllowed("foods", "Bakery")).toBe(true);
     expect(isRestaurantOptionAllowed("meal", "Bakery")).toBe(false);
   });
+});
+
+describe("Retired cuisine values — dishes, labels and serving types", () => {
+  it("hides Platters, Health Bowls and Seasonal as cuisine options", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "Platters")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", " health bowls ")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", "SEASONAL")).toBe(false);
+  });
+  it("retires Local as a cuisine and offers African instead", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "Local")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", " local ")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", "African")).toBe(true);
+  });
+  it("offers Portuguese and American as cuisine options", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "Portuguese")).toBe(true);
+    expect(isRestaurantOptionAllowed("cuisine", " american ")).toBe(true);
+  });
   it("still allows real cuisines and other fields", () => {
     expect(isRestaurantOptionAllowed("cuisine", "Italian")).toBe(true);
     expect(isRestaurantOptionAllowed("cuisine", "Baked Goods")).toBe(true);
@@ -77,8 +94,7 @@ describe("Retired foods values are hidden", () => {
     expect(isRestaurantOptionAllowed("foods", "Local")).toBe(false);
     expect(isRestaurantOptionAllowed("foods", "Burgers")).toBe(true);
   });
-  it("keeps Light Meals as a meal and Local as a cuisine", () => {
+  it("keeps Light Meals as a meal", () => {
     expect(isRestaurantOptionAllowed("meal", "Light Meals")).toBe(true);
-    expect(isRestaurantOptionAllowed("cuisine", "Local")).toBe(true);
   });
 });

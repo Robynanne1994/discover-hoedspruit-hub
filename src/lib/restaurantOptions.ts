@@ -27,6 +27,12 @@ export const RETIRED_CUISINE = new Set(
     // "Bakery" / "Artisan Bakery" are a business or product type, not a cuisine.
     "bakery",
     "artisan bakery",
+    // Retired at Robyn's request: these are dish/serving types, not cuisines.
+    "platters",
+    "health bowls",
+    "seasonal",
+    // "Local" is retired as a cuisine label and replaced by "African".
+    "local",
   ].map((v) => v.toLowerCase()),
 );
 
