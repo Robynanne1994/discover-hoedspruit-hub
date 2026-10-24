@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { supabase } from "@/integrations/supabase/client";
 import { listingImage } from "@/lib/imageFallback";
-import { SlidersHorizontal, MapPin, Search, X, Heart } from "lucide-react";
+import { SlidersHorizontal, MapPin, Search, X, Heart, Loader2 } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
@@ -13,7 +13,6 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory, isShoppingCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { formatServiceLabel } from "@/lib/serviceLabels";
-import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
@@ -957,6 +956,10 @@ const CategoryPage = () => {
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
+  // The count only appears once the listings have actually arrived — a header
+  // that reads "0 Listings" while the query is still in flight reads as broken.
+  const countReady = listings != null && !listingsError;
+
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
   const SORT_LABELS: Record<SortKey, string> = {
@@ -1093,12 +1096,13 @@ const CategoryPage = () => {
       <PageHeader
         title={displayTitle}
         subtitle={
-          <div
-            style={type.label}
-          >
-            {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
-          </div>
+          countReady ? (
+            <div style={type.label}>
+              {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
+            </div>
+          ) : undefined
         }
+
         right={
           <>
             <button
@@ -1698,12 +1702,21 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: GRID.pageInset, paddingRight: GRID.pageInset, display: "grid", gridTemplateColumns: "1fr 1fr", gap: GRID.gutter }}>
-          {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 220, borderRadius: 16, background: "rgba(0,0,0,0.06)" }} />
-          ))}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 12,
+            padding: "72px 24px 80px",
+          }}
+        >
+          <Loader2 size={22} className="animate-spin" color={MUTED} />
+          <span style={{ ...type.label, color: MUTED }}>Loading</span>
         </div>
       ) : listingsError ? (
+
         <div style={{ textAlign: "center", padding: "60px 24px 80px" }}>
           <h2 style={{ ...type.sectionTitle, margin: "0 0 10px" }}>
             Something went wrong
