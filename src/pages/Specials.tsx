@@ -11,6 +11,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
+import SpecialCountdownTag, { countdownTagWidth } from "@/components/specials/SpecialCountdownTag";
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
@@ -776,7 +777,16 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           size="md"
           style={{ position: "absolute", top: 12, left: 12, maxWidth: "calc(100% - 24px)" }}
         />
-        <div style={{ position: "absolute", left: 16, right: 16, bottom: 14 }}>
+        {/* The headline block gives up room on the right while the countdown
+            tab is showing, so the two can never sit on top of each other. */}
+        <div
+          style={{
+            position: "absolute",
+            left: 16,
+            right: 16 + countdownTagWidth(special),
+            bottom: 14,
+          }}
+        >
           <h3
             {...noTitleCaseProps(special)}
             style={{
@@ -806,6 +816,8 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             </div>
           )}
         </div>
+
+        <SpecialCountdownTag special={special} />
       </div>
 
       {/* Value bar — money left, time right */}
@@ -886,6 +898,7 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
             maxWidth: "calc(100% - 16px)",
           }}
         />
+        <SpecialCountdownTag special={special} />
       </div>
 
       <div style={{ padding: "10px 11px 11px 11px", display: "flex", flexDirection: "column", flex: 1 }}>

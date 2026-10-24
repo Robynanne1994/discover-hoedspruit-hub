@@ -9,6 +9,7 @@ import HomeSectionHead from "./HomeSectionHead";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { specialImage, type SpecialCardLike } from "@/lib/specialCard";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
+import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import { type } from "@/lib/type";
 
@@ -175,6 +176,7 @@ const HomeSpecials = () => {
                     style={{ position: "absolute", top: 10, left: 10, maxWidth: "calc(100% - 20px)" }}
                   />
                 )}
+                <SpecialCountdownTag special={s} />
               </div>
 
               <div style={{ padding: "12px 12px 8px", display: "flex", flexDirection: "column", flex: 1 }}>

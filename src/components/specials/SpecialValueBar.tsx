@@ -10,7 +10,6 @@ const BAR = {
   muted: MUTED,
   strike: "#9C9387",
   accent: "#B4522E",
-  urgent: "#C0392B",
 };
 
 // The offer gets its own full-bleed strip at the foot of the card. Money left,
@@ -40,9 +39,10 @@ const SpecialValueBar = ({
   const lineBox = full ? 20 : 17;
 
   // A 170px card can't hold an offer sentence and a schedule at once, so the
-  // narrow bar ranks them: urgency first, then the offer, then the schedule.
-  // A price is short enough to sit next to a schedule; a sentence isn't.
-  const showMeta = !!meta.text && (full || meta.urgent || value.kind === "price");
+  // narrow bar ranks them: the offer, then the schedule. A price is short
+  // enough to sit next to a schedule; a sentence isn't. The countdown takes no
+  // part in this ranking — it has its own corner on the picture.
+  const showMeta = !!meta.text && !meta.urgent && (full || value.kind === "price");
 
   return (
     <div
@@ -161,9 +161,10 @@ const SpecialValueBar = ({
             {value.text}
           </span>
         )}
-      {/* The old left-slot fallback: calm date text ("Ends 12 Aug") on a
-          money-less special still reads from the left as before. Only the
-          urgent countdown gives way to the right. */}
+      {/* The left-slot fallback: calm date text ("Ends 12 Aug") on a money-less
+          special still reads from the left as before. The urgent countdown no
+          longer appears in the bar at all — it is the tab on the picture, see
+          SpecialCountdownTag. */}
       {value.kind === "none" && !!meta.text && !meta.urgent && (
           <span
             style={{
@@ -182,18 +183,18 @@ const SpecialValueBar = ({
         )}
       </div>
 
-      {/* Right — time. Red is reserved for this one meaning. Schedules are
-          free text ("Wednesday & Thursday Specials"), so this side truncates
-          rather than pushing itself over the money. A special with no money
-          and no offer also puts its countdown here — urgency always reads
-          bottom right, never drifting to the left slot. */}
-      {((value.kind !== "none" && showMeta) || (value.kind === "none" && meta.urgent)) && (
+      {/* Right — the schedule. Schedules are free text ("Wednesday & Thursday
+          Specials"), so this side truncates rather than pushing itself over the
+          money. Red is gone from this slot: the countdown has its own tab on
+          the picture, so what reads from here is only ever the business's calm
+          wording. */}
+      {value.kind !== "none" && showMeta && (
         <span
           style={{
             fontFamily: SANS,
             fontSize: metaSize,
-            fontWeight: meta.urgent ? 700 : 400,
-            color: meta.urgent ? BAR.urgent : BAR.muted,
+            fontWeight: 400,
+            color: BAR.muted,
             whiteSpace: "nowrap",
             overflow: "hidden",
             textOverflow: "ellipsis",
