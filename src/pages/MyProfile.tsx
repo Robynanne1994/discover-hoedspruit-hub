@@ -432,13 +432,15 @@ const MyProfile = () => {
   // The sub-filter row for the current tab. Time state where the content
   // expires, categories where it doesn't, nothing at all on All.
   const subFilter = useMemo(() => {
+    const liveCount = tabItems.filter((it) => !it.isPast).length;
+    const overCount = tabItems.length - liveCount;
     if (tab === "events")
       return {
         value: eventsSub,
         onChange: (v: string) => setEventsSub(v as "upcoming" | "past"),
         options: [
-          { id: "upcoming", label: "Upcoming" },
-          { id: "past", label: "Past" },
+          { id: "upcoming", label: "Upcoming", count: liveCount },
+          { id: "past", label: "Past", count: overCount },
         ],
       };
     if (tab === "deals")
@@ -446,8 +448,8 @@ const MyProfile = () => {
         value: dealsSub,
         onChange: (v: string) => setDealsSub(v as "active" | "expired"),
         options: [
-          { id: "active", label: "Active" },
-          { id: "expired", label: "Expired" },
+          { id: "active", label: "Active", count: liveCount },
+          { id: "expired", label: "Expired", count: overCount },
         ],
       };
     // A lone category chip filters nothing — every item on the tab carries it.
@@ -455,10 +457,13 @@ const MyProfile = () => {
       return {
         value: category ?? "all",
         onChange: (v: string) => setCategory(v === "all" ? null : v),
-        options: [{ id: "all", label: "All" }, ...categories.map((c) => ({ id: c, label: c }))],
+        options: [
+          { id: "all", label: "All", count: tabItems.length },
+          ...categories.map((c) => ({ id: c.label, label: c.label, count: c.count })),
+        ],
       };
     return null;
-  }, [tab, eventsSub, dealsSub, categories, category]);
+  }, [tab, tabItems, eventsSub, dealsSub, categories, category]);
 
   // The grid, split into what is still ahead of you and what has already been
   // and gone. Past events and expired deals are real clutter in a saved list,
