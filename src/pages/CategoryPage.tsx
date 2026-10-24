@@ -516,8 +516,8 @@ const CategoryPage = () => {
   // Drawer options for the Category section: merged groups collapsed into one
   // option each (e.g. "Nurseries & Florists"), the rest standalone.
   const subOptions = useMemo<SubOption[]>(
-    () => (subcategories ? buildSubOptions(subcategories) : []),
-    [subcategories],
+    () => (subcategories ? buildSubOptions(subcategories, category?.title) : []),
+    [subcategories, category?.title],
   );
   // Unique listings behind a sub option. A merged group counts listings once
   // even when one is tagged with two of its subcategories, so the pill count
