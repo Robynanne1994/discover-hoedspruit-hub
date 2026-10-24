@@ -513,6 +513,21 @@ const CategoryPage = () => {
     else setSearchParams({});
   };
 
+  // Drawer options for the Category section: merged groups collapsed into one
+  // option each (e.g. "Nurseries & Florists"), the rest standalone.
+  const subOptions = useMemo<SubOption[]>(
+    () => (subcategories ? buildSubOptions(subcategories) : []),
+    [subcategories],
+  );
+  const subCountFor = (opt: SubOption) =>
+    (opt.subIds.reduce((sum, sid) => sum + (facetCounts?.subCounts.get(sid) || 0), 0)) || 0;
+  // Label the active filter shows in the drawer summary and the chip row.
+  const activeSubLabel = useMemo(() => {
+    if (!activeSubId) return null;
+    return subOptions.find((o) => o.key === activeSubId || o.subIds.includes(activeSubId))?.label || null;
+  }, [subOptions, activeSubId]);
+
+
   // Aggregate internal reviews per listing — only used for "Top Rated" sort.
   const listingIds = useMemo(() => (listings || []).map((l: any) => l.id), [listings]);
   const { data: reviewAggregates } = useQuery({
