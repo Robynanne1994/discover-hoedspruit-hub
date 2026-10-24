@@ -85,7 +85,7 @@ describe("groupAppliesToCategory", () => {
   });
 
   it("applies only inside its listed categories, ignoring case", () => {
-    const g = findSubcategoryGroup(groupKeyFor(["pet supplies", "farm supplies"]))!;
+    const g = findSubcategoryGroup(groupKeyFor(["pet supplies", "farm supplies", "farm / animal supplies"]))!;
     expect(groupAppliesToCategory(g, "shopping")).toBe(true);
     expect(groupAppliesToCategory(g, "Pets & Vets")).toBe(false);
     expect(groupAppliesToCategory(g, undefined)).toBe(false);
@@ -120,7 +120,7 @@ describe("subIdsForKey", () => {
   });
 
   it("expands the pet and farm key to every member id", () => {
-    const ids = subIdsForKey(groupKeyFor(["pet supplies", "farm supplies"]), SHOPPING);
+    const ids = subIdsForKey(groupKeyFor(["pet supplies", "farm supplies", "farm / animal supplies"]), SHOPPING);
     expect(ids!.sort()).toEqual(["farm-animal-id", "farm-id", "pet-id"]);
   });
 
