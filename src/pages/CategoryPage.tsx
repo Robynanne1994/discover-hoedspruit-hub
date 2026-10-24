@@ -8,6 +8,8 @@ import { SlidersHorizontal, MapPin, Search, X, Heart, Loader2 } from "lucide-rea
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
+import StickyHeader from "@/components/StickyHeader";
+
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory, isShoppingCategory } from "@/lib/categoryFields";
@@ -1077,10 +1079,93 @@ const CategoryPage = () => {
     );
   }
 
+  // The header row and its pinned copy are the same bar, so they are built
+  // once here and handed to both.
+  const headerSubtitle = countReady ? (
+    <div style={type.label}>
+      {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
+    </div>
+  ) : undefined;
+
+  const headerActions = (
+    <>
+      <button
+        onClick={() => {
+          setSearchOpen((v) => {
+            if (v) setSearch("");
+            return !v;
+          });
+        }}
+        aria-label={searchOpen ? "Close search" : "Search"}
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          background: "#FFFFFF",
+          border: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          flexShrink: 0,
+        }}
+      >
+        {searchOpen ? (
+          <X size={18} strokeWidth={1.8} color={INK} />
+        ) : (
+          <Search size={18} strokeWidth={1.8} color={INK} />
+        )}
+      </button>
+      <button
+        onClick={() => setRefineOpen(true)}
+        aria-label="FILTER & SORT"
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          background: activeFilterCount > 0 ? "#423324" : "#FFFFFF",
+          border: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          flexShrink: 0,
+          position: "relative",
+        }}
+      >
+        <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#1A1A1A"} />
+        {activeFilterCount > 0 && (
+          <span
+            style={{
+              position: "absolute",
+              top: -3,
+              right: -3,
+              minWidth: 16,
+              height: 16,
+              borderRadius: 999,
+              background: "#C0392B",
+              color: "#FFFFFF",
+              fontFamily: sans,
+              fontSize: 9,
+              fontWeight: 700,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "0 3px",
+            }}
+          >
+            {activeFilterCount}
+          </span>
+        )}
+      </button>
+    </>
+  );
+
   return (
     <div
       style={{
         minHeight: "100vh",
+
         paddingBottom: "var(--nav-clearance)",
         background: PAGE_BG,
         fontFamily: sans,
@@ -1095,88 +1180,16 @@ const CategoryPage = () => {
       {/* Top bar */}
       <PageHeader
         title={displayTitle}
-        subtitle={
-          countReady ? (
-            <div style={type.label}>
-              {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
-            </div>
-          ) : undefined
-        }
-
-        right={
-          <>
-            <button
-              onClick={() => {
-                setSearchOpen((v) => {
-                  if (v) setSearch("");
-                  return !v;
-                });
-              }}
-              aria-label={searchOpen ? "Close search" : "Search"}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "#FFFFFF",
-                border: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                flexShrink: 0,
-              }}
-            >
-              {searchOpen ? (
-                <X size={18} strokeWidth={1.8} color={INK} />
-              ) : (
-                <Search size={18} strokeWidth={1.8} color={INK} />
-              )}
-            </button>
-            <button
-              onClick={() => setRefineOpen(true)}
-              aria-label="FILTER & SORT"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: activeFilterCount > 0 ? "#423324" : "#FFFFFF",
-                border: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                flexShrink: 0,
-                position: "relative",
-              }}
-            >
-              <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#1A1A1A"} />
-              {activeFilterCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -3,
-                    right: -3,
-                    minWidth: 16,
-                    height: 16,
-                    borderRadius: 999,
-                    background: "#C0392B",
-                    color: "#FFFFFF",
-                    fontFamily: sans,
-                    fontSize: 9,
-                    fontWeight: 700,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: "0 3px",
-                  }}
-                >
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
-          </>
-        }
+        subtitle={headerSubtitle}
+        right={headerActions}
       />
+      <StickyHeader
+        background={PAGE_BG}
+        title={displayTitle}
+        subtitle={headerSubtitle}
+        right={headerActions}
+      />
+
 
       {searchOpen && (
         <div style={{ padding: "16px 20px 0 20px" }}>
