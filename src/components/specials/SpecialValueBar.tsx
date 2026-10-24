@@ -49,7 +49,8 @@ const SpecialValueBar = ({
   // crossed-out "was" price stands down and the card says just "now" and
   // "until when". The wide featured card carries the whole ledger, so it keeps
   // the strike whatever the date line says.
-  const showOriginal = !!value.original && (full || !showMeta);
+  const showOriginal =
+    value.kind === "price" && !!value.original && (full || !showMeta);
 
   return (
     <div
