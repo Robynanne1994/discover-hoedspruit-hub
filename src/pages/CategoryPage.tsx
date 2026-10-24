@@ -519,8 +519,19 @@ const CategoryPage = () => {
     () => (subcategories ? buildSubOptions(subcategories) : []),
     [subcategories],
   );
-  const subCountFor = (opt: SubOption) =>
-    (opt.subIds.reduce((sum, sid) => sum + (facetCounts?.subCounts.get(sid) || 0), 0)) || 0;
+  // Unique listings behind a sub option. A merged group counts listings once
+  // even when one is tagged with two of its subcategories, so the pill count
+  // matches the result list.
+  const subCountFor = (opt: SubOption): number => {
+    if (!facetCounts) return 0;
+    if (opt.subIds.length === 1) return facetCounts.subCounts.get(opt.subIds[0]) || 0;
+    const unique = new Set<string>();
+    for (const sid of opt.subIds) {
+      const ids = facetCounts.subListings.get(sid);
+      if (ids) ids.forEach((lid: string) => unique.add(lid));
+    }
+    return unique.size;
+  };
   // Label the active filter shows in the drawer summary and the chip row.
   const activeSubLabel = useMemo(() => {
     if (!activeSubId) return null;
