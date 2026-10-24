@@ -767,10 +767,13 @@ const AdminImport = () => {
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
           if (parsed.skip === true) continue;
           // Coffee is a drink, not a cuisine — never let a CSV cell put it back
-          // under Cuisine (Robyn). Other values pass through untouched.
-          if (fieldName === "cuisine" && Array.isArray(parsed.value)) {
+          // under Cuisine (Robyn). Meal is fixed to the six MEAL_OPTIONS, so
+          // retired values like Pub Grub / Snacks can't sneak back in either.
+          if (Array.isArray(parsed.value) && (fieldName === "cuisine" || fieldName === "meal")) {
             payloadRecord[fieldName] = (parsed.value as unknown[]).filter(
-              (v) => !(typeof v === "string" && v.trim().toLowerCase() === "coffee"),
+              (v) =>
+                typeof v === "string" &&
+                isRestaurantOptionAllowed(fieldName, v),
             );
             continue;
           }
