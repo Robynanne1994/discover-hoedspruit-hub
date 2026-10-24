@@ -55,11 +55,30 @@ describe("Retired cuisine values are hidden", () => {
     expect(isRestaurantOptionAllowed("cuisine", " breakfast ")).toBe(false);
     expect(isRestaurantOptionAllowed("meal", "Breakfast")).toBe(true);
   });
+  it("hides Bakery and Artisan Bakery as cuisine options", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "Bakery")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", " ARTISAN BAKERY ")).toBe(false);
+    expect(isRestaurantOptionAllowed("foods", "Bakery")).toBe(true);
+    expect(isRestaurantOptionAllowed("meal", "Bakery")).toBe(false);
+  });
   it("still allows real cuisines and other fields", () => {
     expect(isRestaurantOptionAllowed("cuisine", "Italian")).toBe(true);
     expect(isRestaurantOptionAllowed("cuisine", "Baked Goods")).toBe(true);
     expect(isRestaurantOptionAllowed("meal", "Deli")).toBe(false); // retired as a meal
     expect(isRestaurantOptionAllowed("foods", "Snacks")).toBe(true);
     expect(isRestaurantOptionAllowed("foods", "South African")).toBe(true);
+  });
+});
+
+describe("Retired foods values are hidden", () => {
+  it("hides Light Meals and Local as foods options", () => {
+    expect(isRestaurantOptionAllowed("foods", "Light Meals")).toBe(false);
+    expect(isRestaurantOptionAllowed("foods", " local ")).toBe(false);
+    expect(isRestaurantOptionAllowed("foods", "Local")).toBe(false);
+    expect(isRestaurantOptionAllowed("foods", "Burgers")).toBe(true);
+  });
+  it("keeps Light Meals as a meal and Local as a cuisine", () => {
+    expect(isRestaurantOptionAllowed("meal", "Light Meals")).toBe(true);
+    expect(isRestaurantOptionAllowed("cuisine", "Local")).toBe(true);
   });
 });
