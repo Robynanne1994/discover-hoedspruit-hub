@@ -81,6 +81,25 @@ describe("buildSubOptions", () => {
     expect(opts[0].label).toBe("Pet & Farm Supplies");
     expect(opts[0].subIds).toEqual(["p"]);
   });
+
+  it("merges cleaning and hospitality supplies into one option inside Shopping", () => {
+    const opts = buildSubOptions(CLEAN_SHOPPING, "Shopping");
+    const merged = opts.find((o) => o.label === "Cleaning & Hospitality Supplies");
+    expect(merged).toBeDefined();
+    expect(merged!.subIds.sort()).toEqual(["clean-id", "hosp-id"]);
+    // The members no longer appear as their own options.
+    expect(opts.find((o) => o.key === "clean-id")).toBeUndefined();
+    expect(opts.find((o) => o.key === "hosp-id")).toBeUndefined();
+    // Everything else keeps its own option.
+    expect(opts.find((o) => o.key === "gifts-id")).toBeDefined();
+  });
+
+  it("leaves cleaning and hospitality supplies alone outside Shopping", () => {
+    const opts = buildSubOptions(CLEAN_SHOPPING, "Trades & Services");
+    expect(opts.find((o) => o.label === "Cleaning & Hospitality Supplies")).toBeUndefined();
+    expect(opts.find((o) => o.key === "clean-id")?.label).toBe("Cleaning Supplies");
+    expect(opts.find((o) => o.key === "hosp-id")?.label).toBe("Hospitality Supplies");
+  });
 });
 
 describe("groupAppliesToCategory", () => {
