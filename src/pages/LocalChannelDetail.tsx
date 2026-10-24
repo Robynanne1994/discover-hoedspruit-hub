@@ -3,8 +3,9 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil, Calendar, Clock, Users,
-  Heart, Share2, Megaphone, Facebook, Instagram,
+  Heart, Share2, Megaphone, Facebook,
 } from "lucide-react";
+import InstagramIcon from "@/components/ui/InstagramIcon";
 import { supabase } from "@/integrations/supabase/client";
 import { channelImage } from "@/lib/imageFallback";
 import ImageLightbox from "@/components/ImageLightbox";
@@ -78,7 +79,7 @@ const platformLabel = (p?: string | null) => (p ? PLATFORM_LABEL[p] || p : "");
 
 const platformIcon = (p?: string | null) => {
   if (p === "Facebook") return Facebook;
-  if (p === "Instagram") return Instagram;
+  if (p === "Instagram") return InstagramIcon;
   if (p === "WhatsApp") return WhatsAppIcon;
   return Megaphone;
 };

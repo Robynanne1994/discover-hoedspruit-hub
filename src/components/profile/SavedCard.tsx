@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, Heart, Instagram, MapPin, MessageCircle, Mountain, ShoppingBag, Store, Tag, Utensils, Wrench } from "lucide-react";
+import { BedDouble, Calendar, Clock, Coffee, Compass, Facebook, Flower, Globe, Heart, MapPin, MessageCircle, Mountain, ShoppingBag, Store, Tag, Utensils, Wrench } from "lucide-react";
+import InstagramIcon from "@/components/ui/InstagramIcon";
 import { channelImage, eventImage, listingImage, specialSurfaceImage } from "@/lib/imageFallback";
 import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
@@ -51,7 +52,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 const PLATFORM_ICON: Record<string, typeof Globe> = {
   facebook: Facebook,
-  instagram: Instagram,
+  instagram: InstagramIcon,
   whatsapp: MessageCircle,
   websites: Globe,
   website: Globe,
