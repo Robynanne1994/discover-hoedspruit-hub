@@ -580,6 +580,7 @@ const CategoryPage = () => {
       const empty = {
         total: 0,
         subCounts: new Map<string, number>(),
+        subListings: new Map<string, Set<string>>(),
         cuisine: new Map<string, number>(),
         vibe: new Map<string, number>(),
         meal: new Map<string, number>(),
