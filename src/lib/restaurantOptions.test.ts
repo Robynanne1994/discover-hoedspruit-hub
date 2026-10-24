@@ -26,3 +26,30 @@ describe("Meal options are the fixed six", () => {
     expect(isRestaurantOptionAllowed("meal", "Lunch")).toBe(true);
   });
 });
+
+describe("Retired cuisine values are hidden", () => {
+  it("blocks Robyn's ten retired values as cuisine options", () => {
+    const retired = [
+      "Light Meals",
+      "Fried Chicken",
+      "Sourdough",
+      "Artisan Baked Goods",
+      "Waffles",
+      "Deli",
+      "Smoked Meats",
+      "Farm-to-Fork",
+      "Farm to Fork",
+      "Snacks",
+      "Health Food",
+    ];
+    for (const value of retired) {
+      expect(isRestaurantOptionAllowed("cuisine", ` ${value} `)).toBe(false);
+    }
+  });
+  it("still allows real cuisines and other fields", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "Italian")).toBe(true);
+    expect(isRestaurantOptionAllowed("cuisine", "Baked Goods")).toBe(true);
+    expect(isRestaurantOptionAllowed("meal", "Deli")).toBe(false); // retired as a meal
+    expect(isRestaurantOptionAllowed("foods", "Snacks")).toBe(true);
+  });
+});
