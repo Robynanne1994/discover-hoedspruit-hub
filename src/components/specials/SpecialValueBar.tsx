@@ -62,10 +62,11 @@ const SpecialValueBar = ({
         flexShrink: 0,
       }}
     >
-      {/* Left — the money. Falls back to the validity line so a special with no
-          price and no savings keeps the same card height as its neighbours.
-          A basis of `auto` matters: with a basis of 0 the money gets no width of
-          its own and a long schedule on the right prints straight over it. */}
+      {/* Left — the money. An empty left slot keeps the same card height as
+          its neighbours via the fixed line box; the validity line now lives on
+          the right. A basis of `auto` matters: with a basis of 0 the money
+          gets no width of its own and a long schedule on the right prints
+          straight over it. */}
       <div
         style={{
           display: "flex",
@@ -160,29 +161,14 @@ const SpecialValueBar = ({
             {value.text}
           </span>
         )}
-
-        {value.kind === "none" && !!meta.text && (
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: full ? 13 : 12,
-              fontWeight: meta.urgent ? 700 : 400,
-              color: meta.urgent ? BAR.urgent : BAR.muted,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              minWidth: 0,
-            }}
-          >
-            {meta.text}
-          </span>
-        )}
       </div>
 
       {/* Right — time. Red is reserved for this one meaning. Schedules are
           free text ("Wednesday & Thursday Specials"), so this side truncates
-          rather than pushing itself over the money. */}
-      {value.kind !== "none" && showMeta && (
+          rather than pushing itself over the money. A special with no money
+          and no offer also puts its countdown here — urgency always reads
+          bottom right, never drifting to the left slot. */}
+      {((value.kind !== "none" && showMeta) || (value.kind === "none" && !!meta.text)) && (
         <span
           style={{
             fontFamily: SANS,
