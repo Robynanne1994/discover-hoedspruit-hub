@@ -760,11 +760,16 @@ const Events = () => {
         recurring.push(e);
         return;
       }
+      // Future-year events group under the year alone instead of per month.
+      const eventYear = e._parsed ? e._parsed.getFullYear() : null;
       const currentYear = new Date().getFullYear();
+      const isFutureYear = eventYear !== null && eventYear > currentYear;
       const label = e._parsed
-        ? format(e._parsed, e._parsed.getFullYear() === currentYear ? "MMMM" : "MMMM yyyy").toUpperCase()
+        ? isFutureYear
+          ? String(eventYear)
+          : format(e._parsed, eventYear === currentYear ? "MMMM" : "MMMM yyyy").toUpperCase()
         : "DATE TO BE CONFIRMED";
-      const key = e._parsed ? format(e._parsed, "yyyy-MM") : "tbc";
+      const key = e._parsed ? (isFutureYear ? `y-${eventYear}` : format(e._parsed, "yyyy-MM")) : "tbc";
       const existing = groups.find((g) => g.key === key);
       if (existing) existing.events.push(e);
       else groups.push({ key, label, events: [e] });
