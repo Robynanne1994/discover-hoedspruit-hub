@@ -352,8 +352,22 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
+  // The subcategory ids the active `sub` URL param stands for. A merged group
+  // key expands to every member id; a plain id stays as-is. `undefined` means a
+  // merged key that cannot be resolved yet (subcategories still loading);
+  // `null` means no sub filter at all.
+  const activeSubIds = useMemo<string[] | null | undefined>(() => {
+    if (!activeSubId) return null;
+    if (activeSubId.startsWith("merged:")) {
+      if (!subcategories) return undefined;
+      const ids = subIdsForKey(activeSubId, subcategories);
+      return ids && ids.length > 0 ? ids : null;
+    }
+    return [activeSubId];
+  }, [activeSubId, subcategories]);
+
   const { data: listings, isLoading, isError: listingsError, refetch: refetchListings, isFetching: listingsFetching } = useQuery({
-    queryKey: ["listings-by-category", id, activeSubId],
+    queryKey: ["listings-by-category", id, activeSubIds ? activeSubIds.join(",") : ""],
     queryFn: async () => {
       const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
         supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
