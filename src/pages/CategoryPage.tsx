@@ -1542,13 +1542,13 @@ const CategoryPage = () => {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {gradingOptions.map((g) => (
                 <RefineChip
-                  key={g}
-                  label={`${g}-Star`}
-                  active={filterGrading.includes(g)}
+                  key={g.value}
+                  label={g.label}
+                  active={filterGrading.includes(g.value)}
                   onClick={() =>
-                    setFilterGrading(filterGrading.includes(g)
-                      ? filterGrading.filter((x) => x !== g)
-                      : [...filterGrading, g])
+                    setFilterGrading(filterGrading.includes(g.value)
+                      ? filterGrading.filter((x) => x !== g.value)
+                      : [...filterGrading, g.value])
                   }
                 />
               ))}
