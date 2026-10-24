@@ -15,3 +15,14 @@ describe("Desserts meal classification", () => {
     expect(isRestaurantOptionAllowed("foods", "Pasta")).toBe(true);
   });
 });
+
+describe("Meal options are the fixed six", () => {
+  it("lists exactly Breakfast, Brunch, Lunch, Dinner, Light Meals, Desserts", () => {
+    expect(MEAL_OPTIONS).toEqual(["Breakfast", "Brunch", "Lunch", "Dinner", "Light Meals", "Desserts"]);
+  });
+  it("retires Pub Grub and Snacks everywhere", () => {
+    expect(isRestaurantOptionAllowed("meal", "Pub Grub")).toBe(false);
+    expect(isRestaurantOptionAllowed("meal", "snacks")).toBe(false);
+    expect(isRestaurantOptionAllowed("meal", "Lunch")).toBe(true);
+  });
+});
