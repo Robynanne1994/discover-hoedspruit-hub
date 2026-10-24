@@ -61,6 +61,7 @@ describe("Retired cuisine values are hidden", () => {
     expect(isRestaurantOptionAllowed("foods", "Bakery")).toBe(true);
     expect(isRestaurantOptionAllowed("meal", "Bakery")).toBe(false);
   });
+});
 
 describe("Retired cuisine values — dishes, labels and serving types", () => {
   it("hides Platters, Health Bowls and Seasonal as cuisine options", () => {
