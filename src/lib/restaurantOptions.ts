@@ -27,6 +27,17 @@ export const RETIRED_CUISINE = new Set(
   ].map((v) => v.toLowerCase()),
 );
 
+// Retired foods values, matched case- and whitespace-insensitively.
+// "Light Meals" is a meal and "Local" is a sourcing/origin descriptor, so
+// neither is offered as a food.
+export const RETIRED_FOODS = new Set(
+  [
+    "light meals",
+    "light meal",
+    "local",
+  ].map((v) => v.toLowerCase()),
+);
+
 export function isRestaurantOptionAllowed(field: string, value: string): boolean {
   const v = value.trim().toLowerCase();
   if (field === "cuisine" && RETIRED_CUISINE.has(v)) return false;
