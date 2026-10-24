@@ -30,6 +30,7 @@ export const RETIRED_CUISINE = new Set(
 export function isRestaurantOptionAllowed(field: string, value: string): boolean {
   const v = value.trim().toLowerCase();
   if (field === "cuisine" && RETIRED_CUISINE.has(v)) return false;
+  if (field === "foods" && RETIRED_FOODS.has(v)) return false;
   if (["cuisine", "foods"].includes(field) && v === "desserts") return false;
   // Meal only ever offers the six fixed options — anything else stored on a
   // listing (e.g. old Pub Grub / Snacks values) is hidden from the editor
