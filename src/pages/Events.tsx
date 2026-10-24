@@ -1053,7 +1053,7 @@ const Events = () => {
                       fontSize: 12,
                       letterSpacing: "0.12em",
                       textTransform: "uppercase",
-                      color: C.muted,
+                      color: C.ink,
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -1068,7 +1068,7 @@ const Events = () => {
                         color: C.muted,
                       }}
                     >
-                      {group.events.length}
+                      ({group.events.length})
                     </span>
                   )}
                   <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.10)" }} />
