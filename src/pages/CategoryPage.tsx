@@ -637,7 +637,7 @@ const CategoryPage = () => {
         ? allIds.filter((lid) => savedIds.has(lid)).length
         : 0;
 
-      return { total: allIds.length, subCounts, cuisine, vibe, meal, seating, openNow, saved: savedCount };
+      return { total: allIds.length, subCounts, subListings, cuisine, vibe, meal, seating, openNow, saved: savedCount };
     },
   });
 
