@@ -429,6 +429,14 @@ const MyProfile = () => {
       .map(([label, count]) => ({ label, count }));
   }, [tabItems, tab]);
 
+  // The chip that's lit by default. Listings keep their "All" chip; on Resources
+  // the first platform you've saved leads dark the way "Upcoming" and "Active"
+  // lead their tabs, so the row is never left unlit.
+  const activeCategory = useMemo(() => {
+    if (tab !== "resources") return category;
+    return category ?? categories[0]?.label ?? null;
+  }, [tab, category, categories]);
+
   // The sub-filter row for the current tab. Time state where the content
   // expires, categories where it doesn't, nothing at all on All.
   const subFilter = useMemo(() => {
@@ -454,18 +462,21 @@ const MyProfile = () => {
       };
     // Resources always surface their platform chips so you can see at a glance
     // which platforms you've saved from; listings skip a lone chip since it
-    // would filter nothing. An "All" chip only earns its place past one.
+    // would filter nothing. An "All" chip only earns its place on listings past
+    // one category.
     if (categories.length > (tab === "resources" ? 0 : 1))
       return {
-        value: category ?? "all",
+        value: activeCategory ?? "all",
         onChange: (v: string) => setCategory(v === "all" ? null : v),
         options: [
-          ...(categories.length > 1 ? [{ id: "all", label: "All", count: tabItems.length }] : []),
+          ...(tab === "resources" || categories.length < 2
+            ? []
+            : [{ id: "all", label: "All", count: tabItems.length }]),
           ...categories.map((c) => ({ id: c.label, label: c.label, count: c.count })),
         ],
       };
     return null;
-  }, [tab, tabItems, eventsSub, dealsSub, categories, category]);
+  }, [tab, tabItems, eventsSub, dealsSub, categories, activeCategory]);
 
   // The grid, split into what is still ahead of you and what has already been
   // and gone. Past events and expired deals are real clutter in a saved list,
@@ -477,7 +488,10 @@ const MyProfile = () => {
 
     if (tab === "events") list = list.filter((it) => (eventsSub === "past" ? it.isPast : !it.isPast));
     else if (tab === "deals") list = list.filter((it) => (dealsSub === "expired" ? it.isPast : !it.isPast));
-    else if (category) list = list.filter((it) => it.tags.includes(category));
+    // A typed search is deliberately cross-platform: the lit chip narrows the
+    // browse view, not a query you've typed yourself.
+    else if (activeCategory && !(tab === "resources" && q))
+      list = list.filter((it) => it.tags.includes(activeCategory));
 
     // On a single-type tab the pill row already says which half you asked for,
     // so nothing is held back below the grid.
@@ -501,7 +515,7 @@ const MyProfile = () => {
         return b.savedAt - a.savedAt;
       });
     return { current: upcoming, past: list.filter((it) => it.isPast).sort(byDate(true)) };
-  }, [tabItems, search, category, tab, eventsSub, dealsSub]);
+  }, [tabItems, search, activeCategory, tab, eventsSub, dealsSub]);
 
   // Searching is deliberate, so a match that happens to be over still shows.
   const pastOpen = showPast || !!search.trim();
@@ -942,7 +956,7 @@ const MyProfile = () => {
           >
             {items.length === 0
               ? "Nothing saved yet. Tap the heart on anything you'd like to save and you can find it here later."
-              : search.trim() || category
+              : search.trim() || activeCategory
                 ? "Nothing here matches that. Try clearing your search or filters."
                 : past.length
                   ? "Nothing coming up. Everything you've saved has already been and gone."
