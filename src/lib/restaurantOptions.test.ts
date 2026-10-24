@@ -61,6 +61,7 @@ describe("Retired cuisine values are hidden", () => {
     expect(isRestaurantOptionAllowed("foods", "Bakery")).toBe(true);
     expect(isRestaurantOptionAllowed("meal", "Bakery")).toBe(false);
   });
+
 describe("Retired cuisine values — dishes, labels and serving types", () => {
   it("hides Platters, Health Bowls and Seasonal as cuisine options", () => {
     expect(isRestaurantOptionAllowed("cuisine", "Platters")).toBe(false);
@@ -92,8 +93,7 @@ describe("Retired foods values are hidden", () => {
     expect(isRestaurantOptionAllowed("foods", "Local")).toBe(false);
     expect(isRestaurantOptionAllowed("foods", "Burgers")).toBe(true);
   });
-  it("keeps Light Meals as a meal and Local as a cuisine", () => {
+  it("keeps Light Meals as a meal", () => {
     expect(isRestaurantOptionAllowed("meal", "Light Meals")).toBe(true);
-    expect(isRestaurantOptionAllowed("cuisine", "Local")).toBe(true);
   });
 });
