@@ -724,12 +724,21 @@ const CategoryPage = () => {
 
   const gradingOptions = useMemo(() => {
     if (!isAccom || !listings) return [];
-    const set = new Set<number>();
+    // Counts per grading bucket. Star value 0 means "Not Graded" — every
+    // listing without a usable 1-5 rating falls into that bucket.
+    const counts = new Map<number, number>();
     (listings as any[]).forEach((l) => {
-      const sr = Number(l.star_rating);
-      if (sr >= 1 && sr <= 5) set.add(sr);
+      const sr = Number(l.star_rating) || 0;
+      if (sr >= 1 && sr <= 5) counts.set(sr, (counts.get(sr) || 0) + 1);
+      else counts.set(0, (counts.get(0) || 0) + 1);
     });
-    return Array.from(set).sort((a, b) => a - b);
+    return [5, 4, 3, 2, 1, 0]
+      .filter((v) => (counts.get(v) || 0) > 0)
+      .map((v) => ({
+        value: v,
+        plain: v === 0 ? "Not Graded" : `${v}-Star`,
+        label: withCount(v === 0 ? "Not Graded" : `${v}-Star`, counts.get(v)),
+      }));
   }, [isAccom, listings]);
 
   const minNightsOptions = useMemo(() => {
@@ -1267,7 +1276,7 @@ const CategoryPage = () => {
             onRemove: () => setFilterMinNights(filterMinNights.filter((x) => x !== n)),
           })),
           ...filterGrading.map((g) => ({
-            label: `${g}-Star Grading`,
+            label: g === 0 ? "Not Graded" : `${g}-Star Grading`,
             onRemove: () => setFilterGrading(filterGrading.filter((x) => x !== g)),
           })),
           ...filterAccomAmenities.map((k) => ({
@@ -1533,13 +1542,13 @@ const CategoryPage = () => {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
               {gradingOptions.map((g) => (
                 <RefineChip
-                  key={g}
-                  label={`${g}-Star`}
-                  active={filterGrading.includes(g)}
+                  key={g.value}
+                  label={g.label}
+                  active={filterGrading.includes(g.value)}
                   onClick={() =>
-                    setFilterGrading(filterGrading.includes(g)
-                      ? filterGrading.filter((x) => x !== g)
-                      : [...filterGrading, g])
+                    setFilterGrading(filterGrading.includes(g.value)
+                      ? filterGrading.filter((x) => x !== g.value)
+                      : [...filterGrading, g.value])
                   }
                 />
               ))}
