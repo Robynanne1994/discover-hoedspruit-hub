@@ -149,6 +149,15 @@ describe("subIdsForKey", () => {
     expect(ids!.sort()).toEqual(["farm-animal-id", "farm-id", "pet-id"]);
   });
 
+  it("expands the cleaning and hospitality key to both member ids", () => {
+    const ids = subIdsForKey(groupKeyFor(["cleaning supplies", "hospitality supplies"]), CLEAN_SHOPPING);
+    expect(ids!.sort()).toEqual(["clean-id", "hosp-id"]);
+  });
+
+  it("resolves an old cleaning supplies id to the whole group", () => {
+    expect(subIdsForKey("clean-id", CLEAN_SHOPPING)!.sort()).toEqual(["clean-id", "hosp-id"]);
+  });
+
   it("returns null for an unknown key", () => {
     expect(subIdsForKey("nope", SUBS)).toBeNull();
   });
