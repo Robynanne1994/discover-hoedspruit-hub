@@ -224,15 +224,17 @@ export const savingLabel = (s: SpecialLike): string | null => {
   return `Save ${prefix}${diff}`;
 };
 
-// Right slot of the value bar. Urgency always wins — "3 days left" is the most
-// conversion-relevant thing on a deals card — then the business's own wording,
-// then the schedule. Empty string means there is nothing to say, so callers
-// render no row at all rather than an empty one.
+// Right slot of the value bar. The business's own wording, then the schedule,
+// then a countdown fallback. `urgent` only marks that this special is inside
+// its final week — the countdown itself has moved onto the picture's corner
+// (see SpecialCountdownTag), so the bar still shows the validity dates beside
+// it whenever there is room. Empty string means there is nothing to say, so
+// callers render no row at all rather than an empty one.
 export const specialMeta = (
   s: SpecialLike,
   { compact = false }: MetaOptions = {}
 ): { text: string; urgent: boolean } => {
-  if (isEndingSoon(s)) return { text: countdownLabel(s), urgent: true };
+  const urgent = isEndingSoon(s);
   const own = str(s.card_footer_text);
   const line = specialDateLine(s, { compact });
   // The business's own wording wins — but only while it fits. A weekly deal
@@ -240,9 +242,9 @@ export const specialMeta = (
   // ("Wednesday & Thursday Specials"), which is wider than the slot a grid card
   // has for it; the generated schedule says the same thing in the room there is.
   if (own && !(compact && line && own.length > COMPACT_META_CHARS)) {
-    return { text: own, urgent: false };
+    return { text: own, urgent };
   }
-  if (line) return { text: line, urgent: false };
-  if (s.valid_until) return { text: countdownLabel(s), urgent: false };
-  return { text: "", urgent: false };
+  if (line) return { text: line, urgent };
+  if (s.valid_until) return { text: countdownLabel(s), urgent };
+  return { text: "", urgent };
 };
