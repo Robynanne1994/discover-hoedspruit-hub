@@ -22,6 +22,7 @@ import {
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { isRecentPast, PAST_GROUP_LABEL } from "@/lib/eventPastWindow";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
+import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
@@ -623,95 +624,41 @@ const Events = () => {
       });
   }, [events]);
 
-  const availableTags = useMemo(() => {
+  // Category counts respect search and time frame, without applying category or price.
+  const categoryEvents = useMemo(() => {
     const today = startOfToday();
-    const set = new Set<string>();
-    // Only collect the primary tag/category from upcoming events.
-    sortedEvents.forEach((e) => {
-      if (!e._parsed || isBefore(e._parsed, today)) return;
-      if (e.tag && e.tag.trim()) set.add(e.tag.trim());
-    });
-    return Array.from(set).sort((a, b) => a.localeCompare(b));
-  }, [sortedEvents]);
-
-  // Counts per tag respecting all other active filters (not the tag filter itself).
-  const tagCounts = useMemo(() => {
-    const today = startOfToday();
-    const map = new Map<string, number>();
     const q = search.trim().toLowerCase();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const monthEnd = endOfMonth(today);
     const weekend = getWeekendRange(today);
     const yearEnd = new Date(today.getFullYear(), 11, 31);
 
-    sortedEvents.forEach((e) => {
-      if (q) {
-        const hit =
-          e.title.toLowerCase().includes(q) ||
-          (e.location && e.location.toLowerCase().includes(q)) ||
-          (e.tag && e.tag.toLowerCase().includes(q));
-        if (!hit) return;
-      }
+    return sortedEvents.filter((e) => {
+      if (q && !eventMatchesSearch(e, q)) return false;
       if (!e._parsed) {
-        if (activeFilter !== "all") return;
+        if (activeFilter !== "all") return false;
       } else {
         const d = e._parsed;
-        if (activeFilter === "all" && isBefore(d, today)) return;
-        else if (activeFilter === "today" && !isToday(d)) return;
-        else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return;
-        else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
-        else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
-        else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
-        else if (activeFilter === "next-year" && d.getFullYear() !== NEXT_YEAR) return;
-        else if (activeFilter === "past" && !isRecentPast(d, today)) return;
+        if (activeFilter === "all" && isBefore(d, today)) return false;
+        else if (activeFilter === "today" && !isToday(d)) return false;
+        else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return false;
+        else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return false;
+        else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return false;
+        else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return false;
+        else if (activeFilter === "next-year" && d.getFullYear() !== NEXT_YEAR) return false;
+        else if (activeFilter === "past" && !isRecentPast(d, today)) return false;
       }
-      const t = (e.tag || "").trim();
-      if (t) map.set(t, (map.get(t) || 0) + 1);
-    });
-    return map;
-  }, [sortedEvents, search, activeFilter]);
-
-
-
-
-  const filtered = useMemo(() => {
-    let list = sortedEvents;
-    if (tagFilter) {
-      const tf = tagFilter.toLowerCase();
-      list = list.filter((e) => e.tag && e.tag.toLowerCase() === tf);
-    }
-
-
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter(
-        (e) =>
-          e.title.toLowerCase().includes(q) ||
-          (e.location && e.location.toLowerCase().includes(q)) ||
-          (e.tag && e.tag.toLowerCase().includes(q))
-      );
-    }
-
-    const today = startOfToday();
-
-    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    const monthEnd = endOfMonth(today);
-    const weekend = getWeekendRange(today);
-    const yearEnd = new Date(today.getFullYear(), 11, 31);
-
-    list = list.filter((e) => {
-      if (!e._parsed) return activeFilter === "all";
-      const d = e._parsed;
-      if (activeFilter === "all") return !isBefore(d, today);
-      if (activeFilter === "today") return isToday(d);
-      if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
-      if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
-      if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
-      if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
-      if (activeFilter === "next-year") return d.getFullYear() === NEXT_YEAR;
-      if (activeFilter === "past") return isRecentPast(d, today);
       return true;
     });
+  }, [sortedEvents, search, activeFilter]);
+  const availableTags = useMemo(() => availableEventTags(categoryEvents), [categoryEvents]);
+  const tagCounts = useMemo(() => countEventTags(categoryEvents, availableTags), [categoryEvents, availableTags]);
+
+  const filtered = useMemo(() => {
+    let list = categoryEvents;
+    if (tagFilter) {
+      list = list.filter((e) => eventMatchesTag(e, tagFilter));
+    }
 
 
     // Price filter
@@ -742,7 +689,7 @@ const Events = () => {
     // Featured events always pin to the top, keeping the chosen sort within groups
     return pinFeatured(sorted);
 
-  }, [sortedEvents, search, tagFilter, activeFilter, sortBy, priceFilter]);
+  }, [categoryEvents, tagFilter, sortBy, priceFilter]);
 
   // Month groups (recurring events collected into "Every Week")
   const groupedEvents = useMemo(() => {
@@ -1147,7 +1094,7 @@ const Events = () => {
         >
           {(() => {
             const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0);
-            const totalVisible = Array.from(tagCounts.values()).reduce((a, b) => a + b, 0);
+            const totalVisible = categoryEvents.length;
             if (visibleTags.length === 0) {
               return <p style={{ ...type.meta, margin: 0 }}>No categories yet.</p>;
             }
