@@ -160,29 +160,14 @@ const SpecialValueBar = ({
             {value.text}
           </span>
         )}
-
-        {value.kind === "none" && !!meta.text && (
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: full ? 13 : 12,
-              fontWeight: meta.urgent ? 700 : 400,
-              color: meta.urgent ? BAR.urgent : BAR.muted,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              minWidth: 0,
-            }}
-          >
-            {meta.text}
-          </span>
-        )}
       </div>
 
       {/* Right — time. Red is reserved for this one meaning. Schedules are
           free text ("Wednesday & Thursday Specials"), so this side truncates
-          rather than pushing itself over the money. */}
-      {value.kind !== "none" && showMeta && (
+          rather than pushing itself over the money. A special with no money
+          and no offer also puts its countdown here — urgency always reads
+          bottom right, never drifting to the left slot. */}
+      {((value.kind !== "none" && showMeta) || (value.kind === "none" && !!meta.text)) && (
         <span
           style={{
             fontFamily: SANS,
