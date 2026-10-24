@@ -1276,7 +1276,7 @@ const CategoryPage = () => {
             onRemove: () => setFilterMinNights(filterMinNights.filter((x) => x !== n)),
           })),
           ...filterGrading.map((g) => ({
-            label: `${g}-Star Grading`,
+            label: g === 0 ? "Not Graded" : `${g}-Star Grading`,
             onRemove: () => setFilterGrading(filterGrading.filter((x) => x !== g)),
           })),
           ...filterAccomAmenities.map((k) => ({
