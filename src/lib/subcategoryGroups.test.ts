@@ -21,6 +21,12 @@ const SHOPPING = [
   { id: "gifts-id", title: "Gifts & Curios" },
 ];
 
+const CLEAN_SHOPPING = [
+  { id: "clean-id", title: "Cleaning Supplies" },
+  { id: "hosp-id", title: "Hospitality Supplies" },
+  { id: "gifts-id", title: "Gifts & Curios" },
+];
+
 describe("buildSubOptions", () => {
   it("merges nurseries and florists into one option with both ids", () => {
     const opts = buildSubOptions(SUBS);
