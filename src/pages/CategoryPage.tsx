@@ -608,8 +608,12 @@ const CategoryPage = () => {
       ]);
 
       const subCounts = new Map<string, number>();
+      const subListings = new Map<string, Set<string>>();
       (subRows || []).forEach((r: any) => {
         subCounts.set(r.subcategory_id, (subCounts.get(r.subcategory_id) || 0) + 1);
+        let ids = subListings.get(r.subcategory_id);
+        if (!ids) { ids = new Set<string>(); subListings.set(r.subcategory_id, ids); }
+        ids.add(r.listing_id);
       });
 
       const cuisine = new Map<string, number>();
