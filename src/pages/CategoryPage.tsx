@@ -1368,29 +1368,29 @@ const CategoryPage = () => {
 
         </RefineSection>
 
-        {subcategories && subcategories.length > 0 && (() => {
-          const visibleSubs = subcategories.filter(
-            (sub) => !facetCounts || (facetCounts.subCounts.get(sub.id) || 0) > 0,
+        {subOptions.length > 0 && (() => {
+          const visibleOpts = subOptions.filter(
+            (opt) => !facetCounts || subCountFor(opt) > 0,
           );
-          if (visibleSubs.length === 0) return null;
+          if (visibleOpts.length === 0) return null;
           return (
             <RefineSection
               label="Category"
               summary={
                 activeSubId
-                  ? subcategories.find((s) => s.id === activeSubId)?.title
+                  ? activeSubLabel || undefined
                   : undefined
               }
               open={openSection === "subcategory"}
               onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
             >
               <RefineRectOption label={withCount("All", facetCounts?.total)} active={!activeSubId} onClick={() => handleSubFilter(null)} />
-              {visibleSubs.map((sub) => (
+              {visibleOpts.map((opt) => (
                 <RefineRectOption
-                  key={sub.id}
-                  label={withCount(sub.title, facetCounts?.subCounts.get(sub.id))}
-                  active={activeSubId === sub.id}
-                  onClick={() => handleSubFilter(sub.id)}
+                  key={opt.key}
+                  label={withCount(opt.label, subCountFor(opt))}
+                  active={activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId))}
+                  onClick={() => handleSubFilter(opt.key)}
                 />
               ))}
             </RefineSection>
