@@ -44,6 +44,13 @@ const SpecialValueBar = ({
   // part in this ranking — it has its own corner on the picture.
   const showMeta = !!meta.text && !meta.urgent && (full || value.kind === "price");
 
+  // Price, "was" price and a validity date is one item too many on a narrow
+  // card. When the validity line is coming through on the right, the
+  // crossed-out "was" price stands down and the card says just "now" and
+  // "until when". The wide featured card carries the whole ledger, so it keeps
+  // the strike whatever the date line says.
+  const showOriginal = !!value.original && (full || !showMeta);
+
   return (
     <div
       style={{
@@ -98,7 +105,7 @@ const SpecialValueBar = ({
             >
               {value.price}
             </span>
-            {value.original && (
+            {showOriginal && (
               <span
                 style={{
                   fontFamily: SANS,
