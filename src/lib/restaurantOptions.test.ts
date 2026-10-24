@@ -46,10 +46,15 @@ describe("Retired cuisine values are hidden", () => {
       expect(isRestaurantOptionAllowed("cuisine", ` ${value} `)).toBe(false);
     }
   });
+  it("hides South African as a cuisine option", () => {
+    expect(isRestaurantOptionAllowed("cuisine", "South African")).toBe(false);
+    expect(isRestaurantOptionAllowed("cuisine", " south african ")).toBe(false);
+  });
   it("still allows real cuisines and other fields", () => {
     expect(isRestaurantOptionAllowed("cuisine", "Italian")).toBe(true);
     expect(isRestaurantOptionAllowed("cuisine", "Baked Goods")).toBe(true);
     expect(isRestaurantOptionAllowed("meal", "Deli")).toBe(false); // retired as a meal
     expect(isRestaurantOptionAllowed("foods", "Snacks")).toBe(true);
+    expect(isRestaurantOptionAllowed("foods", "South African")).toBe(true);
   });
 });
