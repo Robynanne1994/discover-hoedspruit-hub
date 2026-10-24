@@ -193,11 +193,19 @@ export const specialDateLine = (s: SpecialLike, { compact = false }: MetaOptions
     return days.length === 7 ? "Every day" : `Every ${compactDays(days)}`;
   }
   if (validFrom && validUntil) {
-    const sameMonth =
-      validFrom.getMonth() === validUntil.getMonth() && validFrom.getFullYear() === validUntil.getFullYear();
+    // "1-16 Dec" inside one month, "1 Nov - 16 Dec" across months, and
+    // "16 Dec '25 - 15 Dec '26" when the range spans two years — the years
+    // shortened to their last two digits on both halves.
+    if (validFrom.getFullYear() !== validUntil.getFullYear()) {
+      return `${format(validFrom, "d MMM")} '${format(validFrom, "yy")} - ${format(
+        validUntil,
+        "d MMM"
+      )} '${format(validUntil, "yy")}`;
+    }
+    const sameMonth = validFrom.getMonth() === validUntil.getMonth();
     return sameMonth
-      ? `${format(validFrom, "d")} to ${format(validUntil, "d MMM")}`
-      : `${format(validFrom, "d MMM")} to ${format(validUntil, "d MMM")}`;
+      ? `${format(validFrom, "d")}-${format(validUntil, "d MMM")}`
+      : `${format(validFrom, "d MMM")} - ${format(validUntil, "d MMM")}`;
   }
   if (validUntil) return `Until ${format(validUntil, "d MMM")}`;
   return null;
