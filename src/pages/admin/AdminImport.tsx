@@ -18,6 +18,7 @@ import {
   type FieldType,
 } from "@/lib/categoryFields";
 import { buildReferenceRow } from "@/lib/listingFieldOptions";
+import { isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 import { isGoogleOwned, isGoogleSyncedField } from "@/lib/googleFieldOwnership";
 import {
   GOOGLE_PLACE_ID_FIELD, normalizeGooglePlaceId, placeIdImportUpdate, placeIdChangeKind,
