@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { describe, expect, it } from "vitest";
 import { savingLabel, specialDateLine, specialMeta, specialValue } from "@/lib/specialValue";
 
@@ -119,9 +120,18 @@ describe("specialMeta", () => {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
 
-  it("lets urgency override the business's own footer wording", () => {
+  it("keeps the footer wording while flagging a final-week deal as urgent", () => {
+    // The countdown itself lives on the picture's corner; the bar keeps the
+    // business's own validity wording beside it.
     expect(specialMeta({ card_footer_text: "Every Sunday", valid_until: inDays(2) })).toEqual({
-      text: "2 days left",
+      text: "Every Sunday",
+      urgent: true,
+    });
+  });
+
+  it("keeps the validity dates in the bar when the countdown is on the image", () => {
+    expect(specialMeta({ valid_until: inDays(3) })).toEqual({
+      text: "Until " + format(new Date(inDays(3)), "d MMM"),
       urgent: true,
     });
   });

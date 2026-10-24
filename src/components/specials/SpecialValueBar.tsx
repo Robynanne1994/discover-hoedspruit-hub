@@ -39,10 +39,10 @@ const SpecialValueBar = ({
   const lineBox = full ? 20 : 17;
 
   // A 170px card can't hold an offer sentence and a schedule at once, so the
-  // narrow bar ranks them: the offer, then the schedule. A price is short
-  // enough to sit next to a schedule; a sentence isn't. The countdown takes no
-  // part in this ranking — it has its own corner on the picture.
-  const showMeta = !!meta.text && !meta.urgent && (full || value.kind === "price");
+  // narrow bar ranks them: the offer, then the schedule. The countdown takes no
+  // part in this ranking — it has its own corner on the picture, so the
+  // validity dates still show here beside it whenever there is room.
+  const showMeta = !!meta.text && (full || value.kind === "price");
 
   // Price, "was" price and a validity date is one item too many on a narrow
   // card. When the validity line is coming through on the right, the
@@ -170,10 +170,10 @@ const SpecialValueBar = ({
           </span>
         )}
       {/* The left-slot fallback: calm date text ("Ends 12 Aug") on a money-less
-          special still reads from the left as before. The urgent countdown no
-          longer appears in the bar at all — it is the tab on the picture, see
+          special still reads from the left as before. The urgent countdown never
+          appears in the bar — it is the tab on the picture, see
           SpecialCountdownTag. */}
-      {value.kind === "none" && !!meta.text && !meta.urgent && (
+      {value.kind === "none" && !!meta.text && (
           <span
             style={{
               fontFamily: SANS,
