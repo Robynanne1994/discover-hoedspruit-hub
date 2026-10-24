@@ -766,6 +766,14 @@ const AdminImport = () => {
           }
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
           if (parsed.skip === true) continue;
+          // Coffee is a drink, not a cuisine — never let a CSV cell put it back
+          // under Cuisine (Robyn). Other values pass through untouched.
+          if (fieldName === "cuisine" && Array.isArray(parsed.value)) {
+            payloadRecord[fieldName] = (parsed.value as unknown[]).filter(
+              (v) => !(typeof v === "string" && v.trim().toLowerCase() === "coffee"),
+            );
+            continue;
+          }
           if (parsed.skip === false) {
             if (fieldName === "additional_hours" && parsed.value !== null) {
               // Extra sets of hours are the one column typed as raw JSON by
