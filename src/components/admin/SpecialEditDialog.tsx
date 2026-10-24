@@ -271,7 +271,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
             </div>
           </div>
-          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
+          <div><Label>Badge Override <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
 
           {/* Structured deal fields — the badge is generated from these when no override is set */}
           <div className="grid grid-cols-2 gap-3">
