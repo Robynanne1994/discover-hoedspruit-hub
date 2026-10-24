@@ -24,6 +24,9 @@ export const RETIRED_CUISINE = new Set(
     "south african",
     // "Breakfast" is a meal, not a cuisine — it stays available under Meal.
     "breakfast",
+    // "Bakery" / "Artisan Bakery" are a business or product type, not a cuisine.
+    "bakery",
+    "artisan bakery",
   ].map((v) => v.toLowerCase()),
 );
 
