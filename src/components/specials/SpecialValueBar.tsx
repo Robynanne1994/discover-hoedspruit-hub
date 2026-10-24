@@ -161,6 +161,25 @@ const SpecialValueBar = ({
             {value.text}
           </span>
         )}
+      {/* The old left-slot fallback: calm date text ("Ends 12 Aug") on a
+          money-less special still reads from the left as before. Only the
+          urgent countdown gives way to the right. */}
+      {value.kind === "none" && !!meta.text && !meta.urgent && (
+          <span
+            style={{
+              fontFamily: SANS,
+              fontSize: full ? 13 : 12,
+              fontWeight: 400,
+              color: BAR.muted,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              minWidth: 0,
+            }}
+          >
+            {meta.text}
+          </span>
+        )}
       </div>
 
       {/* Right — time. Red is reserved for this one meaning. Schedules are
