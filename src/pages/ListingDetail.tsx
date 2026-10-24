@@ -39,6 +39,7 @@ import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { getCustomIcon } from "@/lib/customIcons";
 import { renderListingRichText } from "@/lib/listingRichText";
+import { isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -666,7 +667,10 @@ const ListingDetail = () => {
     if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconComp: Sofa, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
     if (l.meal?.length) {
       const mealOrder = ["breakfast", "lunch", "dinner"];
-      const sortedMeals = [...l.meal].sort((a: string, b: string) => {
+      // Meal is fixed to MEAL_OPTIONS — old stored values like Pub Grub or
+      // Snacks stay hidden on the front end even if still on the record.
+      const visibleMeals = (l.meal as string[]).filter((m: string) => isRestaurantOptionAllowed("meal", m));
+      const sortedMeals = [...visibleMeals].sort((a: string, b: string) => {
         const aLower = a.toLowerCase();
         const bLower = b.toLowerCase();
         const aIndex = mealOrder.indexOf(aLower);
