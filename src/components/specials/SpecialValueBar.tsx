@@ -62,10 +62,11 @@ const SpecialValueBar = ({
         flexShrink: 0,
       }}
     >
-      {/* Left — the money. Falls back to the validity line so a special with no
-          price and no savings keeps the same card height as its neighbours.
-          A basis of `auto` matters: with a basis of 0 the money gets no width of
-          its own and a long schedule on the right prints straight over it. */}
+      {/* Left — the money. An empty left slot keeps the same card height as
+          its neighbours via the fixed line box; the validity line now lives on
+          the right. A basis of `auto` matters: with a basis of 0 the money
+          gets no width of its own and a long schedule on the right prints
+          straight over it. */}
       <div
         style={{
           display: "flex",
