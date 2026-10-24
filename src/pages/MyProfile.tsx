@@ -898,7 +898,7 @@ const MyProfile = () => {
                   lineHeight: 1.2,
                 }}
               >
-                {o.label}
+                {o.label} ({o.count})
               </button>
             );
           })}
