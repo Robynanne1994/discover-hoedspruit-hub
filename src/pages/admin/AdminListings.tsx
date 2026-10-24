@@ -29,6 +29,7 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
+import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 
 import { sanitizeContactArray } from "@/lib/contacts";
 import { parseAdditionalHours } from "@/lib/openHours";
@@ -72,10 +73,9 @@ const cleanHoursSets = (sets: HoursSetForm[]): HoursSetForm[] =>
     .filter((set) => Object.keys(set.hours).length > 0)
     .map((set, i) => ({ label: set.label || `Hours ${i + 2}`, hours: set.hours }));
 
-const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite", "Instagrammable", "Quiet Space"];
 const CUISINE_OPTIONS = ["Italian", "Indian", "Mexican", "Asian", "Local", "Vegan", "Vegetarian", "Healthy Eats"];
-const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Desserts", "Fast Food", "Gelato", "Wraps", "Salads", "Chicken", "Sandwiches"];
+const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Fast Food", "Gelato", "Wraps", "Salads", "Chicken", "Sandwiches"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Takeaway", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
@@ -1728,7 +1728,7 @@ const AdminListings = () => {
                     ].map(({ label, options, key }) => {
                       const CUISINE_EXCLUDE = new Set(["coffee", "light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery", "gelato", "wraps", "salads", "chicken", "sandwiches", "sandwhiches"]);
                       const extras = (distinctChipValues?.[key] ?? []).filter((v) => !options.includes(v));
-                      let merged = [...options, ...extras];
+                      let merged = [...options, ...extras].filter((v) => isRestaurantOptionAllowed(key, v));
                       if (key === "cuisine") {
                         merged = merged.filter((v) => !CUISINE_EXCLUDE.has(v.trim().toLowerCase()));
                       }
@@ -1764,6 +1764,10 @@ const AdminListings = () => {
                               onClick={() => {
                                 const val = (customChipOption[key] ?? "").trim();
                                 if (!val) return;
+                                if (!isRestaurantOptionAllowed(key, val)) {
+                                  toast.error("Desserts belongs in the Meal field.");
+                                  return;
+                                }
                                 if (!form[key].includes(val)) {
                                   setForm({ ...form, [key]: [...form[key], val] });
                                 }

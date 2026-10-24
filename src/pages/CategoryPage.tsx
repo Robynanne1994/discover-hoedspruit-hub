@@ -26,12 +26,12 @@ import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
 import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
+import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 
 
 // Coffee is deliberately absent — it is a drink, not a cuisine (Robyn).
-const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
+const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Baked Goods", "Healthy Eats", "Pasta"];
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite"];
-const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Snacks", "Light Meals"];
 
 // Accommodation amenities: each is a boolean column on `listings`. Only the
 // ones actually in use on a listing in the category are offered as filters.
@@ -727,6 +727,7 @@ const CategoryPage = () => {
       (l[field] || []).forEach((raw: string) => {
         const val = (raw || "").trim();
         if (!val) return;
+        if (!isRestaurantOptionAllowed(field, val)) return;
         const key = val.toLowerCase();
         if (!labels.has(key)) labels.set(key, formatServiceLabel(val));
         counts.set(key, (counts.get(key) || 0) + 1);

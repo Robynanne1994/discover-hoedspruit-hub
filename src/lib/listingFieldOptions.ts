@@ -6,12 +6,12 @@
 // cell and is skipped on import.
 
 import { LISTING_FIELD_SPECS, type FieldType } from "@/lib/categoryFields";
+import { MEAL_OPTIONS } from "@/lib/restaurantOptions";
 
 // Option lists — kept in sync with the choices rendered in the listings editor.
-const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite", "Instagrammable", "Quiet Space"];
 const CUISINE_OPTIONS = ["Italian", "Indian", "Mexican", "Asian", "Local", "Vegan", "Vegetarian", "Healthy Eats"];
-const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Desserts", "Fast Food", "Gelato", "Wraps", "Salads", "Chicken", "Sandwiches"];
+const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Fast Food", "Gelato", "Wraps", "Salads", "Chicken", "Sandwiches"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Takeaway", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
