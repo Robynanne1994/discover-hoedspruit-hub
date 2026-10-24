@@ -25,6 +25,11 @@ export const MERGED_SUBCATEGORY_GROUPS: SubcategoryGroup[] = [
     titles: ["pet supplies", "farm supplies", "farm / animal supplies"],
     categoryTitles: ["shopping"],
   },
+  {
+    label: "Cleaning & Hospitality Supplies",
+    titles: ["cleaning supplies", "hospitality supplies"],
+    categoryTitles: ["shopping"],
+  },
 ];
 
 export const MERGED_KEY_PREFIX = "merged:";
