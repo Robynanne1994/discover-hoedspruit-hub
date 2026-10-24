@@ -421,12 +421,12 @@ const MyProfile = () => {
   // offer: a listing's category and a resource's platform. Deals and events are
   // filtered by time instead, which is the axis that actually matters there.
   const categories = useMemo(() => {
-    if (tab !== "listings" && tab !== "resources") return [];
+    if (tab !== "listings" && tab !== "resources") return [] as { label: string; count: number }[];
     const counts = new Map<string, number>();
     tabItems.forEach((it) => it.tags.forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1)));
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .map(([t]) => t);
+      .map(([label, count]) => ({ label, count }));
   }, [tabItems, tab]);
 
   // The sub-filter row for the current tab. Time state where the content
