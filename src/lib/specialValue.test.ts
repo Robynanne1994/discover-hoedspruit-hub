@@ -93,8 +93,18 @@ describe("specialDateLine", () => {
   });
 
   it("falls back to the dates when there is no weekly schedule", () => {
-    expect(specialDateLine({ valid_from: "2026-08-01", valid_until: "2026-08-12" })).toBe("1 to 12 Aug");
+    expect(specialDateLine({ valid_from: "2026-08-01", valid_until: "2026-08-12" })).toBe("1-12 Aug");
     expect(specialDateLine({})).toBeNull();
+  });
+
+  it("keeps a space around the dash when the range crosses months", () => {
+    expect(specialDateLine({ valid_from: "2026-11-01", valid_until: "2026-12-16" })).toBe("1 Nov - 16 Dec");
+  });
+
+  it("shortens the years when the range spans two calendar years", () => {
+    expect(specialDateLine({ valid_from: "2025-12-16", valid_until: "2026-12-15" })).toBe(
+      "16 Dec '25 - 15 Dec '26"
+    );
   });
 });
 
