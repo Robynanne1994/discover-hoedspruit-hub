@@ -13,6 +13,7 @@ import StickyHeader from "@/components/StickyHeader";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { isRestaurantCategory, isAccommodationCategory, isShoppingCategory } from "@/lib/categoryFields";
+import { buildSubOptions, subIdsForKey, type SubOption } from "@/lib/subcategoryGroups";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
@@ -351,8 +352,22 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
+  // The subcategory ids the active `sub` URL param stands for. A merged group
+  // key expands to every member id; a plain id stays as-is. `undefined` means a
+  // merged key that cannot be resolved yet (subcategories still loading);
+  // `null` means no sub filter at all.
+  const activeSubIds = useMemo<string[] | null | undefined>(() => {
+    if (!activeSubId) return null;
+    if (activeSubId.startsWith("merged:")) {
+      if (!subcategories) return undefined;
+      const ids = subIdsForKey(activeSubId, subcategories);
+      return ids && ids.length > 0 ? ids : null;
+    }
+    return [activeSubId];
+  }, [activeSubId, subcategories]);
+
   const { data: listings, isLoading, isError: listingsError, refetch: refetchListings, isFetching: listingsFetching } = useQuery({
-    queryKey: ["listings-by-category", id, activeSubId],
+    queryKey: ["listings-by-category", id, activeSubIds ? activeSubIds.join(",") : ""],
     queryFn: async () => {
       const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
         supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
@@ -365,12 +380,14 @@ const CategoryPage = () => {
       (legacyData || []).forEach((r: any) => idSet.add(r.id as string));
       let listingIds = Array.from(idSet);
       if (listingIds.length === 0) return [];
-      if (activeSubId) {
-        // Include listings assigned directly to this subcategory
-        // OR to any sub-subcategory under it (hierarchical refinement)
+      if (activeSubIds === undefined) return []; // merged key not resolvable yet
+      if (activeSubIds) {
+        // Include listings assigned directly to these subcategories (one, or
+        // every member of a merged group) OR to any sub-subcategory under them
+        // (hierarchical refinement)
         const [{ data: subJunction, error: sErr }, { data: ssList }] = await Promise.all([
-          supabase.from("listing_subcategories").select("listing_id").eq("subcategory_id", activeSubId),
-          supabase.from("sub_subcategories").select("id").eq("subcategory_id", activeSubId),
+          supabase.from("listing_subcategories").select("listing_id").in("subcategory_id", activeSubIds),
+          supabase.from("sub_subcategories").select("id").in("subcategory_id", activeSubIds),
         ]);
         if (sErr) throw sErr;
         const matchingListingIds = new Set<string>((subJunction || []).map((r: any) => r.listing_id as string));
@@ -496,6 +513,32 @@ const CategoryPage = () => {
     else setSearchParams({});
   };
 
+  // Drawer options for the Category section: merged groups collapsed into one
+  // option each (e.g. "Nurseries & Florists"), the rest standalone.
+  const subOptions = useMemo<SubOption[]>(
+    () => (subcategories ? buildSubOptions(subcategories) : []),
+    [subcategories],
+  );
+  // Unique listings behind a sub option. A merged group counts listings once
+  // even when one is tagged with two of its subcategories, so the pill count
+  // matches the result list.
+  const subCountFor = (opt: SubOption): number => {
+    if (!facetCounts) return 0;
+    if (opt.subIds.length === 1) return facetCounts.subCounts.get(opt.subIds[0]) || 0;
+    const unique = new Set<string>();
+    for (const sid of opt.subIds) {
+      const ids = facetCounts.subListings.get(sid);
+      if (ids) ids.forEach((lid: string) => unique.add(lid));
+    }
+    return unique.size;
+  };
+  // Label the active filter shows in the drawer summary and the chip row.
+  const activeSubLabel = useMemo(() => {
+    if (!activeSubId) return null;
+    return subOptions.find((o) => o.key === activeSubId || o.subIds.includes(activeSubId))?.label || null;
+  }, [subOptions, activeSubId]);
+
+
   // Aggregate internal reviews per listing — only used for "Top Rated" sort.
   const listingIds = useMemo(() => (listings || []).map((l: any) => l.id), [listings]);
   const { data: reviewAggregates } = useQuery({
@@ -537,6 +580,7 @@ const CategoryPage = () => {
       const empty = {
         total: 0,
         subCounts: new Map<string, number>(),
+        subListings: new Map<string, Set<string>>(),
         cuisine: new Map<string, number>(),
         vibe: new Map<string, number>(),
         meal: new Map<string, number>(),
@@ -564,8 +608,12 @@ const CategoryPage = () => {
       ]);
 
       const subCounts = new Map<string, number>();
+      const subListings = new Map<string, Set<string>>();
       (subRows || []).forEach((r: any) => {
         subCounts.set(r.subcategory_id, (subCounts.get(r.subcategory_id) || 0) + 1);
+        let ids = subListings.get(r.subcategory_id);
+        if (!ids) { ids = new Set<string>(); subListings.set(r.subcategory_id, ids); }
+        ids.add(r.listing_id);
       });
 
       const cuisine = new Map<string, number>();
@@ -589,7 +637,7 @@ const CategoryPage = () => {
         ? allIds.filter((lid) => savedIds.has(lid)).length
         : 0;
 
-      return { total: allIds.length, subCounts, cuisine, vibe, meal, seating, openNow, saved: savedCount };
+      return { total: allIds.length, subCounts, subListings, cuisine, vibe, meal, seating, openNow, saved: savedCount };
     },
   });
 
@@ -1233,9 +1281,9 @@ const CategoryPage = () => {
         resultsCount={filteredListings.length}
         resultsLabel="listings"
         activeChips={[
-          ...(activeSubId && subcategories
+          ...(activeSubId
             ? [{
-                label: subcategories.find((s) => s.id === activeSubId)?.title || "Category",
+                label: activeSubLabel || "Category",
                 onRemove: () => handleSubFilter(null),
               }]
             : []),
@@ -1336,29 +1384,29 @@ const CategoryPage = () => {
 
         </RefineSection>
 
-        {subcategories && subcategories.length > 0 && (() => {
-          const visibleSubs = subcategories.filter(
-            (sub) => !facetCounts || (facetCounts.subCounts.get(sub.id) || 0) > 0,
+        {subOptions.length > 0 && (() => {
+          const visibleOpts = subOptions.filter(
+            (opt) => !facetCounts || subCountFor(opt) > 0,
           );
-          if (visibleSubs.length === 0) return null;
+          if (visibleOpts.length === 0) return null;
           return (
             <RefineSection
               label="Category"
               summary={
                 activeSubId
-                  ? subcategories.find((s) => s.id === activeSubId)?.title
+                  ? activeSubLabel || undefined
                   : undefined
               }
               open={openSection === "subcategory"}
               onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
             >
               <RefineRectOption label={withCount("All", facetCounts?.total)} active={!activeSubId} onClick={() => handleSubFilter(null)} />
-              {visibleSubs.map((sub) => (
+              {visibleOpts.map((opt) => (
                 <RefineRectOption
-                  key={sub.id}
-                  label={withCount(sub.title, facetCounts?.subCounts.get(sub.id))}
-                  active={activeSubId === sub.id}
-                  onClick={() => handleSubFilter(sub.id)}
+                  key={opt.key}
+                  label={withCount(opt.label, subCountFor(opt))}
+                  active={activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId))}
+                  onClick={() => handleSubFilter(opt.key)}
                 />
               ))}
             </RefineSection>
