@@ -1265,9 +1265,9 @@ const CategoryPage = () => {
         resultsCount={filteredListings.length}
         resultsLabel="listings"
         activeChips={[
-          ...(activeSubId && subcategories
+          ...(activeSubId
             ? [{
-                label: subcategories.find((s) => s.id === activeSubId)?.title || "Category",
+                label: activeSubLabel || "Category",
                 onRemove: () => handleSubFilter(null),
               }]
             : []),
