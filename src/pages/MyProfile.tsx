@@ -452,13 +452,15 @@ const MyProfile = () => {
           { id: "expired", label: "Expired", count: overCount },
         ],
       };
-    // A lone category chip filters nothing — every item on the tab carries it.
-    if (categories.length > 1)
+    // Resources always surface their platform chips so you can see at a glance
+    // which platforms you've saved from; listings skip a lone chip since it
+    // would filter nothing. An "All" chip only earns its place past one.
+    if (categories.length > (tab === "resources" ? 0 : 1))
       return {
         value: category ?? "all",
         onChange: (v: string) => setCategory(v === "all" ? null : v),
         options: [
-          { id: "all", label: "All", count: tabItems.length },
+          ...(categories.length > 1 ? [{ id: "all", label: "All", count: tabItems.length }] : []),
           ...categories.map((c) => ({ id: c.label, label: c.label, count: c.count })),
         ],
       };
