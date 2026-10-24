@@ -91,6 +91,11 @@ export const getSpecialBadgeExcluding = (s: SpecialBadgeLike, exclude?: string |
   const skip = str(exclude);
   if (!skip) return candidates[0];
   const target = norm(skip);
+  // A hand-set badge override always wins, even when it echoes the value bar —
+  // the editor wrote it deliberately. Only auto-generated candidates step
+  // aside when they would repeat it.
+  const override = str(s.badge_override);
+  if (override) return candidates.find((c) => norm(c) === norm(override)) ?? candidates[0];
   return candidates.find((c) => norm(c) !== target) ?? candidates[candidates.length - 1];
 };
 

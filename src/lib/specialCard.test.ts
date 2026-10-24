@@ -89,8 +89,12 @@ describe("getSpecialBadgeExcluding", () => {
     expect(getSpecialBadgeExcluding(s, null)).toBe(getSpecialBadge(s));
   });
 
-  it("ignores casing and punctuation when comparing", () => {
-    expect(getSpecialBadgeExcluding({ badge_override: "20% Off" }, "20% off")).toBe("Special");
+  it("always honours a hand-set badge override, even when it repeats the value bar", () => {
+    expect(getSpecialBadgeExcluding({ badge_override: "20% Off" }, "20% off")).toBe("20% Off");
+  });
+
+  it("steps auto-generated labels aside when they repeat the value bar", () => {
+    expect(getSpecialBadgeExcluding({ discount_type: "percent_off", discount_value: 20 }, "20% off")).toBe("Special");
   });
 
   it("keeps the generic label rather than returning nothing", () => {
