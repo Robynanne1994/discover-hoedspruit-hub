@@ -67,7 +67,7 @@ const categoryLineStyle: React.CSSProperties = {
 const PLATFORM_LABEL: Record<string, string> = {
   Facebook: "Facebook Group",
   WhatsApp: "WhatsApp Group",
-  Instagram: "Instagram",
+  Instagram: "Instagram Account",
 };
 const WhatsAppIcon = ({ size = 24, color = "currentColor", style }: { size?: number; color?: string; style?: React.CSSProperties }) => (
   <svg viewBox="0 0 24 24" width={size} height={size} fill={color} style={style} aria-hidden="true">
