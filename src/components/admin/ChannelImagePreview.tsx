@@ -42,7 +42,7 @@ interface ChannelImagePreviewProps {
 
 const PLATFORM_LABEL: Record<string, string> = {
   Facebook: "Facebook Group",
-  WhatsApp: "WhatsApp Channel",
+  WhatsApp: "WhatsApp Group",
   Instagram: "Instagram",
 };
 
