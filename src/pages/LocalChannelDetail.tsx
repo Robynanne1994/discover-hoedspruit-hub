@@ -66,7 +66,7 @@ const categoryLineStyle: React.CSSProperties = {
 
 const PLATFORM_LABEL: Record<string, string> = {
   Facebook: "Facebook Group",
-  WhatsApp: "WhatsApp Channel",
+  WhatsApp: "WhatsApp Group",
   Instagram: "Instagram",
 };
 const WhatsAppIcon = ({ size = 24, color = "currentColor", style }: { size?: number; color?: string; style?: React.CSSProperties }) => (

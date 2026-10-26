@@ -65,7 +65,7 @@ const gradientFor = (id: string) => {
 
 const PLATFORM_LABEL: Record<string, string> = {
   Facebook: "Facebook Group",
-  WhatsApp: "WhatsApp Channel",
+  WhatsApp: "WhatsApp Group",
   Instagram: "Instagram",
 };
 const platformLabel = (p: string) => PLATFORM_LABEL[p] || p;
