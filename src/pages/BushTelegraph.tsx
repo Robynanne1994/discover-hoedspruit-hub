@@ -38,12 +38,12 @@ interface Resource {
   url: string;
   resource_type: string;
   is_featured: boolean;
+  sort_order: number;
   image_url: string | null;
   tag_1: string | null;
   tag_2: string | null;
 }
 
-const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
 const CHIPS: string[] = ["All", "Facebook", "WhatsApp", "Instagram"];
 
 // Channel suggestions are handled on the website, not in the app.
@@ -225,6 +225,7 @@ const BushTelegraph = () => {
         url: r.url ?? "",
         resource_type: r.resource_type ?? "link",
         is_featured: !!r.is_featured,
+        sort_order: typeof r.sort_order === "number" ? r.sort_order : 0,
         image_url: r.image_url ?? null,
         tag_1: r.tag_1 ?? null,
         tag_2: r.tag_2 ?? null,
@@ -233,15 +234,19 @@ const BushTelegraph = () => {
   });
 
   const sections = useMemo(() => {
+    // "All" mixes every platform into one run, in the admin's own sort order,
+    // with no platform headings above it.
     if (active === "All") {
-      return PLATFORM_ORDER.map((p) => ({
-        platform: p,
-        items: resources.filter((r) => r.platform === p),
-      }));
+      return [{
+        platform: "All",
+        items: [...resources].sort((a, b) => a.sort_order - b.sort_order),
+        showHeader: false,
+      }];
     }
     return [{
       platform: active as Platform,
       items: resources.filter((r) => r.platform === active),
+      showHeader: true,
     }];
   }, [active, resources]);
 
@@ -348,10 +353,12 @@ const BushTelegraph = () => {
           if (section.items.length === 0) return null;
           return (
             <div key={section.platform} style={{ marginTop: idx === 0 ? 0 : 28 }}>
-              <SectionHeader
-                title={section.platform}
-                count={section.items.length}
-              />
+              {section.showHeader && (
+                <SectionHeader
+                  title={section.platform}
+                  count={section.items.length}
+                />
+              )}
               <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "0 20px" }}>
                 {section.items.map((r) => (
                   <ChannelCard
