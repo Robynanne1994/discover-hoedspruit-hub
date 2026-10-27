@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { compactDays, parseDays, recurringDays } from "./specialDays";
+import { specialToday } from "./specialVisibility";
 
 // Deals ending within this many days are "ending soon" (and get the urgent treatment).
 export const ENDING_SOON_DAYS = 7;
