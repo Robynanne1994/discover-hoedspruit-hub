@@ -3,4 +3,4 @@
 - [x] Show labelled outbound links immediately below Deal on special detail pages.
 - [x] Verify field persistence, CSV round trip and link display.
 - [x] Include future-starting inactive specials in All and Upcoming filters.
-- [ ] Verify upcoming special visibility, counts and filtering.
+- [x] Verify upcoming special visibility, counts and filtering.
