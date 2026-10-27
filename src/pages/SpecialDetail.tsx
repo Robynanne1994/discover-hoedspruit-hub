@@ -405,6 +405,17 @@ const SpecialDetail = () => {
     });
   }
 
+  // The social link is always the final row in the details box, after every
+  // other detail including validity.
+  const socialLink = specialSocialLink(special);
+  if (socialLink) detailRows.push({
+    icon: socialLink.platform === "facebook" ? FacebookIcon
+      : socialLink.platform === "instagram" ? InstagramIcon
+      : ExternalLink,
+    label: "Social Media Link", value: socialLink.label, href: socialLink.href,
+  });
+
+
   // ----- Tab content -----
   const renderAbout = () => {
     const desc = (special.description || "").trim();
