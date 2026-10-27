@@ -510,13 +510,6 @@ const Specials = () => {
                     setFilterType([]);
                   }}
                 />
-                {upcomingCount > 0 && (
-                  <RefineRectOption
-                    label={`Upcoming (${upcomingCount})`}
-                    active={activeTab === UPCOMING_TAB}
-                    onClick={() => { setActiveTab(UPCOMING_TAB); setFilterType([]); }}
-                  />
-                )}
                 {endingSoonCount > 0 && (
                   <RefineRectOption
                     label={`Ending Soon (${endingSoonCount})`}
@@ -525,6 +518,13 @@ const Specials = () => {
                       setActiveTab(ENDING_SOON_TAB);
                       setFilterType([]);
                     }}
+                  />
+                )}
+                {upcomingCount > 0 && (
+                  <RefineRectOption
+                    label={`Upcoming (${upcomingCount})`}
+                    active={activeTab === UPCOMING_TAB}
+                    onClick={() => { setActiveTab(UPCOMING_TAB); setFilterType([]); }}
                   />
                 )}
                 {visible.map((t) => (
