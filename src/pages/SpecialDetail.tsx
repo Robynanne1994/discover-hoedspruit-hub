@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { specialImage } from "@/lib/specialCard";
 import { specialSocialLink } from "@/lib/specialSocialLink";
+import InstagramIcon from "@/components/ui/InstagramIcon";
+import FacebookIcon from "@/components/ui/FacebookIcon";
 import { format } from "date-fns";
 import {
   Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
@@ -375,7 +377,10 @@ const SpecialDetail = () => {
   detailRows.push({ icon: Tag, label: "Deal", value: getSpecialBadge(sp) });
   const socialLink = specialSocialLink(special);
   if (socialLink) detailRows.push({
-    icon: ExternalLink, label: "Social Media Link", value: socialLink.label, href: socialLink.href,
+    icon: socialLink.platform === "facebook" ? FacebookIcon
+      : socialLink.platform === "instagram" ? InstagramIcon
+      : ExternalLink,
+    label: "Social Media Link", value: socialLink.label, href: socialLink.href,
   });
   const redemptionNote = (sp.redemption_note || "").trim() || null;
   if (redemptionNote) detailRows.push({ icon: Tag, label: "How To Redeem", value: redemptionNote });
