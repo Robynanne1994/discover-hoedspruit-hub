@@ -43,14 +43,14 @@ describe("buildEventGroups", () => {
     expect(groups[0].events.map((e) => e.id)).toEqual(["a", "b", "c"]);
   });
 
-  it("places years beyond next after Recurring with a month and year heading", () => {
+  it("places years beyond next after Recurring, also under the year alone", () => {
     const groups = buildEventGroups(
       [dated("far", new Date(Y + 2, 11, 5)), recurringEvent],
       "all"
     );
 
     expect(groups.map((g) => g.key)).toEqual(["recurring", `y-${Y + 2}`]);
-    expect(groups[1].label).toBe(`DECEMBER ${Y + 2}`);
+    expect(groups[1].label).toBe(String(Y + 2));
   });
 
   it("groups the current year by month and keeps undated events last", () => {
