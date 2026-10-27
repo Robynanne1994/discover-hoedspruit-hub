@@ -2,3 +2,5 @@
 - [x] Include both fields in the editors and CSV imports, exports and template.
 - [x] Show labelled outbound links immediately below Deal on special detail pages.
 - [x] Verify field persistence, CSV round trip and link display.
+- [x] Include future-starting inactive specials in All and Upcoming filters.
+- [x] Verify upcoming special visibility, counts and filtering.
