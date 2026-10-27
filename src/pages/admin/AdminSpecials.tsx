@@ -51,6 +51,8 @@ interface Special {
   booking_link: string | null;
   booking_link_type?: string | null;
   booking_link_label: string | null;
+  social_media_link: string | null;
+  social_media_label: string | null;
   promo_code: string | null;
   contact_phone: string | null;
   contact_whatsapp: string | null;
@@ -93,6 +95,8 @@ const emptyForm: Omit<Special, "id"> = {
   booking_required: false,
   booking_link: null,
   booking_link_label: null,
+  social_media_link: null,
+  social_media_label: null,
   promo_code: null,
   contact_phone: null,
   contact_whatsapp: null,
@@ -234,6 +238,8 @@ const AdminSpecials = () => {
       booking_link: s.booking_link,
       booking_link_type: (s as any).booking_link_type ?? null,
       booking_link_label: s.booking_link_label ?? null,
+      social_media_link: s.social_media_link ?? null,
+      social_media_label: s.social_media_label ?? null,
       promo_code: s.promo_code,
       contact_phone: s.contact_phone,
       contact_whatsapp: s.contact_whatsapp,
@@ -448,6 +454,10 @@ const AdminSpecials = () => {
           <div><Label>Booking Link / Email / Number (optional)</Label><Input placeholder="https://… or name@email.com or +27 82 000 0000" value={form.booking_link || ""} onChange={(e) => setForm({ ...form, booking_link: e.target.value || null })} /></div>
           <div><Label>Booking Link Display Text (optional)</Label><Input placeholder="e.g. Book on Quicket" value={form.booking_link_label || ""} onChange={(e) => setForm({ ...form, booking_link_label: e.target.value || null })} /></div>
           <div><Label>Promo Code (optional)</Label><Input placeholder="e.g. WINTER2026" value={form.promo_code || ""} onChange={(e) => setForm({ ...form, promo_code: e.target.value || null })} /></div>
+
+          <GroupLabel>Social Media</GroupLabel>
+          <div><Label htmlFor="admin-special-social-link">Social Media Link</Label><Input id="admin-special-social-link" placeholder="https://…" value={form.social_media_link || ""} onChange={(e) => setForm({ ...form, social_media_link: e.target.value || null })} /></div>
+          <div><Label htmlFor="admin-special-social-label">Social Media Label</Label><Input id="admin-special-social-label" placeholder="e.g. Facebook Post" value={form.social_media_label || ""} onChange={(e) => setForm({ ...form, social_media_label: e.target.value || null })} /></div>
 
           <GroupLabel>Contact</GroupLabel>
           <ListingContactPicker
