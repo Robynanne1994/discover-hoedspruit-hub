@@ -1,9 +1,9 @@
 // Heading groups for the events list, shared by the page and its tests so the
 // order of sections is defined in one place:
 //   • This year → one group per month ("OCTOBER")
-//   • Other dated years → one group per year ("DECEMBER 2028")
-//   • Next year → one group carrying the year alone ("2027"), always rendered
-//     after Recurring so the near-term list stays short
+//   • Any future year → one group carrying the year alone ("2027"), always
+//     rendered after Recurring so the near-term list stays short
+
 //   • Recurring events → one "Recurring" group
 //   • Past filter → one heading for the whole window, no month groups
 
