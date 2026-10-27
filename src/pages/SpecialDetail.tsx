@@ -375,13 +375,6 @@ const SpecialDetail = () => {
     });
   }
   detailRows.push({ icon: Tag, label: "Deal", value: getSpecialBadge(sp) });
-  const socialLink = specialSocialLink(special);
-  if (socialLink) detailRows.push({
-    icon: socialLink.platform === "facebook" ? FacebookIcon
-      : socialLink.platform === "instagram" ? InstagramIcon
-      : ExternalLink,
-    label: "Social Media Link", value: socialLink.label, href: socialLink.href,
-  });
   const redemptionNote = (sp.redemption_note || "").trim() || null;
   if (redemptionNote) detailRows.push({ icon: Tag, label: "How To Redeem", value: redemptionNote });
 
@@ -404,6 +397,17 @@ const SpecialDetail = () => {
         : `From ${fmt(fromDate!)}`,
     });
   }
+
+  // The social link is always the final row in the details box, after every
+  // other detail including validity.
+  const socialLink = specialSocialLink(special);
+  if (socialLink) detailRows.push({
+    icon: socialLink.platform === "facebook" ? FacebookIcon
+      : socialLink.platform === "instagram" ? InstagramIcon
+      : ExternalLink,
+    label: "Social Media Link", value: socialLink.label, href: socialLink.href,
+  });
+
 
   // ----- Tab content -----
   const renderAbout = () => {
