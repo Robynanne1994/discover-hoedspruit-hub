@@ -691,48 +691,12 @@ const Events = () => {
 
   }, [categoryEvents, tagFilter, sortBy, priceFilter]);
 
-  // Month groups (recurring events collected into "Recurring")
-  const groupedEvents = useMemo(() => {
-    const groups: { key: string; label: string; events: any[]; showCount?: boolean }[] = [];
-    // Past events sit under one heading instead of month groups: the 3-month
-    // window is short enough that splitting it by month just adds noise.
-    if (activeFilter === "past") {
-      return filtered.length
-        ? [{ key: "past", label: PAST_GROUP_LABEL, events: filtered, showCount: false }]
-        : [];
-    }
-    const recurring: any[] = [];
-    // Next-year events are held back so they always render after Recurring.
-    const futureYearGroups: { key: string; label: string; events: any[] }[] = [];
-    filtered.forEach((e) => {
-      if (resolveRecurrenceRule(e) && !hasPerformances(e)) {
-        recurring.push(e);
-        return;
-      }
-      // Future-year events group under the year alone instead of per month.
-      const eventYear = e._parsed ? e._parsed.getFullYear() : null;
-      const currentYear = new Date().getFullYear();
-      const isFutureYear = eventYear !== null && eventYear > currentYear;
-      const label = e._parsed
-        ? isFutureYear
-          ? String(eventYear)
-          : format(e._parsed, eventYear === currentYear ? "MMMM" : "MMMM yyyy").toUpperCase()
-        : "DATE TO BE CONFIRMED";
-      const key = e._parsed ? (isFutureYear ? `y-${eventYear}` : format(e._parsed, "yyyy-MM")) : "tbc";
-      if (isFutureYear) {
-        const existingFuture = futureYearGroups.find((g) => g.key === key);
-        if (existingFuture) existingFuture.events.push(e);
-        else futureYearGroups.push({ key, label, events: [e] });
-        return;
-      }
-      const existing = groups.find((g) => g.key === key);
-      if (existing) existing.events.push(e);
-      else groups.push({ key, label, events: [e] });
-    });
-    if (recurring.length) groups.push({ key: "recurring", label: "Recurring", events: recurring });
-    groups.push(...futureYearGroups);
-    return groups;
-  }, [filtered, activeFilter]);
+  // Month groups, with Recurring collected into one section and next-year
+  // events held below it.
+  const groupedEvents = useMemo(
+    () => buildEventGroups(filtered, activeFilter),
+    [filtered, activeFilter]
+  );
 
   // Happening Soon — soonest dated events, excluding recurring ones
   const happeningSoon = useMemo(() => {
