@@ -60,7 +60,16 @@ export const daysRemaining = (s: SpecialLike): number | null => {
   return Math.round((b.getTime() - a.getTime()) / 86400000);
 };
 
+// A special dated to start in the future has not begun yet, so nothing on it
+// may count down — "2 days left" before the deal opens would be nonsense. The
+// comparison uses Johannesburg calendar dates, matching specialVisibility.
+export const hasStarted = (s: SpecialLike, today = specialToday()): boolean => {
+  if (!s.valid_from) return true;
+  return String(s.valid_from).slice(0, 10) <= today;
+};
+
 export const isEndingSoon = (s: SpecialLike): boolean => {
+  if (!hasStarted(s)) return false;
   const d = daysRemaining(s);
   return d != null && d >= 0 && d <= ENDING_SOON_DAYS;
 };
