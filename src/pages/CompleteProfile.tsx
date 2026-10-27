@@ -59,11 +59,6 @@ const RESIDENCY_OPTIONS = [
 const capitaliseName = (value: string) =>
   value.replace(/(^|[\s'-])([a-z])/g, (_m, sep, ch) => sep + ch.toUpperCase());
 
-/** A starting suggestion for the handle, from the address they signed up with. */
-function suggestUsername(email: string | undefined): string {
-  return sanitiseUsername((email || "").split("@")[0] || "");
-}
-
 const CompleteProfile = () => {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
@@ -113,7 +108,7 @@ const CompleteProfile = () => {
         nameFromProvider(user) ||
         ((profile as any)?.display_name ?? "");
       setFullName(isEmailDerivedName(suggestedName, user.email) ? "" : suggestedName);
-      setUsername(((profile as any)?.username as string) || suggestUsername(user.email));
+      setUsername(((profile as any)?.username as string) || "");
       setResidency(((profile as any)?.location as string) || "");
     })();
   }, [user, prefilled]);
@@ -149,13 +144,11 @@ const CompleteProfile = () => {
     const parts = fullName.trim().split(/\s+/).filter(Boolean);
     const first = parts[0] ?? "";
     const last = parts.slice(1).join(" ");
-    // One word is a name. Insisting on a surname turned away anyone who goes by
-    // a single name, and it blocked Sign in with Apple accounts whose Apple ID
-    // carries only a first name — the sheet lets people edit what they send,
-    // and Apple hands back exactly that. Being unable to get past this screen
-    // with the name Apple gave us is the guideline 4 rejection all over again.
-    if (!first) {
-      toast.error("Please enter your name.");
+    // Every account needs a first and last name, whatever the sign-in method.
+    // Names from Google or Apple are pre-filled, so only an empty or one-word
+    // name has to be typed here.
+    if (!first || !last) {
+      toast.error("Please enter your first and last name.");
       return;
     }
 
