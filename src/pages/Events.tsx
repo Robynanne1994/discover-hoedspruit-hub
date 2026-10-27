@@ -691,7 +691,7 @@ const Events = () => {
 
   }, [categoryEvents, tagFilter, sortBy, priceFilter]);
 
-  // Month groups (recurring events collected into "Every Week")
+  // Month groups (recurring events collected into "Recurring")
   const groupedEvents = useMemo(() => {
     const groups: { key: string; label: string; events: any[]; showCount?: boolean }[] = [];
     // Past events sit under one heading instead of month groups: the 3-month
@@ -702,6 +702,8 @@ const Events = () => {
         : [];
     }
     const recurring: any[] = [];
+    // Next-year events are held back so they always render after Recurring.
+    const futureYearGroups: { key: string; label: string; events: any[] }[] = [];
     filtered.forEach((e) => {
       if (resolveRecurrenceRule(e) && !hasPerformances(e)) {
         recurring.push(e);
@@ -717,11 +719,18 @@ const Events = () => {
           : format(e._parsed, eventYear === currentYear ? "MMMM" : "MMMM yyyy").toUpperCase()
         : "DATE TO BE CONFIRMED";
       const key = e._parsed ? (isFutureYear ? `y-${eventYear}` : format(e._parsed, "yyyy-MM")) : "tbc";
+      if (isFutureYear) {
+        const existingFuture = futureYearGroups.find((g) => g.key === key);
+        if (existingFuture) existingFuture.events.push(e);
+        else futureYearGroups.push({ key, label, events: [e] });
+        return;
+      }
       const existing = groups.find((g) => g.key === key);
       if (existing) existing.events.push(e);
       else groups.push({ key, label, events: [e] });
     });
     if (recurring.length) groups.push({ key: "recurring", label: "Recurring", events: recurring });
+    groups.push(...futureYearGroups);
     return groups;
   }, [filtered, activeFilter]);
 
