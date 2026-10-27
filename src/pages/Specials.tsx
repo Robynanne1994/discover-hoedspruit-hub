@@ -17,6 +17,7 @@ import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
+import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
@@ -41,6 +42,7 @@ const SLIDE_PEEK = 22;
 const PAGE_PAD = SPECIALS_CARD_GRID.pageInset;
 
 const ENDING_SOON_TAB = "__ending_soon__";
+const UPCOMING_TAB = "__upcoming__";
 const ALL_TAB = "All Specials";
 
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
@@ -99,14 +101,13 @@ const Specials = () => {
   const { data: specials, isLoading } = useQuery({
     queryKey: ["all-specials"],
     queryFn: async () => {
-      const today = new Date().toISOString().slice(0, 10);
+      const today = specialToday();
       const { data } = await supabase
         .from("specials")
         .select("*")
-        .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("created_at", { ascending: false });
-      return data || [];
+      return (data || []).filter((s) => isVisibleSpecial(s, today));
     },
   });
 
@@ -143,11 +144,12 @@ const Specials = () => {
   }, [specials, search, categoryTabs, drawerCategoryTabs]);
 
   // Totals for the "All" and "Ending Soon" pills — search-aware, category-agnostic.
-  const { totalCount, endingSoonCount } = useMemo(() => {
-    if (!specials) return { totalCount: 0, endingSoonCount: 0 };
+  const { totalCount, endingSoonCount, upcomingCount } = useMemo(() => {
+    if (!specials) return { totalCount: 0, endingSoonCount: 0, upcomingCount: 0 };
     const q = search.trim().toLowerCase();
     let total = 0;
     let soon = 0;
+    let upcoming = 0;
     for (const s of specials as any[]) {
       if (q) {
         const hit =
@@ -157,9 +159,10 @@ const Specials = () => {
         if (!hit) continue;
       }
       total += 1;
-      if (isEndingSoon(s)) soon += 1;
+      if (isUpcomingSpecial(s)) upcoming += 1;
+      else if (isEndingSoon(s)) soon += 1;
     }
-    return { totalCount: total, endingSoonCount: soon };
+    return { totalCount: total, endingSoonCount: soon, upcomingCount: upcoming };
   }, [specials, search]);
 
 
@@ -175,7 +178,9 @@ const Specials = () => {
       );
     }
     if (activeTab === ENDING_SOON_TAB) {
-      result = result.filter((s: any) => isEndingSoon(s));
+      result = result.filter((s) => !isUpcomingSpecial(s) && isEndingSoon(s));
+    } else if (activeTab === UPCOMING_TAB) {
+      result = result.filter((s) => isUpcomingSpecial(s));
     } else if (activeTab !== ALL_TAB) {
       const t = tagKey(activeTab);
       result = result.filter((s) => specialMatchesTag(s, t));
@@ -214,15 +219,17 @@ const Specials = () => {
         return tb - ta;
       });
     }
-    // "default" keeps the query order (created_at desc)
+    if (sortBy === "default" && activeTab === UPCOMING_TAB) {
+      result.sort((a, b) => (a.valid_from || "").localeCompare(b.valid_from || ""));
+    }
 
     return result;
 
   }, [specials, activeTab, filterType, search, sortBy]);
 
   // Featured deals headline the page; everything else falls into the grid below.
-  const featured = useMemo(() => filteredSpecials.filter((s: any) => s.is_featured), [filteredSpecials]);
-  const rest = useMemo(() => filteredSpecials.filter((s: any) => !s.is_featured), [filteredSpecials]);
+  const featured = useMemo(() => filteredSpecials.filter((s) => s.is_featured && !isUpcomingSpecial(s)), [filteredSpecials]);
+  const rest = useMemo(() => filteredSpecials.filter((s) => !s.is_featured || isUpcomingSpecial(s)), [filteredSpecials]);
 
 
   const toggleFilter = (val: string) => {
@@ -355,6 +362,14 @@ const Specials = () => {
             active={activeTab === ALL_TAB}
             onClick={() => setActiveTab(ALL_TAB)}
           />
+          {upcomingCount > 0 && (
+            <FilterPill
+              label={`Upcoming (${upcomingCount})`}
+              icon={<Clock size={12} strokeWidth={2} />}
+              active={activeTab === UPCOMING_TAB}
+              onClick={() => setActiveTab(activeTab === UPCOMING_TAB ? ALL_TAB : UPCOMING_TAB)}
+            />
+          )}
           {endingSoonCount > 0 && (
             <FilterPill
               label={`Ending Soon (${endingSoonCount})`}
@@ -400,7 +415,7 @@ const Specials = () => {
             {rest.length > 0 && (
               <>
                 <SectionHead
-                  label={featured.length > 0 ? "Everything else" : "All deals"}
+                  label={activeTab === UPCOMING_TAB ? "Upcoming" : featured.length > 0 ? "Everything else" : "All deals"}
                   right={`${rest.length} ${rest.length === 1 ? "Deal" : "Deals"}`}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -464,7 +479,9 @@ const Specials = () => {
         <RefineSection
           label="Category"
           summary={
-            activeTab === ENDING_SOON_TAB
+            activeTab === UPCOMING_TAB
+              ? "Upcoming"
+              : activeTab === ENDING_SOON_TAB
               ? "Ending Soon"
               : activeTab !== ALL_TAB
               ? activeTab
@@ -480,7 +497,7 @@ const Specials = () => {
               .filter((c) => c !== ALL_TAB)
               .filter((c) => (categoryCounts.get(c) || 0) > 0);
             const total = totalCount;
-            if (visible.length === 0) {
+            if (visible.length === 0 && upcomingCount === 0 && endingSoonCount === 0) {
               return <p style={{ ...type.meta, margin: 0 }}>No categories available.</p>;
             }
             return (
@@ -493,6 +510,13 @@ const Specials = () => {
                     setFilterType([]);
                   }}
                 />
+                {upcomingCount > 0 && (
+                  <RefineRectOption
+                    label={`Upcoming (${upcomingCount})`}
+                    active={activeTab === UPCOMING_TAB}
+                    onClick={() => { setActiveTab(UPCOMING_TAB); setFilterType([]); }}
+                  />
+                )}
                 {endingSoonCount > 0 && (
                   <RefineRectOption
                     label={`Ending Soon (${endingSoonCount})`}

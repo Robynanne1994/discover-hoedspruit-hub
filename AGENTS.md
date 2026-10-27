@@ -6,3 +6,4 @@
 - Keep restaurant meal choices and option exclusions in restaurantOptions so the editor, CSV references and filters agree.
 - Keep event category collection, matching and per-event counting in eventTags so all three tags use consistent filter rules.
 - Resolve specials social links through specialSocialLink so only labelled web destinations are displayed.
+- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.
