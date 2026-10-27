@@ -5,7 +5,7 @@ import InstagramIcon from "@/components/ui/InstagramIcon";
 import { channelImage, eventImage, listingImage, specialSurfaceImage } from "@/lib/imageFallback";
 import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
-import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { countdownLabel, hasStarted, isEndingSoon } from "@/lib/specialValue";
 import { compactDays, parseDays } from "@/lib/specialDays";
 import { getNextOccurrence } from "@/lib/eventSchedule";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
@@ -229,8 +229,9 @@ const buildContent = (it: any, type: CardType) => {
 
     // Same countdown wording and the same 7-day urgency threshold as the
     // specials list and the homepage rail, so a deal never reads as "ending
-    // soon" on one screen and calm on another.
-    if (!expired && it.valid_until) {
+    // soon" on one screen and calm on another. A special that has not started
+    // yet keeps quiet — it has no days left to count.
+    if (!expired && it.valid_until && hasStarted(it)) {
       const urgent = isEndingSoon(it);
       status = { items: [{ text: countdownLabel(it), tone: urgent ? CLAY : SAGE }] };
     }

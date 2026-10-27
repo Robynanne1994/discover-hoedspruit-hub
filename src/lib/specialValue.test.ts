@@ -1,6 +1,14 @@
 import { format } from "date-fns";
 import { describe, expect, it } from "vitest";
-import { savingLabel, specialDateLine, specialMeta, specialValue } from "@/lib/specialValue";
+import {
+  hasStarted,
+  isEndingSoon,
+  savingLabel,
+  specialDateLine,
+  specialMeta,
+  specialValue,
+} from "@/lib/specialValue";
+import { specialToday } from "@/lib/specialVisibility";
 
 // Deals are entered by hand, so the value bar has to cope with a price, a
 // free-text offer, or nothing at all.
@@ -166,5 +174,30 @@ describe("specialMeta", () => {
   it("keeps long footer wording when there is no schedule to fall back on", () => {
     expect(specialMeta({ card_footer_text: "While stocks last, in store only" }, { compact: true }))
       .toEqual({ text: "While stocks last, in store only", urgent: false });
+  });
+});
+
+// A special dated to start in the future is not running yet, so nothing on it
+// may count down — not the picture tab, not the bar's urgent flag.
+describe("countdown gating", () => {
+  // Johannesburg today shifted by whole days, so the test holds any day of the year.
+  const inDays = (n: number) => {
+    const [y, m, d] = specialToday().split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+  };
+
+  it("never counts down a special that has not started yet", () => {
+    const upcoming = { valid_from: inDays(2), valid_until: inDays(5) };
+    expect(hasStarted(upcoming)).toBe(false);
+    expect(isEndingSoon(upcoming)).toBe(false);
+  });
+
+  it("counts down once the special is under way", () => {
+    expect(isEndingSoon({ valid_from: inDays(-3), valid_until: inDays(5) })).toBe(true);
+    expect(isEndingSoon({ valid_until: inDays(5) })).toBe(true);
+  });
+
+  it("keeps an upcoming deal out of the value bar's urgent flag", () => {
+    expect(specialMeta({ valid_from: inDays(2), valid_until: inDays(5) }).urgent).toBe(false);
   });
 });
