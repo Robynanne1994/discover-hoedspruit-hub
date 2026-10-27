@@ -8,6 +8,13 @@
       "when": 1791908300263,
       "tag": "0000_specials_booking_link_type",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793103032870,
+      "tag": "0001_add_specials_social_media_fields",
+      "breakpoints": true
     }
   ]
 }

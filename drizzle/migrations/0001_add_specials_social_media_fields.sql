@@ -1,0 +1,1 @@
+ALTER TABLE public.specials ADD COLUMN social_media_link text, ADD COLUMN social_media_label text;
