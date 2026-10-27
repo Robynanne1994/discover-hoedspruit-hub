@@ -362,14 +362,6 @@ const Specials = () => {
             active={activeTab === ALL_TAB}
             onClick={() => setActiveTab(ALL_TAB)}
           />
-          {upcomingCount > 0 && (
-            <FilterPill
-              label={`Upcoming (${upcomingCount})`}
-              icon={<Clock size={12} strokeWidth={2} />}
-              active={activeTab === UPCOMING_TAB}
-              onClick={() => setActiveTab(activeTab === UPCOMING_TAB ? ALL_TAB : UPCOMING_TAB)}
-            />
-          )}
           {endingSoonCount > 0 && (
             <FilterPill
               label={`Ending Soon (${endingSoonCount})`}
@@ -379,6 +371,14 @@ const Specials = () => {
               onClick={() =>
                 setActiveTab(activeTab === ENDING_SOON_TAB ? ALL_TAB : ENDING_SOON_TAB)
               }
+            />
+          )}
+          {upcomingCount > 0 && (
+            <FilterPill
+              label={`Upcoming (${upcomingCount})`}
+              icon={<Clock size={12} strokeWidth={2} />}
+              active={activeTab === UPCOMING_TAB}
+              onClick={() => setActiveTab(activeTab === UPCOMING_TAB ? ALL_TAB : UPCOMING_TAB)}
             />
           )}
           {categoryTabs
