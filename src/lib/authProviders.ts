@@ -139,9 +139,9 @@ export function profileGaps(
 ): ProfileGaps {
   const filled = (value?: string | null) => !!value && value.trim() !== "";
   return {
-    // Every account needs both a first name and a surname, whatever the
-    // sign-in method; a display name alone or a missing surname is unfinished.
-    name: !filled(profile?.first_name) || !filled(profile?.surname),
+    // A display name from a provider is enough to have a name, but a profile
+    // with neither that nor a first name has nothing to show.
+    name: !filled(profile?.first_name) && !filled(profile?.display_name),
     username: !filled(profile?.username),
     residency: !filled(profile?.location),
   };
