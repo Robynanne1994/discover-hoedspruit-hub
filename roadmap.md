@@ -1,0 +1,4 @@
+- [x] Add optional specials social media link and label fields.
+- [x] Include both fields in the editors and CSV imports, exports and template.
+- [x] Show labelled outbound links immediately below Deal on special detail pages.
+- [ ] Verify field persistence, CSV round trip and link display.

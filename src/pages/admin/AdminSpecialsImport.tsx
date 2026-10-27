@@ -33,6 +33,7 @@ const EXPECTED_HEADERS = [
   "valid_from", "valid_until",
   "price", "price_label", "original_price",
   "booking_required", "booking_link_type", "booking_link", "booking_link_label", "promo_code",
+  "social_media_link", "social_media_label",
   "contact_phone", "contact_whatsapp", "contact_email",
   "additional_phones", "additional_whatsapps",
   "terms", "tag", "sub_tag_1", "sub_tag_2",
@@ -171,7 +172,7 @@ const AdminSpecialsImport = () => {
 
         // Legacy columns are no longer part of the template, but an older file
         // may still carry them — honour them when present, ignore when absent.
-        for (const legacy of ["card_footer_text", "savings"]) {
+        for (const legacy of ["card_footer_text", "savings", "social_media_link", "social_media_label"]) {
           if (parsed.headers.includes(legacy)) payload[legacy] = row[legacy] || null;
         }
         // An older file without the column must not wipe a stored override.
@@ -206,6 +207,9 @@ const AdminSpecialsImport = () => {
     onSuccess: (results) => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
+      qc.invalidateQueries({ queryKey: ["special-detail"] });
+      qc.invalidateQueries({ queryKey: ["all-specials"] });
+      qc.invalidateQueries({ queryKey: ["home-specials"] });
       toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
     },
     onError: (e) => toast.error(e.message),
@@ -224,10 +228,11 @@ const AdminSpecialsImport = () => {
     // column after it, so the two lists are kept side by side.
     const example = [
       "Sunset Dinner Deal", "false", "50% OFF", "weekly", "Wednesday|Thursday",
-      "percent_off", "50", "", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
+      "percent_off", "50", "", "Half-price dinner", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
       "true", "link", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
+      "https://www.facebook.com/example/posts/123", "Facebook Post",
       "+27 123 456 789", "+27 123 456 789", "info@example.com",
       "", "",
       "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
@@ -248,6 +253,7 @@ const AdminSpecialsImport = () => {
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link_type ?? "", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
+      s.social_media_link ?? "", s.social_media_label ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
       (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),

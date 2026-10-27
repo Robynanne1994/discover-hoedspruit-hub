@@ -98,6 +98,7 @@ const FIELDS: (keyof any)[] = [
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "booking_link_type", "terms", "tag", "sub_tag_1", "sub_tag_2",
+  "social_media_link", "social_media_label",
 ];
 
 const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1";
@@ -485,6 +486,11 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </div>
             <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
             <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
+          </div>
+
+          <div className={ADMIN_FIELD_GRID_TIGHT}>
+            <div><Label htmlFor="special-social-link">Social Media Link</Label><Input id="special-social-link" value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} placeholder="https://…" /></div>
+            <div><Label htmlFor="special-social-label">Social Media Label</Label><Input id="special-social-label" value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Facebook Post" /></div>
           </div>
 
           <div>
