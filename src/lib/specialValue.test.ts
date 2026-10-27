@@ -6,9 +6,9 @@ import {
   savingLabel,
   specialDateLine,
   specialMeta,
-  specialToday,
   specialValue,
 } from "@/lib/specialValue";
+import { specialToday } from "@/lib/specialVisibility";
 
 // Deals are entered by hand, so the value bar has to cope with a price, a
 // free-text offer, or nothing at all.
