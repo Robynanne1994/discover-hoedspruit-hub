@@ -5,7 +5,7 @@ import InstagramIcon from "@/components/ui/InstagramIcon";
 import { channelImage, eventImage, listingImage, specialSurfaceImage } from "@/lib/imageFallback";
 import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours } from "@/lib/openHours";
 import { specialCard } from "@/lib/specialCard";
-import { countdownLabel, isEndingSoon } from "@/lib/specialValue";
+import { countdownLabel, hasStarted, isEndingSoon } from "@/lib/specialValue";
 import { compactDays, parseDays } from "@/lib/specialDays";
 import { getNextOccurrence } from "@/lib/eventSchedule";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
