@@ -23,6 +23,7 @@ import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { isRecentPast, PAST_GROUP_LABEL } from "@/lib/eventPastWindow";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
+import { buildEventGroups } from "@/lib/eventGroups";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
