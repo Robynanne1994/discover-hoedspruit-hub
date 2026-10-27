@@ -20,7 +20,7 @@ import {
   parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
-import { isRecentPast, PAST_GROUP_LABEL } from "@/lib/eventPastWindow";
+import { isRecentPast } from "@/lib/eventPastWindow";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { buildEventGroups } from "@/lib/eventGroups";
