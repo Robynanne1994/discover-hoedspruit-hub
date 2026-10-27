@@ -70,8 +70,10 @@ describe("profileGaps", () => {
     expect(needsProfileSetup(complete)).toBe(false);
   });
 
-  it("counts a provider display name as a name", () => {
-    expect(profileGaps({ ...complete, first_name: null }).name).toBe(false);
+  it("requires both a first name and a surname", () => {
+    expect(profileGaps({ ...complete, first_name: null }).name).toBe(true);
+    expect(profileGaps({ ...complete, surname: "" }).name).toBe(true);
+    expect(needsProfileSetup({ ...complete, surname: null })).toBe(true);
   });
 
   it("catches the empty profile a provider signup starts with", () => {
