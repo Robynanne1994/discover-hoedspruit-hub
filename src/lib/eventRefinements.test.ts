@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { countEventTimes, eventMatchesRecurrence, eventMatchesTime, eventTimeBucket } from "./eventRefinements";
+import { countEventRecurrence, countEventTimes, eventMatchesRecurrence, eventMatchesTime, eventTimeBucket } from "./eventRefinements";
 
 describe("event recurrence", () => {
   it.each(["daily", "weekly", "biweekly", "monthly", "quarterly", "annually"] as const)("filters %s from stored recurrence", (frequency) => {
@@ -48,5 +48,29 @@ describe("event Time", () => {
   it("counts each event once and includes missing times in Any", () => {
     expect(countEventTimes([{ start_time: "11:59" }, { start_time: "12:00" }, { start_time: "17:00" }, {}]))
       .toEqual({ any: 4, morning: 1, afternoon: 1, night: 1 });
+  });
+});
+
+describe("event recurrence counts", () => {
+  it("counts each event once and leaves unlisted frequencies in Any only", () => {
+    const counts = countEventRecurrence([
+      { recurrence: " Daily " },
+      { recurrence: "WEEKLY" },
+      { recurrence: "weekly:3" },
+      { date: "Every Tuesday" },
+      { recurrence: "None" },
+      {},
+      { recurrence: "Bimonthly" },
+    ]);
+    expect(counts).toEqual({
+      any: 7,
+      none: 2,
+      daily: 1,
+      weekly: 3,
+      biweekly: 0,
+      monthly: 0,
+      quarterly: 0,
+      annually: 0,
+    });
   });
 });

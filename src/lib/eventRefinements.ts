@@ -59,3 +59,17 @@ export function countEventTimes(events: Pick<EventScheduleLike, "start_time">[])
   }
   return counts;
 }
+
+export function countEventRecurrence(events: EventScheduleLike[]): Record<RecurrenceFilter, number> {
+  const counts = Object.fromEntries(
+    RECURRENCE_OPTIONS.map((option) => [option.value, 0]),
+  ) as Record<RecurrenceFilter, number>;
+  counts.any = events.length;
+  for (const event of events) {
+    const match = RECURRENCE_OPTIONS.find(
+      (option) => option.value !== "any" && eventMatchesRecurrence(event, option.value),
+    );
+    if (match) counts[match.value] += 1;
+  }
+  return counts;
+}
