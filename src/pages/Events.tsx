@@ -1072,6 +1072,7 @@ const Events = () => {
         <RefineSection
           isFirst
           label="Sort by"
+          onClear={sortBy !== "date-asc" ? () => setSortBy("date-asc") : undefined}
           summary={
             sortBy === "date-asc" ? "Date (Soonest First)" :
             sortBy === "date-desc" ? "Date (Latest First)" :
@@ -1093,6 +1094,7 @@ const Events = () => {
 
         <RefineSection
           label="Time Frame"
+          onClear={activeFilter !== "all" ? () => setActiveFilter("all") : undefined}
           summary={activeFilter === "all" ? undefined : FILTERS.find((f) => f.value === activeFilter)?.label}
           open={openSection === "time"}
           onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
@@ -1111,6 +1113,7 @@ const Events = () => {
 
         <RefineSection
           label="Category"
+          onClear={tagFilter ? () => setTagFilter(null) : undefined}
           summary={tagFilter || undefined}
           open={openSection === "tag"}
           onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
@@ -1145,6 +1148,7 @@ const Events = () => {
 
         <RefineSection
           label="Price"
+          onClear={priceFilter !== "any" ? () => setPriceFilter("any") : undefined}
           summary={priceFilter === "any" ? undefined : priceFilter === "free" ? "Free" : "Paid"}
           open={openSection === "price"}
           onToggle={() => setOpenSection(openSection === "price" ? null : "price")}
@@ -1158,6 +1162,7 @@ const Events = () => {
 
         <RefineSection
           label="Event Duration"
+          onClear={durationFilter !== "all" ? () => setDurationFilter("all") : undefined}
           summary={durationFilter === "all" ? undefined : DURATION_OPTIONS.find((o) => o.value === durationFilter)?.label}
           open={openSection === "duration"}
           onToggle={() => setOpenSection(openSection === "duration" ? null : "duration")}
@@ -1180,6 +1185,7 @@ const Events = () => {
 
         <RefineSection
           label="Booking"
+          onClear={bookingFilter !== "any" ? () => setBookingFilter("any") : undefined}
           summary={bookingFilter === "any" ? undefined : bookingFilter === "required" ? "Booking Required" : "Booking Not Required"}
           open={openSection === "booking"}
           onToggle={() => setOpenSection(openSection === "booking" ? null : "booking")}
@@ -1209,6 +1215,7 @@ const Events = () => {
 
         <RefineSection
           label="Recurrence"
+          onClear={recurrenceFilter !== "any" ? () => setRecurrenceFilter("any") : undefined}
           summary={recurrenceFilter === "any" ? undefined : RECURRENCE_OPTIONS.find((o) => o.value === recurrenceFilter)?.label}
           open={openSection === "recurrence"}
           onToggle={() => setOpenSection(openSection === "recurrence" ? null : "recurrence")}
@@ -1222,6 +1229,7 @@ const Events = () => {
 
         <RefineSection
           label="Time of Day"
+          onClear={timeFilter !== "any" ? () => setTimeFilter("any") : undefined}
           summary={timeFilter === "any" ? undefined : TIME_OPTIONS.find((o) => o.value === timeFilter)?.label}
           open={openSection === "time-of-day"}
           onToggle={() => setOpenSection(openSection === "time-of-day" ? null : "time-of-day")}

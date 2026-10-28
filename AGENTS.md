@@ -16,3 +16,4 @@
 - Keep event recurrence matching and start-time buckets and counts, plus per-recurrence-option counts, in eventRefinements, reusing the schedule parser for legacy patterns so counts and filtered results agree.
 - Keep event contact CSV parsing, serialisation and labelled frontend pairs in eventContacts, translating combined cells to primary/extras storage so existing editors remain compatible and actions use the first populated contact.
 - Keep the filter-pill toggle rule (clicking an already-lit pill returns its section to the default choice) in filterPill so every pill row and drawer option shares one behaviour.
+- Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.

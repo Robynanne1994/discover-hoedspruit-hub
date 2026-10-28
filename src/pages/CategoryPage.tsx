@@ -1371,6 +1371,7 @@ const CategoryPage = () => {
       >
         <RefineSection
           label="Sort By"
+          onClear={sortBy !== "default" ? () => setSortBy("default") : undefined}
           summary={SORT_LABELS[sortBy]}
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
@@ -1395,6 +1396,7 @@ const CategoryPage = () => {
           return (
             <RefineSection
               label="Category"
+              onClear={activeSubId ? () => handleSubFilter(null) : undefined}
               summary={
                 activeSubId
                   ? activeSubLabel || undefined
@@ -1434,6 +1436,7 @@ const CategoryPage = () => {
               {cuisines.length > 0 && (
                 <RefineSection
                   label="Cuisine"
+                  onClear={filterCuisine.length > 0 ? () => setFilterCuisine([]) : undefined}
                   summary={filterCuisine.length > 0 ? `${filterCuisine.length} selected` : undefined}
                   open={openSection === "cuisine"}
                   onToggle={() => setOpenSection(openSection === "cuisine" ? null : "cuisine")}
@@ -1448,6 +1451,7 @@ const CategoryPage = () => {
               {vibes.length > 0 && (
                 <RefineSection
                   label="Vibe"
+                  onClear={filterVibe.length > 0 ? () => setFilterVibe([]) : undefined}
                   summary={filterVibe.length > 0 ? `${filterVibe.length} selected` : undefined}
                   open={openSection === "vibe"}
                   onToggle={() => setOpenSection(openSection === "vibe" ? null : "vibe")}
@@ -1462,6 +1466,7 @@ const CategoryPage = () => {
               {meals.length > 0 && (
                 <RefineSection
                   label="Meal"
+                  onClear={filterMeal.length > 0 ? () => setFilterMeal([]) : undefined}
                   summary={filterMeal.length > 0 ? `${filterMeal.length} selected` : undefined}
                   open={openSection === "meal"}
                   onToggle={() => setOpenSection(openSection === "meal" ? null : "meal")}
@@ -1476,6 +1481,7 @@ const CategoryPage = () => {
               {seatingOptions.length > 0 && (
                 <RefineSection
                   label="Seating"
+                  onClear={filterSeating.length > 0 ? () => setFilterSeating([]) : undefined}
                   summary={filterSeating.length > 0 ? `${filterSeating.length} selected` : undefined}
                   open={openSection === "seating"}
                   onToggle={() => setOpenSection(openSection === "seating" ? null : "seating")}
@@ -1490,6 +1496,7 @@ const CategoryPage = () => {
               {foodsOptions.length > 0 && (
                 <RefineSection
                   label="Foods"
+                  onClear={filterFoods.length > 0 ? () => setFilterFoods([]) : undefined}
                   summary={filterFoods.length > 0 ? `${filterFoods.length} selected` : undefined}
                   open={openSection === "foods"}
                   onToggle={() => setOpenSection(openSection === "foods" ? null : "foods")}
@@ -1504,6 +1511,7 @@ const CategoryPage = () => {
               {drinkOptions.length > 0 && (
                 <RefineSection
                   label="Drinks"
+                  onClear={filterDrinks.length > 0 ? () => setFilterDrinks([]) : undefined}
                   summary={filterDrinks.length > 0 ? `${filterDrinks.length} selected` : undefined}
                   open={openSection === "drinks"}
                   onToggle={() => setOpenSection(openSection === "drinks" ? null : "drinks")}
@@ -1518,6 +1526,7 @@ const CategoryPage = () => {
               {serviceTypeOptions.length > 0 && (
                 <RefineSection
                   label="Service Type"
+                  onClear={filterServiceType.length > 0 ? () => setFilterServiceType([]) : undefined}
                   summary={filterServiceType.length > 0 ? `${filterServiceType.length} selected` : undefined}
                   open={openSection === "servicetype"}
                   onToggle={() => setOpenSection(openSection === "servicetype" ? null : "servicetype")}
@@ -1532,6 +1541,7 @@ const CategoryPage = () => {
               {kidsOptions.length > 0 && (
                 <RefineSection
                   label="Kids"
+                  onClear={filterKids.length > 0 ? () => setFilterKids([]) : undefined}
                   summary={filterKids.length > 0 ? `${filterKids.length} selected` : undefined}
                   open={openSection === "kids"}
                   onToggle={() => setOpenSection(openSection === "kids" ? null : "kids")}
@@ -1546,6 +1556,7 @@ const CategoryPage = () => {
               {accessibilityOptions.length > 0 && (
                 <RefineSection
                   label="Accessibility"
+                  onClear={filterAccessibility.length > 0 ? () => setFilterAccessibility([]) : undefined}
                   summary={filterAccessibility.length > 0 ? `${filterAccessibility.length} selected` : undefined}
                   open={openSection === "access"}
                   onToggle={() => setOpenSection(openSection === "access" ? null : "access")}
@@ -1566,6 +1577,7 @@ const CategoryPage = () => {
         {isAccom && propertyTypeOptions.length > 0 && (
           <RefineSection
             label="Property Type"
+            onClear={filterPropertyTypes.length > 0 ? () => setFilterPropertyTypes([]) : undefined}
             summary={filterPropertyTypes.length > 0 ? `${filterPropertyTypes.length} selected` : undefined}
             open={openSection === "proptype"}
             onToggle={() => setOpenSection(openSection === "proptype" ? null : "proptype")}
@@ -1586,6 +1598,7 @@ const CategoryPage = () => {
         {isAccom && minNightsOptions.length > 0 && (
           <RefineSection
             label="Minimum Nights Stay"
+            onClear={filterMinNights.length > 0 ? () => setFilterMinNights([]) : undefined}
             summary={filterMinNights.length > 0 ? `${filterMinNights.length} selected` : undefined}
             open={openSection === "minstay"}
             onToggle={() => setOpenSection(openSection === "minstay" ? null : "minstay")}
@@ -1610,6 +1623,7 @@ const CategoryPage = () => {
         {isAccom && gradingOptions.length > 0 && (
           <RefineSection
             label="Star Grading"
+            onClear={filterGrading.length > 0 ? () => setFilterGrading([]) : undefined}
             summary={filterGrading.length > 0 ? `${filterGrading.length} selected` : undefined}
             open={openSection === "grading"}
             onToggle={() => setOpenSection(openSection === "grading" ? null : "grading")}
@@ -1634,6 +1648,7 @@ const CategoryPage = () => {
         {isAccom && accomAmenityOptions.length > 0 && (
           <RefineSection
             label="Amenities"
+            onClear={filterAccomAmenities.length > 0 ? () => setFilterAccomAmenities([]) : undefined}
             summary={filterAccomAmenities.length > 0 ? `${filterAccomAmenities.length} selected` : undefined}
             open={openSection === "accomamen"}
             onToggle={() => setOpenSection(openSection === "accomamen" ? null : "accomamen")}
@@ -1655,6 +1670,7 @@ const CategoryPage = () => {
         {isShopping && shopTypeOptions.length > 0 && (
           <RefineSection
             label="Shop Type"
+            onClear={filterShopTypes.length > 0 ? () => setFilterShopTypes([]) : undefined}
             summary={filterShopTypes.length > 0 ? `${filterShopTypes.length} selected` : undefined}
             open={openSection === "shoptype"}
             onToggle={() => setOpenSection(openSection === "shoptype" ? null : "shoptype")}
@@ -1675,6 +1691,7 @@ const CategoryPage = () => {
         {isShopping && priceRangeOptions.length > 0 && (
           <RefineSection
             label="Price Range"
+            onClear={filterPriceRanges.length > 0 ? () => setFilterPriceRanges([]) : undefined}
             summary={filterPriceRanges.length > 0 ? `${filterPriceRanges.length} selected` : undefined}
             open={openSection === "pricerange"}
             onToggle={() => setOpenSection(openSection === "pricerange" ? null : "pricerange")}
@@ -1695,6 +1712,7 @@ const CategoryPage = () => {
         {isShopping && productCategoryOptions.length > 0 && (
           <RefineSection
             label="Product Categories"
+            onClear={filterProductCategories.length > 0 ? () => setFilterProductCategories([]) : undefined}
             summary={filterProductCategories.length > 0 ? `${filterProductCategories.length} selected` : undefined}
             open={openSection === "prodcat"}
             onToggle={() => setOpenSection(openSection === "prodcat" ? null : "prodcat")}
@@ -1715,6 +1733,7 @@ const CategoryPage = () => {
         {isShopping && shopServiceOptions.length > 0 && (
           <RefineSection
             label="Shopping Options"
+            onClear={filterShopServices.length > 0 ? () => setFilterShopServices([]) : undefined}
             summary={filterShopServices.length > 0 ? `${filterShopServices.length} selected` : undefined}
             open={openSection === "shopservices"}
             onToggle={() => setOpenSection(openSection === "shopservices" ? null : "shopservices")}
