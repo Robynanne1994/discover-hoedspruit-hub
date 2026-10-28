@@ -372,6 +372,7 @@ const UserSaved = () => {
                   <>
                     <SubTabs<"upcoming" | "past">
                       value={eventsSub}
+                      defaultValue="upcoming"
                       onChange={setEventsSub}
                       options={[
                         { id: "upcoming", label: "Upcoming" },

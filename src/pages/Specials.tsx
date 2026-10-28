@@ -530,7 +530,8 @@ const Specials = () => {
                     label={`Ending Soon (${endingSoonCount})`}
                     active={activeTab === ENDING_SOON_TAB}
                     onClick={() => {
-                      setActiveTab(ENDING_SOON_TAB);
+                      const clear = activeTab === ENDING_SOON_TAB;
+                      setActiveTab(clear ? ALL_TAB : ENDING_SOON_TAB);
                       setFilterType([]);
                     }}
                   />

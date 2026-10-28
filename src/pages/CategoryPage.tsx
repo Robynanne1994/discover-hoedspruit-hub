@@ -1408,7 +1408,14 @@ const CategoryPage = () => {
                   key={opt.key}
                   label={withCount(opt.label, subCountFor(opt))}
                   active={activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId))}
-                  onClick={() => handleSubFilter(opt.key)}
+                  onClick={() =>
+                    handleSubFilter(
+                      activeSubId != null &&
+                        (activeSubId === opt.key || opt.subIds.includes(activeSubId))
+                        ? null
+                        : opt.key,
+                    )
+                  }
                 />
               ))}
             </RefineSection>

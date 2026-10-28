@@ -897,7 +897,7 @@ const MyProfile = () => {
               <button
                 key={o.id}
                 type="button"
-                onClick={() => subFilter.onChange(o.id)}
+                onClick={() => subFilter.onChange(pillToggle(subFilter.value, o.id, subFilter.defaultValue))}
                 aria-pressed={active}
                 style={{
                   flex: "0 0 auto",
