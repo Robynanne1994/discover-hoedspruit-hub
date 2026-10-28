@@ -16,7 +16,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useShare } from "@/hooks/useShare";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
-import { MUTED as TOKEN_MUTED } from "@/lib/type";
+import { MUTED as TOKEN_MUTED, tab as tabStyle } from "@/lib/type";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -465,8 +465,8 @@ const FollowList = () => {
           {/* The counts come back null for a profile we are not allowed to
               see, so the tab shows the plain label rather than a made-up 0. */}
           {[
-            { key: "followers", label: "followers", count: counts?.followers ?? null },
-            { key: "following", label: "following", count: counts?.following ?? null },
+            { key: "followers", label: "Followers", count: counts?.followers ?? null },
+            { key: "following", label: "Following", count: counts?.following ?? null },
           ].map((tab) => {
             const active = (tab.key === "followers") === isFollowers;
             return (
@@ -479,10 +479,10 @@ const FollowList = () => {
                   flex: 1,
                   textAlign: "center",
                   padding: "12px 0",
-                  fontFamily: SANS,
-                  fontWeight: active ? 700 : 500,
-                  fontSize: 13,
-                  letterSpacing: "0.01em",
+                  // Shared tab tokens keep the face, tracking and weights identical
+                  // to every other tab bar; 15px matches the app's standard text.
+                  ...tabStyle(active),
+                  fontSize: 15,
                   textTransform: "none",
                   color: active ? COLOR.ink : COLOR.subtle,
                   textDecoration: "none",
