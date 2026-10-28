@@ -34,6 +34,7 @@ const navItems = [
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },
   { label: "Events", path: "/admin/events", icon: Calendar },
+  { label: "Event Hosts", path: "/admin/event-hosts", icon: Users },
   { label: "Specials", path: "/admin/specials", icon: Tag },
   
   { label: "Local Channels", path: "/admin/local-channels", icon: Radio },

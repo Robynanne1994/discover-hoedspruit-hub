@@ -1,3 +1,4 @@
+import { buildHostDirectory, resolveHost } from "@/lib/eventHosts";
 import InstagramIcon from "@/components/ui/InstagramIcon";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -314,6 +315,15 @@ const EventDetail = () => {
     enabled: hostListingIds.length > 0,
   });
 
+  // Recurring hosts that aren't listings: photo and link come from Admin > Event Hosts.
+  const { data: eventHostRows } = useQuery({
+    queryKey: ["event-hosts"],
+    queryFn: async () => {
+      const { data } = await supabase.from("event_hosts").select("name, image_url, link");
+      return data ?? [];
+    },
+  });
+
   const isFavourited = useIsFavourited(id!, "event");
   const toggleFavourite = useToggleFavourite();
 
@@ -548,6 +558,8 @@ const EventDetail = () => {
     if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url || (e.hosted_by_listing_id && hostListingImages?.[e.hosted_by_listing_id]) || undefined, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
     if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 || (e.hosted_by_listing_id_2 && hostListingImages?.[e.hosted_by_listing_id_2]) || undefined, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
     if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 || (e.hosted_by_listing_id_3 && hostListingImages?.[e.hosted_by_listing_id_3]) || undefined, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
+    const hostDirectory = buildHostDirectory(eventHostRows);
+    hosts.forEach((h, i) => { hosts[i] = resolveHost(h, hostDirectory); });
 
     return (
       <div style={{ padding: "16px 20px 20px" }}>

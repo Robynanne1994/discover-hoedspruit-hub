@@ -15,6 +15,13 @@
       "when": 1793103032870,
       "tag": "0001_add_specials_social_media_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793183985540,
+      "tag": "0002_create_event_hosts",
+      "breakpoints": true
     }
   ]
 }
