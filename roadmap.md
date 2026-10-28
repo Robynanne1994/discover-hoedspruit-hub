@@ -20,3 +20,4 @@
 - [x] Add counted Validity filter (All / Upcoming / Ending Soon / Ongoing) to specials Filter & Sort.
 - [x] Verify Validity counts add to the page total, filtering and toggling off.
 - [x] Add section-specific Clear controls to every Filter & Sort dropdown and verify isolated resets.
+- [ ] Add counted events Price filter (blank price = free) and verify counts, filtering and toggle-off.
