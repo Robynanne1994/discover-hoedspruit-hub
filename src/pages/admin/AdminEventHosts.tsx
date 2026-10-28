@@ -12,8 +12,8 @@ import { eventImageSlot } from "@/lib/eventImageSlots";
 
 const hostSlot = eventImageSlot("host");
 
-type Host = { id: string; name: string; image_url: string | null; link: string | null };
-const empty = { id: "", name: "", image_url: "", link: "" };
+type Host = { id: string; name: string; subtitle: string | null; image_url: string | null; link: string | null };
+const empty = { id: "", name: "", subtitle: "", image_url: "", link: "" };
 
 const AdminEventHosts = () => {
   const qc = useQueryClient();
@@ -23,7 +23,7 @@ const AdminEventHosts = () => {
   const { data: hosts = [], isLoading } = useQuery({
     queryKey: ["admin-event-hosts"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("event_hosts").select("id, name, image_url, link").order("name");
+      const { data, error } = await supabase.from("event_hosts").select("id, name, subtitle, image_url, link").order("name");
       if (error) throw error;
       return data as Host[];
     },
@@ -39,7 +39,7 @@ const AdminEventHosts = () => {
     const name = form.name.trim().replace(/\s+/g, " ");
     if (!name) return toast.error("Please enter the host name.");
     setSaving(true);
-    const row = { name, image_url: form.image_url || null, link: form.link.trim() || null };
+    const row = { name, subtitle: form.subtitle.trim() || null, image_url: form.image_url || null, link: form.link.trim() || null };
     const { error } = form.id
       ? await supabase.from("event_hosts").update(row).eq("id", form.id)
       : await supabase.from("event_hosts").insert(row);
@@ -84,9 +84,10 @@ const AdminEventHosts = () => {
               )}
               <div className="flex-1 min-w-0">
                 <p className="font-medium truncate">{h.name}</p>
+                {h.subtitle && <p className="text-xs text-muted-foreground truncate">{h.subtitle}</p>}
                 <p className="text-xs text-muted-foreground truncate">{h.link || "No link"}</p>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setForm({ id: h.id, name: h.name, image_url: h.image_url || "", link: h.link || "" })}>
+              <Button variant="ghost" size="icon" onClick={() => setForm({ id: h.id, name: h.name, subtitle: h.subtitle || "", image_url: h.image_url || "", link: h.link || "" })}>
                 <Pencil className="h-4 w-4" />
               </Button>
               <Button variant="ghost" size="icon" onClick={() => remove(h)}><Trash2 className="h-4 w-4" /></Button>
@@ -103,6 +104,10 @@ const AdminEventHosts = () => {
               <div>
                 <Label>Host Name *</Label>
                 <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Exactly as used on events" />
+              </div>
+              <div>
+                <Label>Subtitle</Label>
+                <Input value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} placeholder="e.g. Live Music" />
               </div>
               <div>
                 <Label>Link</Label>
