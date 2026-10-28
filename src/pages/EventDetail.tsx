@@ -319,7 +319,7 @@ const EventDetail = () => {
   const { data: eventHostRows } = useQuery({
     queryKey: ["event-hosts"],
     queryFn: async () => {
-      const { data } = await supabase.from("event_hosts").select("name, image_url, link");
+      const { data } = await supabase.from("event_hosts").select("name, subtitle, image_url, link");
       return data ?? [];
     },
   });
