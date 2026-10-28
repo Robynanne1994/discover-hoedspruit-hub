@@ -19,3 +19,4 @@
 - Keep the filter-pill toggle rule (clicking an already-lit pill returns its section to the default choice) in filterPill so every pill row and drawer option shares one behaviour.
 - Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.
 - Keep app store review links in storeReview so the account page's rating prompt and any later entry point share one URL; a platform whose link is not issued yet stays null rather than pointing at a guess.
+- Keep canonical outbound links such as the app download page in appLinks so the share sheet and any later entry point share one URL.
