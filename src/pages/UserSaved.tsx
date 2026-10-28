@@ -15,6 +15,7 @@ import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import { isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
+import { pillToggle } from "@/lib/filterPill";
 
 const PAGE_BG = "#E6E0CC";
 const INK = "#1A1A1A";
@@ -31,10 +32,12 @@ function SubTabs<T extends string>({
   value,
   onChange,
   options,
+  defaultValue,
 }: {
   value: T;
   onChange: (v: T) => void;
   options: { id: T; label: string }[];
+  defaultValue: T;
 }) {
   return (
     <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
@@ -44,7 +47,7 @@ function SubTabs<T extends string>({
           <button
             key={opt.id}
             type="button"
-            onClick={() => onChange(opt.id)}
+            onClick={() => onChange(pillToggle(value, opt.id, defaultValue))}
             style={{
               background: active ? "#423324" : "transparent",
               color: active ? "#fff" : INK,
@@ -335,6 +338,7 @@ const UserSaved = () => {
                   <>
                     <SubTabs<"active" | "expired">
                       value={dealsSub}
+                      defaultValue="active"
                       onChange={setDealsSub}
                       options={[
                         { id: "active", label: "Active" },
@@ -372,6 +376,7 @@ const UserSaved = () => {
                   <>
                     <SubTabs<"upcoming" | "past">
                       value={eventsSub}
+                      defaultValue="upcoming"
                       onChange={setEventsSub}
                       options={[
                         { id: "upcoming", label: "Upcoming" },

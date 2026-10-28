@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { residencyBadge } from "@/lib/residencyBadge";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import { isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
+import { pillToggle } from "@/lib/filterPill";
 
 
 const PAGE_BG = "#E6E0CC";
@@ -445,6 +446,7 @@ const MyProfile = () => {
     if (tab === "events")
       return {
         value: eventsSub,
+        defaultValue: "upcoming",
         onChange: (v: string) => setEventsSub(v as "upcoming" | "past"),
         options: [
           { id: "upcoming", label: "Upcoming", count: liveCount },
@@ -454,6 +456,7 @@ const MyProfile = () => {
     if (tab === "deals")
       return {
         value: dealsSub,
+        defaultValue: "active",
         onChange: (v: string) => setDealsSub(v as "active" | "expired"),
         options: [
           { id: "active", label: "Active", count: liveCount },
@@ -467,6 +470,12 @@ const MyProfile = () => {
     if (categories.length > (tab === "resources" ? 0 : 1))
       return {
         value: activeCategory ?? "all",
+        // Tapping the lit chip returns here: "All" where that chip exists,
+        // otherwise the platform that leads the row on Resources.
+        defaultValue:
+          tab === "resources" || categories.length < 2
+            ? categories[0]?.label ?? "all"
+            : "all",
         onChange: (v: string) => setCategory(v === "all" ? null : v),
         options: [
           ...(tab === "resources" || categories.length < 2
@@ -897,7 +906,7 @@ const MyProfile = () => {
               <button
                 key={o.id}
                 type="button"
-                onClick={() => subFilter.onChange(o.id)}
+                onClick={() => subFilter.onChange(pillToggle(subFilter.value, o.id, subFilter.defaultValue))}
                 aria-pressed={active}
                 style={{
                   flex: "0 0 auto",

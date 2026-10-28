@@ -27,6 +27,7 @@ import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
 import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
+import { pillToggle } from "@/lib/filterPill";
 
 
 // Coffee is deliberately absent — it is a drink, not a cuisine (Robyn).
@@ -1380,7 +1381,7 @@ const CategoryPage = () => {
               key={key}
               label={SORT_LABELS[key]}
               active={sortBy === key}
-              onClick={() => setSortBy(key)}
+              onClick={() => setSortBy(pillToggle(sortBy, key, "default"))}
             />
           ))}
 
@@ -1408,7 +1409,14 @@ const CategoryPage = () => {
                   key={opt.key}
                   label={withCount(opt.label, subCountFor(opt))}
                   active={activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId))}
-                  onClick={() => handleSubFilter(opt.key)}
+                  onClick={() =>
+                    handleSubFilter(
+                      activeSubId != null &&
+                        (activeSubId === opt.key || opt.subIds.includes(activeSubId))
+                        ? null
+                        : opt.key,
+                    )
+                  }
                 />
               ))}
             </RefineSection>

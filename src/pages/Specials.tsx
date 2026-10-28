@@ -19,6 +19,7 @@ import { isEndingSoon, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
+import { pillToggle } from "@/lib/filterPill";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
@@ -486,7 +487,7 @@ const Specials = () => {
               key={o.key}
               label={o.label}
               active={sortBy === o.key}
-              onClick={() => setSortBy(o.key)}
+              onClick={() => setSortBy(pillToggle(sortBy, o.key, "default"))}
             />
           ))}
         </RefineSection>
@@ -530,7 +531,8 @@ const Specials = () => {
                     label={`Ending Soon (${endingSoonCount})`}
                     active={activeTab === ENDING_SOON_TAB}
                     onClick={() => {
-                      setActiveTab(ENDING_SOON_TAB);
+                      const clear = activeTab === ENDING_SOON_TAB;
+                      setActiveTab(clear ? ALL_TAB : ENDING_SOON_TAB);
                       setFilterType([]);
                     }}
                   />
@@ -539,7 +541,7 @@ const Specials = () => {
                   <RefineRectOption
                     label={`Upcoming (${upcomingCount})`}
                     active={activeTab === UPCOMING_TAB}
-                    onClick={() => { setActiveTab(UPCOMING_TAB); setFilterType([]); }}
+                    onClick={() => { const clear = activeTab === UPCOMING_TAB; setActiveTab(clear ? ALL_TAB : UPCOMING_TAB); setFilterType([]); }}
                   />
                 )}
                 {visible.map((t) => (
@@ -548,7 +550,8 @@ const Specials = () => {
                     label={`${t} (${categoryCounts.get(t)})`}
                     active={activeTab === t || filterType.includes(t)}
                     onClick={() => {
-                      setActiveTab(t);
+                      const clear = activeTab === t || filterType.includes(t);
+                      setActiveTab(clear ? ALL_TAB : t);
                       setFilterType([]);
                     }}
                   />
@@ -570,7 +573,7 @@ const Specials = () => {
               key={o.key}
               label={`${o.label} (${filterCounts.booking[o.key]})`}
               active={bookingFilter === o.key}
-              onClick={() => setBookingFilter(o.key)}
+              onClick={() => setBookingFilter(pillToggle(bookingFilter, o.key, "any"))}
             />
           ))}
         </RefineSection>
@@ -586,7 +589,7 @@ const Specials = () => {
               key={o.key}
               label={`${o.label} (${filterCounts.type[o.key]})`}
               active={specialTypeFilter === o.key}
-              onClick={() => setSpecialTypeFilter(o.key)}
+              onClick={() => setSpecialTypeFilter(pillToggle(specialTypeFilter, o.key, "any"))}
             />
           ))}
         </RefineSection>
