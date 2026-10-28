@@ -18,6 +18,7 @@ import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
+import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
@@ -78,7 +79,9 @@ const Specials = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState<string[]>(persisted?.filterType ?? []);
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
-  const [openSection, setOpenSection] = useState<"sort" | "category" | null>("sort");
+  const [openSection, setOpenSection] = useState<"sort" | "category" | "booking" | "special-type" | null>(null);
+  const [bookingFilter, setBookingFilter] = useState<SpecialBookingFilter>(persisted?.bookingFilter ?? "any");
+  const [specialTypeFilter, setSpecialTypeFilter] = useState<SpecialTypeFilter>(persisted?.specialTypeFilter ?? "any");
   const [activeTab, setActiveTab] = useState<string>(persisted?.activeTab ?? ALL_TAB);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -91,11 +94,11 @@ const Specials = () => {
       replace: true,
       state: {
         ...(location.state as object | null),
-        filters: { search, filterType, sortBy, activeTab },
+        filters: { search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter },
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filterType, sortBy, activeTab]);
+  }, [search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter]);
 
 
   const { data: specials, isLoading } = useQuery({
@@ -166,7 +169,7 @@ const Specials = () => {
   }, [specials, search]);
 
 
-  const filteredSpecials = useMemo(() => {
+  const categorySpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
     if (search.trim()) {
@@ -192,6 +195,16 @@ const Specials = () => {
         return lc.some((t) => lcCats.includes(t));
       });
     }
+
+    return result;
+  }, [specials, activeTab, filterType, search]);
+
+  const filterCounts = useMemo(() => countSpecialFilters(categorySpecials), [categorySpecials]);
+
+  const filteredSpecials = useMemo(() => {
+    const result = categorySpecials.filter((s) =>
+      specialMatchesBooking(s, bookingFilter) && specialMatchesType(s, specialTypeFilter)
+    );
 
     // Sort
     if (sortBy === "alphabetical") {
@@ -225,7 +238,7 @@ const Specials = () => {
 
     return result;
 
-  }, [specials, activeTab, filterType, search, sortBy]);
+  }, [categorySpecials, bookingFilter, specialTypeFilter, activeTab, sortBy]);
 
   // Featured deals headline the page; everything else falls into the grid below.
   const featured = useMemo(() => filteredSpecials.filter((s) => s.is_featured && !isUpcomingSpecial(s)), [filteredSpecials]);
@@ -305,13 +318,13 @@ const Specials = () => {
             </button>
             <button
               aria-label="FILTER & SORT"
-              onClick={() => setShowFilters(true)}
+              onClick={() => { setOpenSection(null); setShowFilters(true); }}
               style={{
                 width: 40,
                 height: 40,
                 borderRadius: 999,
                 background:
-                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default"
+                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any"
                     ? "#423324"
                     : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
@@ -320,7 +333,7 @@ const Specials = () => {
                 justifyContent: "center",
                 cursor: "pointer",
                 color:
-                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default"
+                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any"
                     ? "#FFFFFF"
                     : "#1A1A1A",
               }}
@@ -453,6 +466,8 @@ const Specials = () => {
           setFilterType([]);
           setActiveTab(ALL_TAB);
           setSortBy("default");
+          setBookingFilter("any");
+          setSpecialTypeFilter("any");
           setSearch("");
           setOpenSection(null);
         }}
@@ -542,6 +557,38 @@ const Specials = () => {
             );
           })()}
 
+        </RefineSection>
+
+        <RefineSection
+          label="Booking"
+          summary={bookingFilter === "any" ? undefined : SPECIAL_BOOKING_OPTIONS.find((o) => o.key === bookingFilter)?.label}
+          open={openSection === "booking"}
+          onToggle={() => setOpenSection(openSection === "booking" ? null : "booking")}
+        >
+          {SPECIAL_BOOKING_OPTIONS.map((o) => (
+            <RefineRectOption
+              key={o.key}
+              label={`${o.label} (${filterCounts.booking[o.key]})`}
+              active={bookingFilter === o.key}
+              onClick={() => setBookingFilter(o.key)}
+            />
+          ))}
+        </RefineSection>
+
+        <RefineSection
+          label="Special Type"
+          summary={specialTypeFilter === "any" ? undefined : SPECIAL_TYPE_OPTIONS.find((o) => o.key === specialTypeFilter)?.label}
+          open={openSection === "special-type"}
+          onToggle={() => setOpenSection(openSection === "special-type" ? null : "special-type")}
+        >
+          {SPECIAL_TYPE_OPTIONS.map((o) => (
+            <RefineRectOption
+              key={o.key}
+              label={`${o.label} (${filterCounts.type[o.key]})`}
+              active={specialTypeFilter === o.key}
+              onClick={() => setSpecialTypeFilter(o.key)}
+            />
+          ))}
         </RefineSection>
       </RefineDrawer>
     </div>
@@ -673,7 +720,7 @@ const FeaturedSection = ({
     <section style={{ marginBottom: 24 }}>
       <SectionHead
         icon={<Star size={13} strokeWidth={1.8} color={COLOR.pillActiveBg} />}
-        label={isCarousel ? "Top deals this week" : "Deal of the week"}
+        label="TOP ACTIVE DEALS"
         right={isCarousel ? `${index + 1} / ${items.length}` : undefined}
       />
 
