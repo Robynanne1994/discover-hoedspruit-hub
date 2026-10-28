@@ -1082,12 +1082,12 @@ const Events = () => {
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
         >
-          <RefineOption label="Date (Soonest First)" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
-          <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
-          <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
-          <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
-          <RefineOption label="Duration (Shortest First)" active={sortBy === "duration-asc"} onClick={() => setSortBy("duration-asc")} />
-          <RefineOption label="Duration (Longest First)" active={sortBy === "duration-desc"} onClick={() => setSortBy("duration-desc")} />
+          <RefineOption label="Date (Soonest First)" active={sortBy === "date-asc"} onClick={() => setSortBy(pillToggle(sortBy, "date-asc", "date-asc"))} />
+          <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy(pillToggle(sortBy, "date-desc", "date-asc"))} />
+          <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy(pillToggle(sortBy, "title-asc", "date-asc"))} />
+          <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy(pillToggle(sortBy, "title-desc", "date-asc"))} />
+          <RefineOption label="Duration (Shortest First)" active={sortBy === "duration-asc"} onClick={() => setSortBy(pillToggle(sortBy, "duration-asc", "date-asc"))} />
+          <RefineOption label="Duration (Longest First)" active={sortBy === "duration-desc"} onClick={() => setSortBy(pillToggle(sortBy, "duration-desc", "date-asc"))} />
         </RefineSection>
 
         <RefineSection
@@ -1102,7 +1102,7 @@ const Events = () => {
                 key={f.value}
                 label={`${f.label} (${getFilterCount(f.value, sortedEvents)})`}
                 active={activeFilter === f.value}
-                onClick={() => setActiveFilter(f.value)}
+                onClick={() => handleFilterPill(f.value)}
               />
             ))}
           </div>
@@ -1132,7 +1132,7 @@ const Events = () => {
                     key={t}
                     label={`${t} (${tagCounts.get(t)})`}
                     active={tagFilter === t}
-                    onClick={() => setTagFilter(t)}
+                    onClick={() => setTagFilter(pillToggle(tagFilter, t, null))}
                   />
                 ))}
               </div>
@@ -1150,8 +1150,8 @@ const Events = () => {
         >
           <div>
             <RefineRectOption label="Any" active={priceFilter === "any"} onClick={() => setPriceFilter("any")} />
-            <RefineRectOption label="Free" active={priceFilter === "free"} onClick={() => setPriceFilter("free")} />
-            <RefineRectOption label="Paid" active={priceFilter === "paid"} onClick={() => setPriceFilter("paid")} />
+            <RefineRectOption label="Free" active={priceFilter === "free"} onClick={() => setPriceFilter(pillToggle(priceFilter, "free", "any"))} />
+            <RefineRectOption label="Paid" active={priceFilter === "paid"} onClick={() => setPriceFilter(pillToggle(priceFilter, "paid", "any"))} />
           </div>
         </RefineSection>
 
@@ -1170,7 +1170,7 @@ const Events = () => {
                   key={o.value}
                   label={`${o.label} (${n})`}
                   active={durationFilter === o.value}
-                  onClick={() => setDurationFilter(o.value)}
+                  onClick={() => setDurationFilter(pillToggle(durationFilter, o.value, "all"))}
                 />
               );
             })}
@@ -1193,14 +1193,14 @@ const Events = () => {
               <RefineRectOption
                 label={`Booking Required (${bookingCounts.required})`}
                 active={bookingFilter === "required"}
-                onClick={() => setBookingFilter("required")}
+                onClick={() => setBookingFilter(pillToggle(bookingFilter, "required", "any"))}
               />
             )}
             {bookingCounts["not-required"] > 0 && (
               <RefineRectOption
                 label={`Booking Not Required (${bookingCounts["not-required"]})`}
                 active={bookingFilter === "not-required"}
-                onClick={() => setBookingFilter("not-required")}
+                onClick={() => setBookingFilter(pillToggle(bookingFilter, "not-required", "any"))}
               />
             )}
           </div>
@@ -1214,7 +1214,7 @@ const Events = () => {
         >
           <div>
             {RECURRENCE_OPTIONS.filter((o) => o.value === "any" || recurrenceCounts[o.value] > 0).map((o) => (
-              <RefineRectOption key={o.value} label={`${o.label} (${recurrenceCounts[o.value]})`} active={recurrenceFilter === o.value} onClick={() => setRecurrenceFilter(o.value)} />
+              <RefineRectOption key={o.value} label={`${o.label} (${recurrenceCounts[o.value]})`} active={recurrenceFilter === o.value} onClick={() => setRecurrenceFilter(pillToggle(recurrenceFilter, o.value, "any"))} />
             ))}
           </div>
         </RefineSection>
@@ -1227,7 +1227,7 @@ const Events = () => {
         >
           <div>
             {TIME_OPTIONS.filter((o) => o.value === "any" || timeCounts[o.value] > 0).map((o) => (
-              <RefineRectOption key={o.value} label={`${o.label} (${timeCounts[o.value]})`} active={timeFilter === o.value} onClick={() => setTimeFilter(o.value)} />
+              <RefineRectOption key={o.value} label={`${o.label} (${timeCounts[o.value]})`} active={timeFilter === o.value} onClick={() => setTimeFilter(pillToggle(timeFilter, o.value, "any"))} />
             ))}
           </div>
         </RefineSection>
