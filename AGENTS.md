@@ -12,4 +12,4 @@
 - Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and photo/link fallback in eventHosts so the event page and tests share one rule.
 - Keep detail-page tab bars on flex:1 nowrap labels inside an overflow-x auto nav so they always fill the row and only slide sideways when they cannot fit; never cap the spread at a fixed tab count.
 - Keep specials booking and discount-type matching and counts in specialFilters so the drawer counts and displayed results use identical rules.
-- Keep event recurrence matching and start-time buckets and counts in eventRefinements, reusing the schedule parser for legacy patterns so counts and filtered results agree.
+- Keep event recurrence matching and start-time buckets and counts, plus per-recurrence-option counts, in eventRefinements, reusing the schedule parser for legacy patterns so counts and filtered results agree.
