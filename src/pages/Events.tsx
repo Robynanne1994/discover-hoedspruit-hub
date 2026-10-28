@@ -20,7 +20,18 @@ import {
   parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
-import { DURATION_OPTIONS, eventDurationDays, eventMatchesDuration, eventRequiresBooking, type DurationFilter, type BookingFilter } from "@/lib/eventDuration";
+import {
+  DURATION_OPTIONS,
+  bookingFilterLabel,
+  countEventBooking,
+  countEventDurations,
+  durationFilterLabel,
+  eventDurationDays,
+  eventMatchesDuration,
+  eventRequiresBooking,
+  type DurationFilter,
+  type BookingFilter,
+} from "@/lib/eventDuration";
 import { isRecentPast } from "@/lib/eventPastWindow";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
@@ -581,7 +592,7 @@ const Events = () => {
   
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | "duration" | "booking" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | "duration" | "booking" | null>(null);
   const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
   const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
   const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
@@ -657,6 +668,8 @@ const Events = () => {
   }, [sortedEvents, search, activeFilter]);
   const availableTags = useMemo(() => availableEventTags(categoryEvents), [categoryEvents]);
   const tagCounts = useMemo(() => countEventTags(categoryEvents, availableTags), [categoryEvents, availableTags]);
+  const durationCounts = useMemo(() => countEventDurations(categoryEvents), [categoryEvents]);
+  const bookingCounts = useMemo(() => countEventBooking(categoryEvents), [categoryEvents]);
 
   const filtered = useMemo(() => {
     let list = categoryEvents;
@@ -1051,8 +1064,8 @@ const Events = () => {
             sortBy === "date-asc" ? "Date (Soonest First)" :
             sortBy === "date-desc" ? "Date (Latest First)" :
             sortBy === "title-asc" ? "Alphabetically (A-Z)" :
-            sortBy === "duration-asc" ? "Duration: Shortest First" :
-            sortBy === "duration-desc" ? "Duration: Longest First" :
+            sortBy === "duration-asc" ? "Duration (Shortest First)" :
+            sortBy === "duration-desc" ? "Duration (Longest First)" :
             "Alphabetically (Z-A)"
           }
           open={openSection === "sort"}
@@ -1062,8 +1075,8 @@ const Events = () => {
           <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
           <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
           <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
-          <RefineOption label="Duration: Shortest First" active={sortBy === "duration-asc"} onClick={() => setSortBy("duration-asc")} />
-          <RefineOption label="Duration: Longest First" active={sortBy === "duration-desc"} onClick={() => setSortBy("duration-desc")} />
+          <RefineOption label="Duration (Shortest First)" active={sortBy === "duration-asc"} onClick={() => setSortBy("duration-asc")} />
+          <RefineOption label="Duration (Longest First)" active={sortBy === "duration-desc"} onClick={() => setSortBy("duration-desc")} />
         </RefineSection>
 
         <RefineSection
@@ -1138,9 +1151,18 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "duration" ? null : "duration")}
         >
           <div>
-            {DURATION_OPTIONS.map((o) => (
-              <RefineRectOption key={o.value} label={o.label} active={durationFilter === o.value} onClick={() => setDurationFilter(o.value)} />
-            ))}
+            {DURATION_OPTIONS.map((o) => {
+              const n = durationCounts[o.value];
+              if (o.value !== "all" && n === 0) return null;
+              return (
+                <RefineRectOption
+                  key={o.value}
+                  label={`${o.label} (${n})`}
+                  active={durationFilter === o.value}
+                  onClick={() => setDurationFilter(o.value)}
+                />
+              );
+            })}
           </div>
         </RefineSection>
 
@@ -1151,9 +1173,25 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "booking" ? null : "booking")}
         >
           <div>
-            <RefineRectOption label="Any" active={bookingFilter === "any"} onClick={() => setBookingFilter("any")} />
-            <RefineRectOption label="Booking Required" active={bookingFilter === "required"} onClick={() => setBookingFilter("required")} />
-            <RefineRectOption label="Booking Not Required" active={bookingFilter === "not-required"} onClick={() => setBookingFilter("not-required")} />
+            <RefineRectOption
+              label={`Any (${bookingCounts.any})`}
+              active={bookingFilter === "any"}
+              onClick={() => setBookingFilter("any")}
+            />
+            {bookingCounts.required > 0 && (
+              <RefineRectOption
+                label={`Booking Required (${bookingCounts.required})`}
+                active={bookingFilter === "required"}
+                onClick={() => setBookingFilter("required")}
+              />
+            )}
+            {bookingCounts["not-required"] > 0 && (
+              <RefineRectOption
+                label={`Booking Not Required (${bookingCounts["not-required"]})`}
+                active={bookingFilter === "not-required"}
+                onClick={() => setBookingFilter("not-required")}
+              />
+            )}
           </div>
         </RefineSection>
 
