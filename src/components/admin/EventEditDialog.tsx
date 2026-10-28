@@ -249,7 +249,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Date <span className="text-xs text-muted-foreground">(e.g. "Every Saturday")</span></Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
-            <div><Label>End Time</Label><Input type="time" value={form.end_time || ""} onChange={(e) => set("end_time", e.target.value || null)} /></div>
+            <div>
+              <Label>End Time</Label>
+              <Input type="time" disabled={isLateEndTime(form.end_time)} value={isLateEndTime(form.end_time) ? "" : (form.end_time || "")} onChange={(e) => set("end_time", e.target.value || null)} />
+              <label className="mt-2 flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={isLateEndTime(form.end_time)} onChange={(e) => set("end_time", e.target.checked ? LATE_END_TIME : null)} />
+                Late
+              </label>
+            </div>
           </div>
           <div className="space-y-2 p-3 border rounded">
             <Label className="text-sm font-semibold text-slate-950">Performances <span className="text-xs text-muted-foreground font-normal">(use for same show on multiple separate dates, e.g. a musical)</span></Label>
