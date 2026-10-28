@@ -610,6 +610,33 @@ export type Database = {
         }
         Relationships: []
       }
+      event_hosts: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          link: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           additional_emails: string[]
