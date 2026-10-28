@@ -15,6 +15,7 @@ import SavedCard from "@/components/profile/SavedCard";
 import Seo from "@/components/Seo";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import { isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
+import { pillToggle } from "@/lib/filterPill";
 
 const PAGE_BG = "#E6E0CC";
 const INK = "#1A1A1A";
