@@ -486,7 +486,7 @@ const Specials = () => {
               key={o.key}
               label={o.label}
               active={sortBy === o.key}
-              onClick={() => setSortBy(o.key)}
+              onClick={() => setSortBy(pillToggle(sortBy, o.key, "default"))}
             />
           ))}
         </RefineSection>
@@ -570,7 +570,7 @@ const Specials = () => {
               key={o.key}
               label={`${o.label} (${filterCounts.booking[o.key]})`}
               active={bookingFilter === o.key}
-              onClick={() => setBookingFilter(o.key)}
+              onClick={() => setBookingFilter(pillToggle(bookingFilter, o.key, "any"))}
             />
           ))}
         </RefineSection>
@@ -586,7 +586,7 @@ const Specials = () => {
               key={o.key}
               label={`${o.label} (${filterCounts.type[o.key]})`}
               active={specialTypeFilter === o.key}
-              onClick={() => setSpecialTypeFilter(o.key)}
+              onClick={() => setSpecialTypeFilter(pillToggle(specialTypeFilter, o.key, "any"))}
             />
           ))}
         </RefineSection>

@@ -41,6 +41,7 @@ import { pinFeatured } from "@/lib/featuredFirst";
 import Seo from "@/components/Seo";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
+import { pillToggle } from "@/lib/filterPill";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
