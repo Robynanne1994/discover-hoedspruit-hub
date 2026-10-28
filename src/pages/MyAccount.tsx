@@ -44,6 +44,7 @@ import {
   Briefcase,
   Store,
   Radio,
+  Share2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -61,6 +62,9 @@ import {
   type SettingsRowItem,
 } from "@/components/settings/SettingsList";
 import { toast } from "sonner";
+import { useShare } from "@/hooks/useShare";
+import { APPLE_REVIEW_URL, openStoreReview } from "@/lib/storeReview";
+import PrimaryButton from "@/components/ui/PrimaryButton";
 import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 import {
   Dialog,
@@ -78,8 +82,10 @@ const MyAccount = () => {
   const { isGuest, exitGuest } = useGuestAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const share = useShare();
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
+  const [rateOpen, setRateOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<ActiveSection>(null);
   
   const [unreadCount, setUnreadCount] = useState(0);
@@ -496,6 +502,20 @@ const MyAccount = () => {
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
   ];
 
+  // Sharing the app itself: the phone's own sheet, with copy link and the
+  // person's messaging apps.
+  const shareApp = () =>
+    share({
+      title: "Hello Hoedspruit",
+      text: "Find events, deals and places to eat in Hoedspruit.",
+      url: "/",
+    });
+
+  const communityItems: SettingsRowItem[] = [
+    { label: "Share the App", icon: Share2, onClick: shareApp },
+    { label: "Rate Us on App Store", icon: Star, onClick: () => setRateOpen(true) },
+  ];
+
   const adminItems: SettingsRowItem[] = [{ label: "Dashboard", href: "/admin", icon: LayoutDashboard }];
 
   return (
@@ -523,6 +543,8 @@ const MyAccount = () => {
       <SettingsSection label="Submissions" items={submissionsItems} />
 
       <SettingsSection label="Support" items={helpInfoItems} />
+
+      <SettingsSection label="Community Love" items={communityItems} />
 
       {isAdmin && <SettingsSection label="Admin" items={adminItems} />}
 
@@ -576,6 +598,51 @@ const MyAccount = () => {
           </button>
         )}
       </div>
+
+      {/* Which store to rate in depends on the phone in hand, so ask before
+          opening the review screen. */}
+      <Dialog open={rateOpen} onOpenChange={setRateOpen}>
+        <DialogContent className="max-w-[340px]">
+          <DialogHeader>
+            <DialogTitle style={{ ...type.cardTitleL, fontSize: 17, textAlign: "center" }}>
+              Apple (iOS) or Android (Google Play)
+            </DialogTitle>
+          </DialogHeader>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <PrimaryButton
+              as="a"
+              href={APPLE_REVIEW_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              fullWidth
+              onClick={() => setRateOpen(false)}
+            >
+              Apple (iOS)
+            </PrimaryButton>
+            <button
+              type="button"
+              onClick={() => {
+                setRateOpen(false);
+                openStoreReview("android") || toast("Android rating link coming soon.");
+              }}
+              style={{
+                width: "100%",
+                height: 48,
+                borderRadius: 9999,
+                background: "transparent",
+                border: "1.5px solid #715A3D",
+                color: "#715A3D",
+                fontFamily: SANS,
+                fontSize: 15,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Android (Google Play)
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
     </div>
