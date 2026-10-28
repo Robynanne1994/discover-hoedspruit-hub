@@ -63,6 +63,8 @@ import {
 } from "@/components/settings/SettingsList";
 import { toast } from "sonner";
 import { useShare } from "@/hooks/useShare";
+import { APP_DOWNLOAD_URL } from "@/lib/appLinks";
+
 import { APPLE_REVIEW_URL, openStoreReview } from "@/lib/storeReview";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
@@ -508,7 +510,7 @@ const MyAccount = () => {
     share({
       title: "Hello Hoedspruit",
       text: "Find events, deals and places to eat in Hoedspruit.",
-      url: "/",
+      url: APP_DOWNLOAD_URL,
     });
 
   const communityItems: SettingsRowItem[] = [
