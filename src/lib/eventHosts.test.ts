@@ -22,3 +22,13 @@ describe("resolveHost", () => {
     expect(resolveHost({ name: "Other" }, dir).image).toBeUndefined();
   });
 });
+
+describe("resolveHost subtitle", () => {
+  const dirWithSub = buildHostDirectory([{ name: "Hoedspruit Running Club", subtitle: "Weekly social runs" }]);
+  it("fills the subtitle from a matching host name", () => {
+    expect(resolveHost({ name: "hoedspruit running club" }, dirWithSub).subtitle).toBe("Weekly social runs");
+  });
+  it("keeps the event's own subtitle", () => {
+    expect(resolveHost({ name: "Hoedspruit Running Club", subtitle: "Trail series" }, dirWithSub).subtitle).toBe("Trail series");
+  });
+});

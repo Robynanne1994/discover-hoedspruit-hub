@@ -1,0 +1,2 @@
+ALTER TABLE public.event_hosts ADD COLUMN subtitle text;
+COMMENT ON COLUMN public.event_hosts.subtitle IS 'Optional host subtitle shown under the host name on event pages when the event itself has no subtitle.';
