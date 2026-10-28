@@ -24,3 +24,4 @@
 - [x] Add a Community Love section to Settings with Share the App and Rate Us on App Store.
 - [x] Verify the rating pop-up offers Apple and Android and that Apple carries the App Store review link.
 - [x] Restyle the rating pop-up: "Choose Your App Store" title, white panel, close button clear of the title.
+- [x] Round the rating pop-up corners to 16px to match app card styling.
