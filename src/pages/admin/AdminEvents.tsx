@@ -1,3 +1,4 @@
+import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -350,7 +351,14 @@ const AdminEvents = () => {
               <div><Label>Location <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Start Time</Label><Input type="time" value={form.start_time} onChange={(e) => setForm({ ...form, start_time: e.target.value })} /></div>
-                <div><Label>End Time</Label><Input type="time" value={form.end_time} onChange={(e) => setForm({ ...form, end_time: e.target.value })} /></div>
+                <div>
+                  <Label>End Time</Label>
+                  <Input type="time" disabled={isLateEndTime(form.end_time)} value={isLateEndTime(form.end_time) ? "" : form.end_time} onChange={(e) => setForm({ ...form, end_time: e.target.value })} />
+                  <label className="mt-2 flex items-center gap-2 text-sm">
+                    <input type="checkbox" checked={isLateEndTime(form.end_time)} onChange={(e) => setForm({ ...form, end_time: e.target.checked ? LATE_END_TIME : "" })} />
+                    Late
+                  </label>
+                </div>
               </div>
               <div><Label>Tag</Label><Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} placeholder="e.g. Market, Sport, Dining" /></div>
               <div className="grid grid-cols-2 gap-4">

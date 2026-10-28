@@ -1,3 +1,4 @@
+import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -229,7 +230,7 @@ const AdminEventsImport = () => {
           sub_tag_1: row.sub_tag_1 || null,
           sub_tag_2: row.sub_tag_2 || null,
           start_time: normalizeTime(row.start_time) ?? (row.start_time || null),
-          end_time: normalizeTime(row.end_time) ?? (row.end_time || null),
+          end_time: isLateEndTime(row.end_time) ? LATE_END_TIME : (normalizeTime(row.end_time) ?? (row.end_time || null)),
           recurrence: row.recurrence || null,
           google_maps_link: row.google_maps_link || null,
           social_media_link: row.social_media_link || null,
