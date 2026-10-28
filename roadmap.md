@@ -9,3 +9,5 @@
 - [x] Add counted Booking and Special Type filters and verify filtering.
 - [x] Add event Recurrence filter with all requested frequencies.
 - [x] Add counted event Time filter and verify noon and 5pm boundaries.
+- [x] Rename event Time filter section to Time of Day.
+- [x] Add counts to event Recurrence pills and verify they match the stored recurrence field.
