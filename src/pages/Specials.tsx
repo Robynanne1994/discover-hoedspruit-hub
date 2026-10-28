@@ -513,7 +513,7 @@ const Specials = () => {
               .filter((c) => c !== ALL_TAB)
               .filter((c) => (categoryCounts.get(c) || 0) > 0);
             const total = totalCount;
-            if (visible.length === 0 && upcomingCount === 0 && endingSoonCount === 0) {
+            if (visible.length === 0) {
               return <p style={{ ...type.meta, margin: 0 }}>No categories available.</p>;
             }
             return (
@@ -526,24 +526,6 @@ const Specials = () => {
                     setFilterType([]);
                   }}
                 />
-                {endingSoonCount > 0 && (
-                  <RefineRectOption
-                    label={`Ending Soon (${endingSoonCount})`}
-                    active={activeTab === ENDING_SOON_TAB}
-                    onClick={() => {
-                      const clear = activeTab === ENDING_SOON_TAB;
-                      setActiveTab(clear ? ALL_TAB : ENDING_SOON_TAB);
-                      setFilterType([]);
-                    }}
-                  />
-                )}
-                {upcomingCount > 0 && (
-                  <RefineRectOption
-                    label={`Upcoming (${upcomingCount})`}
-                    active={activeTab === UPCOMING_TAB}
-                    onClick={() => { const clear = activeTab === UPCOMING_TAB; setActiveTab(clear ? ALL_TAB : UPCOMING_TAB); setFilterType([]); }}
-                  />
-                )}
                 {visible.map((t) => (
                   <RefineRectOption
                     key={t}
