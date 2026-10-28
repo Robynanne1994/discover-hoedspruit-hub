@@ -3,12 +3,13 @@ import { describe, expect, it } from "vitest";
 import {
   hasStarted,
   isEndingSoon,
+  isOngoingSpecial,
   savingLabel,
   specialDateLine,
   specialMeta,
   specialValue,
 } from "@/lib/specialValue";
-import { specialToday } from "@/lib/specialVisibility";
+import { isUpcomingSpecial, specialToday } from "@/lib/specialVisibility";
 
 // Deals are entered by hand, so the value bar has to cope with a price, a
 // free-text offer, or nothing at all.
@@ -199,5 +200,34 @@ describe("countdown gating", () => {
 
   it("keeps an upcoming deal out of the value bar's urgent flag", () => {
     expect(specialMeta({ valid_from: inDays(2), valid_until: inDays(5) }).urgent).toBe(false);
+  });
+});
+
+// The drawer's Validity filter offers All / Upcoming / Ending Soon / Ongoing,
+// so every special on the page has to land in exactly one of the three.
+describe("validity states", () => {
+  const inDays = (n: number) => {
+    const [y, m, d] = specialToday().split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+  };
+
+  it("puts every special in exactly one validity state", () => {
+    const cases = [
+      { valid_from: inDays(2), valid_until: inDays(5) }, // upcoming
+      { valid_until: inDays(5) }, // ending soon
+      { valid_until: inDays(30) }, // ongoing
+      {}, // ongoing with no dates at all
+    ];
+    for (const s of cases) {
+      const states = [isUpcomingSpecial(s), isEndingSoon(s), isOngoingSpecial(s)];
+      expect(states.filter(Boolean)).toHaveLength(1);
+    }
+  });
+
+  it("calls a deal ongoing once it is past its final week", () => {
+    expect(isOngoingSpecial({ valid_from: inDays(-3), valid_until: inDays(8) })).toBe(true);
+    expect(isOngoingSpecial({})).toBe(true);
+    expect(isOngoingSpecial({ valid_from: inDays(2) })).toBe(false);
+    expect(isOngoingSpecial({ valid_until: inDays(3) })).toBe(false);
   });
 });
