@@ -7,3 +7,5 @@
 - [x] Rename specials featured heading to TOP ACTIVE DEALS.
 - [x] Keep specials Filter & Sort sections closed on every opening.
 - [x] Add counted Booking and Special Type filters and verify filtering.
+- [x] Add event Recurrence filter with all requested frequencies.
+- [x] Add counted event Time filter and verify noon and 5pm boundaries.
