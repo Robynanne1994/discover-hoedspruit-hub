@@ -1,3 +1,4 @@
+import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
