@@ -18,7 +18,7 @@ import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
-import { sanitizeContactArray } from "@/lib/contacts";
+import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
 
@@ -27,7 +27,7 @@ const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimon
 
 // All three host photos land in the same 48px circle, so they share one slot.
 const hostSlot = eventImageSlot("host");
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", booking_link_type: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], email_label: "", phone_label: "", whatsapp_label: "", additional_email_labels: [] as string[], additional_phone_labels: [] as string[], additional_whatsapp_labels: [] as string[], gallery_images: "", booking_link: "", booking_link_type: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -179,9 +179,15 @@ const AdminEvents = () => {
         contact_email: values.contact_email || null,
         contact_phone: values.contact_phone || null,
         contact_whatsapp: values.contact_whatsapp || null,
-        additional_emails: sanitizeContactArray(values.additional_emails),
-        additional_phones: sanitizeContactArray(values.additional_phones),
-        additional_whatsapps: sanitizeContactArray(values.additional_whatsapps),
+        email_label: ((values as any).email_label || "").trim() || null,
+        additional_emails: sanitizeContactPairs(values.additional_emails, (values as any).additional_email_labels).values,
+        additional_email_labels: sanitizeContactPairs(values.additional_emails, (values as any).additional_email_labels).labels,
+        phone_label: ((values as any).phone_label || "").trim() || null,
+        additional_phones: sanitizeContactPairs(values.additional_phones, (values as any).additional_phone_labels).values,
+        additional_phone_labels: sanitizeContactPairs(values.additional_phones, (values as any).additional_phone_labels).labels,
+        whatsapp_label: ((values as any).whatsapp_label || "").trim() || null,
+        additional_whatsapps: sanitizeContactPairs(values.additional_whatsapps, (values as any).additional_whatsapp_labels).values,
+        additional_whatsapp_labels: sanitizeContactPairs(values.additional_whatsapps, (values as any).additional_whatsapp_labels).labels,
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         booking_link_type: values.booking_link_type || null,
@@ -261,8 +267,14 @@ const AdminEvents = () => {
       contact_phone: (ev as any).contact_phone ?? "",
       contact_whatsapp: (ev as any).contact_whatsapp ?? "",
       additional_emails: ((ev as any).additional_emails ?? []) as string[],
+      email_label: (ev as any).email_label ?? "",
+      additional_email_labels: ((ev as any).additional_email_labels ?? []) as string[],
       additional_phones: ((ev as any).additional_phones ?? []) as string[],
+      phone_label: (ev as any).phone_label ?? "",
+      additional_phone_labels: ((ev as any).additional_phone_labels ?? []) as string[],
       additional_whatsapps: ((ev as any).additional_whatsapps ?? []) as string[],
+      whatsapp_label: (ev as any).whatsapp_label ?? "",
+      additional_whatsapp_labels: ((ev as any).additional_whatsapp_labels ?? []) as string[],
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
       booking_link_type: (ev as any).booking_link_type ?? "",
@@ -455,6 +467,10 @@ const AdminEvents = () => {
                   onPrimaryChange={(v) => setForm({ ...form, contact_email: v })}
                   extras={form.additional_emails}
                   onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                  primaryLabel={form.email_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
+                  extraLabels={form.additional_email_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                   placeholder="info@example.com"
                   addLabel="Add email"
                 />
@@ -465,6 +481,10 @@ const AdminEvents = () => {
                   onPrimaryChange={(v) => setForm({ ...form, contact_phone: v })}
                   extras={form.additional_phones}
                   onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                  primaryLabel={form.phone_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
+                  extraLabels={form.additional_phone_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                   placeholder="+27 ..."
                   addLabel="Add phone"
                 />
@@ -475,6 +495,10 @@ const AdminEvents = () => {
                   onPrimaryChange={(v) => setForm({ ...form, contact_whatsapp: v })}
                   extras={form.additional_whatsapps}
                   onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                  primaryLabel={form.whatsapp_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
+                  extraLabels={form.additional_whatsapp_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                   placeholder="+27 ..."
                   addLabel="Add WhatsApp"
                 />
