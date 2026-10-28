@@ -23,3 +23,4 @@
 - [x] Add counted events Price filter (blank price = free) and verify counts, filtering and toggle-off.
 - [x] Add a Community Love section to Settings with Share the App and Rate Us on App Store.
 - [x] Verify the rating pop-up offers Apple and Android and that Apple carries the App Store review link.
+- [x] Restyle the rating pop-up: "Choose Your App Store" title, white panel, close button clear of the title.
