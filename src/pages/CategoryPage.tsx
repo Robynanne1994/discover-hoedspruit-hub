@@ -1380,7 +1380,7 @@ const CategoryPage = () => {
               key={key}
               label={SORT_LABELS[key]}
               active={sortBy === key}
-              onClick={() => setSortBy(key)}
+              onClick={() => setSortBy(pillToggle(sortBy, key, "default"))}
             />
           ))}
 

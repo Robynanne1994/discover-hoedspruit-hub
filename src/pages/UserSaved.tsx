@@ -335,6 +335,7 @@ const UserSaved = () => {
                   <>
                     <SubTabs<"active" | "expired">
                       value={dealsSub}
+                      defaultValue="active"
                       onChange={setDealsSub}
                       options={[
                         { id: "active", label: "Active" },
