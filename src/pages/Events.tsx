@@ -974,9 +974,13 @@ const Events = () => {
             <p style={{ ...type.body, margin: 0 }}>
               No events match your filters.
             </p>
-            {(tagFilter || activeFilter !== "all" || search) && (
+            {(tagFilter || activeFilter !== "all" || search || recurrenceFilter !== "any" || timeFilter !== "any") && (
               <button
-                onClick={() => updateParams({ t: null, f: null, q: null })}
+                onClick={() => {
+                  updateParams({ t: null, f: null, q: null });
+                  setRecurrenceFilter("any");
+                  setTimeFilter("any");
+                }}
                 style={{
                   marginTop: 12,
                   background: "transparent",
