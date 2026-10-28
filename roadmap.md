@@ -17,4 +17,5 @@
 - [x] Verify contact CSV round trips and first-contact actions without changing booking.
 - [x] Make every filter and sort pill toggle off when clicked again.
 - [x] Verify pill toggle behaviour on events, specials, category and profile pages.
-- [ ] Add counted Validity filter (All / Upcoming / Ending Soon / Ongoing) to specials Filter & Sort.
+- [x] Add counted Validity filter (All / Upcoming / Ending Soon / Ongoing) to specials Filter & Sort.
+- [x] Verify Validity counts add to the page total, filtering and toggling off.
