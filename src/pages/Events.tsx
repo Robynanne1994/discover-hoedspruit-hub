@@ -31,7 +31,7 @@ import {
   type BookingFilter,
 } from "@/lib/eventDuration";
 import { isRecentPast } from "@/lib/eventPastWindow";
-import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
+import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventRecurrence, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { buildEventGroups } from "@/lib/eventGroups";
@@ -672,6 +672,7 @@ const Events = () => {
   const durationCounts = useMemo(() => countEventDurations(categoryEvents), [categoryEvents]);
   const bookingCounts = useMemo(() => countEventBooking(categoryEvents), [categoryEvents]);
   const timeCounts = useMemo(() => countEventTimes(categoryEvents), [categoryEvents]);
+  const recurrenceCounts = useMemo(() => countEventRecurrence(categoryEvents), [categoryEvents]);
 
   const filtered = useMemo(() => {
     let list = categoryEvents;
@@ -1212,14 +1213,14 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "recurrence" ? null : "recurrence")}
         >
           <div>
-            {RECURRENCE_OPTIONS.map((o) => (
-              <RefineRectOption key={o.value} label={o.label} active={recurrenceFilter === o.value} onClick={() => setRecurrenceFilter(o.value)} />
+            {RECURRENCE_OPTIONS.filter((o) => o.value === "any" || recurrenceCounts[o.value] > 0).map((o) => (
+              <RefineRectOption key={o.value} label={`${o.label} (${recurrenceCounts[o.value]})`} active={recurrenceFilter === o.value} onClick={() => setRecurrenceFilter(o.value)} />
             ))}
           </div>
         </RefineSection>
 
         <RefineSection
-          label="Time"
+          label="Time of Day"
           summary={timeFilter === "any" ? undefined : TIME_OPTIONS.find((o) => o.value === timeFilter)?.label}
           open={openSection === "time-of-day"}
           onToggle={() => setOpenSection(openSection === "time-of-day" ? null : "time-of-day")}
