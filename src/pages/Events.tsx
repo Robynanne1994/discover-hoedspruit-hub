@@ -20,6 +20,7 @@ import {
   parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
+import { DURATION_OPTIONS, eventDurationDays, eventMatchesDuration, eventRequiresBooking, type DurationFilter, type BookingFilter } from "@/lib/eventDuration";
 import { isRecentPast } from "@/lib/eventPastWindow";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
@@ -549,7 +550,7 @@ const Events = () => {
   const activeFilter: FilterType = urlFilter && validFilters.includes(urlFilter) ? urlFilter : "all";
   const search = searchParams.get("q") ?? "";
   const tagFilter = searchParams.get("t");
-  const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc"] as const;
+  const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc", "duration-asc", "duration-desc"] as const;
   type SortType = typeof validSorts[number];
   const urlSort = searchParams.get("s") as SortType | null;
   const sortBy: SortType = urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : "date-asc";
@@ -580,9 +581,11 @@ const Events = () => {
   
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | "duration" | "booking" | null>("tag");
   const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
   const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
+  const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
+  const [bookingFilter, setBookingFilter] = useState<BookingFilter>("any");
 
   useEffect(() => {
     navigate(location.pathname + location.search, {
@@ -674,6 +677,11 @@ const Events = () => {
       });
     }
 
+    if (durationFilter !== "all") list = list.filter((e) => eventMatchesDuration(e, durationFilter));
+    if (bookingFilter !== "any") {
+      list = list.filter((e) => eventRequiresBooking(e) === (bookingFilter === "required"));
+    }
+
     const sorted = [...list];
     if (sortBy === "date-desc") {
       sorted.sort((a, b) => {
@@ -685,12 +693,22 @@ const Events = () => {
       sorted.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
     } else if (sortBy === "title-desc") {
       sorted.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+    } else if (sortBy === "duration-asc" || sortBy === "duration-desc") {
+      const dir = sortBy === "duration-asc" ? 1 : -1;
+      // Events without dates always go last; stable sort keeps date order for ties.
+      sorted.sort((a, b) => {
+        const ad = eventDurationDays(a), bd = eventDurationDays(b);
+        if (ad == null && bd == null) return 0;
+        if (ad == null) return 1;
+        if (bd == null) return -1;
+        return (ad - bd) * dir;
+      });
     }
     // date-asc is already the default order from sortedEvents
     // Featured events always pin to the top, keeping the chosen sort within groups
     return pinFeatured(sorted);
 
-  }, [categoryEvents, tagFilter, sortBy, priceFilter]);
+  }, [categoryEvents, tagFilter, sortBy, priceFilter, durationFilter, bookingFilter]);
 
   // Month groups, with Recurring collected into one section and next-year
   // events held below it.
@@ -790,13 +808,13 @@ const Events = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any") ? "#423324" : "#FFFFFF",
+                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any") ? "#423324" : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
+                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />
@@ -1016,6 +1034,8 @@ const Events = () => {
           setTagFilter(null);
           setSortBy("date-asc");
           setPriceFilter("any");
+          setDurationFilter("all");
+          setBookingFilter("any");
           setActiveFilter("all");
           
           setSearch("");
@@ -1031,6 +1051,8 @@ const Events = () => {
             sortBy === "date-asc" ? "Date (Soonest First)" :
             sortBy === "date-desc" ? "Date (Latest First)" :
             sortBy === "title-asc" ? "Alphabetically (A-Z)" :
+            sortBy === "duration-asc" ? "Duration: Shortest First" :
+            sortBy === "duration-desc" ? "Duration: Longest First" :
             "Alphabetically (Z-A)"
           }
           open={openSection === "sort"}
@@ -1040,6 +1062,8 @@ const Events = () => {
           <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
           <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
           <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
+          <RefineOption label="Duration: Shortest First" active={sortBy === "duration-asc"} onClick={() => setSortBy("duration-asc")} />
+          <RefineOption label="Duration: Longest First" active={sortBy === "duration-desc"} onClick={() => setSortBy("duration-desc")} />
         </RefineSection>
 
         <RefineSection
@@ -1104,6 +1128,32 @@ const Events = () => {
             <RefineRectOption label="Any" active={priceFilter === "any"} onClick={() => setPriceFilter("any")} />
             <RefineRectOption label="Free" active={priceFilter === "free"} onClick={() => setPriceFilter("free")} />
             <RefineRectOption label="Paid" active={priceFilter === "paid"} onClick={() => setPriceFilter("paid")} />
+          </div>
+        </RefineSection>
+
+        <RefineSection
+          label="Event Duration"
+          summary={durationFilter === "all" ? undefined : DURATION_OPTIONS.find((o) => o.value === durationFilter)?.label}
+          open={openSection === "duration"}
+          onToggle={() => setOpenSection(openSection === "duration" ? null : "duration")}
+        >
+          <div>
+            {DURATION_OPTIONS.map((o) => (
+              <RefineRectOption key={o.value} label={o.label} active={durationFilter === o.value} onClick={() => setDurationFilter(o.value)} />
+            ))}
+          </div>
+        </RefineSection>
+
+        <RefineSection
+          label="Booking"
+          summary={bookingFilter === "any" ? undefined : bookingFilter === "required" ? "Booking Required" : "Booking Not Required"}
+          open={openSection === "booking"}
+          onToggle={() => setOpenSection(openSection === "booking" ? null : "booking")}
+        >
+          <div>
+            <RefineRectOption label="Any" active={bookingFilter === "any"} onClick={() => setBookingFilter("any")} />
+            <RefineRectOption label="Booking Required" active={bookingFilter === "required"} onClick={() => setBookingFilter("required")} />
+            <RefineRectOption label="Booking Not Required" active={bookingFilter === "not-required"} onClick={() => setBookingFilter("not-required")} />
           </div>
         </RefineSection>
 
