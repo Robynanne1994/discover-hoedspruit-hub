@@ -539,7 +539,7 @@ const Specials = () => {
                   <RefineRectOption
                     label={`Upcoming (${upcomingCount})`}
                     active={activeTab === UPCOMING_TAB}
-                    onClick={() => { setActiveTab(UPCOMING_TAB); setFilterType([]); }}
+                    onClick={() => { const clear = activeTab === UPCOMING_TAB; setActiveTab(clear ? ALL_TAB : UPCOMING_TAB); setFilterType([]); }}
                   />
                 )}
                 {visible.map((t) => (
