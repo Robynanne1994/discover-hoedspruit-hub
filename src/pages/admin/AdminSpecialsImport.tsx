@@ -1,4 +1,5 @@
 import { resolveBookingLinkType } from "@/lib/bookingLink";
+import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventContacts";
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -34,8 +35,7 @@ const EXPECTED_HEADERS = [
   "price", "price_label", "original_price",
   "booking_required", "booking_link_type", "booking_link", "booking_link_label", "promo_code",
   "social_media_link", "social_media_label",
-  "contact_phone", "contact_whatsapp", "contact_email",
-  "additional_phones", "additional_whatsapps",
+  "contact_phone", "phone_label", "contact_whatsapp", "whatsapp_label", "contact_email", "email_label",
   "terms", "tag", "sub_tag_1", "sub_tag_2",
   "is_active", "is_featured",
 ];
@@ -156,11 +156,22 @@ const AdminSpecialsImport = () => {
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           promo_code: row.promo_code || null,
-          contact_phone: row.contact_phone || null,
-          contact_whatsapp: row.contact_whatsapp || null,
-          contact_email: row.contact_email || null,
-          additional_phones: row.additional_phones ? row.additional_phones.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
-          additional_whatsapps: row.additional_whatsapps ? row.additional_whatsapps.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
+          // Combined cells: "a|b" with labels "x|y"; older files' additional_* columns are appended.
+          ...(() => {
+            const out: Record<string, any> = {};
+            for (const k of ["phone", "whatsapp", "email"] as const) {
+              const legacy = (row[`additional_${k}s`] || "").trim();
+              const legacyLabels = (row[`additional_${k}_labels`] || "").trim();
+              const cell = [row[`contact_${k}`] || "", legacy].filter(Boolean).join("|");
+              const labelCell = legacy ? [row[`${k}_label`] || "", legacyLabels].join("|") : (row[`${k}_label`] || "");
+              const p = parseEventContactCells(cell, labelCell);
+              out[`contact_${k}`] = p.primary;
+              out[`${k}_label`] = p.label;
+              out[`additional_${k}s`] = p.extras;
+              out[`additional_${k}_labels`] = p.extraLabels;
+            }
+            return out;
+          })(),
           terms: row.terms ? row.terms.split("|").map((s: string) => s.trim()).filter(Boolean).join("\n") || null : null,
           tag: row.tag || null,
           sub_tag_1: row.sub_tag_1 || null,
@@ -233,8 +244,7 @@ const AdminSpecialsImport = () => {
       "R450pp", "per person", "R900pp",
       "true", "link", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
       "https://www.facebook.com/example/posts/123", "Facebook Post",
-      "+27 123 456 789", "+27 123 456 789", "info@example.com",
-      "", "",
+      "+27 123 456 789|+27 987 654 321", "Reception|After Hours", "+27 123 456 789", "Bookings", "info@example.com", "",
       "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
       "true", "false",
     ];
@@ -254,8 +264,10 @@ const AdminSpecialsImport = () => {
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link_type ?? "", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.social_media_link ?? "", s.social_media_label ?? "",
-      s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
-      (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
+      ...(["phone", "whatsapp", "email"] as const).flatMap((k) => {
+        const c = serializeEventContactCells(s[`contact_${k}`], s[`${k}_label`], s[`additional_${k}s`], s[`additional_${k}_labels`]);
+        return [c.contacts, c.labels];
+      }),
       (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),
       s.tag ?? "", s.sub_tag_1 ?? "", s.sub_tag_2 ?? "",
       s.is_active ? "true" : "false", s.is_featured ? "true" : "false",
@@ -296,7 +308,7 @@ const AdminSpecialsImport = () => {
             Specials are matched by title (case-insensitive). Full Sync updates matches and deletes missing specials; Add New Only only adds new ones.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            day_of_week, additional_phones, additional_whatsapps and terms take several
+            day_of_week, contact_phone, contact_whatsapp, contact_email, their labels and terms take several
             values separated by | — e.g. <code>Wednesday|Thursday</code> for a deal that
             runs on both nights.
           </p>
