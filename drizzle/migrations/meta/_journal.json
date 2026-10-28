@@ -36,6 +36,13 @@
       "when": 1793191136598,
       "tag": "0004_add_event_host_subtitle",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793192997951,
+      "tag": "0005_specials_contact_labels",
+      "breakpoints": true
     }
   ]
 }
