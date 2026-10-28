@@ -25,6 +25,7 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import { formatDays, parseDays } from "@/lib/specialDays";
 import { collectContacts } from "@/lib/contacts";
+import { eventContactPairs } from "@/lib/eventContacts";
 import { renderListingRichText } from "@/lib/listingRichText";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
@@ -223,9 +224,17 @@ const SpecialDetail = () => {
   // Contact inheritance: a special's own details always win, but where they are
   // blank we fall back to the linked business listing so the CTA still works.
   const biz: any = business || null;
-  const contactPhone = (sp.contact_phone || "").trim() || (biz?.phone || "").trim() || "";
-  const contactWhatsapp = (sp.contact_whatsapp || "").trim() || (biz?.whatsapp || "").trim() || "";
-  const contactEmail = (sp.contact_email || "").trim() || (biz?.email || "").trim() || "";
+  // Each contact list is labelled pairs; the first populated one drives the action buttons.
+  const pairsFor = (k: "phone" | "whatsapp" | "email") => {
+    const own = eventContactPairs(sp[`contact_${k}`], sp[`${k}_label`], sp[`additional_${k}s`], sp[`additional_${k}_labels`]);
+    return own.length ? own : eventContactPairs(biz?.[k], null, null, null);
+  };
+  const phonePairs = pairsFor("phone");
+  const whatsappPairs = pairsFor("whatsapp");
+  const emailPairs = pairsFor("email");
+  const contactPhone = phonePairs[0]?.value || "";
+  const contactWhatsapp = whatsappPairs[0]?.value || "";
+  const contactEmail = emailPairs[0]?.value || "";
   const phoneClean = contactPhone.replace(/\s/g, "");
   const waClean = contactWhatsapp.replace(/[^0-9]/g, "");
   const priceFmt = formatPrice(special.price);
@@ -487,19 +496,18 @@ const SpecialDetail = () => {
   };
 
   const renderContact = () => {
-    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean; internal?: boolean }[] = [];
-    const phones = collectContacts(contactPhone, (special as any).additional_phones);
-    const whatsapps = collectContacts(contactWhatsapp, (special as any).additional_whatsapps);
-    phones.forEach((p, i) => {
+    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean; internal?: boolean; custom?: boolean }[] = [];
+    phonePairs.forEach(({ value: p, label }, i) => {
       const clean = p.replace(/\s/g, "");
-      rows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${clean}` });
+      rows.push({ Icon: Phone, label: label || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!label, value: formatSAPhone(p), href: `tel:${clean}` });
     });
-    whatsapps.forEach((w, i) => {
+    whatsappPairs.forEach(({ value: w, label }, i) => {
       const clean = w.replace(/[^0-9]/g, "");
-      rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
+      rows.push({ Icon: WhatsAppIcon, label: label || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!label, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
     });
-    const email = contactEmail;
-    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
+    emailPairs.forEach(({ value: e, label }, i) => {
+      rows.push({ Icon: Mail, label: label || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!label, value: e, href: `mailto:${e}` });
+    });
     if (special.business_id && special.business_name) rows.push({
       Icon: Store, label: "Business", value: special.business_name,
       href: `/listing/${special.business_id}`, internal: true,
@@ -529,6 +537,9 @@ const SpecialDetail = () => {
                   <>
                     <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
                     <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                      {r.custom && (
+                        <div style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>{r.label}</div>
+                      )}
                       {r.value}
                     </div>
                     <ArrowUpRight size={16} color={C.muted} />
@@ -805,9 +816,7 @@ const SpecialDetail = () => {
         const hasAbout = !!(special.description?.trim()) ||
           detailRows.length > 0 ||
           !!special.promo_code;
-        const phones = collectContacts(contactPhone, (special as any).additional_phones);
-        const whatsapps = collectContacts(contactWhatsapp, (special as any).additional_whatsapps);
-        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!contactEmail || !!special.business_id;
+        const hasContact = phonePairs.length > 0 || whatsappPairs.length > 0 || !!special.booking_link || !!contactEmail || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
         const hasLocation = !!(business && ((business as any).location || mapPlace));
 
