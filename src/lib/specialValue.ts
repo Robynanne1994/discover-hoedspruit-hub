@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { compactDays, parseDays, recurringDays } from "./specialDays";
-import { specialToday } from "./specialVisibility";
+import { isUpcomingSpecial, specialToday } from "./specialVisibility";
 
 // Deals ending within this many days are "ending soon" (and get the urgent treatment).
 export const ENDING_SOON_DAYS = 7;
@@ -74,6 +74,13 @@ export const isEndingSoon = (s: SpecialLike): boolean => {
   const d = daysRemaining(s);
   return d != null && d >= 0 && d <= ENDING_SOON_DAYS;
 };
+
+// The third validity state: running now and outside its final week — either no
+// end date at all, or one further out than ENDING_SOON_DAYS. Upcoming, ending
+// soon and ongoing split the specials on the page exactly, so the Validity
+// filter's counts always add up to "All".
+export const isOngoingSpecial = (s: SpecialLike, today = specialToday()): boolean =>
+  !isUpcomingSpecial(s, today) && !isEndingSoon(s);
 
 // Short countdown shown in the value bar — "3 days left", "Ongoing", "Ends 12 Aug".
 export const countdownLabel = (s: SpecialLike): string => {
