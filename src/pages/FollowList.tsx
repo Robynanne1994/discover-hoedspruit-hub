@@ -465,8 +465,8 @@ const FollowList = () => {
           {/* The counts come back null for a profile we are not allowed to
               see, so the tab shows the plain label rather than a made-up 0. */}
           {[
-            { key: "followers", label: "Followers", count: counts?.followers ?? null },
-            { key: "following", label: "Following", count: counts?.following ?? null },
+            { key: "followers", label: "followers", count: counts?.followers ?? null },
+            { key: "following", label: "following", count: counts?.following ?? null },
           ].map((tab) => {
             const active = (tab.key === "followers") === isFollowers;
             return (
@@ -482,8 +482,8 @@ const FollowList = () => {
                   fontFamily: SANS,
                   fontWeight: active ? 700 : 500,
                   fontSize: 13,
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
+                  letterSpacing: "0.01em",
+                  textTransform: "none",
                   color: active ? COLOR.ink : COLOR.subtle,
                   textDecoration: "none",
                   borderBottom: active ? `2px solid ${COLOR.ink}` : "2px solid transparent",
