@@ -1056,15 +1056,16 @@ const ListingDetail = () => {
     );
   };
 
-  const TabBtn = ({ k, label, scrollable }: { k: TabKey; label: string; scrollable?: boolean }) => {
+  const TabBtn = ({ k, label }: { k: TabKey; label: string }) => {
     const active = activeTab === k;
     return (
       <button
         onClick={() => setTab(k)}
         style={{
-          ...(scrollable
-            ? { flex: "0 0 auto", padding: "14px 12px" }
-            : { flex: 1, padding: "14px 4px" }),
+          // flex: 1 with a nowrap label keeps the row edge-to-edge. Once the
+          // labels can no longer shrink to their own width the nav's overflowX
+          // takes over and the row slides sideways instead of bunching left.
+          flex: 1, padding: "14px 10px",
           background: "none", border: "none", cursor: "pointer",
           ...tabStyle(active),
           color: active ? C.heading : MUTED,
@@ -1843,7 +1844,7 @@ const ListingDetail = () => {
         padding: "12px 12px 0",
         overflowX: "auto",
       }} className="scrollbar-hide">
-        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} scrollable={visibleTabs.length > 4} />)}
+        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} />)}
       </nav>
 
       {/* Tab content */}

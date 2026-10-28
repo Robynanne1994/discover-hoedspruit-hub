@@ -335,8 +335,12 @@ const SpecialDetail = () => {
       <button
         onClick={() => setTab(k)}
         style={{
+          // flex: 1 with a nowrap label keeps the row edge-to-edge. Once the
+          // labels can no longer shrink to their own width the nav's overflowX
+          // takes over and the row slides sideways instead of bunching left.
           flex: 1, background: "none", border: "none", cursor: "pointer",
-          padding: "14px 4px",
+          padding: "14px 10px",
+          whiteSpace: "nowrap",
           ...tabStyle(active),
           color: active ? C.heading : MUTED,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
@@ -826,7 +830,8 @@ const SpecialDetail = () => {
               position: "sticky", top: 0, zIndex: 30,
               background: C.surface, borderBottom: "1px solid rgba(112,90,61,0.14)",
               display: "flex", padding: "12px 12px 0",
-            }}>
+              overflowX: "auto",
+            }} className="scrollbar-hide">
               {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}
               {hasLocation && <TabBtn k="location" label="Location" />}
