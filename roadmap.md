@@ -4,3 +4,6 @@
 - [x] Verify field persistence, CSV round trip and link display.
 - [x] Include future-starting inactive specials in All and Upcoming filters.
 - [x] Verify upcoming special visibility, counts and filtering.
+- [x] Rename specials featured heading to TOP ACTIVE DEALS.
+- [x] Keep specials Filter & Sort sections closed on every opening.
+- [x] Add counted Booking and Special Type filters and verify filtering.
