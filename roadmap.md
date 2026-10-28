@@ -19,4 +19,4 @@
 - [x] Verify pill toggle behaviour on events, specials, category and profile pages.
 - [x] Add counted Validity filter (All / Upcoming / Ending Soon / Ongoing) to specials Filter & Sort.
 - [x] Verify Validity counts add to the page total, filtering and toggling off.
-- [ ] Add section-specific Clear controls to every Filter & Sort dropdown and verify isolated resets.
+- [x] Add section-specific Clear controls to every Filter & Sort dropdown and verify isolated resets.
