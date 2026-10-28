@@ -44,7 +44,7 @@ function SubTabs<T extends string>({
           <button
             key={opt.id}
             type="button"
-            onClick={() => onChange(opt.id)}
+            onClick={() => onChange(pillToggle(value, opt.id, defaultValue))}
             style={{
               background: active ? "#423324" : "transparent",
               color: active ? "#fff" : INK,
