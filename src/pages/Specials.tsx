@@ -503,6 +503,7 @@ const Specials = () => {
         <RefineSection
           isFirst
           label="Sort By"
+          onClear={sortBy !== "default" ? () => setSortBy("default") : undefined}
           summary={SORT_OPTIONS.find((o) => o.key === sortBy)?.label}
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
@@ -519,6 +520,10 @@ const Specials = () => {
 
         <RefineSection
           label="Category"
+          onClear={(activeTab !== ALL_TAB && !VALIDITY_TABS.has(activeTab)) || filterType.length > 0 ? () => {
+            if (!VALIDITY_TABS.has(activeTab)) setActiveTab(ALL_TAB);
+            setFilterType([]);
+          } : undefined}
           summary={
             activeTab !== ALL_TAB && !VALIDITY_TABS.has(activeTab)
               ? activeTab
@@ -567,6 +572,7 @@ const Specials = () => {
 
         <RefineSection
           label="Validity"
+          onClear={VALIDITY_TABS.has(activeTab) ? () => setActiveTab(ALL_TAB) : undefined}
           summary={
             activeTab === ALL_TAB ? undefined : VALIDITY_OPTIONS.find((o) => o.key === activeTab)?.label
           }
@@ -585,6 +591,7 @@ const Specials = () => {
 
         <RefineSection
           label="Booking"
+          onClear={bookingFilter !== "any" ? () => setBookingFilter("any") : undefined}
           summary={bookingFilter === "any" ? undefined : SPECIAL_BOOKING_OPTIONS.find((o) => o.key === bookingFilter)?.label}
           open={openSection === "booking"}
           onToggle={() => setOpenSection(openSection === "booking" ? null : "booking")}
@@ -601,6 +608,7 @@ const Specials = () => {
 
         <RefineSection
           label="Special Type"
+          onClear={specialTypeFilter !== "any" ? () => setSpecialTypeFilter("any") : undefined}
           summary={specialTypeFilter === "any" ? undefined : SPECIAL_TYPE_OPTIONS.find((o) => o.key === specialTypeFilter)?.label}
           open={openSection === "special-type"}
           onToggle={() => setOpenSection(openSection === "special-type" ? null : "special-type")}

@@ -1,5 +1,6 @@
 import { useEffect, ReactNode } from "react";
 import { ChevronDown, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -252,6 +253,7 @@ interface RefineSectionProps {
   open?: boolean;
   onToggle?: () => void;
   summary?: string;
+  onClear?: () => void;
   children: ReactNode;
   isFirst?: boolean;
 }
@@ -259,7 +261,7 @@ interface RefineSectionProps {
 // Card-style section. If `onToggle` is provided the section becomes a
 // collapsible accordion (closed by default unless `open` is true). Otherwise
 // the card is always open with an optional uppercase label.
-export const RefineSection = ({ label, open, onToggle, summary, children }: RefineSectionProps) => {
+export const RefineSection = ({ label, open, onToggle, summary, onClear, children }: RefineSectionProps) => {
   const isAccordion = typeof onToggle === "function";
   return (
     <section
@@ -273,7 +275,11 @@ export const RefineSection = ({ label, open, onToggle, summary, children }: Refi
     >
       {isAccordion ? (
         <>
-          <button
+          <div className="relative">
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-auto rounded-none whitespace-normal hover:bg-transparent"
             onClick={onToggle}
             aria-expanded={!!open}
             style={{
@@ -289,7 +295,7 @@ export const RefineSection = ({ label, open, onToggle, summary, children }: Refi
               textAlign: "left",
             }}
           >
-            <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+            <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }} className={onClear ? "pr-12" : undefined}>
               {label && (
                 <span
                   style={{
@@ -328,7 +334,19 @@ export const RefineSection = ({ label, open, onToggle, summary, children }: Refi
                 transform: open ? "rotate(180deg)" : "rotate(0deg)",
               }}
             />
-          </button>
+          </Button>
+          {onClear && (
+            <Button
+              type="button"
+              variant="link"
+              aria-label={`Clear ${label ?? "filter"}`}
+              onClick={onClear}
+              className="absolute right-11 top-1/2 h-9 -translate-y-1/2 rounded-none px-2 text-xs font-normal"
+            >
+              Clear
+            </Button>
+          )}
+          </div>
           {open && <div style={{ padding: "0 18px 18px" }}>{children}</div>}
         </>
       ) : (
