@@ -623,7 +623,7 @@ const MyAccount = () => {
               type="button"
               onClick={() => {
                 setRateOpen(false);
-                openStoreReview("android") || toast("Android rating link coming soon.");
+                if (!openStoreReview("android")) toast("Android rating link coming soon.");
               }}
               style={{
                 width: "100%",
