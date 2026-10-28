@@ -60,6 +60,12 @@ interface Special {
   additional_emails: string[];
   additional_phones: string[];
   additional_whatsapps: string[];
+  phone_label: string | null;
+  email_label: string | null;
+  whatsapp_label: string | null;
+  additional_phone_labels: string[];
+  additional_email_labels: string[];
+  additional_whatsapp_labels: string[];
   terms: string | null;
   tag: string | null;
   sub_tag_1: string | null;
@@ -104,6 +110,12 @@ const emptyForm: Omit<Special, "id"> = {
   additional_emails: [],
   additional_phones: [],
   additional_whatsapps: [],
+  phone_label: null,
+  email_label: null,
+  whatsapp_label: null,
+  additional_phone_labels: [],
+  additional_email_labels: [],
+  additional_whatsapp_labels: [],
   terms: null,
   tag: null,
   sub_tag_1: null,
@@ -158,13 +170,22 @@ const AdminSpecials = () => {
       today.setHours(0, 0, 0, 0);
       const isExpired = !!form.valid_until && new Date(form.valid_until) < today;
       const days = parseDays(form.day_of_week);
+      const ph = sanitizeContactPairs(form.additional_phones, form.additional_phone_labels);
+      const em = sanitizeContactPairs(form.additional_emails, form.additional_email_labels);
+      const wa = sanitizeContactPairs(form.additional_whatsapps, form.additional_whatsapp_labels);
       const cleaned = {
         ...form,
         is_active: !isExpired,
         day_of_week: days.length ? days : null,
-        additional_emails: sanitizeContactArray(form.additional_emails),
-        additional_phones: sanitizeContactArray(form.additional_phones),
-        additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
+        additional_emails: em.values,
+        additional_email_labels: em.labels,
+        additional_phones: ph.values,
+        additional_phone_labels: ph.labels,
+        additional_whatsapps: wa.values,
+        additional_whatsapp_labels: wa.labels,
+        phone_label: (form.phone_label || "").trim() || null,
+        email_label: (form.email_label || "").trim() || null,
+        whatsapp_label: (form.whatsapp_label || "").trim() || null,
         title_override: (form.title_override || "").trim() || null,
       };
       if (editing) {
@@ -247,6 +268,12 @@ const AdminSpecials = () => {
       additional_emails: (s.additional_emails ?? []) as string[],
       additional_phones: (s.additional_phones ?? []) as string[],
       additional_whatsapps: (s.additional_whatsapps ?? []) as string[],
+      phone_label: s.phone_label ?? null,
+      email_label: s.email_label ?? null,
+      whatsapp_label: s.whatsapp_label ?? null,
+      additional_phone_labels: (s.additional_phone_labels ?? []) as string[],
+      additional_email_labels: (s.additional_email_labels ?? []) as string[],
+      additional_whatsapp_labels: (s.additional_whatsapp_labels ?? []) as string[],
       terms: s.terms,
       tag: s.tag ?? null,
       sub_tag_1: s.sub_tag_1 ?? null,
@@ -477,6 +504,10 @@ const AdminSpecials = () => {
             onPrimaryChange={(v) => setForm({ ...form, contact_phone: v || null })}
             extras={form.additional_phones || []}
             onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+            primaryLabel={form.phone_label || ""}
+            onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v || null })}
+            extraLabels={form.additional_phone_labels || []}
+            onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
             addLabel="Add phone"
           />
           <MultiContactField
@@ -486,9 +517,25 @@ const AdminSpecials = () => {
             onPrimaryChange={(v) => setForm({ ...form, contact_whatsapp: v || null })}
             extras={form.additional_whatsapps || []}
             onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+            primaryLabel={form.whatsapp_label || ""}
+            onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v || null })}
+            extraLabels={form.additional_whatsapp_labels || []}
+            onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
             addLabel="Add WhatsApp"
           />
-          <div><Label>Contact Email (optional)</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => setForm({ ...form, contact_email: e.target.value || null })} /></div>
+          <MultiContactField
+            label="Contact Email (optional)"
+            type="email"
+            primary={form.contact_email || ""}
+            onPrimaryChange={(v) => setForm({ ...form, contact_email: v || null })}
+            extras={form.additional_emails || []}
+            onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+            primaryLabel={form.email_label || ""}
+            onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v || null })}
+            extraLabels={form.additional_email_labels || []}
+            onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
+            addLabel="Add email"
+          />
 
           <GroupLabel>Other</GroupLabel>
           <div>
