@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { stripImageCsvColumns, omitImageKeys } from "@/lib/csvImageColumns";
+import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventContacts";
 
 // Image columns are deliberately excluded, exactly as in the listings import /
 // export: pictures are cropped and set in the admin editor only, so a CSV can
@@ -37,12 +38,6 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
   "phone_label",
   "contact_whatsapp",
   "whatsapp_label",
-  "additional_emails",
-  "additional_email_labels",
-  "additional_phones",
-  "additional_phone_labels",
-  "additional_whatsapps",
-  "additional_whatsapp_labels",
   "booking_link",
   "booking_link_type",
   "booking_link_label",
@@ -223,6 +218,9 @@ const AdminEventsImport = () => {
           .map((n) => resolveListing(n, i))
           .filter((v): v is string => !!v);
         const businessId = businessIds[0] ?? null;
+        const emails = parseEventContactCells(row.contact_email, row.email_label);
+        const phones = parseEventContactCells(row.contact_phone, row.phone_label);
+        const whatsapps = parseEventContactCells(row.contact_whatsapp, row.whatsapp_label);
 
         const payload: Record<string, any> = {
           title,
@@ -241,18 +239,18 @@ const AdminEventsImport = () => {
           google_maps_link: row.google_maps_link || null,
           social_media_link: row.social_media_link || null,
           social_media_label: row.social_media_label || null,
-          contact_email: row.contact_email || null,
-          email_label: (row.email_label || "").trim() || null,
-          contact_phone: row.contact_phone || null,
-          phone_label: (row.phone_label || "").trim() || null,
-          contact_whatsapp: row.contact_whatsapp || null,
-          whatsapp_label: (row.whatsapp_label || "").trim() || null,
-          additional_emails: splitPipe(row.additional_emails),
-          additional_email_labels: (row.additional_email_labels || "").split("|").map((v: string) => v.trim()).slice(0, splitPipe(row.additional_emails).length),
-          additional_phones: splitPipe(row.additional_phones),
-          additional_phone_labels: (row.additional_phone_labels || "").split("|").map((v: string) => v.trim()).slice(0, splitPipe(row.additional_phones).length),
-          additional_whatsapps: splitPipe(row.additional_whatsapps),
-          additional_whatsapp_labels: (row.additional_whatsapp_labels || "").split("|").map((v: string) => v.trim()).slice(0, splitPipe(row.additional_whatsapps).length),
+          contact_email: emails.primary,
+          email_label: emails.label,
+          contact_phone: phones.primary,
+          phone_label: phones.label,
+          contact_whatsapp: whatsapps.primary,
+          whatsapp_label: whatsapps.label,
+          additional_emails: emails.extras,
+          additional_email_labels: emails.extraLabels,
+          additional_phones: phones.extras,
+          additional_phone_labels: phones.extraLabels,
+          additional_whatsapps: whatsapps.extras,
+          additional_whatsapp_labels: whatsapps.extraLabels,
           booking_link: row.booking_link || null,
           booking_link_type: row.booking_link_type || null,
           booking_link_label: row.booking_link_label || null,
@@ -353,18 +351,12 @@ const AdminEventsImport = () => {
       google_maps_link: "https://maps.google.com/example",
       social_media_link: "https://instagram.com/example",
       social_media_label: "Instagram",
-      contact_email: "info@example.com",
-      email_label: "Bookings",
-      contact_phone: "+27 123 456 789",
-      phone_label: "Reception",
-      contact_whatsapp: "+27 123 456 789",
-      whatsapp_label: "",
-      additional_emails: "second@example.com|third@example.com",
-      additional_email_labels: "Accounts|",
-      additional_phones: "+27 987 654 321",
-      additional_phone_labels: "After Hours",
-      additional_whatsapps: "+27 987 654 321",
-      additional_whatsapp_labels: "",
+      contact_email: "info@example.com|second@example.com|third@example.com",
+      email_label: "Bookings|Accounts|",
+      contact_phone: "+27 123 456 789|+27 987 654 321",
+      phone_label: "Reception|After Hours",
+      contact_whatsapp: "+27 123 456 789|+27 987 654 321",
+      whatsapp_label: "Reception|After Hours",
       booking_link: "https://bookme.com/example",
       booking_link_type: "link",
       booking_link_label: "Book on Quicket",
@@ -421,6 +413,9 @@ const AdminEventsImport = () => {
         ? e.business_ids
         : (e.business_id ? [e.business_id] : []);
       const allNames = allIds.map((id) => idToTitle.get(id) ?? "").filter(Boolean);
+      const emails = serializeEventContactCells(e.contact_email, e.email_label, e.additional_emails, e.additional_email_labels);
+      const phones = serializeEventContactCells(e.contact_phone, e.phone_label, e.additional_phones, e.additional_phone_labels);
+      const whatsapps = serializeEventContactCells(e.contact_whatsapp, e.whatsapp_label, e.additional_whatsapps, e.additional_whatsapp_labels);
       const record: Record<string, string> = {
         title: e.title ?? "",
         title_override: titleOverrideToCsv(e),
@@ -439,18 +434,12 @@ const AdminEventsImport = () => {
         google_maps_link: e.google_maps_link ?? "",
         social_media_link: e.social_media_link ?? "",
         social_media_label: e.social_media_label ?? "",
-        contact_email: e.contact_email ?? "",
-        email_label: (e as any).email_label ?? "",
-        contact_phone: e.contact_phone ?? "",
-        phone_label: (e as any).phone_label ?? "",
-        contact_whatsapp: e.contact_whatsapp ?? "",
-        whatsapp_label: (e as any).whatsapp_label ?? "",
-        additional_emails: (e.additional_emails ?? []).join("|"),
-        additional_email_labels: ((e as any).additional_email_labels ?? []).join("|"),
-        additional_phones: (e.additional_phones ?? []).join("|"),
-        additional_phone_labels: ((e as any).additional_phone_labels ?? []).join("|"),
-        additional_whatsapps: (e.additional_whatsapps ?? []).join("|"),
-        additional_whatsapp_labels: ((e as any).additional_whatsapp_labels ?? []).join("|"),
+        contact_email: emails.contacts,
+        email_label: emails.labels,
+        contact_phone: phones.contacts,
+        phone_label: phones.labels,
+        contact_whatsapp: whatsapps.contacts,
+        whatsapp_label: whatsapps.labels,
         booking_link: e.booking_link ?? "",
         booking_link_type: (e as any).booking_link_type ?? "",
         booking_link_label: e.booking_link_label ?? "",
@@ -508,7 +497,7 @@ const AdminEventsImport = () => {
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Events are matched by title (case-insensitive). Full Sync updates matches and deletes missing events; Add New Only only adds new ones. Use <code>|</code> to separate list values (gallery, included, additional contacts, business_names).
+            Events are matched by title (case-insensitive). Full Sync updates matches and deletes missing events; Add New Only only adds new ones. Use <code>|</code> to separate contacts and their labels in matching order, included values and business_names. Contact actions use the first populated contact.
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>

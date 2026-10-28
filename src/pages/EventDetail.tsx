@@ -21,7 +21,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
-import { collectContacts, contactLabels } from "@/lib/contacts";
+import { eventContactPairs } from "@/lib/eventContacts";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { copyToClipboard } from "@/lib/share";
@@ -438,9 +438,12 @@ const EventDetail = () => {
   const mapsLink = e.google_maps_link || null;
   const socialLink = e.social_media_link || null;
   const socialLabel = e.social_media_label || null;
-  const contactEmail = e.contact_email || null;
-  const contactPhone = e.contact_phone || null;
-  const contactWhatsApp = e.contact_whatsapp || null;
+  const emailPairs = eventContactPairs(e.contact_email, e.email_label, e.additional_emails, e.additional_email_labels);
+  const phonePairs = eventContactPairs(e.contact_phone, e.phone_label, e.additional_phones, e.additional_phone_labels);
+  const whatsappPairs = eventContactPairs(e.contact_whatsapp, e.whatsapp_label, e.additional_whatsapps, e.additional_whatsapp_labels);
+  const contactEmail = emailPairs[0]?.value || null;
+  const contactPhone = phonePairs[0]?.value || null;
+  const contactWhatsApp = whatsappPairs[0]?.value || null;
   const waClean = contactWhatsApp ? contactWhatsApp.replace(/[^0-9]/g, "") : null;
   const galleryImages: string[] = e.gallery_images ?? [];
   const bookingLink = e.booking_link || null;
@@ -721,20 +724,13 @@ const EventDetail = () => {
   }
 
 
-  const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
-  const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
-  const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
-
-  const phoneLabels = contactLabels((e as any).phone_label, (e as any).additional_phone_labels);
-  const waLabels = contactLabels((e as any).whatsapp_label, (e as any).additional_whatsapp_labels);
-  const emailLabels = contactLabels((e as any).email_label, (e as any).additional_email_labels);
   const contactRows: { Icon?: any; label: React.ReactNode; custom?: boolean; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
-  allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
-  allWhatsapps.forEach((w, i) => {
+  phonePairs.forEach(({ value: p, label }, i) => contactRows.push({ Icon: Phone, label: label || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!label, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
+  whatsappPairs.forEach(({ value: w, label }, i) => {
     const clean = w.replace(/[^0-9]/g, "");
-    contactRows.push({ Icon: WhatsAppIcon, label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
+    contactRows.push({ Icon: WhatsAppIcon, label: label || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!label, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
   });
-  allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: em, href: `mailto:${em}`, external: true }));
+  emailPairs.forEach(({ value: em, label }, i) => contactRows.push({ Icon: Mail, label: label || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!label, value: em, href: `mailto:${em}`, external: true }));
   if (socialLink) {
     const isFb = /facebook\.com|fb\.com/i.test(socialLink);
     const isIg = /instagram\.com/i.test(socialLink);
