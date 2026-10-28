@@ -22,10 +22,8 @@ import {
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import {
   DURATION_OPTIONS,
-  bookingFilterLabel,
   countEventBooking,
   countEventDurations,
-  durationFilterLabel,
   eventDurationDays,
   eventMatchesDuration,
   eventRequiresBooking,
