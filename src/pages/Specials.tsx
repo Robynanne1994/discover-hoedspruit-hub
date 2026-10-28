@@ -15,7 +15,7 @@ import SpecialCountdownTag, { countdownTagWidth } from "@/components/specials/Sp
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
-import { isEndingSoon, savingValue } from "@/lib/specialValue";
+import { isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
@@ -45,7 +45,18 @@ const PAGE_PAD = SPECIALS_CARD_GRID.pageInset;
 
 const ENDING_SOON_TAB = "__ending_soon__";
 const UPCOMING_TAB = "__upcoming__";
+const ONGOING_TAB = "__ongoing__";
 const ALL_TAB = "All Specials";
+
+// The top pill row and the drawer's Validity section are one axis: picking a
+// validity lights the matching top pill, and picking one there lights it here.
+const VALIDITY_TABS = new Set([ENDING_SOON_TAB, UPCOMING_TAB, ONGOING_TAB]);
+const VALIDITY_OPTIONS = [
+  { key: ALL_TAB, label: "All" },
+  { key: UPCOMING_TAB, label: "Upcoming" },
+  { key: ENDING_SOON_TAB, label: "Ending Soon" },
+  { key: ONGOING_TAB, label: "Ongoing" },
+] as const;
 
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
@@ -80,7 +91,7 @@ const Specials = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState<string[]>(persisted?.filterType ?? []);
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
-  const [openSection, setOpenSection] = useState<"sort" | "category" | "booking" | "special-type" | null>(null);
+  const [openSection, setOpenSection] = useState<"sort" | "category" | "validity" | "booking" | "special-type" | null>(null);
   const [bookingFilter, setBookingFilter] = useState<SpecialBookingFilter>(persisted?.bookingFilter ?? "any");
   const [specialTypeFilter, setSpecialTypeFilter] = useState<SpecialTypeFilter>(persisted?.specialTypeFilter ?? "any");
   const [activeTab, setActiveTab] = useState<string>(persisted?.activeTab ?? ALL_TAB);
@@ -147,13 +158,15 @@ const Specials = () => {
     ]));
   }, [specials, search, categoryTabs, drawerCategoryTabs]);
 
-  // Totals for the "All" and "Ending Soon" pills — search-aware, category-agnostic.
-  const { totalCount, endingSoonCount, upcomingCount } = useMemo(() => {
-    if (!specials) return { totalCount: 0, endingSoonCount: 0, upcomingCount: 0 };
+  // Validity totals for the top pills and the drawer's Validity section —
+  // search-aware, category-agnostic, and an exact three-way split of the page.
+  const { totalCount, endingSoonCount, upcomingCount, ongoingCount } = useMemo(() => {
+    if (!specials) return { totalCount: 0, endingSoonCount: 0, upcomingCount: 0, ongoingCount: 0 };
     const q = search.trim().toLowerCase();
     let total = 0;
     let soon = 0;
     let upcoming = 0;
+    let ongoing = 0;
     for (const s of specials as any[]) {
       if (q) {
         const hit =
@@ -165,8 +178,9 @@ const Specials = () => {
       total += 1;
       if (isUpcomingSpecial(s)) upcoming += 1;
       else if (isEndingSoon(s)) soon += 1;
+      else ongoing += 1;
     }
-    return { totalCount: total, endingSoonCount: soon, upcomingCount: upcoming };
+    return { totalCount: total, endingSoonCount: soon, upcomingCount: upcoming, ongoingCount: ongoing };
   }, [specials, search]);
 
 
@@ -185,6 +199,8 @@ const Specials = () => {
       result = result.filter((s) => !isUpcomingSpecial(s) && isEndingSoon(s));
     } else if (activeTab === UPCOMING_TAB) {
       result = result.filter((s) => isUpcomingSpecial(s));
+    } else if (activeTab === ONGOING_TAB) {
+      result = result.filter((s) => isOngoingSpecial(s));
     } else if (activeTab !== ALL_TAB) {
       const t = tagKey(activeTab);
       result = result.filter((s) => specialMatchesTag(s, t));
@@ -201,6 +217,15 @@ const Specials = () => {
   }, [specials, activeTab, filterType, search]);
 
   const filterCounts = useMemo(() => countSpecialFilters(categorySpecials), [categorySpecials]);
+
+  // The Validity counts share the top pills' basis, so the same number shows in
+  // both places: All is the page total, and the three states split it exactly.
+  const validityCounts: Record<string, number> = {
+    [ALL_TAB]: totalCount,
+    [UPCOMING_TAB]: upcomingCount,
+    [ENDING_SOON_TAB]: endingSoonCount,
+    [ONGOING_TAB]: ongoingCount,
+  };
 
   const filteredSpecials = useMemo(() => {
     const result = categorySpecials.filter((s) =>
@@ -495,11 +520,7 @@ const Specials = () => {
         <RefineSection
           label="Category"
           summary={
-            activeTab === UPCOMING_TAB
-              ? "Upcoming"
-              : activeTab === ENDING_SOON_TAB
-              ? "Ending Soon"
-              : activeTab !== ALL_TAB
+            activeTab !== ALL_TAB && !VALIDITY_TABS.has(activeTab)
               ? activeTab
               : filterType.length > 0
               ? `${filterType.length} selected`
@@ -542,6 +563,24 @@ const Specials = () => {
             );
           })()}
 
+        </RefineSection>
+
+        <RefineSection
+          label="Validity"
+          summary={
+            activeTab === ALL_TAB ? undefined : VALIDITY_OPTIONS.find((o) => o.key === activeTab)?.label
+          }
+          open={openSection === "validity"}
+          onToggle={() => setOpenSection(openSection === "validity" ? null : "validity")}
+        >
+          {VALIDITY_OPTIONS.filter((o) => o.key === ALL_TAB || validityCounts[o.key] > 0).map((o) => (
+            <RefineRectOption
+              key={o.key}
+              label={`${o.label} (${validityCounts[o.key]})`}
+              active={activeTab === o.key}
+              onClick={() => setActiveTab(pillToggle(activeTab, o.key, ALL_TAB))}
+            />
+          ))}
         </RefineSection>
 
         <RefineSection
