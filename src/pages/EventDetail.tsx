@@ -21,7 +21,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
-import { collectContacts } from "@/lib/contacts";
+import { collectContacts, contactLabels } from "@/lib/contacts";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { copyToClipboard } from "@/lib/share";
@@ -725,13 +725,16 @@ const EventDetail = () => {
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
   const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
 
+  const phoneLabels = contactLabels((e as any).phone_label, (e as any).additional_phone_labels);
+  const waLabels = contactLabels((e as any).whatsapp_label, (e as any).additional_whatsapp_labels);
+  const emailLabels = contactLabels((e as any).email_label, (e as any).additional_email_labels);
   const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
-  allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
+  allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
-    contactRows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
+    contactRows.push({ Icon: WhatsAppIcon, label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
   });
-  allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
+  allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), value: em, href: `mailto:${em}`, external: true }));
   if (socialLink) {
     const isFb = /facebook\.com|fb\.com/i.test(socialLink);
     const isIg = /instagram\.com/i.test(socialLink);

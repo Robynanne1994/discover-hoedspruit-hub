@@ -639,8 +639,11 @@ export type Database = {
       }
       events: {
         Row: {
+          additional_email_labels: string[]
           additional_emails: string[]
+          additional_phone_labels: string[]
           additional_phones: string[]
+          additional_whatsapp_labels: string[]
           additional_whatsapps: string[]
           booking_link: string | null
           booking_link_label: string | null
@@ -654,6 +657,7 @@ export type Database = {
           date: string
           description: string | null
           detail_image_url: string | null
+          email_label: string | null
           end_date: string | null
           end_time: string | null
           gallery_images: string[] | null
@@ -681,6 +685,7 @@ export type Database = {
           location: string | null
           notes: string[]
           performances: Json | null
+          phone_label: string | null
           poster_image_url: string | null
           price: string | null
           price_notes: string[]
@@ -697,10 +702,14 @@ export type Database = {
           title: string
           title_override: string | null
           updated_at: string
+          whatsapp_label: string | null
         }
         Insert: {
+          additional_email_labels?: string[]
           additional_emails?: string[]
+          additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
@@ -714,6 +723,7 @@ export type Database = {
           date: string
           description?: string | null
           detail_image_url?: string | null
+          email_label?: string | null
           end_date?: string | null
           end_time?: string | null
           gallery_images?: string[] | null
@@ -741,6 +751,7 @@ export type Database = {
           location?: string | null
           notes?: string[]
           performances?: Json | null
+          phone_label?: string | null
           poster_image_url?: string | null
           price?: string | null
           price_notes?: string[]
@@ -757,10 +768,14 @@ export type Database = {
           title: string
           title_override?: string | null
           updated_at?: string
+          whatsapp_label?: string | null
         }
         Update: {
+          additional_email_labels?: string[]
           additional_emails?: string[]
+          additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
@@ -774,6 +789,7 @@ export type Database = {
           date?: string
           description?: string | null
           detail_image_url?: string | null
+          email_label?: string | null
           end_date?: string | null
           end_time?: string | null
           gallery_images?: string[] | null
@@ -801,6 +817,7 @@ export type Database = {
           location?: string | null
           notes?: string[]
           performances?: Json | null
+          phone_label?: string | null
           poster_image_url?: string | null
           price?: string | null
           price_notes?: string[]
@@ -817,6 +834,7 @@ export type Database = {
           title?: string
           title_override?: string | null
           updated_at?: string
+          whatsapp_label?: string | null
         }
         Relationships: [
           {

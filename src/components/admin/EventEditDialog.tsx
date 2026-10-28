@@ -13,7 +13,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
-import { sanitizeContactArray } from "@/lib/contacts";
+import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
 import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
@@ -85,9 +85,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
       payload.business_ids = ids;
       payload.business_id = ids[0] ?? null;
-      payload.additional_emails = sanitizeContactArray(form.additional_emails);
-      payload.additional_phones = sanitizeContactArray(form.additional_phones);
-      payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      { const pr = sanitizeContactPairs(form.additional_emails, form.additional_email_labels); payload.additional_emails = pr.values; payload.additional_email_labels = pr.labels; payload.email_label = (form.email_label || "").trim() || null; }
+      { const pr = sanitizeContactPairs(form.additional_phones, form.additional_phone_labels); payload.additional_phones = pr.values; payload.additional_phone_labels = pr.labels; payload.phone_label = (form.phone_label || "").trim() || null; }
+      { const pr = sanitizeContactPairs(form.additional_whatsapps, form.additional_whatsapp_labels); payload.additional_whatsapps = pr.values; payload.additional_whatsapp_labels = pr.labels; payload.whatsapp_label = (form.whatsapp_label || "").trim() || null; }
       payload.price_notes = Array.isArray(form.price_notes)
         ? form.price_notes.map((s: string) => (s ?? "").toString().trim()).filter(Boolean)
         : [];
@@ -337,6 +337,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               onPrimaryChange={(v) => set("contact_email", v)}
               extras={form.additional_emails || []}
               onExtrasChange={(v) => set("additional_emails", v)}
+              primaryLabel={form.email_label || ""}
+              onPrimaryLabelChange={(v) => set("email_label", v)}
+              extraLabels={form.additional_email_labels || []}
+              onExtraLabelsChange={(v) => set("additional_email_labels", v)}
               addLabel="Add email"
             />
             <MultiContactField
@@ -346,6 +350,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               onPrimaryChange={(v) => set("contact_phone", v)}
               extras={form.additional_phones || []}
               onExtrasChange={(v) => set("additional_phones", v)}
+              primaryLabel={form.phone_label || ""}
+              onPrimaryLabelChange={(v) => set("phone_label", v)}
+              extraLabels={form.additional_phone_labels || []}
+              onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
               addLabel="Add phone"
             />
             <MultiContactField
@@ -355,6 +363,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               onPrimaryChange={(v) => set("contact_whatsapp", v)}
               extras={form.additional_whatsapps || []}
               onExtrasChange={(v) => set("additional_whatsapps", v)}
+              primaryLabel={form.whatsapp_label || ""}
+              onPrimaryLabelChange={(v) => set("whatsapp_label", v)}
+              extraLabels={form.additional_whatsapp_labels || []}
+              onExtraLabelsChange={(v) => set("additional_whatsapp_labels", v)}
               placeholder="+27 ..."
               addLabel="Add WhatsApp"
             />
