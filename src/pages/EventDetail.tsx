@@ -728,7 +728,7 @@ const EventDetail = () => {
   const phoneLabels = contactLabels((e as any).phone_label, (e as any).additional_phone_labels);
   const waLabels = contactLabels((e as any).whatsapp_label, (e as any).additional_whatsapp_labels);
   const emailLabels = contactLabels((e as any).email_label, (e as any).additional_email_labels);
-  const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
+  const contactRows: { Icon?: any; label: React.ReactNode; custom?: boolean; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
   allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
