@@ -636,7 +636,7 @@ const EventDetail = () => {
     );
   };
 
-  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; compact?: boolean }[] = [];
+  const detailRows: { Icon?: any; label: React.ReactNode; custom?: boolean; value: React.ReactNode; href?: string; external?: boolean; compact?: boolean }[] = [];
   if (isMultiPerformance) {
     const todayMid = new Date();
     todayMid.setHours(0, 0, 0, 0);
@@ -728,13 +728,13 @@ const EventDetail = () => {
   const phoneLabels = contactLabels((e as any).phone_label, (e as any).additional_phone_labels);
   const waLabels = contactLabels((e as any).whatsapp_label, (e as any).additional_whatsapp_labels);
   const emailLabels = contactLabels((e as any).email_label, (e as any).additional_email_labels);
-  const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
-  allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
+  const contactRows: { Icon?: any; label: React.ReactNode; custom?: boolean; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
+  allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
-    contactRows.push({ Icon: WhatsAppIcon, label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
+    contactRows.push({ Icon: WhatsAppIcon, label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
   });
-  allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), value: em, href: `mailto:${em}`, external: true }));
+  allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: em, href: `mailto:${em}`, external: true }));
   if (socialLink) {
     const isFb = /facebook\.com|fb\.com/i.test(socialLink);
     const isIg = /instagram\.com/i.test(socialLink);
@@ -921,6 +921,11 @@ const EventDetail = () => {
                 <>
                   <r.Icon size={18} strokeWidth={1.5} color={r.disabled ? C.muted : C.primary} />
                   <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: r.disabled ? C.muted : C.heading, wordBreak: "break-word" }}>
+                    {r.custom && (
+                      <div style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>
+                        {r.label}
+                      </div>
+                    )}
                     {r.value}
                   </div>
                   {r.href && <ArrowUpRight size={16} color={C.muted} />}
