@@ -65,3 +65,23 @@ export function websiteHref(url: string): string {
   const v = url.trim();
   return /^https?:\/\//i.test(v) ? v : `https://${v}`;
 }
+
+/** Drops blank extras while keeping each label paired with its contact. */
+export function sanitizeContactPairs(
+  values: string[] | null | undefined,
+  labels: string[] | null | undefined,
+): { values: string[]; labels: string[] } {
+  const out = { values: [] as string[], labels: [] as string[] };
+  (values || []).forEach((v, i) => {
+    const t = (v || "").trim();
+    if (!t) return;
+    out.values.push(t);
+    out.labels.push(((labels || [])[i] || "").trim());
+  });
+  return out;
+}
+
+/** Primary label followed by extra labels, aligned with collectContacts order. */
+export function contactLabels(primary: string | null | undefined, extras: string[] | null | undefined): string[] {
+  return [(primary || "").trim(), ...((extras || []) as string[]).map((s) => (s || "").trim())];
+}
