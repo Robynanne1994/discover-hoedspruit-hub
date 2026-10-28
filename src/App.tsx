@@ -311,6 +311,7 @@ const App = () => (
                 <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="events/import" element={<AdminEventsImport />} />
+                <Route path="event-hosts" element={<AdminEventHosts />} />
                 <Route path="specials" element={<AdminSpecials />} />
                 <Route path="specials/import" element={<AdminSpecialsImport />} />
                 
