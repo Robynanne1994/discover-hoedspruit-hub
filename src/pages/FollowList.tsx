@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft, Lock, Plus } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -16,6 +16,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useShare } from "@/hooks/useShare";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
+import { ArrowCta } from "@/components/ArrowCta";
+
 import { MUTED as TOKEN_MUTED, tab as tabStyle } from "@/lib/type";
 import {
   AlertDialog,
@@ -374,15 +376,6 @@ const RowWithMutation = ({
   );
 };
 
-const ShareIcon = ({ size = 14 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="18" cy="5" r="3" />
-    <circle cx="6" cy="12" r="3" />
-    <circle cx="18" cy="19" r="3" />
-    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-  </svg>
-);
 
 const FollowList = () => {
   const { id, type } = useParams<{ id: string; type: string }>();
@@ -658,38 +651,11 @@ const FollowList = () => {
 
       {/* Primary CTA — only on your own profile */}
       {isOwnPage && (
-        <div style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
-          <button
-            onClick={handlePrimaryCta}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "#423324",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: 999,
-              padding: "14px 24px",
-              fontFamily: SANS,
-              fontWeight: 400,
-              fontSize: 14,
-              cursor: "pointer",
-            }}
-          >
-            {isFollowers ? (
-              <>
-                <ShareIcon size={14} />
-                Share Profile
-              </>
-            ) : (
-              <>
-                <Plus size={14} strokeWidth={1.8} />
-                Find People
-              </>
-            )}
-          </button>
+        <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 8, marginBottom: 24 }}>
+          <ArrowCta label={isFollowers ? "Share Profile" : "Find People"} onClick={handlePrimaryCta} />
         </div>
       )}
+
 
     </div>
   );
