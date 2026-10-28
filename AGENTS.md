@@ -8,4 +8,4 @@
 - Keep events list heading grouping and section order in eventGroups so the page, its tests and any future view share one rule.
 
 - Resolve specials social links through specialSocialLink so only labelled web destinations are displayed.
-- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.
+- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and photo/link fallback in eventHosts so the event page and tests share one rule.
