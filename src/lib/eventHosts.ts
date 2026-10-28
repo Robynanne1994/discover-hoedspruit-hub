@@ -2,6 +2,7 @@ export interface EventHostRecord {
   name: string;
   image_url?: string | null;
   link?: string | null;
+  subtitle?: string | null;
 }
 
 /** Host names match ignoring case, extra spaces and curly apostrophes. */
@@ -18,11 +19,11 @@ export const buildHostDirectory = (rows: EventHostRecord[] | null | undefined) =
 };
 
 /**
- * Fill a host's photo and link from the Event Hosts directory. A host linked to
- * a listing is left alone, and anything typed on the event itself wins.
+ * Fill a host's photo, link and subtitle from the Event Hosts directory. A host
+ * linked to a listing is left alone, and anything typed on the event itself wins.
  */
 export const resolveHost = (
-  host: { name: string; image?: string; link?: string; listingId?: string },
+  host: { name: string; subtitle?: string; image?: string; link?: string; listingId?: string },
   directory: Map<string, EventHostRecord>,
 ) => {
   if (host.listingId) return host;
@@ -32,5 +33,6 @@ export const resolveHost = (
     ...host,
     image: host.image || match.image_url || undefined,
     link: host.link?.trim() ? host.link : match.link || undefined,
+    subtitle: host.subtitle?.trim() ? host.subtitle : match.subtitle || undefined,
   };
 };
