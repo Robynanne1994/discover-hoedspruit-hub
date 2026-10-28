@@ -651,7 +651,7 @@ const FollowList = () => {
 
       {/* Primary CTA — only on your own profile */}
       {isOwnPage && (
-        <div style={{ marginTop: 8, marginBottom: 24 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 8, marginBottom: 24 }}>
           <ArrowCta label={isFollowers ? "Share Profile" : "Find People"} onClick={handlePrimaryCta} />
         </div>
       )}
