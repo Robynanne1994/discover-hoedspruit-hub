@@ -9,7 +9,7 @@
 - Keep event duration bucketing and booking-required judgement, plus their per-option counts, in eventDuration so filter pills and the filtered list agree; an event with no booking link is booking not required.
 
 - Resolve specials social links through specialSocialLink so only labelled web destinations are displayed.
-- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and photo/link fallback in eventHosts so the event page and tests share one rule.
+- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and photo/link/subtitle fallback in eventHosts so the event page and tests share one rule.
 - Keep detail-page tab bars on flex:1 nowrap labels inside an overflow-x auto nav so they always fill the row and only slide sideways when they cannot fit; never cap the spread at a fixed tab count.
 - Keep specials booking and discount-type matching and counts in specialFilters so the drawer counts and displayed results use identical rules.
 - Keep event recurrence matching and start-time buckets and counts, plus per-recurrence-option counts, in eventRefinements, reusing the schedule parser for legacy patterns so counts and filtered results agree.
