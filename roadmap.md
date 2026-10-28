@@ -13,5 +13,5 @@
 - [x] Add counts to event Recurrence pills and verify they match the stored recurrence field.
 - [x] Move each event contact label column directly after its contact column in CSV template, export and import.
 - [x] Verify downloaded template and export header order and that label values sit under their columns.
-- [ ] Combine event CSV contacts and labels into six columns, preserving all contacts and labels in pipe-separated cells.
-- [ ] Verify contact CSV round trips and first-contact actions without changing booking.
+- [x] Combine event CSV contacts and labels into six columns, preserving all contacts and labels in pipe-separated cells.
+- [x] Verify contact CSV round trips and first-contact actions without changing booking.
