@@ -31,7 +31,32 @@ export function eventMatchesDuration(e: EventDateLike, f: DurationFilter): boole
 
 export type BookingFilter = "any" | "required" | "not-required";
 
+export interface BookingLinkLike {
+  booking_link?: string | null;
+}
+
 /** Events have no separate flag; a booking link of any type means booking is required. */
-export function eventRequiresBooking(e: { booking_link?: string | null }): boolean {
+export function eventRequiresBooking(e: BookingLinkLike): boolean {
   return !!e.booking_link?.trim();
+}
+
+/** How many events fall in each duration bucket, including the "all" total. */
+export function countEventDurations(events: EventDateLike[]): Record<DurationFilter, number> {
+  const out = { all: events.length, "1": 0, "2": 0, "3": 0, "4-7": 0, "8+": 0 } as Record<DurationFilter, number>;
+  for (const e of events) {
+    for (const o of DURATION_OPTIONS) {
+      if (o.value !== "all" && eventMatchesDuration(e, o.value)) out[o.value] += 1;
+    }
+  }
+  return out;
+}
+
+/** How many events need a booking versus not, including the "any" total. */
+export function countEventBooking(events: BookingLinkLike[]): Record<BookingFilter, number> {
+  const out: Record<BookingFilter, number> = { any: events.length, required: 0, "not-required": 0 };
+  for (const e of events) {
+    if (eventRequiresBooking(e)) out.required += 1;
+    else out["not-required"] += 1;
+  }
+  return out;
 }
