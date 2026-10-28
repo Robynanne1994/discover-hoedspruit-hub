@@ -11,3 +11,5 @@
 - [x] Add counted event Time filter and verify noon and 5pm boundaries.
 - [x] Rename event Time filter section to Time of Day.
 - [x] Add counts to event Recurrence pills and verify they match the stored recurrence field.
+- [x] Move each event contact label column directly after its contact column in CSV template, export and import.
+- [x] Verify downloaded template and export header order and that label values sit under their columns.
