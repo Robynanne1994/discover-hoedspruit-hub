@@ -18,3 +18,4 @@
 - Keep event contact CSV parsing, serialisation and labelled frontend pairs in eventContacts, translating combined cells to primary/extras storage so existing editors remain compatible and actions use the first populated contact.
 - Keep the filter-pill toggle rule (clicking an already-lit pill returns its section to the default choice) in filterPill so every pill row and drawer option shares one behaviour.
 - Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.
+- Keep app store review links in storeReview so the account page's rating prompt and any later entry point share one URL; a platform whose link is not issued yet stays null rather than pointing at a guess.

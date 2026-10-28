@@ -21,3 +21,5 @@
 - [x] Verify Validity counts add to the page total, filtering and toggling off.
 - [x] Add section-specific Clear controls to every Filter & Sort dropdown and verify isolated resets.
 - [x] Add counted events Price filter (blank price = free) and verify counts, filtering and toggle-off.
+- [x] Add a Community Love section to Settings with Share the App and Rate Us on App Store.
+- [x] Verify the rating pop-up offers Apple and Android and that Apple carries the App Store review link.
