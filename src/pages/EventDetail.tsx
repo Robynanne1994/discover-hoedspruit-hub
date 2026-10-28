@@ -315,7 +315,7 @@ const EventDetail = () => {
     enabled: hostListingIds.length > 0,
   });
 
-  // Recurring hosts that aren't listings: photo and link come from Admin > Event Hosts.
+  // Recurring hosts that aren't listings: photo, link and subtitle come from Admin > Event Hosts.
   const { data: eventHostRows } = useQuery({
     queryKey: ["event-hosts"],
     queryFn: async () => {
