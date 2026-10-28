@@ -20,3 +20,4 @@
 - Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.
 - Keep app store review links in storeReview so the account page's rating prompt and any later entry point share one URL; a platform whose link is not issued yet stays null rather than pointing at a guess.
 - Keep canonical outbound links such as the app download page in appLinks so the share sheet and any later entry point share one URL.
+- Render the full-width brown call-to-action pill through the shared ArrowCta component so search's Discover More and the follow lists' Find People and Share Profile stay identical; wrap it in each page's own content column rather than restyling it per page.

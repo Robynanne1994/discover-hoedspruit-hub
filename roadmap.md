@@ -26,3 +26,4 @@
 - [x] Restyle the rating pop-up: "Choose Your App Store" title, white panel, close button clear of the title.
 - [x] Round the rating pop-up corners to 16px to match app card styling.
 - [x] Point Share the App at https://hellohoedspruit.co/download via a shared appLinks constant.
+- [x] Match the follow lists' Find People / Share Profile button to search's Discover More via a shared ArrowCta component.
