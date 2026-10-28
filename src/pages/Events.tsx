@@ -31,6 +31,7 @@ import {
   type BookingFilter,
 } from "@/lib/eventDuration";
 import { isRecentPast } from "@/lib/eventPastWindow";
+import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { buildEventGroups } from "@/lib/eventGroups";
@@ -590,11 +591,13 @@ const Events = () => {
   
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | "duration" | "booking" | null>(null);
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | "duration" | "booking" | "recurrence" | "time-of-day" | null>(null);
   const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
   const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
   const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
   const [bookingFilter, setBookingFilter] = useState<BookingFilter>("any");
+  const [recurrenceFilter, setRecurrenceFilter] = useState<RecurrenceFilter>("any");
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("any");
 
   useEffect(() => {
     navigate(location.pathname + location.search, {
@@ -668,6 +671,7 @@ const Events = () => {
   const tagCounts = useMemo(() => countEventTags(categoryEvents, availableTags), [categoryEvents, availableTags]);
   const durationCounts = useMemo(() => countEventDurations(categoryEvents), [categoryEvents]);
   const bookingCounts = useMemo(() => countEventBooking(categoryEvents), [categoryEvents]);
+  const timeCounts = useMemo(() => countEventTimes(categoryEvents), [categoryEvents]);
 
   const filtered = useMemo(() => {
     let list = categoryEvents;
@@ -692,6 +696,8 @@ const Events = () => {
     if (bookingFilter !== "any") {
       list = list.filter((e) => eventRequiresBooking(e) === (bookingFilter === "required"));
     }
+
+    list = list.filter((e) => eventMatchesRecurrence(e, recurrenceFilter) && eventMatchesTime(e, timeFilter));
 
     const sorted = [...list];
     if (sortBy === "date-desc") {
@@ -719,7 +725,7 @@ const Events = () => {
     // Featured events always pin to the top, keeping the chosen sort within groups
     return pinFeatured(sorted);
 
-  }, [categoryEvents, tagFilter, sortBy, priceFilter, durationFilter, bookingFilter]);
+  }, [categoryEvents, tagFilter, sortBy, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]);
 
   // Month groups, with Recurring collected into one section and next-year
   // events held below it.
@@ -819,13 +825,13 @@ const Events = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any") ? "#423324" : "#FFFFFF",
+                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any" || recurrenceFilter !== "any" || timeFilter !== "any") ? "#423324" : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
+                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any" || recurrenceFilter !== "any" || timeFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />
@@ -1047,6 +1053,8 @@ const Events = () => {
           setPriceFilter("any");
           setDurationFilter("all");
           setBookingFilter("any");
+          setRecurrenceFilter("any");
+          setTimeFilter("any");
           setActiveFilter("all");
           
           setSearch("");
@@ -1190,6 +1198,32 @@ const Events = () => {
                 onClick={() => setBookingFilter("not-required")}
               />
             )}
+          </div>
+        </RefineSection>
+
+        <RefineSection
+          label="Recurrence"
+          summary={recurrenceFilter === "any" ? undefined : RECURRENCE_OPTIONS.find((o) => o.value === recurrenceFilter)?.label}
+          open={openSection === "recurrence"}
+          onToggle={() => setOpenSection(openSection === "recurrence" ? null : "recurrence")}
+        >
+          <div>
+            {RECURRENCE_OPTIONS.map((o) => (
+              <RefineRectOption key={o.value} label={o.label} active={recurrenceFilter === o.value} onClick={() => setRecurrenceFilter(o.value)} />
+            ))}
+          </div>
+        </RefineSection>
+
+        <RefineSection
+          label="Time"
+          summary={timeFilter === "any" ? undefined : TIME_OPTIONS.find((o) => o.value === timeFilter)?.label}
+          open={openSection === "time-of-day"}
+          onToggle={() => setOpenSection(openSection === "time-of-day" ? null : "time-of-day")}
+        >
+          <div>
+            {TIME_OPTIONS.filter((o) => o.value === "any" || timeCounts[o.value] > 0).map((o) => (
+              <RefineRectOption key={o.value} label={`${o.label} (${timeCounts[o.value]})`} active={timeFilter === o.value} onClick={() => setTimeFilter(o.value)} />
+            ))}
           </div>
         </RefineSection>
 
