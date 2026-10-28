@@ -31,10 +31,12 @@ function SubTabs<T extends string>({
   value,
   onChange,
   options,
+  defaultValue,
 }: {
   value: T;
   onChange: (v: T) => void;
   options: { id: T; label: string }[];
+  defaultValue: T;
 }) {
   return (
     <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>

@@ -27,6 +27,7 @@ import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
 import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
+import { pillToggle } from "@/lib/filterPill";
 
 
 // Coffee is deliberately absent — it is a drink, not a cuisine (Robyn).

@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { residencyBadge } from "@/lib/residencyBadge";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import { isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
+import { pillToggle } from "@/lib/filterPill";
 
 
 const PAGE_BG = "#E6E0CC";
