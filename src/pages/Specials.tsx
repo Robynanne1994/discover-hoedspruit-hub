@@ -548,7 +548,8 @@ const Specials = () => {
                     label={`${t} (${categoryCounts.get(t)})`}
                     active={activeTab === t || filterType.includes(t)}
                     onClick={() => {
-                      setActiveTab(t);
+                      const clear = activeTab === t || filterType.includes(t);
+                      setActiveTab(clear ? ALL_TAB : t);
                       setFilterType([]);
                     }}
                   />
