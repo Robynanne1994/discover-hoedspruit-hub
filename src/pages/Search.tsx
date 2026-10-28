@@ -22,6 +22,8 @@ import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
+import { ArrowCta } from "@/components/ArrowCta";
+
 import {
   channelImage,
   eventImage,
@@ -297,7 +299,7 @@ const Search = () => {
           {scope === "channels" && <ChannelsResults query={query} />}
         </div>
         {!hasQuery && scope !== "people" && (
-          <DiscoverMore
+          <ArrowCta
             to={
               scope === "listings"
                 ? "/categories"
@@ -520,32 +522,6 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, initials, dark, 
   );
 };
 
-/* -------------------- Discover more -------------------- */
-
-const DiscoverMore = ({ to, label }: { to: string; label: string }) => (
-  <Link
-    to={to}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      gap: 8,
-      height: 48,
-      margin: "4px 0 0",
-      borderRadius: 9999,
-      background: DARK,
-      ...type.cardTitleM,
-      color: "#FFFFFF",
-
-      textDecoration: "none",
-      transition: "transform 0.12s ease, opacity 0.12s ease",
-    }}
-    {...pressScale()}
-  >
-    {label}
-    <ArrowUpRight size={18} strokeWidth={2} color="#FFFFFF" />
-  </Link>
-);
 
 
 /* -------------------- Results: Listings -------------------- */
