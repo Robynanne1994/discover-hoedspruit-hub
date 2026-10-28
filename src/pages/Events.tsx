@@ -1142,14 +1142,21 @@ const Events = () => {
         <RefineSection
           label="Price"
           onClear={priceFilter !== "any" ? () => setPriceFilter("any") : undefined}
-          summary={priceFilter === "any" ? undefined : priceFilter === "free" ? "Free" : "Paid"}
+          summary={priceFilter === "any" ? undefined : PRICE_OPTIONS.find((o) => o.value === priceFilter)?.label}
           open={openSection === "price"}
           onToggle={() => setOpenSection(openSection === "price" ? null : "price")}
         >
           <div>
-            <RefineRectOption label="Any" active={priceFilter === "any"} onClick={() => setPriceFilter("any")} />
-            <RefineRectOption label="Free" active={priceFilter === "free"} onClick={() => setPriceFilter(pillToggle(priceFilter, "free", "any"))} />
-            <RefineRectOption label="Paid" active={priceFilter === "paid"} onClick={() => setPriceFilter(pillToggle(priceFilter, "paid", "any"))} />
+            {PRICE_OPTIONS.filter((o) => o.value === "any" || priceCounts[o.value] > 0).map((o) => (
+              <RefineRectOption
+                key={o.value}
+                label={`${o.label} (${priceCounts[o.value]})`}
+                active={priceFilter === o.value}
+                onClick={() =>
+                  setPriceFilter(o.value === "any" ? "any" : pillToggle(priceFilter, o.value, "any"))
+                }
+              />
+            ))}
           </div>
         </RefineSection>
 
