@@ -13,7 +13,7 @@ import TagPresets from "@/components/admin/TagPresets";
 import { specialImageSlot } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
-import { sanitizeContactArray } from "@/lib/contacts";
+import { sanitizeContactPairs } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getSpecialBadge } from "@/lib/specialBadge";
