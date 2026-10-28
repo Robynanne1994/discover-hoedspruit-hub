@@ -602,12 +602,13 @@ const MyAccount = () => {
       {/* Which store to rate in depends on the phone in hand, so ask before
           opening the review screen. */}
       <Dialog open={rateOpen} onOpenChange={setRateOpen}>
-        <DialogContent className="max-w-[340px]">
-          <DialogHeader>
+        <DialogContent className="max-w-[340px] bg-card">
+          <DialogHeader style={{ padding: "0 26px" }}>
             <DialogTitle style={{ ...type.cardTitleL, fontSize: 17, textAlign: "center" }}>
-              Apple (iOS) or Android (Google Play)
+              Choose Your App Store
             </DialogTitle>
           </DialogHeader>
+
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <PrimaryButton
               as="a"
