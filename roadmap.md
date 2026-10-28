@@ -15,4 +15,4 @@
 - [x] Verify downloaded template and export header order and that label values sit under their columns.
 - [x] Combine event CSV contacts and labels into six columns, preserving all contacts and labels in pipe-separated cells.
 - [x] Verify contact CSV round trips and first-contact actions without changing booking.- [ ] Make every filter and sort pill toggle off when clicked again.
-- [ ] Verify pill toggle behaviour on events, specials, category and profile pages.
+- [x] Verify pill toggle behaviour on events, specials, category and profile pages.
