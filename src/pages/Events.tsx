@@ -33,6 +33,7 @@ import {
 import { isRecentPast } from "@/lib/eventPastWindow";
 import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventRecurrence, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
+import { PRICE_OPTIONS, countEventPrices, eventMatchesPrice, type PriceFilter } from "@/lib/eventPrice";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { buildEventGroups } from "@/lib/eventGroups";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
@@ -593,8 +594,8 @@ const Events = () => {
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
   const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | "time" | "duration" | "booking" | "recurrence" | "time-of-day" | null>(null);
-  const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
-  const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
+  const persistedFilters = (location.state as { filters?: { priceFilter?: PriceFilter } } | null)?.filters ?? null;
+  const [priceFilter, setPriceFilter] = useState<PriceFilter>(persistedFilters?.priceFilter ?? "any");
   const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
   const [bookingFilter, setBookingFilter] = useState<BookingFilter>("any");
   const [recurrenceFilter, setRecurrenceFilter] = useState<RecurrenceFilter>("any");
@@ -674,6 +675,7 @@ const Events = () => {
   const bookingCounts = useMemo(() => countEventBooking(categoryEvents), [categoryEvents]);
   const timeCounts = useMemo(() => countEventTimes(categoryEvents), [categoryEvents]);
   const recurrenceCounts = useMemo(() => countEventRecurrence(categoryEvents), [categoryEvents]);
+  const priceCounts = useMemo(() => countEventPrices(categoryEvents), [categoryEvents]);
 
   const filtered = useMemo(() => {
     let list = categoryEvents;
@@ -682,17 +684,8 @@ const Events = () => {
     }
 
 
-    // Price filter
-    if (priceFilter !== "any") {
-      list = list.filter((e) => {
-        const raw = e.price == null ? "" : String(e.price).trim();
-        const isFree = /^(free|0|r0|r\s*0)$/i.test(raw);
-        const hasNum = /\d/.test(raw) && !isFree;
-        if (priceFilter === "free") return isFree;
-        if (priceFilter === "paid") return hasNum;
-        return true;
-      });
-    }
+    // Price filter: an event with no price populated is free.
+    list = list.filter((e) => eventMatchesPrice(e, priceFilter));
 
     if (durationFilter !== "all") list = list.filter((e) => eventMatchesDuration(e, durationFilter));
     if (bookingFilter !== "any") {
