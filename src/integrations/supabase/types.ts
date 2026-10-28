@@ -2185,8 +2185,11 @@ export type Database = {
       }
       specials: {
         Row: {
+          additional_email_labels: string[]
           additional_emails: string[]
+          additional_phone_labels: string[]
           additional_phones: string[]
+          additional_whatsapp_labels: string[]
           additional_whatsapps: string[]
           badge_override: string | null
           booking_link: string | null
@@ -2207,6 +2210,7 @@ export type Database = {
           detail_image_url: string | null
           discount_type: string | null
           discount_value: number | null
+          email_label: string | null
           featured_image_url: string | null
           freebie_text: string | null
           homepage_image_url: string | null
@@ -2215,6 +2219,7 @@ export type Database = {
           is_active: boolean
           is_featured: boolean
           original_price: string | null
+          phone_label: string | null
           price: string | null
           price_label: string | null
           promo_code: string | null
@@ -2233,10 +2238,14 @@ export type Database = {
           updated_at: string
           valid_from: string | null
           valid_until: string | null
+          whatsapp_label: string | null
         }
         Insert: {
+          additional_email_labels?: string[]
           additional_emails?: string[]
+          additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           badge_override?: string | null
           booking_link?: string | null
@@ -2257,6 +2266,7 @@ export type Database = {
           detail_image_url?: string | null
           discount_type?: string | null
           discount_value?: number | null
+          email_label?: string | null
           featured_image_url?: string | null
           freebie_text?: string | null
           homepage_image_url?: string | null
@@ -2265,6 +2275,7 @@ export type Database = {
           is_active?: boolean
           is_featured?: boolean
           original_price?: string | null
+          phone_label?: string | null
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
@@ -2283,10 +2294,14 @@ export type Database = {
           updated_at?: string
           valid_from?: string | null
           valid_until?: string | null
+          whatsapp_label?: string | null
         }
         Update: {
+          additional_email_labels?: string[]
           additional_emails?: string[]
+          additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           badge_override?: string | null
           booking_link?: string | null
@@ -2307,6 +2322,7 @@ export type Database = {
           detail_image_url?: string | null
           discount_type?: string | null
           discount_value?: number | null
+          email_label?: string | null
           featured_image_url?: string | null
           freebie_text?: string | null
           homepage_image_url?: string | null
@@ -2315,6 +2331,7 @@ export type Database = {
           is_active?: boolean
           is_featured?: boolean
           original_price?: string | null
+          phone_label?: string | null
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
@@ -2333,6 +2350,7 @@ export type Database = {
           updated_at?: string
           valid_from?: string | null
           valid_until?: string | null
+          whatsapp_label?: string | null
         }
         Relationships: [
           {

@@ -16,7 +16,7 @@ import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
-import { sanitizeContactArray } from "@/lib/contacts";
+import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
@@ -96,7 +96,8 @@ const FIELDS: (keyof any)[] = [
   "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "card_deal_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
-  "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
+  "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps", "additional_emails",
+  "phone_label", "email_label", "whatsapp_label",
   "booking_link", "booking_link_label", "booking_link_type", "terms", "tag", "sub_tag_1", "sub_tag_2",
   "social_media_link", "social_media_label",
 ];
@@ -125,8 +126,12 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
-      payload.additional_phones = sanitizeContactArray(form.additional_phones);
-      payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      for (const k of ["phone", "email", "whatsapp"] as const) {
+        const pr = sanitizeContactPairs(form[`additional_${k}s`], form[`additional_${k}_labels`]);
+        payload[`additional_${k}s`] = pr.values;
+        payload[`additional_${k}_labels`] = pr.labels;
+        payload[`${k}_label`] = (form[`${k}_label`] || "").trim() || null;
+      }
       payload.title_override = (form.title_override || "").trim() || null;
       payload.tag = (form.tag || "").trim() || null;
       payload.sub_tag_1 = (form.sub_tag_1 || "").trim() || null;
@@ -459,6 +464,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onPrimaryChange={(v) => set("contact_phone", v)}
               extras={form.additional_phones || []}
               onExtrasChange={(v) => set("additional_phones", v)}
+              primaryLabel={form.phone_label || ""}
+              onPrimaryLabelChange={(v) => set("phone_label", v)}
+              extraLabels={form.additional_phone_labels || []}
+              onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
               addLabel="Add phone"
             />
             <MultiContactField
@@ -468,9 +477,25 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onPrimaryChange={(v) => set("contact_whatsapp", v)}
               extras={form.additional_whatsapps || []}
               onExtrasChange={(v) => set("additional_whatsapps", v)}
+              primaryLabel={form.whatsapp_label || ""}
+              onPrimaryLabelChange={(v) => set("whatsapp_label", v)}
+              extraLabels={form.additional_whatsapp_labels || []}
+              onExtraLabelsChange={(v) => set("additional_whatsapp_labels", v)}
               addLabel="Add WhatsApp"
             />
-            <div><Label>Contact Email</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} placeholder="e.g. info@example.com" /></div>
+            <MultiContactField
+              label="Contact Email"
+              type="email"
+              primary={form.contact_email || ""}
+              onPrimaryChange={(v) => set("contact_email", v)}
+              extras={form.additional_emails || []}
+              onExtrasChange={(v) => set("additional_emails", v)}
+              primaryLabel={form.email_label || ""}
+              onPrimaryLabelChange={(v) => set("email_label", v)}
+              extraLabels={form.additional_email_labels || []}
+              onExtraLabelsChange={(v) => set("additional_email_labels", v)}
+              addLabel="Add email"
+            />
             <div>
               <Label>Booking Type</Label>
               <select
