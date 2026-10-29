@@ -22,3 +22,4 @@
 - Keep canonical outbound links such as the app download page in appLinks so the share sheet and any later entry point share one URL.
 - Render the full-width brown call-to-action pill through the shared ArrowCta component so search's Discover More and the follow lists' Find People and Share Profile stay identical; wrap it in each page's own content column rather than restyling it per page.
 - Keep the one-day special rule (a deal whose start and end share a calendar day reads "1 Day Only" rather than "Last day") in specialValue's countdownLabel so every card that counts down uses the same wording.
+- Keep specials Special Type option collection, matching and counts in specialKind so the drawer and results agree.
