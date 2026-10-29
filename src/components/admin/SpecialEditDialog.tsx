@@ -93,7 +93,7 @@ export const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "search_image_url", "badge_override",
-  "deal_type", "day_of_week", "discount_type", "discount_value", "freebie_text", "card_deal_text", "redemption_note",
+  "deal_type", "day_of_week", "discount_type", "discount_value", "special_type", "freebie_text", "card_deal_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps", "additional_emails",
@@ -241,6 +241,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               </Label>
             </div>
           </div>
+          <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
             <div>
