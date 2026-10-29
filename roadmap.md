@@ -30,3 +30,5 @@
 - [x] Remove Plant Types from Home & Garden admin editing, frontend and CSV import/export; verify legacy CSVs ignore it.
 - [x] Show "1 Day Only" instead of "Last day" on cards for specials valid for a single day.
 - [x] Verify the one-day label renders on the live specials page and "Last day" disappears.
+- [x] Rename the specials filter section "Special Type" to "Savings Type".
+- [x] Verify the drawer heading reads SAVINGS TYPE with its counted options unchanged.
