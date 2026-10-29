@@ -92,7 +92,7 @@ const Specials = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState<string[]>(persisted?.filterType ?? []);
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
-  const [openSection, setOpenSection] = useState<"sort" | "category" | "validity" | "booking" | "special-type" | null>(null);
+  const [openSection, setOpenSection] = useState<"sort" | "category" | "validity" | "booking" | "special-type" | "special-kind" | null>(null);
   const [bookingFilter, setBookingFilter] = useState<SpecialBookingFilter>(persisted?.bookingFilter ?? "any");
   const [specialTypeFilter, setSpecialTypeFilter] = useState<SpecialTypeFilter>(persisted?.specialTypeFilter ?? "any");
   const [kindFilter, setKindFilter] = useState<string>(persisted?.kindFilter ?? "");
