@@ -7,8 +7,11 @@ import {
   getUniversalCSVHeaders,
   getUniversalContentFields,
   getUniversalDbFields,
+  getCategorySpecificFields,
+  LISTING_FIELD_SPECS,
 } from "./categoryFields";
 import { isImageCsvColumn } from "./csvImageColumns";
+import { getFieldReference } from "./listingFieldOptions";
 
 // A sample of the universal content columns: name, contacts, location, hours.
 // These are what a category upload must never be able to change.
@@ -30,6 +33,19 @@ const CATEGORIES = [
 ];
 
 describe("universal vs category CSV columns", () => {
+  it("retires plant_types from Home & Garden imports, exports and references", () => {
+    expect(getCSVHeadersForCategory("Home & Garden")).toEqual([
+      "title", "card_primary_subcategory", "services_offered",
+      "business_started_year", "specialities", "subcategories",
+    ]);
+    expect(getCategorySpecificFields("Home & Garden")).toEqual([
+      "services_offered", "business_started_year", "specialities",
+    ]);
+    expect(LISTING_FIELD_SPECS).not.toHaveProperty("plant_types");
+    expect(getUniversalDbFields()).not.toContain("plant_types");
+    expect(getFieldReference("plant_types")).toBe("");
+  });
+
   it("keeps every universal content field off the category sheets", () => {
     for (const category of [...CATEGORIES, null]) {
       const headers = getCSVHeadersForCategory(category);
