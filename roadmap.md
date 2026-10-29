@@ -32,3 +32,5 @@
 - [x] Verify the one-day label renders on the live specials page and "Last day" disappears.
 - [x] Rename the specials filter section "Special Type" to "Savings Type".
 - [x] Verify the drawer heading reads SAVINGS TYPE with its counted options unchanged.
+- [x] Add Health and Game Drives to the specials top pill row (Couples already there).
+- [x] Verify the new pills show counts and filter the list on the live specials page.
