@@ -59,8 +59,10 @@ describe("specialTags", () => {
       "Food & Drink",
       "Services",
       "Activities",
+      "Game Drives",
       "Wellness",
       "Beauty",
+      "Health",
       "Home & Lifestyle",
       "Shopping",
       "Couples",
@@ -84,5 +86,16 @@ describe("specialTags", () => {
   it("matches Couples and Buy 1; Get 1 however they are typed", () => {
     expect(specialMatchesTag({ sub_tag_2: "couples" }, "Couples")).toBe(true);
     expect(specialMatchesTag({ tag: "Buy 1 Get 1" }, "Buy 1; Get 1")).toBe(true);
+  });
+
+  it("matches Health and Game Drives however they are typed", () => {
+    expect(specialMatchesTag({ sub_tag_1: "health" }, "Health")).toBe(true);
+    expect(specialMatchesTag({ sub_tag_1: " Game drives " }, "Game Drives")).toBe(true);
+    expect(specialMatchesTag({ tag: "Game Drive" }, "Game Drives")).toBe(false);
+  });
+
+  it("offers Health and Game Drives as main categories", () => {
+    expect(SPECIAL_TAG_PRESETS).toContain("Health");
+    expect(SPECIAL_TAG_PRESETS).toContain("Game Drives");
   });
 });
