@@ -175,7 +175,6 @@ export const LISTING_FIELD_SPECS = {
 
   // ---------- Home & Garden ----------
   services_offered: { type: "str_array" },
-  plant_types: { type: "str_array" },
 
   // ---------- Weddings & Events (venues) ----------
   event_types: { type: "str_array" },
@@ -292,7 +291,7 @@ export const TRADES_ONLY_FIELDS = [
 ] as const;
 
 export const HOME_GARDEN_ONLY_FIELDS = [
-  "services_offered", "plant_types",
+  "services_offered",
   "business_started_year", "specialities",
 ] as const;
 

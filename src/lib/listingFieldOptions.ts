@@ -19,7 +19,6 @@ const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store",
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 const PROPERTY_TYPE_OPTIONS = ["Lodge", "Hotel", "Guest House", "Bed & Breakfast", "Self-Catering", "Villa", "Cottage", "Chalet", "Apartment", "Camping", "Glamping", "Bush Camp", "Backpackers", "Farm Stay", "Other"];
 const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance", "Irrigation", "Tree felling/pruning", "Bush Clearing", "Swimming Pool Services", "Interior design", "Upholstery", "Equipment rental", "Equipment servicing/repairs"];
-const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 const EVENT_TYPES_OPTIONS = ["Weddings", "Corporate", "Birthdays", "Private functions", "Conferences", "Baby showers", "Kids parties", "Fundraisers", "Festivals"];
 const VENUE_STYLE_TAG_OPTIONS = ["Rustic", "Modern", "Classic", "Boho", "Safari", "Minimalist", "Vintage", "Romantic"];
 const VENUE_SETTING_OPTIONS = ["Bush", "Garden", "Riverside", "Farm", "Town", "Lodge"];
@@ -83,7 +82,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
 
   // Home & Garden
   services_offered: `pipe-separated, options: ${SERVICES_OFFERED_OPTIONS.join(" | ")}`,
-  plant_types: `pipe-separated, options: ${PLANT_TYPES_OPTIONS.join(" | ")}`,
 
   // Weddings & Events
   event_types: `pipe-separated, options: ${EVENT_TYPES_OPTIONS.join(" | ")}`,
