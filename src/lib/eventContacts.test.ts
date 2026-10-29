@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { eventContactPairs, parseEventContactCells, serializeEventContactCells } from "./eventContacts";
+import { eventContactPairs, parseEventContactCells, splitContactLabels, serializeEventContactCells } from "./eventContacts";
 
 describe("combined event contact CSV cells", () => {
   it("splits pipe-separated emails and corresponding labels into primary and extras", () => {
