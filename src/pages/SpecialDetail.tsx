@@ -411,6 +411,9 @@ const SpecialDetail = () => {
     });
   }
 
+  const kind = ((special as any).special_type ?? "").trim();
+  if (kind) detailRows.push({ icon: Tag, label: "Special Type", value: kind });
+
   // The social link is always the final row in the details box, after every
   // other detail including validity.
   const socialLink = specialSocialLink(special);

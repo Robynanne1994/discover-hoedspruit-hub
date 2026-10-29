@@ -37,6 +37,7 @@ interface Special {
   day_of_week: string[] | null;
   discount_type: string | null;
   discount_value: number | null;
+  special_type: string | null;
   freebie_text: string | null;
   card_deal_text: string | null;
   redemption_note: string | null;
@@ -88,6 +89,7 @@ const emptyForm: Omit<Special, "id"> = {
   day_of_week: null,
   discount_type: null,
   discount_value: null,
+  special_type: null,
   freebie_text: null,
   card_deal_text: null,
   redemption_note: null,
@@ -245,6 +247,7 @@ const AdminSpecials = () => {
       day_of_week: parseDays((s as any).day_of_week),
       discount_type: (s as any).discount_type ?? null,
       discount_value: (s as any).discount_value ?? null,
+      special_type: (s as any).special_type ?? null,
       freebie_text: (s as any).freebie_text ?? null,
       card_deal_text: (s as any).card_deal_text ?? null,
       redemption_note: (s as any).redemption_note ?? null,
@@ -403,6 +406,10 @@ const AdminSpecials = () => {
                 </div>
               </div>
             )}
+          </div>
+          <div>
+            <Label htmlFor="admin-special-type">Special Type</Label>
+            <Input id="admin-special-type" value={form.special_type || ""} onChange={(e) => setForm({ ...form, special_type: e.target.value || null })} placeholder="e.g. Dinner Deal" />
           </div>
           <div>
             <Label>Freebie Text</Label>

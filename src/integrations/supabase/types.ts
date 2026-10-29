@@ -2229,6 +2229,7 @@ export type Database = {
           search_image_url: string | null
           social_media_label: string | null
           social_media_link: string | null
+          special_type: string | null
           sub_tag_1: string | null
           sub_tag_2: string | null
           tag: string | null
@@ -2285,6 +2286,7 @@ export type Database = {
           search_image_url?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
+          special_type?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
           tag?: string | null
@@ -2341,6 +2343,7 @@ export type Database = {
           search_image_url?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
+          special_type?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
           tag?: string | null
