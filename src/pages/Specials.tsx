@@ -20,6 +20,7 @@ import { specialImage } from "@/lib/specialCard";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
 import { pillToggle } from "@/lib/filterPill";
+import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
 
@@ -94,6 +95,7 @@ const Specials = () => {
   const [openSection, setOpenSection] = useState<"sort" | "category" | "validity" | "booking" | "special-type" | null>(null);
   const [bookingFilter, setBookingFilter] = useState<SpecialBookingFilter>(persisted?.bookingFilter ?? "any");
   const [specialTypeFilter, setSpecialTypeFilter] = useState<SpecialTypeFilter>(persisted?.specialTypeFilter ?? "any");
+  const [kindFilter, setKindFilter] = useState<string>(persisted?.kindFilter ?? "");
   const [activeTab, setActiveTab] = useState<string>(persisted?.activeTab ?? ALL_TAB);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -106,11 +108,11 @@ const Specials = () => {
       replace: true,
       state: {
         ...(location.state as object | null),
-        filters: { search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter },
+        filters: { search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter, kindFilter },
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter]);
+  }, [search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter, kindFilter]);
 
 
   const { data: specials, isLoading } = useQuery({
@@ -217,6 +219,7 @@ const Specials = () => {
   }, [specials, activeTab, filterType, search]);
 
   const filterCounts = useMemo(() => countSpecialFilters(categorySpecials), [categorySpecials]);
+  const kindCounts = useMemo(() => countSpecialKinds(categorySpecials as any[]), [categorySpecials]);
 
   // The Validity counts share the top pills' basis, so the same number shows in
   // both places: All is the page total, and the three states split it exactly.
@@ -229,7 +232,7 @@ const Specials = () => {
 
   const filteredSpecials = useMemo(() => {
     const result = categorySpecials.filter((s) =>
-      specialMatchesBooking(s, bookingFilter) && specialMatchesType(s, specialTypeFilter)
+      specialMatchesBooking(s, bookingFilter) && specialMatchesType(s, specialTypeFilter) && specialMatchesKind(s as any, kindFilter)
     );
 
     // Sort
@@ -264,7 +267,7 @@ const Specials = () => {
 
     return result;
 
-  }, [categorySpecials, bookingFilter, specialTypeFilter, activeTab, sortBy]);
+  }, [categorySpecials, bookingFilter, specialTypeFilter, kindFilter, activeTab, sortBy]);
 
   // Featured deals headline the page; everything else falls into the grid below.
   const featured = useMemo(() => filteredSpecials.filter((s) => s.is_featured && !isUpcomingSpecial(s)), [filteredSpecials]);
@@ -350,7 +353,7 @@ const Specials = () => {
                 height: 40,
                 borderRadius: 999,
                 background:
-                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any"
+                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any" || kindFilter !== ""
                     ? "#423324"
                     : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
@@ -359,7 +362,7 @@ const Specials = () => {
                 justifyContent: "center",
                 cursor: "pointer",
                 color:
-                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any"
+                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any" || kindFilter !== ""
                     ? "#FFFFFF"
                     : "#1A1A1A",
               }}
@@ -622,6 +625,26 @@ const Specials = () => {
             />
           ))}
         </RefineSection>
+
+        {kindCounts.options.length > 0 && (
+          <RefineSection
+            label="Special Type"
+            onClear={kindFilter ? () => setKindFilter("") : undefined}
+            summary={kindFilter || undefined}
+            open={openSection === "special-kind"}
+            onToggle={() => setOpenSection(openSection === "special-kind" ? null : "special-kind")}
+          >
+            <RefineRectOption label={`Any (${kindCounts.any})`} active={!kindFilter} onClick={() => setKindFilter("")} />
+            {kindCounts.options.map((o) => (
+              <RefineRectOption
+                key={o.label}
+                label={`${o.label} (${o.count})`}
+                active={kindFilter.toLowerCase() === o.label.toLowerCase()}
+                onClick={() => setKindFilter(pillToggle(kindFilter, o.label, ""))}
+              />
+            ))}
+          </RefineSection>
+        )}
       </RefineDrawer>
     </div>
   );
