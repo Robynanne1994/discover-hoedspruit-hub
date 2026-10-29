@@ -607,7 +607,7 @@ const Specials = () => {
         </RefineSection>
 
         <RefineSection
-          label="Special Type"
+          label="Savings Type"
           onClear={specialTypeFilter !== "any" ? () => setSpecialTypeFilter("any") : undefined}
           summary={specialTypeFilter === "any" ? undefined : SPECIAL_TYPE_OPTIONS.find((o) => o.key === specialTypeFilter)?.label}
           open={openSection === "special-type"}
