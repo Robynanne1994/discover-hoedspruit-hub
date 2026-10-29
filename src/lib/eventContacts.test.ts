@@ -26,3 +26,15 @@ describe("combined event contact CSV cells", () => {
     expect(parseEventContactCells("", "")).toEqual({ primary: null, label: null, extras: [], extraLabels: [] });
   });
 });
+describe("dash label placeholders", () => {
+  it("treats - as a blank label but keeps later labels in place", () => {
+    const p = parseEventContactCells("082 463 2818|063 241 0291", "-|Tracey");
+    expect(p.primary).toBe("082 463 2818");
+    expect(p.label).toBe(null);
+    expect(p.extras).toEqual(["063 241 0291"]);
+    expect(p.extraLabels).toEqual(["Tracey"]);
+  });
+  it("keeps positions across three contacts", () => {
+    expect(splitContactLabels("Office|-|Tracey")).toEqual(["Office", "", "Tracey"]);
+  });
+});
