@@ -1,3 +1,4 @@
+import { parseEventContactCells, splitContactLabels } from "@/lib/eventContacts";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -778,6 +779,11 @@ const AdminImport = () => {
             );
             continue;
           }
+          if (parsed.skip === false && /^additional_\w+_labels$/.test(fieldName)) {
+            // Labels are positional: "-|Tracey" leaves the first contact unlabelled.
+            payloadRecord[fieldName] = splitContactLabels(row[fieldName]);
+            continue;
+          }
           if (parsed.skip === false) {
             if (fieldName === "additional_hours" && parsed.value !== null) {
               // Extra sets of hours are the one column typed as raw JSON by
@@ -828,6 +834,19 @@ const AdminImport = () => {
         Object.assign(payloadRecord, placeIdImportUpdate(incomingPlaceId, existing));
 
         // Remove undefined keys (defensive)
+        // A combined cell like "082 463 2818|063 241 0291" with labels "-|Tracey":
+        // the first stays primary and the rest lead the additional contacts.
+        for (const k of ["phone", "email", "whatsapp"] as const) {
+          const cell = row[k];
+          if (typeof cell !== "string" || !cell.includes("|")) continue;
+          const p = parseEventContactCells(cell, row[`${k}_label`]);
+          payloadRecord[k] = p.primary;
+          payloadRecord[`${k}_label`] = p.label;
+          const extras = (payloadRecord[`additional_${k}s`] as string[] | undefined) ?? [];
+          const extraLabels = (payloadRecord[`additional_${k}_labels`] as string[] | undefined) ?? [];
+          payloadRecord[`additional_${k}s`] = [...p.extras, ...extras];
+          payloadRecord[`additional_${k}_labels`] = [...p.extraLabels, ...extras.map((_, i) => extraLabels[i] || "")];
+        }
         Object.keys(payloadRecord).forEach((k) => { if (payloadRecord[k] === undefined) delete payloadRecord[k]; });
 
 

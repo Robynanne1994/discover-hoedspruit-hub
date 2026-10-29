@@ -1,8 +1,18 @@
+/** A "-" (or other placeholder) in a label slot means "no label" but keeps its position. */
+export const contactLabelSlot = (v?: string | null): string => {
+  const t = (v ?? "").trim();
+  return t === "" || /^[-–—]+$/.test(t) || /^(n\/a|na|none|null)$/i.test(t) ? "" : t;
+};
+
+/** Pipe cell of labels kept positional, so "-|Tracey" labels only the second contact. */
+export const splitContactLabels = (labels?: string | null): string[] =>
+  (labels || "").split("|").map(contactLabelSlot);
+
 /** Event CSV cells combine contacts and positional labels; storage keeps editor-compatible primary/extras. */
 export function parseEventContactCells(contacts?: string | null, labels?: string | null) {
-  const labelParts = (labels || "").split("|");
+  const labelParts = splitContactLabels(labels);
   const pairs = (contacts || "").split("|").map((value, i) => ({
-    value: value.trim(), label: (labelParts[i] || "").trim(),
+    value: contactLabelSlot(value), label: labelParts[i] || "",
   })).filter(({ value }) => Boolean(value));
   return {
     primary: pairs[0]?.value || null,
