@@ -69,6 +69,15 @@ export const hasStarted = (s: SpecialLike, today = specialToday()): boolean => {
   return String(s.valid_from).slice(0, 10) <= today;
 };
 
+// A deal whose start and end fall on the same calendar day runs for one day
+// only. It never "reaches" a last day — the whole special is that day — so the
+// card labels it by its length instead of counting down.
+export const isSingleDaySpecial = (s: SpecialLike): boolean => {
+  const from = str(s.valid_from);
+  const until = str(s.valid_until);
+  return !!from && !!until && from.slice(0, 10) === until.slice(0, 10);
+};
+
 export const isEndingSoon = (s: SpecialLike): boolean => {
   if (!hasStarted(s)) return false;
   const d = daysRemaining(s);
@@ -87,7 +96,7 @@ export const countdownLabel = (s: SpecialLike): string => {
   const d = daysRemaining(s);
   if (d == null) return "Ongoing";
   if (d < 0) return "Ended";
-  if (d === 0) return "Last day";
+  if (d === 0) return isSingleDaySpecial(s) ? "1 Day Only" : "Last day";
   if (d === 1) return "1 day left";
   if (d <= ENDING_SOON_DAYS) return `${d} days left`;
   return s.valid_until ? `Ends ${format(new Date(s.valid_until), "d MMM")}` : "Ongoing";
