@@ -1,9 +1,11 @@
 import { format } from "date-fns";
 import { describe, expect, it } from "vitest";
 import {
+  countdownLabel,
   hasStarted,
   isEndingSoon,
   isOngoingSpecial,
+  isSingleDaySpecial,
   savingLabel,
   specialDateLine,
   specialMeta,
@@ -229,5 +231,39 @@ describe("validity states", () => {
     expect(isOngoingSpecial({})).toBe(true);
     expect(isOngoingSpecial({ valid_from: inDays(2) })).toBe(false);
     expect(isOngoingSpecial({ valid_until: inDays(3) })).toBe(false);
+  });
+});
+
+// A special dated for one day only never reaches a "last day" — the whole deal
+// is that single day — so the card says how long it runs instead of counting
+// down to its end.
+describe("single-day specials", () => {
+  const inDays = (n: number) => {
+    const [y, m, d] = specialToday().split("-").map(Number);
+    return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10);
+  };
+
+  it("reads the one-day window", () => {
+    expect(isSingleDaySpecial({ valid_from: inDays(0), valid_until: inDays(0) })).toBe(true);
+    expect(isSingleDaySpecial({ valid_from: inDays(-2), valid_until: inDays(0) })).toBe(false);
+    // No start date means the run length is unknown, so it is not one-day only.
+    expect(isSingleDaySpecial({ valid_until: inDays(0) })).toBe(false);
+  });
+
+  it("says 1 Day Only on the day itself", () => {
+    const oneDay = { valid_from: inDays(0), valid_until: inDays(0) };
+    expect(countdownLabel(oneDay)).toBe("1 Day Only");
+    // It still counts as ending soon, so the card keeps its red tab.
+    expect(isEndingSoon(oneDay)).toBe(true);
+  });
+
+  it("keeps Last day for a deal that ran over several days", () => {
+    expect(countdownLabel({ valid_from: inDays(-3), valid_until: inDays(0) })).toBe("Last day");
+    expect(countdownLabel({ valid_until: inDays(0) })).toBe("Last day");
+  });
+
+  it("says nothing early for a one-day deal that has not started", () => {
+    const tomorrow = { valid_from: inDays(1), valid_until: inDays(1) };
+    expect(isEndingSoon(tomorrow)).toBe(false);
   });
 });
