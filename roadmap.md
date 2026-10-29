@@ -27,4 +27,5 @@
 - [x] Round the rating pop-up corners to 16px to match app card styling.
 - [x] Point Share the App at https://hellohoedspruit.co/download via a shared appLinks constant.
 - [x] Match the follow lists' Find People / Share Profile button to search's Discover More via a shared ArrowCta component.
-- [x] Remove Plant Types from Home & Garden admin editing, frontend and CSV import/export; verify legacy CSVs ignore it.
+- [x] Show "1 Day Only" instead of "Last day" on cards for specials valid for a single day.
+- [x] Verify the one-day label renders on the live specials page and "Last day" disappears.
