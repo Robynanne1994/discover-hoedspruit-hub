@@ -125,6 +125,7 @@ const renderLinkStack = (
  * Render listing rich text as block-level React nodes.
  * Splits on newlines, treating ## / ### lines as subtitles and the rest as
  * paragraphs. A blank line starts a new paragraph; single newlines become <br/>.
+ * A line holding only links renders one link per line, one under the other.
  */
 export const renderListingRichText = (text: string): React.ReactNode => {
   if (!text) return null;
@@ -166,6 +167,12 @@ export const renderListingRichText = (text: string): React.ReactNode => {
       if (real.length === 0) continue;
       const inner: React.ReactNode[] = [];
       real.forEach((l, idx) => {
+        const stack = renderLinkStack(l, `p-${key}-${idx}`, idx > 0);
+        if (stack) {
+          // Each link fills its own line, so no <br/> is needed between them.
+          stack.forEach((row) => inner.push(row));
+          return;
+        }
         if (idx > 0) inner.push(<br key={`br-${key}-${idx}`} />);
         inner.push(...renderInline(l, `p-${key}-${idx}`));
       });
