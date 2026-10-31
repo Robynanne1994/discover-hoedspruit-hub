@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SPECIAL_TAG_PRESETS, PILL_CATEGORIES, pillCategories, tagKey, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "./specialTags";
+import { SPECIAL_TAG_PRESETS, PILL_CATEGORIES, pillCategories, tagKey, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags , parseTagCell } from "./specialTags";
 
 describe("specialTags", () => {
   const special = { tag: "Shopping", sub_tag_1: "Home & Lifestyle", sub_tag_2: "Services" };
@@ -66,7 +66,6 @@ describe("specialTags", () => {
       "Home & Lifestyle",
       "Shopping",
       "Couples",
-      "Buy 1; Get 1",
     ]);
   });
 
@@ -97,5 +96,13 @@ describe("specialTags", () => {
   it("offers Health and Game Drives as main categories", () => {
     expect(SPECIAL_TAG_PRESETS).toContain("Health");
     expect(SPECIAL_TAG_PRESETS).toContain("Game Drives");
+  });
+
+  it("reads as many tags as needed from one pipe-separated CSV cell", () => {
+    expect(parseTagCell("Accommodation| Couples |Honeymoon|couples")).toEqual(["Accommodation", "Couples", "Honeymoon"]);
+  });
+
+  it("matches a special on any tag in its list", () => {
+    expect(specialMatchesTag({ tags: ["Accommodation", "Couples", "Health", "Seniors"] }, "Seniors")).toBe(true);
   });
 });
