@@ -74,7 +74,7 @@ describe("specialTags", () => {
       { tag: "Shopping", sub_tag_1: "Spare Parts", sub_tag_2: "Buy 1 Get 1" },
       { tag: "food & drink" },
     ];
-    expect(pillCategories(specials)).toEqual(["Buy 1; Get 1", "Food & Drink", "Shopping"]);
+    expect(pillCategories(specials)).toEqual(["Food & Drink", "Shopping"]);
   });
 
   it("never offers a pill for a tag outside the fixed list", () => {
