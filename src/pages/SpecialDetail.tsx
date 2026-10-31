@@ -1,4 +1,5 @@
 import { buildBookingHref, bookingActionLabel } from "@/lib/bookingLink";
+import { specialTagList } from "@/lib/specialTags";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -240,14 +241,7 @@ const SpecialDetail = () => {
   const priceFmt = formatPrice(special.price);
   const originalFmt = formatPrice(special.original_price);
   const priceLabel = (sp.price_label || "").trim() || null;
-  const subTag1 = (sp.sub_tag_1 || "").trim() || null;
-  const subTag2 = (sp.sub_tag_2 || "").trim() || null;
-  const mainTag = (sp.tag || "").trim() || null;
-  const allTags = [
-    { text: mainTag, type: "main" as const },
-    { text: subTag1, type: "sub" as const },
-    { text: subTag2, type: "sub" as const },
-  ].filter((t) => t.text && String(t.text).trim() !== "");
+  const allTags = specialTagList(sp).map((text, i) => ({ text, type: (i === 0 ? "main" : "sub") as "main" | "sub" }));
 
 
   // Validity status
