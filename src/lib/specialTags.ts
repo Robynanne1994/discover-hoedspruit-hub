@@ -43,7 +43,6 @@ export const PILL_CATEGORIES = [
   "Home & Lifestyle",
   "Shopping",
   "Couples",
-  "Buy 1; Get 1",
 ];
 
 // The whitelisted categories that at least one special carries, alphabetical.
