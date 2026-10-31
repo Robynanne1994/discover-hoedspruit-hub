@@ -1,4 +1,5 @@
 import { resolveBookingLinkType } from "@/lib/bookingLink";
+import { parseTagCell, specialTagList, tagColumns } from "@/lib/specialTags";
 import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventContacts";
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,7 +37,7 @@ const EXPECTED_HEADERS = [
   "booking_required", "booking_link_type", "booking_link", "booking_link_label", "promo_code",
   "social_media_link", "social_media_label",
   "contact_phone", "phone_label", "contact_whatsapp", "whatsapp_label", "contact_email", "email_label",
-  "terms", "tag", "sub_tag_1", "sub_tag_2",
+  "terms", "tag",
   "is_active", "is_featured",
 ];
 
@@ -174,9 +175,7 @@ const AdminSpecialsImport = () => {
             return out;
           })(),
           terms: row.terms ? row.terms.split("|").map((s: string) => s.trim()).filter(Boolean).join("\n") || null : null,
-          tag: row.tag || null,
-          sub_tag_1: row.sub_tag_1 || null,
-          sub_tag_2: row.sub_tag_2 || null,
+          ...tagColumns(parseTagCell(row.tag, row.sub_tag_1, row.sub_tag_2)),
           is_active: row.is_active ? (row.is_active.toLowerCase() !== "false" && row.is_active !== "0") : true,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
         };
@@ -271,7 +270,7 @@ const AdminSpecialsImport = () => {
         return [c.contacts, c.labels];
       }),
       (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),
-      s.tag ?? "", s.sub_tag_1 ?? "", s.sub_tag_2 ?? "",
+      specialTagList(s).join("|"),
       s.is_active ? "true" : "false", s.is_featured ? "true" : "false",
     ].map((v: any) => escapeCSV(String(v))).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "specials_export.csv");

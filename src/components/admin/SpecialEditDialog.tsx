@@ -11,7 +11,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
-import TagPresets from "@/components/admin/TagPresets";
+import { TagListEditor } from "@/components/admin/TagPresets";
+import { specialTagList, tagColumns } from "@/lib/specialTags";
 import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
@@ -133,9 +134,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
         payload[`${k}_label`] = (form[`${k}_label`] || "").trim() || null;
       }
       payload.title_override = (form.title_override || "").trim() || null;
-      payload.tag = (form.tag || "").trim() || null;
-      payload.sub_tag_1 = (form.sub_tag_1 || "").trim() || null;
-      payload.sub_tag_2 = (form.sub_tag_2 || "").trim() || null;
+      Object.assign(payload, tagColumns(specialTagList(form)));
       // Legacy rows may still hold a bare day name; the column takes a list.
       const days = parseDays(form.day_of_week);
       payload.day_of_week = days.length ? days : null;
@@ -363,9 +362,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
           {/* Tag + sub-tags (same as events) */}
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-            <div className="col-span-2 lg:col-span-1"><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /><TagPresets value={form.tag} onPick={(t) => set("tag", t)} /></div>
-            <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
-            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
+            <div className="col-span-2"><Label>Tags</Label><TagListEditor value={specialTagList(form)} onChange={(t) => setForm((f: any) => ({ ...f, tags: t, tag: t[0] ?? null, sub_tag_1: null, sub_tag_2: null }))} /></div>
           </div>
 
 

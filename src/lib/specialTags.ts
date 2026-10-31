@@ -69,13 +69,48 @@ export function uniqueTags(tags: (string | null | undefined)[]): string[] {
 }
 
 type SpecialCategories = {
+  tags?: string[] | null;
   tag?: string | null;
   sub_tag_1?: string | null;
   sub_tag_2?: string | null;
 };
 
 export function collectSpecialTags(special: SpecialCategories): string[] {
-  return uniqueTags([special.tag, special.sub_tag_1, special.sub_tag_2]);
+  return uniqueTags(specialTagList(special));
+}
+
+// A special's tags in their saved order. The tags list is the source of
+// truth; older rows that only have tag/sub_tag_1/sub_tag_2 fall back to those.
+export function specialTagList(special: SpecialCategories): string[] {
+  const list = Array.isArray(special.tags) && special.tags.length
+    ? special.tags
+    : [special.tag, special.sub_tag_1, special.sub_tag_2];
+  return cleanTagList(list);
+}
+
+// Trim, drop blanks and case-insensitive duplicates, keeping the first spelling and order.
+export function cleanTagList(tags: (string | null | undefined)[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of tags) {
+    const label = String(raw ?? "").trim().replace(/\s+/g, " ");
+    const key = tagKey(label);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(label);
+  }
+  return out;
+}
+
+// CSV "tag" cell: as many tags as needed, separated by "|".
+export function parseTagCell(...cells: (string | null | undefined)[]): string[] {
+  return cleanTagList(cells.flatMap((c) => String(c ?? "").split("|")));
+}
+
+// Columns to save: the full list, plus the first tag in "tag" for older readers.
+export function tagColumns(tags: (string | null | undefined)[]) {
+  const list = cleanTagList(tags);
+  return { tags: list, tag: list[0] ?? null, sub_tag_1: null, sub_tag_2: null };
 }
 
 export function specialMatchesTag(special: SpecialCategories, category: string): boolean {
