@@ -39,6 +39,34 @@ const h3Style: React.CSSProperties = {
   color: COLORS.heading, margin: "14px 0 6px", letterSpacing: "0.01em",
 };
 
+const LINK_RE = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s)]+)/g;
+
+// One clickable link with the trailing outbound arrow. Block links fill their
+// own line so several links in one card always stack instead of sitting side
+// by side.
+const renderLink = (
+  label: string,
+  href: string,
+  key: string,
+  block = false,
+  extra?: React.CSSProperties,
+): React.ReactNode => (
+  <a
+    key={key}
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    style={{
+      color: COLORS.primary, textDecoration: "none", fontWeight: 400,
+      wordBreak: "break-word", display: block ? "flex" : "inline-flex",
+      alignItems: "center", gap: 4, ...extra,
+    }}
+  >
+    {label}
+    <ArrowUpRight size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
+  </a>
+);
+
 // Inline: **bold** + [label](url) markdown links + bare URLs.
 const renderInline = (text: string, keyBase: string): React.ReactNode[] => {
   const nodes: React.ReactNode[] = [];
@@ -57,20 +85,7 @@ const renderInline = (text: string, keyBase: string): React.ReactNode[] => {
       );
     } else {
       // link
-      const label = m[2] || m[4];
-      const href = m[3] || m[4];
-      nodes.push(
-        <a
-          key={`${keyBase}-l-${i++}`}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ color: COLORS.primary, textDecoration: "none", fontWeight: 400, wordBreak: "break-word", display: "inline-flex", alignItems: "center", gap: 4 }}
-        >
-          {label}
-          <ArrowUpRight size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
-        </a>
-      );
+      nodes.push(renderLink(m[2] || m[4], m[3] || m[4], `${keyBase}-l-${i++}`));
     }
     lastIndex = m.index + m[0].length;
   }
@@ -79,9 +94,38 @@ const renderInline = (text: string, keyBase: string): React.ReactNode[] => {
 };
 
 /**
+ * A line made of nothing but links (one per line, or several side by side)
+ * renders as one link per line inside the same card. A sentence that merely
+ * contains a link stays inline.
+ */
+const renderLinkStack = (
+  line: string,
+  keyBase: string,
+  gapBefore = false,
+): React.ReactNode[] | null => {
+  const matches = [...line.matchAll(LINK_RE)];
+  if (matches.length === 0) return null;
+  const leftover = line.replace(LINK_RE, "").replace(/[\s,;|\u2022\u00b7.-]+/g, "");
+  if (leftover !== "") return null;
+  return matches.map((m, i) =>
+    renderLink(
+      m[1] || m[3],
+      m[2] || m[3],
+      `${keyBase}-row-${i}`,
+      true,
+      {
+        marginBottom: i < matches.length - 1 ? 6 : 0,
+        marginTop: i === 0 && gapBefore ? 6 : 0,
+      },
+    ),
+  );
+};
+
+/**
  * Render listing rich text as block-level React nodes.
  * Splits on newlines, treating ## / ### lines as subtitles and the rest as
  * paragraphs. A blank line starts a new paragraph; single newlines become <br/>.
+ * A line holding only links renders one link per line, one under the other.
  */
 export const renderListingRichText = (text: string): React.ReactNode => {
   if (!text) return null;
@@ -123,6 +167,12 @@ export const renderListingRichText = (text: string): React.ReactNode => {
       if (real.length === 0) continue;
       const inner: React.ReactNode[] = [];
       real.forEach((l, idx) => {
+        const stack = renderLinkStack(l, `p-${key}-${idx}`, idx > 0);
+        if (stack) {
+          // Each link fills its own line, so no <br/> is needed between them.
+          stack.forEach((row) => inner.push(row));
+          return;
+        }
         if (idx > 0) inner.push(<br key={`br-${key}-${idx}`} />);
         inner.push(...renderInline(l, `p-${key}-${idx}`));
       });
