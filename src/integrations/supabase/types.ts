@@ -2233,6 +2233,7 @@ export type Database = {
           sub_tag_1: string | null
           sub_tag_2: string | null
           tag: string | null
+          tags: string[]
           terms: string | null
           title: string
           title_override: string | null
@@ -2290,6 +2291,7 @@ export type Database = {
           sub_tag_1?: string | null
           sub_tag_2?: string | null
           tag?: string | null
+          tags?: string[]
           terms?: string | null
           title: string
           title_override?: string | null
@@ -2347,6 +2349,7 @@ export type Database = {
           sub_tag_1?: string | null
           sub_tag_2?: string | null
           tag?: string | null
+          tags?: string[]
           terms?: string | null
           title?: string
           title_override?: string | null
