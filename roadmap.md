@@ -34,3 +34,5 @@
 - [x] Verify the drawer heading reads SAVINGS TYPE with its counted options unchanged.
 - [x] Add Health and Game Drives to the specials top pill row (Couples already there).
 - [x] Verify the new pills show counts and filter the list on the live specials page.
+- [x] Render each link in a custom row or description on its own line inside the same card.
+- [x] Verify links stack on phone and wide screens and that a link inside a sentence stays inline.
