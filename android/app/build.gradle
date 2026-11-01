@@ -1,5 +1,16 @@
 apply plugin: 'com.android.application'
 
+// Release signing is read from android/key.properties, which is gitignored and
+// never committed. Without that file the project still configures and debug
+// builds still work — only `assembleRelease`/`bundleRelease` need it — so a
+// fresh clone is not broken for anyone who only wants to run the app.
+def keystorePropertiesFile = rootProject.file("key.properties")
+def keystoreProperties = new Properties()
+def hasReleaseSigning = keystorePropertiesFile.exists()
+if (hasReleaseSigning) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace "za.co.hellohoedspruit.app"
     compileSdk rootProject.ext.compileSdkVersion
@@ -7,8 +18,10 @@ android {
         applicationId "za.co.hellohoedspruit.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        // Kept in step with the iOS target (MARKETING_VERSION / CURRENT_PROJECT_VERSION)
+        // so a given release is the same build on both stores.
+        versionCode 4
+        versionName "1.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +29,21 @@ android {
             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
+        }
+    }
     buildTypes {
         release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
