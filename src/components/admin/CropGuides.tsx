@@ -192,8 +192,15 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
     const el = ref.current;
     if (!el) return;
     const measure = () => {
-      const r = el.getBoundingClientRect();
-      setSize({ width: r.width, height: r.height });
+      // `offsetWidth` rather than `getBoundingClientRect`: a dialog opens with
+      // a zoom animation, so the rect is a scaled copy of the frame for the
+      // length of that animation. ResizeObserver never fires again once the
+      // animation ends (the layout size never changed, only its transform), so
+      // a rect measured mid-animation would leave every guide stuck at the
+      // animation's scale. Layout px ignore transforms entirely.
+      const width = el.offsetWidth;
+      const height = el.offsetHeight;
+      if (width > 0 && height > 0) setSize({ width, height });
     };
     measure();
     if (typeof ResizeObserver === "undefined") return;
@@ -266,6 +273,49 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
                   boxShadow: "0 0 0 9999px rgba(26,26,26,0.55)",
                 }}
               />
+            );
+          }
+
+          if (shape.kind === "vline") {
+            if (!size) return null;
+            // A measuring ruler, not chrome: it runs the full height of the
+            // frame at the slot's own `x`, so the picture can be slid until the
+            // subject sits between the pair.
+            const left = shape.x * scale;
+            return (
+              <div
+                key={guide.key}
+                style={{
+                  position: "absolute",
+                  left,
+                  top: 0,
+                  bottom: 0,
+                  width: 0,
+                  borderLeft: `1.5px dashed ${GUIDE_LINE}`,
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 4,
+                    // The frame clips, so a ruler near the right edge has to
+                    // wear its label on its left or the number is cut off.
+                    ...(left + shape.label.length * Math.max(7, Math.min(10, size.width * 0.045)) * 0.62 + 6 > size.width
+                      ? { right: 3 }
+                      : { left: 3 }),
+                    whiteSpace: "nowrap",
+                    fontVariantNumeric: "tabular-nums",
+                    fontSize: Math.max(7, Math.min(10, size.width * 0.045)),
+                    lineHeight: 1,
+                    color: "#B42318",
+                    background: "rgba(255,255,255,0.86)",
+                    borderRadius: 4,
+                    padding: "2px 3px",
+                  }}
+                >
+                  {shape.label}
+                </span>
+              </div>
             );
           }
 

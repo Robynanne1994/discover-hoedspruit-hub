@@ -38,3 +38,5 @@
 - [x] Verify links stack on phone and wide screens and that a link inside a sentence stays inline.
 - [x] Put every event host on the event page into one card with hairlines between rows instead of a card each.
 - [x] Verify the Hosted by block shows no gaps between hosts on the live event page.
+- [x] Rule the homepage upcoming events image slot at 28px and 126px across its 144x192 tile.
+- [x] Verify the rulers sit at 28 and 126 on the live editor, with both labels fully readable.

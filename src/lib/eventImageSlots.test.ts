@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { EVENT_IMAGE_SLOTS, eventImageSlot } from "./eventImageSlots";
-import { slotBox } from "./imageSlots";
+import { slotBox, slotGuides } from "./imageSlots";
 
 describe("event image slots", () => {
   it("matches the boxes the app paints", () => {
@@ -34,5 +34,15 @@ describe("event image slots", () => {
   it("throws on an unknown slot rather than cropping to a guess", () => {
     // @ts-expect-error — deliberately off the union
     expect(() => eventImageSlot("nope")).toThrow(/Unknown event image slot/);
+  });
+
+  it("rules the homepage tile at 28px and 126px across a 144px box", () => {
+    const slot = eventImageSlot("homepage");
+    // The tile itself is untouched — the rulers are drawn over it, not cut into it.
+    expect(slotBox(slot)).toEqual({ width: 144, height: 192 });
+    const rulers = slotGuides(slot).filter((g) => g.shape.kind === "vline");
+    expect(rulers.map((g) => (g.shape as { x: number }).x)).toEqual([28, 126]);
+    // One legend covers the pair, so it is not read out twice under the frame.
+    expect(rulers.map((g) => g.legend).filter((l) => l !== "")).toHaveLength(1);
   });
 });

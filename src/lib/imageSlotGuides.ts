@@ -78,7 +78,14 @@ export type GuideShape =
   /** The white sheet that laps over the bottom of a detail hero. */
   | { kind: "sheet"; height: number; radius: number; label: string }
   /** The whole image clipped to a circle, as search rows and avatars do. */
-  | { kind: "circleMask"; label: string };
+  | { kind: "circleMask"; label: string }
+  /**
+   * A vertical ruler running the full height of the frame at `x`, marking one
+   * edge of the band a subject has to sit inside. Unlike every other shape it
+   * isn't a piece of the app's chrome — the screen paints nothing there — it is
+   * a measurement aid for whoever is positioning the picture.
+   */
+  | { kind: "vline"; x: number; label: string };
 
 export type SlotGuide = {
   key: string;
@@ -431,6 +438,16 @@ export const circleMaskGuide = (legend: string): SlotGuide => ({
  */
 export const searchCircleGuide = (): SlotGuide =>
   circleMaskGuide("Search results are round — everything outside the circle is trimmed off.");
+
+/**
+ * Two vertical rulers marking the band a subject has to sit inside, in the
+ * slot's own box scale. The first carries the legend so the pair reads as one
+ * instruction rather than two.
+ */
+export const rulerBandGuides = (from: number, to: number, legend: string): SlotGuide[] => [
+  { key: `vline-${from}`, legend, shape: { kind: "vline", x: from, label: `${from}px` } },
+  { key: `vline-${to}`, legend: "", shape: { kind: "vline", x: to, label: `${to}px` } },
+];
 
 /** A slot's legends, dropping the blanks that share the line above them. */
 export const guideLegends = (guides: SlotGuide[]) =>
