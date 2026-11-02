@@ -205,6 +205,20 @@ describe("the boxes the app paints", () => {
     expect(slotGuides(slot).some((g) => g.shape.kind === "pill")).toBe(true);
   });
 
+  it("rules the specials hero at 69px and 316px down a 360px hero", () => {
+    const slot = specialImageSlot("detail");
+    // The hero itself is untouched — the rulers are drawn over it, not cut into it.
+    expect(slotBox(slot)).toEqual({ width: APP_SHELL_MAX_WIDTH, height: 360 });
+    const rulers = slotGuides(slot).filter((g) => g.shape.kind === "hline");
+    expect(rulers.map((g) => (g.shape as { y: number }).y)).toEqual([69, 316]);
+    // One legend covers the pair, so it is not read out twice under the frame.
+    expect(rulers.map((g) => g.legend).filter((l) => l !== "")).toHaveLength(1);
+    // The floating buttons and the white title card keep their places.
+    const guides = slotGuides(slot);
+    expect(guides.filter((g) => g.shape.kind === "circle")).toHaveLength(3);
+    expect(guides.some((g) => g.shape.kind === "sheet")).toBe(true);
+  });
+
   it("matches the local channel screens", () => {
     // LocalChannelDetail.tsx — hero `aspectRatio: "4 / 3"`.
     expect(channelImageSlot("detail").aspect).toBeCloseTo(4 / 3);
