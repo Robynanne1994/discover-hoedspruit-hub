@@ -269,6 +269,45 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
             );
           }
 
+          if (shape.kind === "vline") {
+            if (!size) return null;
+            // A measuring ruler, not chrome: it runs the full height of the
+            // frame at the slot's own `x`, so the picture can be slid until the
+            // subject sits between the pair.
+            const left = shape.x * scale;
+            return (
+              <div
+                key={guide.key}
+                style={{
+                  position: "absolute",
+                  left,
+                  top: 0,
+                  bottom: 0,
+                  width: 0,
+                  borderLeft: `1.5px dashed ${GUIDE_LINE}`,
+                }}
+              >
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 4,
+                    left: 3,
+                    whiteSpace: "nowrap",
+                    fontVariantNumeric: "tabular-nums",
+                    fontSize: Math.max(7, Math.min(10, size.width * 0.045)),
+                    lineHeight: 1,
+                    color: "#B42318",
+                    background: "rgba(255,255,255,0.86)",
+                    borderRadius: 4,
+                    padding: "2px 3px",
+                  }}
+                >
+                  {shape.label}
+                </span>
+              </div>
+            );
+          }
+
           return (
             <div key={guide.key} style={anchorStyle(guide.anchor ?? "top-left", guide.x ?? 0, guide.y ?? 0, scale)}>
               <GuideBody guide={guide} />
