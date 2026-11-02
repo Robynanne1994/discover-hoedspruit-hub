@@ -40,3 +40,5 @@
 - [x] Verify the Hosted by block shows no gaps between hosts on the live event page.
 - [x] Rule the homepage upcoming events image slot with two rulers running across it at 28px and 126px down its 144x192 tile.
 - [x] Verify the rulers sit at 28 and 126 on the live editor, with both labels fully readable.
+- [x] Rule the specials card cover image slot with two rulers running across it at 37px and 205px down its 214x214 tile.
+- [x] Verify the rulers sit at 37 and 205 on the live editor, with both labels fully readable.
