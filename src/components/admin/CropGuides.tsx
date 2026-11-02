@@ -276,36 +276,36 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
             );
           }
 
-          if (shape.kind === "vline") {
+          if (shape.kind === "hline") {
             if (!size) return null;
-            // A measuring ruler, not chrome: it runs the full height of the
-            // frame at the slot's own `x`, so the picture can be slid until the
-            // subject sits between the pair.
-            const left = shape.x * scale;
+            // A measuring ruler, not chrome: it runs the full width of the frame
+            // at the slot's own `y`, so the picture can be slid until the subject
+            // sits between the pair.
+            const top = shape.y * scale;
+            const fontSize = Math.max(7, Math.min(10, size.width * 0.045));
+            const labelFitsBelow = top + fontSize * 1.6 + 6 < size.height;
             return (
               <div
                 key={guide.key}
                 style={{
                   position: "absolute",
-                  left,
-                  top: 0,
-                  bottom: 0,
-                  width: 0,
-                  borderLeft: `1.5px dashed ${GUIDE_LINE}`,
+                  left: 0,
+                  right: 0,
+                  top,
+                  height: 0,
+                  borderTop: `1.5px dashed ${GUIDE_LINE}`,
                 }}
               >
                 <span
                   style={{
                     position: "absolute",
-                    top: 4,
-                    // The frame clips, so a ruler near the right edge has to
-                    // wear its label on its left or the number is cut off.
-                    ...(left + shape.label.length * Math.max(7, Math.min(10, size.width * 0.045)) * 0.62 + 6 > size.width
-                      ? { right: 3 }
-                      : { left: 3 }),
+                    left: 4,
+                    // A ruler near the bottom edge has to wear its label above
+                    // the line or the frame clips the number off.
+                    ...(labelFitsBelow ? { top: 3 } : { bottom: 3 }),
                     whiteSpace: "nowrap",
                     fontVariantNumeric: "tabular-nums",
-                    fontSize: Math.max(7, Math.min(10, size.width * 0.045)),
+                    fontSize,
                     lineHeight: 1,
                     color: "#B42318",
                     background: "rgba(255,255,255,0.86)",

@@ -36,12 +36,12 @@ describe("event image slots", () => {
     expect(() => eventImageSlot("nope")).toThrow(/Unknown event image slot/);
   });
 
-  it("rules the homepage tile at 28px and 126px across a 144px box", () => {
+  it("rules the homepage tile at 28px and 126px down a 192px box", () => {
     const slot = eventImageSlot("homepage");
     // The tile itself is untouched — the rulers are drawn over it, not cut into it.
     expect(slotBox(slot)).toEqual({ width: 144, height: 192 });
-    const rulers = slotGuides(slot).filter((g) => g.shape.kind === "vline");
-    expect(rulers.map((g) => (g.shape as { x: number }).x)).toEqual([28, 126]);
+    const rulers = slotGuides(slot).filter((g) => g.shape.kind === "hline");
+    expect(rulers.map((g) => (g.shape as { y: number }).y)).toEqual([28, 126]);
     // One legend covers the pair, so it is not read out twice under the frame.
     expect(rulers.map((g) => g.legend).filter((l) => l !== "")).toHaveLength(1);
   });

@@ -80,12 +80,12 @@ export type GuideShape =
   /** The whole image clipped to a circle, as search rows and avatars do. */
   | { kind: "circleMask"; label: string }
   /**
-   * A vertical ruler running the full height of the frame at `x`, marking one
+   * A horizontal ruler running the full width of the frame at `y`, marking one
    * edge of the band a subject has to sit inside. Unlike every other shape it
    * isn't a piece of the app's chrome — the screen paints nothing there — it is
    * a measurement aid for whoever is positioning the picture.
    */
-  | { kind: "vline"; x: number; label: string };
+  | { kind: "hline"; y: number; label: string };
 
 export type SlotGuide = {
   key: string;
@@ -440,13 +440,13 @@ export const searchCircleGuide = (): SlotGuide =>
   circleMaskGuide("Search results are round — everything outside the circle is trimmed off.");
 
 /**
- * Two vertical rulers marking the band a subject has to sit inside, in the
+ * Two horizontal rulers marking the band a subject has to sit inside, in the
  * slot's own box scale. The first carries the legend so the pair reads as one
  * instruction rather than two.
  */
 export const rulerBandGuides = (from: number, to: number, legend: string): SlotGuide[] => [
-  { key: `vline-${from}`, legend, shape: { kind: "vline", x: from, label: `${from}px` } },
-  { key: `vline-${to}`, legend: "", shape: { kind: "vline", x: to, label: `${to}px` } },
+  { key: `hline-${from}`, legend, shape: { kind: "hline", y: from, label: `${from}px` } },
+  { key: `hline-${to}`, legend: "", shape: { kind: "hline", y: to, label: `${to}px` } },
 ];
 
 /** A slot's legends, dropping the blanks that share the line above them. */

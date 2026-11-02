@@ -95,13 +95,13 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     aspect: 3 / 4,
     aspectLabel: "3:4",
     box: fixedBox(144, 192),
-    // The tile's own card text and the row's edge take 28px off each side, so
-    // the subject has to sit in the 98px band the two rulers mark out.
+    // Two horizontal rulers mark the band the subject has to sit inside: one
+    // 28px down from the top of the tile, one 126px down.
     guides: fixedGuides(
       rulerBandGuides(
         28,
         126,
-        "The subject needs to sit between the two red rulers, 28px and 126px across the 144px tile.",
+        "The subject needs to sit between the two red rulers, 28px and 126px down the 192px tile.",
       ),
     ),
     fallback: "Falls back to the card cover image.",
