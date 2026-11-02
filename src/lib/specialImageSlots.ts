@@ -103,6 +103,15 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     aspect: 1,
     aspectLabel: "1:1",
     box: fixedBox(190, 190),
+    // Two horizontal rulers mark the band the subject has to sit inside: one
+    // 47px down from the top of the tile, one 164px down.
+    guides: fixedGuides(
+      rulerBandGuides(
+        47,
+        164,
+        "The subject needs to sit between the two red rulers, 47px and 164px down the 190px tile.",
+      ),
+    ),
     fallback: "Falls back to the card cover image.",
   },
   {
