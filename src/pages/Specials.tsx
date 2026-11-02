@@ -916,10 +916,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           <h3
             {...noTitleCaseProps(special)}
             style={{
-              fontFamily: SANS,
-              ...type.sectionTitle,
-              lineHeight: 1.2,
-              letterSpacing: "-0.3px",
+              ...type.overlayTitle,
               color: "#FFFFFF",
               margin: 0,
             }}
