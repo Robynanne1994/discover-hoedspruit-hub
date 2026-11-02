@@ -25,6 +25,7 @@ import {
 } from "./appLayout";
 import {
   detailHeroGuides,
+  rulerBandGuides,
   savedCardGuides,
   searchCircleGuide,
   specialCardBadgeGuide,
@@ -54,7 +55,16 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     aspect: 1,
     aspectLabel: "1:1",
     box: ratioBox((v) => gridCardWidth(SPECIALS_CARD_GRID, v), 1),
-    guides: fixedGuides([specialCardBadgeGuide()]),
+    // Two horizontal rulers mark the band the subject has to sit inside: one
+    // 37px down from the top of the 214px tile, one 205px down.
+    guides: fixedGuides([
+      specialCardBadgeGuide(),
+      ...rulerBandGuides(
+        37,
+        205,
+        "The subject needs to sit between the two red rulers, 37px and 205px down the 214px tile.",
+      ),
+    ]),
     fallback: "Nothing — the card shows a plain sand panel instead.",
   },
   {
