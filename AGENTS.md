@@ -25,3 +25,5 @@
 - Keep specials Special Type option collection, matching and counts in specialKind so the drawer and results agree.
 - Render a rich-text line holding only links through listingRichText's link-stack so every link fills its own line in the same card; a sentence that merely contains a link stays inline.
 - Keep every event host on the event page inside one shared card with hairline dividers between rows, never one card per host, so the Hosted by block reads as a single list.
+- Keep a slot's subject-placement rulers in its own slot definition as rulerBandGuides, measured in the slot's own box px, so the crop tool and the thumbnail draw the same pair.
+- Measure crop guides from layout px (offsetWidth), never from getBoundingClientRect, so an edit dialog's zoom animation cannot leave every guide stuck at the animation's scale.
