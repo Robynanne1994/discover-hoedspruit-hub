@@ -581,7 +581,7 @@ const EventDetail = () => {
         {hosts.length > 0 && (
           <div style={{ marginTop: 28 }}>
             <h2 style={{ ...headStyle, marginBottom: 14 }}>Hosted by</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ ...cardStyle, overflow: "hidden" }}>
               {hosts.map((h, i) => {
                 const Tag: any = h.listingId ? Link : h.link ? "a" : "div";
                 const tagProps = h.listingId
@@ -596,8 +596,8 @@ const EventDetail = () => {
                     {...tagProps}
                     style={{
                       display: "flex", alignItems: "center", gap: 14,
-                      background: C.surface, borderRadius: 16, padding: "14px 16px",
-                      border: `1px solid ${C.border}`,
+                      background: C.surface, padding: "14px 16px",
+                      borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
                       textDecoration: "none", color: "inherit",
                     }}
                   >
