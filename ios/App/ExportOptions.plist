@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Export settings for a TestFlight / App Store upload.
+	     Used as: xcodebuild -exportArchive -exportOptionsPlist ExportOptions.plist
+	     Signing is automatic, so Xcode mints the distribution certificate and
+	     profile from whichever Apple account is signed in. That account has to
+	     belong to team 22PV69HYW3 or the export fails. -->
+	<key>method</key>
+	<string>app-store-connect</string>
+	<key>teamID</key>
+	<string>22PV69HYW3</string>
+	<key>signingStyle</key>
+	<string>automatic</string>
+	<key>destination</key>
+	<string>export</string>
+	<!-- Symbols go up with the build so crash reports are readable. -->
+	<key>uploadSymbols</key>
+	<true/>
+	<!-- Leave the bitcode/thinning defaults alone; the App Store handles it. -->
+	<key>stripSwiftSymbols</key>
+	<true/>
+</dict>
+</plist>
