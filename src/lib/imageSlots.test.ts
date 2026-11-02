@@ -193,6 +193,18 @@ describe("the boxes the app paints", () => {
     expect(specialImageSlot("featured").aspect).toBeCloseTo(3 / 2);
   });
 
+  it("rules the specials card at 37px and 205px down a 214px tile", () => {
+    const slot = specialImageSlot("card");
+    // The tile itself is untouched — the rulers are drawn over it, not cut into it.
+    expect(slotBox(slot)).toEqual({ width: 214, height: 214 });
+    const rulers = slotGuides(slot).filter((g) => g.shape.kind === "hline");
+    expect(rulers.map((g) => (g.shape as { y: number }).y)).toEqual([37, 205]);
+    // One legend covers the pair, so it is not read out twice under the frame.
+    expect(rulers.map((g) => g.legend).filter((l) => l !== "")).toHaveLength(1);
+    // The deal badge keeps its place in the corner above them.
+    expect(slotGuides(slot).some((g) => g.shape.kind === "pill")).toBe(true);
+  });
+
   it("matches the local channel screens", () => {
     // LocalChannelDetail.tsx — hero `aspectRatio: "4 / 3"`.
     expect(channelImageSlot("detail").aspect).toBeCloseTo(4 / 3);
