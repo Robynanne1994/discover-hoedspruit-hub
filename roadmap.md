@@ -36,3 +36,5 @@
 - [x] Verify the new pills show counts and filter the list on the live specials page.
 - [x] Render each link in a custom row or description on its own line inside the same card.
 - [x] Verify links stack on phone and wide screens and that a link inside a sentence stays inline.
+- [x] Put every event host on the event page into one card with hairlines between rows instead of a card each.
+- [x] Verify the Hosted by block shows no gaps between hosts on the live event page.

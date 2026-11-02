@@ -24,3 +24,4 @@
 - Keep the one-day special rule (a deal whose start and end share a calendar day reads "1 Day Only" rather than "Last day") in specialValue's countdownLabel so every card that counts down uses the same wording.
 - Keep specials Special Type option collection, matching and counts in specialKind so the drawer and results agree.
 - Render a rich-text line holding only links through listingRichText's link-stack so every link fills its own line in the same card; a sentence that merely contains a link stays inline.
+- Keep every event host on the event page inside one shared card with hairline dividers between rows, never one card per host, so the Hosted by block reads as a single list.
