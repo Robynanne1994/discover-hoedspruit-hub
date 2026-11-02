@@ -42,3 +42,5 @@
 - [x] Verify the rulers sit at 28 and 126 on the live editor, with both labels fully readable.
 - [x] Rule the specials card cover image slot with two rulers running across it at 37px and 205px down its 214x214 tile.
 - [x] Verify the rulers sit at 37 and 205 on the live editor, with both labels fully readable.
+- [x] Rule the specials individual page image slot with two rulers running across it at 69px and 316px down its 360px hero.
+- [x] Verify the rulers sit at 69 and 316 on the live editor with the hero chrome untouched.
