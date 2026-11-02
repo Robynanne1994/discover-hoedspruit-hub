@@ -76,7 +76,17 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     aspect: 4 / 3,
     aspectLabel: "4:3",
     box: ratioBox(fullBleedWidth, 4 / 3),
-    guides: (viewport) => detailHeroGuides(previewViewport(viewport).safeTop),
+    // Two horizontal rulers mark the band the subject has to sit inside: one
+    // 69px down from the top of the hero, one 316px down (360px tall at the
+    // editor's 480px preview width).
+    guides: (viewport) => [
+      ...detailHeroGuides(previewViewport(viewport).safeTop),
+      ...rulerBandGuides(
+        69,
+        316,
+        "The subject needs to sit between the two red rulers, 69px and 316px down the 360px hero.",
+      ),
+    ],
     fallback: "Falls back to the card cover image.",
   },
   {
