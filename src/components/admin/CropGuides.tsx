@@ -192,8 +192,15 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
     const el = ref.current;
     if (!el) return;
     const measure = () => {
-      const r = el.getBoundingClientRect();
-      setSize({ width: r.width, height: r.height });
+      // `offsetWidth` rather than `getBoundingClientRect`: a dialog opens with
+      // a zoom animation, so the rect is a scaled copy of the frame for the
+      // length of that animation. ResizeObserver never fires again once the
+      // animation ends (the layout size never changed, only its transform), so
+      // a rect measured mid-animation would leave every guide stuck at the
+      // animation's scale. Layout px ignore transforms entirely.
+      const width = el.offsetWidth;
+      const height = el.offsetHeight;
+      if (width > 0 && height > 0) setSize({ width, height });
     };
     measure();
     if (typeof ResizeObserver === "undefined") return;
