@@ -298,7 +298,11 @@ const CropGuides = ({ box, guides }: { box: { width: number; height: number }; g
                   style={{
                     position: "absolute",
                     top: 4,
-                    left: 3,
+                    // The frame clips, so a ruler near the right edge has to
+                    // wear its label on its left or the number is cut off.
+                    ...(left + shape.label.length * Math.max(7, Math.min(10, size.width * 0.045)) * 0.62 + 6 > size.width
+                      ? { right: 3 }
+                      : { left: 3 }),
                     whiteSpace: "nowrap",
                     fontVariantNumeric: "tabular-nums",
                     fontSize: Math.max(7, Math.min(10, size.width * 0.045)),
