@@ -46,3 +46,5 @@
 - [x] Verify the rulers sit at 69 and 316 on the live editor with the hero chrome untouched.
 - [x] Rule the specials homepage feature image slot with two rulers running across it at 47px and 164px down its 190px tile.
 - [x] Verify the rulers sit at 47 and 164 on the live editor.
+- [x] Rule the event detail cover image slot with two rulers running across it at 59px and 324px down its 480x360 hero.
+- [x] Verify the rulers sit at 59 and 324 on the live editor with the hero chrome untouched.

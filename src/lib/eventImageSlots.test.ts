@@ -45,4 +45,17 @@ describe("event image slots", () => {
     // One legend covers the pair, so it is not read out twice under the frame.
     expect(rulers.map((g) => g.legend).filter((l) => l !== "")).toHaveLength(1);
   });
+
+  it("rules the detail hero at 59px and 324px down a 360px box", () => {
+    const slot = eventImageSlot("detail");
+    // The hero keeps its 4:3 shape at the shell's widest — 480 x 360.
+    expect(slotBox(slot)).toEqual({ width: 480, height: 360 });
+    const rulers = slotGuides(slot).filter((g) => g.shape.kind === "hline");
+    expect(rulers.map((g) => (g.shape as { y: number }).y)).toEqual([59, 324]);
+    expect(rulers.map((g) => g.legend).filter((l) => l !== "")).toHaveLength(1);
+    // The hero's own chrome is still drawn: three floating buttons and the sheet.
+    const chrome = slotGuides(slot).filter((g) => g.shape.kind !== "hline");
+    expect(chrome.filter((g) => g.shape.kind === "circle")).toHaveLength(3);
+    expect(chrome.filter((g) => g.shape.kind === "sheet")).toHaveLength(1);
+  });
 });

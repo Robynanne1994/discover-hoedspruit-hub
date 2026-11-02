@@ -83,7 +83,17 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     aspect: 4 / 3,
     aspectLabel: "4:3",
     box: ratioBox(fullBleedWidth, 4 / 3),
-    guides: (viewport) => detailHeroGuides(previewViewport(viewport).safeTop),
+    // The hero's own chrome, plus two horizontal rulers marking the band the
+    // subject has to sit inside: one 59px down from the top of the hero, one
+    // 324px down (59px and 36px of clearance on a 360px-tall hero).
+    guides: (viewport) => [
+      ...detailHeroGuides(previewViewport(viewport).safeTop),
+      ...rulerBandGuides(
+        59,
+        324,
+        "The subject needs to sit between the two red rulers, 59px and 324px down the 360px hero.",
+      ),
+    ],
     fallback: "Falls back to the card cover image.",
   },
   {
