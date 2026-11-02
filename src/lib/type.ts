@@ -81,6 +81,21 @@ export const type = {
     letterSpacing: HEADING_TRACKING,
     color: INK,
   },
+  /**
+   * Headline set over a photo tile — the featured deal cards on the specials
+   * page. sectionTitle's 24px is sized for a heading that owns a flat row of
+   * the page; laid over a 3:2 photo it filled the gradient and pushed two
+   * short words onto a second line, so this keeps the face and weight and
+   * drops the size until the picture reads.
+   */
+  overlayTitle: {
+    fontFamily: NOHEMI,
+    fontSize: 18,
+    fontWeight: 550,
+    lineHeight: 1.2,
+    letterSpacing: "-0.3px",
+    color: INK,
+  },
 
   /** Full-width editorial cards, and people's names. */
   cardTitleL: {
