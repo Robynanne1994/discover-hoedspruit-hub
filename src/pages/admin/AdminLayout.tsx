@@ -80,12 +80,20 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Mobile back navigation: deep pages step up to their parent section,
-  // section pages step up to the dashboard.
+  // Mobile back navigation: the dashboard steps back through history
+  // (to where the admin was before); deep pages step up to their parent
+  // section; section pages step up to the dashboard.
   const segments = location.pathname.split("/").filter(Boolean); // ["admin", ...]
   const depth = segments.length; // 1 = /admin, 2 = section, 3+ = nested
   const backPath =
     depth > 2 ? "/" + segments.slice(0, 2).join("/") : depth === 2 ? "/admin" : null;
+  const goBack = () => {
+    if (backPath) return navigate(backPath);
+    // Dashboard: step back through history to where the admin was before,
+    // or the app home page when there is nothing to go back to.
+    if (window.history.length > 1) navigate(-1);
+    else navigate("/");
+  };
   const parentTitle =
     depth > 2
       ? navItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
@@ -129,17 +137,15 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile top bar */}
         <header className="lg:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-card border-b border-border">
-          {backPath && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="-ml-2 shrink-0"
-              aria-label="Back"
-              onClick={() => navigate(backPath)}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="-ml-2 shrink-0"
+            aria-label="Back"
+            onClick={goBack}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="-ml-2">
