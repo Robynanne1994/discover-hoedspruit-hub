@@ -30,7 +30,7 @@ import {
   type DurationFilter,
   type BookingFilter,
 } from "@/lib/eventDuration";
-import { isRecentPast } from "@/lib/eventPastWindow";
+import { isRecentPast, defaultEventSort, effectiveEventSort } from "@/lib/eventPastWindow";
 import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventRecurrence, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { PRICE_OPTIONS, countEventPrices, eventMatchesPrice, type PriceFilter } from "@/lib/eventPrice";
@@ -565,7 +565,12 @@ const Events = () => {
   const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc", "duration-asc", "duration-desc"] as const;
   type SortType = typeof validSorts[number];
   const urlSort = searchParams.get("s") as SortType | null;
-  const sortBy: SortType = urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : "date-asc";
+  const chosenSort: SortType | null =
+    urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : null;
+  // The Past list reads newest first unless a sort was written into the address,
+  // so the order the page actually shows is settled here once and used everywhere.
+  const defaultSort: SortType = defaultEventSort(activeFilter, "date-asc", "date-desc");
+  const effectiveSort: SortType = effectiveEventSort(activeFilter, chosenSort, "date-asc", "date-desc");
   const filterBarRef = useRef<HTMLDivElement | null>(null);
   const activePillRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
@@ -589,7 +594,10 @@ const Events = () => {
   
   const setSearch = (q: string) => updateParams({ q: q || null });
   const setTagFilter = (t: string | null) => updateParams({ t: t || null });
-  const setSortBy = (s: SortType) => updateParams({ s: s === "date-asc" ? null : s });
+  // While Past is on, newest first is the default, so the soonest-first choice
+  // has to be written out to register as a real selection.
+  const setSortBy = (s: SortType) =>
+    updateParams({ s: s === "date-asc" && activeFilter !== "past" ? null : s });
   
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
@@ -695,18 +703,18 @@ const Events = () => {
     list = list.filter((e) => eventMatchesRecurrence(e, recurrenceFilter) && eventMatchesTime(e, timeFilter));
 
     const sorted = [...list];
-    if (sortBy === "date-desc") {
+    if (effectiveSort === "date-desc") {
       sorted.sort((a, b) => {
         const at = a._parsed ? a._parsed.getTime() : 0;
         const bt = b._parsed ? b._parsed.getTime() : 0;
         return bt - at;
       });
-    } else if (sortBy === "title-asc") {
+    } else if (effectiveSort === "title-asc") {
       sorted.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
-    } else if (sortBy === "title-desc") {
+    } else if (effectiveSort === "title-desc") {
       sorted.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
-    } else if (sortBy === "duration-asc" || sortBy === "duration-desc") {
-      const dir = sortBy === "duration-asc" ? 1 : -1;
+    } else if (effectiveSort === "duration-asc" || effectiveSort === "duration-desc") {
+      const dir = effectiveSort === "duration-asc" ? 1 : -1;
       // Events without dates always go last; stable sort keeps date order for ties.
       sorted.sort((a, b) => {
         const ad = eventDurationDays(a), bd = eventDurationDays(b);
@@ -716,11 +724,12 @@ const Events = () => {
         return (ad - bd) * dir;
       });
     }
-    // date-asc is already the default order from sortedEvents
+    // The default order (soonest first, newest first while Past is on) already
+    // comes from sortedEvents, so it needs no sort here.
     // Strict chosen order; featured events get their own carousel instead.
     return sorted;
 
-  }, [categoryEvents, tagFilter, sortBy, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]);
+  }, [categoryEvents, tagFilter, effectiveSort, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]);
 
   // Month groups, with Recurring collected into one section and next-year
   // events held below it.
@@ -1091,7 +1100,7 @@ const Events = () => {
         onClose={() => setRefineOpen(false)}
         onClear={() => {
           setTagFilter(null);
-          setSortBy("date-asc");
+          updateParams({ s: null });
           setPriceFilter("any");
           setDurationFilter("all");
           setBookingFilter("any");
@@ -1108,24 +1117,24 @@ const Events = () => {
         <RefineSection
           isFirst
           label="Sort by"
-          onClear={sortBy !== "date-asc" ? () => setSortBy("date-asc") : undefined}
+          onClear={effectiveSort !== defaultSort ? () => updateParams({ s: null }) : undefined}
           summary={
-            sortBy === "date-asc" ? "Date (Soonest First)" :
-            sortBy === "date-desc" ? "Date (Latest First)" :
-            sortBy === "title-asc" ? "Alphabetically (A-Z)" :
-            sortBy === "duration-asc" ? "Duration (Shortest First)" :
-            sortBy === "duration-desc" ? "Duration (Longest First)" :
+            effectiveSort === "date-asc" ? "Date (Soonest First)" :
+            effectiveSort === "date-desc" ? "Date (Latest First)" :
+            effectiveSort === "title-asc" ? "Alphabetically (A-Z)" :
+            effectiveSort === "duration-asc" ? "Duration (Shortest First)" :
+            effectiveSort === "duration-desc" ? "Duration (Longest First)" :
             "Alphabetically (Z-A)"
           }
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
         >
-          <RefineOption label="Date (Soonest First)" active={sortBy === "date-asc"} onClick={() => setSortBy(pillToggle(sortBy, "date-asc", "date-asc"))} />
-          <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy(pillToggle(sortBy, "date-desc", "date-asc"))} />
-          <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy(pillToggle(sortBy, "title-asc", "date-asc"))} />
-          <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy(pillToggle(sortBy, "title-desc", "date-asc"))} />
-          <RefineOption label="Duration (Shortest First)" active={sortBy === "duration-asc"} onClick={() => setSortBy(pillToggle(sortBy, "duration-asc", "date-asc"))} />
-          <RefineOption label="Duration (Longest First)" active={sortBy === "duration-desc"} onClick={() => setSortBy(pillToggle(sortBy, "duration-desc", "date-asc"))} />
+          <RefineOption label="Date (Soonest First)" active={effectiveSort === "date-asc"} onClick={() => setSortBy(pillToggle(effectiveSort, "date-asc", "date-asc"))} />
+          <RefineOption label="Date (Latest First)" active={effectiveSort === "date-desc"} onClick={() => setSortBy(pillToggle(effectiveSort, "date-desc", "date-asc"))} />
+          <RefineOption label="Alphabetically (A-Z)" active={effectiveSort === "title-asc"} onClick={() => setSortBy(pillToggle(effectiveSort, "title-asc", "date-asc"))} />
+          <RefineOption label="Alphabetically (Z-A)" active={effectiveSort === "title-desc"} onClick={() => setSortBy(pillToggle(effectiveSort, "title-desc", "date-asc"))} />
+          <RefineOption label="Duration (Shortest First)" active={effectiveSort === "duration-asc"} onClick={() => setSortBy(pillToggle(effectiveSort, "duration-asc", "date-asc"))} />
+          <RefineOption label="Duration (Longest First)" active={effectiveSort === "duration-desc"} onClick={() => setSortBy(pillToggle(effectiveSort, "duration-desc", "date-asc"))} />
         </RefineSection>
 
         <RefineSection
