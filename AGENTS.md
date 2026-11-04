@@ -35,3 +35,4 @@
 - Keep restaurant facility placement and boolean visibility in restaurantDetailFields so Summary, service, family and accessibility cards share testable rules without duplicate fields.
 - Keep the "Hoedspruit & Surrounds" area rule and maps-link resolution in locationDirections so the action bar and the Location tab on listings, events and specials all refuse directions for an area that has no address.
 - Keep the listing action bar's top-up rule (a bar left with only two tiles takes its next populated contact, email before the listing's own social pages, and never a link the bar already shows) in actionBarFill so the bar and its tests share one rule.
+- Keep the quick-filter card's line rule in quickCardLines so the Explore results and their tests agree: the category names may take a second line only while the title and the location have both stayed on one, measured from rendered heights.
