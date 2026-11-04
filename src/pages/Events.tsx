@@ -842,6 +842,27 @@ const Events = () => {
   const filtersOn = hasActiveEventFilters(filterState);
   const activeFilterCount = activeEventFilterCount(filterState);
 
+  // One removable chip per active filter, so each can be switched off alone.
+  const appliedChips: { key: string; label: string; onRemove: () => void }[] = [];
+  if (activeFilter !== "all") {
+    appliedChips.push({
+      key: "date",
+      label: FILTERS.find((f) => f.value === activeFilter)?.label ?? String(activeFilter),
+      onRemove: () => updateParams({ f: null }),
+    });
+  }
+  if (tagFilter) appliedChips.push({ key: "tag", label: tagFilter, onRemove: () => updateParams({ t: null }) });
+  if (priceFilter !== "any")
+    appliedChips.push({ key: "price", label: PRICE_OPTIONS.find((o) => o.value === priceFilter)?.label ?? String(priceFilter), onRemove: () => setPriceFilter("any") });
+  if (durationFilter !== "all")
+    appliedChips.push({ key: "duration", label: DURATION_OPTIONS.find((o) => o.value === durationFilter)?.label ?? String(durationFilter), onRemove: () => setDurationFilter("all") });
+  if (bookingFilter !== "any")
+    appliedChips.push({ key: "booking", label: bookingFilter === "required" ? "Booking Required" : "Booking Not Required", onRemove: () => setBookingFilter("any") });
+  if (recurrenceFilter !== "any")
+    appliedChips.push({ key: "recurrence", label: RECURRENCE_OPTIONS.find((o) => o.value === recurrenceFilter)?.label ?? String(recurrenceFilter), onRemove: () => setRecurrenceFilter("any") });
+  if (timeFilter !== "any")
+    appliedChips.push({ key: "time", label: TIME_OPTIONS.find((o) => o.value === timeFilter)?.label ?? String(timeFilter), onRemove: () => setTimeFilter("any") });
+
   // Every filter back to its default in one press. The drawer's Clear All and
   // the pill row's Clear all both run this same list.
   const clearAllFilters = () => {
@@ -1262,7 +1283,7 @@ const Events = () => {
                       ({group.events.length})
                     </span>
                   )}
-                  <span style={{ flex: 1, height: 1, background: "#423324" }} />
+                  {!filtersOn && <span style={{ flex: 1, height: 1, background: "#423324" }} />}
                 </div>
                 {group.events.map((e) => (
                   <EventCard key={e.id} event={e} />
