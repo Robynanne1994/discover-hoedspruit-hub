@@ -23,10 +23,17 @@ const SpecialValueBar = ({
   special,
   detail = "compact",
   padding = "9px 11px",
+  surface = "band",
 }: {
   special: SpecialCardLike;
   detail?: "compact" | "full";
   padding?: string;
+  /**
+   * "band" paints the cream strip the list cards and the homepage rail use.
+   * "plain" sits on the card's own surface with no strip and no rule — the
+   * featured card's details column is white right down to its foot.
+   */
+  surface?: "band" | "plain";
 }) => {
   const full = detail === "full";
   const { value, meta, saving: savingAccent } = specialCard(special, { compact: !full });
@@ -64,8 +71,8 @@ const SpecialValueBar = ({
         justifyContent: "space-between",
         gap: 8,
         padding,
-        background: BAR.bg,
-        borderTop: `1px solid ${BAR.border}`,
+        background: surface === "band" ? BAR.bg : "transparent",
+        borderTop: surface === "band" ? `1px solid ${BAR.border}` : "none",
         lineHeight: `${lineBox}px`,
         flexShrink: 0,
       }}
