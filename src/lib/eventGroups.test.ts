@@ -25,7 +25,7 @@ describe("buildEventGroups", () => {
     );
 
     expect(groups.map((g) => g.key)).toEqual([`${Y}-10`, "recurring", `y-${Y + 1}`]);
-    expect(groups.map((g) => g.label)).toEqual(["OCTOBER", "Recurring", String(Y + 1)]);
+    expect(groups.map((g) => g.label)).toEqual(["October", "Recurring", String(Y + 1)]);
   });
 
   it("keeps every next-year event together under one year heading", () => {
@@ -60,8 +60,8 @@ describe("buildEventGroups", () => {
     );
 
     expect(groups.map((g) => [g.key, g.label, g.events.length])).toEqual([
-      [`${Y}-11`, "NOVEMBER", 1],
-      [`${Y}-10`, "OCTOBER", 1],
+      [`${Y}-11`, "November", 1],
+      [`${Y}-10`, "October", 1],
       ["tbc", "DATE TO BE CONFIRMED", 1],
     ]);
   });
