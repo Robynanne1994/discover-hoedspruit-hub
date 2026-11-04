@@ -29,6 +29,7 @@ import { collectContacts, isUsableSocialLink, isUsableWebsite, websiteHref, webs
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { formatDetailLabel } from "@/lib/detailLabel";
 import { restaurantDetailFields } from "@/lib/restaurantDetailFields";
+import { directionsHref as buildDirectionsHref, isSurroundsLocation } from "@/lib/locationDirections";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
 import {
@@ -507,6 +508,16 @@ const ListingDetail = () => {
   const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || facebookLink || instagramLink || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
   const hasAbout = !!descriptionText;
   const hasLocation = !!(listing.location || mapPlace);
+  // "Hoedspruit & Surrounds" is an area, not an address: no map, no copyable
+  // address, and no directions — neither in the action bar nor on the Location
+  // tab. Both read these two values so the buttons can never promise a journey
+  // the page itself refuses to show.
+  const isSurrounds = isSurroundsLocation(listing.location);
+  const directionsHref = buildDirectionsHref({
+    mapsLink: l.google_maps_link,
+    location: listing.location,
+    title: listing.title,
+  });
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
@@ -945,10 +956,9 @@ const ListingDetail = () => {
       Icon: WhatsAppIcon, ext: true,
     },
     actionPhone && { key: "call", label: "Call", href: `tel:${actionPhone}`, Icon: Phone, ext: false },
-    (l.google_maps_link || listing.location) && {
+    directionsHref && {
       key: "directions", label: "Directions",
-      href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
-      Icon: Send, ext: true,
+      href: directionsHref, Icon: Send, ext: true,
     },
     // The website slot comes from the website column alone. A listing with no
     // website gets no button here — nothing stands in for it, so an empty
@@ -1491,8 +1501,6 @@ const ListingDetail = () => {
   );
 
   const renderLocation = () => {
-    const directionsHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
-    const isSurrounds = (listing.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
     // A business's own name is never its address — falling back to the title
     // here (as this used to) meant "Copy Address" silently copied the
     // listing's name whenever `location` was empty, which is what "copy

@@ -25,6 +25,7 @@ import { eventContactPairs } from "@/lib/eventContacts";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { copyToClipboard } from "@/lib/share";
+import { directionsHref as buildDirectionsHref, isSurroundsLocation } from "@/lib/locationDirections";
 import { isNativeApp, nativePlatform } from "@/lib/nativeBridge";
 import { useSuppressStatusBarCover } from "@/lib/statusBarCoverVisibility";
 import Seo from "@/components/Seo";
@@ -468,7 +469,7 @@ const EventDetail = () => {
   ].filter((t) => t.text && String(t.text).trim() !== "");
   const eyebrowText = allTags[0]?.text || null;
 
-  const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
+  const directionsHref = buildDirectionsHref({ mapsLink, location: e.location });
   const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
 
   // Past = no upcoming occurrence of any kind.
@@ -1026,7 +1027,7 @@ const EventDetail = () => {
   );
 
   const renderLocation = () => {
-    const isSurrounds = (event.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    const isSurrounds = isSurroundsLocation(event.location);
     // An event's own title is never its address — falling back to it here (as
     // this used to) meant "Copy Address" silently copied the event's name
     // whenever `location` was empty. The maps-search fallback below keeps

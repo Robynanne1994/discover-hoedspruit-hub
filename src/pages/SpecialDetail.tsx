@@ -28,6 +28,7 @@ import { formatDays, parseDays } from "@/lib/specialDays";
 import { collectContacts } from "@/lib/contacts";
 import { eventContactPairs } from "@/lib/eventContacts";
 import { renderListingRichText } from "@/lib/listingRichText";
+import { isSurroundsLocation } from "@/lib/locationDirections";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon } from "@/lib/type";
@@ -560,7 +561,7 @@ const SpecialDetail = () => {
   const renderLocation = () => {
     const b: any = business || {};
     const locText = (b.location as string | null) || null;
-    const isSurrounds = (locText || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    const isSurrounds = isSurroundsLocation(locText);
     // A business/special's own name is never its address — falling back to
     // it here (as this used to) meant "Copy Address" silently copied a name
     // whenever there was no real location. The maps-search fallback below
