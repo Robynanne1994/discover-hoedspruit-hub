@@ -4,7 +4,6 @@ import {
   CATEGORY_CARD_GRID,
   DEFAULT_PREVIEW_WIDTH,
   gridCardWidth,
-  insetWidth,
   PREVIEW_VIEWPORTS,
   SAVED_CARD_GRID,
   shellWidth,
