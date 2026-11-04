@@ -951,7 +951,7 @@ const ListingDetail = () => {
   // ----- Action buttons (fixed bar above the bottom nav) -----
   // The first action is always rendered as the primary (filled brown) button,
   // matching the events detail page.
-  const actions = [
+  const baseActions = [
     actionWhatsappClean && {
       key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${actionWhatsappClean}`,
       Icon: WhatsAppIcon, ext: true,
