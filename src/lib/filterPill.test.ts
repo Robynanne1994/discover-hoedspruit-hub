@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pillToggle } from "./filterPill.ts";
+import { allPillActive, pillToggle } from "./filterPill.ts";
 
 describe("pillToggle", () => {
   it("selects a pill that is not chosen yet", () => {
@@ -20,5 +20,19 @@ describe("pillToggle", () => {
 
   it("switches between two chosen pills", () => {
     expect(pillToggle("Morning", "Night", "any")).toBe("Night");
+  });
+});
+
+describe("allPillActive", () => {
+  it("lights the All pill when nothing is narrowed", () => {
+    expect(allPillActive(false, false)).toBe(true);
+  });
+
+  it("keeps All plain while any filter is applied", () => {
+    expect(allPillActive(true, false)).toBe(false);
+  });
+
+  it("keeps All plain while a search term is typed", () => {
+    expect(allPillActive(false, true)).toBe(false);
   });
 });

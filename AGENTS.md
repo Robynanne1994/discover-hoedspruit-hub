@@ -4,7 +4,7 @@
 
 - Keep accommodation CSV value normalisation in a dedicated library module so imports, exports, and tests share one source of truth.
 - Keep specials category collection, matching and per-special counting in the shared specialTags library so pills and drawer filters use identical rules.
-- Use the shared InstagramIcon for every Instagram symbol so its camera outline stays consistent while inheriting the placement's brand colour.
+- Use the shared InstagramIcon for every Instagram symbol so its outline stays consistent in the placement's brand colour.
 - Keep restaurant meal choices and option exclusions in restaurantOptions so the editor, CSV references and filters agree.
 - Keep event category collection, matching and per-event counting in eventTags so all three tags use consistent filter rules.
 - Keep events list heading grouping in eventGroups; a lone time-frame pill heads the list with its dates from eventTimeFrames, more filters say "Events".
@@ -19,23 +19,24 @@
 - Keep event recurrence matching and start-time buckets and counts in eventRefinements, reusing the schedule parser for legacy patterns.
 - Keep event contact CSV parsing, serialisation and labelled frontend pairs in eventContacts; combined cells map to primary/extras storage and actions use the first populated contact.
 - Keep the filter-pill toggle rule (clicking an already-lit pill returns its section to the default choice) in filterPill so every pill row and drawer option shares one behaviour.
+- Keep the "All" pill's lit state in filterPill's allPillActive so it lights only when nothing is narrowed, never while another filter or a search term is applied.
 - Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.
 - Keep app store review links in storeReview so the account page's rating prompt and any later entry point share one URL; an unissued link stays null.
 - Keep canonical outbound links such as the app download page in appLinks so the share sheet and any later entry point share one URL.
-- Render the full-width brown call-to-action pill through the shared ArrowCta so search's Discover More and the follow lists' Find People and Share Profile stay identical; wrap it in each page's own content column.
+- Render the full-width brown CTA pill through the shared ArrowCta so search's Discover More and the follow lists' Find People and Share Profile stay identical, inside each page's content column.
 - Keep the one-day special rule (start and end share a calendar day reads "1 Day Only", not "Last day") in specialValue's countdownLabel.
 - Keep specials Special Type option collection, matching and counts in specialKind so the drawer and results agree.
 - Render a rich-text line of only links through listingRichText's link-stack; a sentence that merely contains a link stays inline.
-- Keep every event host on the event page inside one shared card with hairline dividers between rows, never one card per host, so the Hosted by block reads as a single list.
+- Keep every event host on the event page in one shared card with hairline dividers, never one card per host.
 - Keep a slot's subject rulers in its own definition as rulerBandGuides, in the slot's own box px, so crop tool and thumbnail draw the same pair.
 - Measure crop guides from layout px (offsetWidth), never getBoundingClientRect, so a dialog's zoom animation cannot leave guides stuck at its scale.
 - Keep the featured deal card's deal line in an accent-wash chip with its mark inside, plus a chevron at the panel's right edge.
 - Keep admin category rows unambiguous: the drag handle moves a category, the listings count opens its listings, the labelled Order button alone reaches the per-category order page.
-- Keep listing detail-row label casing in detailLabel's formatDetailLabel so the Details section and its tests share one rule; every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the first letter of the whole label.
-- Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and rendered on the About tab under "Good to know", never as Details cards; a listing whose only detail was a custom row therefore has no Details tab.
+- Keep listing detail-row label casing in detailLabel's formatDetailLabel: every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the whole label's first letter.
+- Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and shown on the About tab under "Good to know", never as Details cards; a listing whose only detail was custom has no Details tab.
 - Keep restaurant facility placement and boolean visibility in restaurantDetailFields so Summary, service, family and accessibility cards share testable rules without duplicate fields.
 - Keep the "Hoedspruit & Surrounds" area rule and maps-link resolution in locationDirections so the action bar and the Location tab on listings, events and specials all refuse directions for an area that has no address.
-- Keep the listing action bar's top-up rule (a bar left with only two tiles takes its next populated contact, email before the listing's own social pages, and never a link the bar already shows) in actionBarFill so the bar and its tests share one rule.
+- Keep the listing action bar's top-up rule in actionBarFill: a bar left with two tiles takes its next populated contact, email before the listing's social pages, never a link already shown.
 - Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: admin sort_position first, then newest; featured specials are lifted above it so their position is ignored.
 - Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.

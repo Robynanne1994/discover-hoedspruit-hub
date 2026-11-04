@@ -20,7 +20,7 @@ import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
-import { pillToggle } from "@/lib/filterPill";
+import { allPillActive, pillToggle } from "@/lib/filterPill";
 import { compareSpecialDefault } from "@/lib/specialOrder";
 import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
@@ -453,7 +453,7 @@ const Specials = () => {
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: PAGE_PAD }}>
           <FilterPill
             label={`All (${totalCount})`}
-            active={activeTab === ALL_TAB}
+            active={allPillActive(filtersOn, !!search.trim()) && activeTab === ALL_TAB}
             onClick={() => handlePill(ALL_TAB)}
           />
           {(endingSoonCount > 0 || activeTab === ENDING_SOON_TAB) && (
