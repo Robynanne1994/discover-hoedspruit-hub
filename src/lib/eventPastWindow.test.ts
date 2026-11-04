@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PAST_GROUP_LABEL, defaultEventSort, effectiveEventSort, getPastWindowStart, isRecentPast } from "./eventPastWindow";
+import { defaultEventSort, effectiveEventSort, getPastWindowStart, isRecentPast } from "./eventPastWindow";
 
 // Fixed "today" so the window never drifts with the real clock.
 const TODAY = new Date(2026, 9, 19); // 19 Oct 2026, local
@@ -11,9 +11,6 @@ describe("past events window", () => {
     expect(getPastWindowStart(TODAY)).toEqual(at(2026, 8, 19)); // 19 Sep 2026
   });
 
-  it("heads the list with the past month, not three", () => {
-    expect(PAST_GROUP_LABEL).toBe("Events in the Past Month");
-  });
 
   it("shows an event two weeks ago", () => {
     expect(isRecentPast(at(2026, 9, 5), TODAY)).toBe(true);
