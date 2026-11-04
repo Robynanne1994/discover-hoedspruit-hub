@@ -19,6 +19,7 @@
 - Keep event recurrence matching and start-time buckets and counts in eventRefinements, reusing the schedule parser for legacy patterns.
 - Keep event contact CSV parsing, serialisation and labelled frontend pairs in eventContacts; combined cells map to primary/extras storage and actions use the first populated contact.
 - Keep the filter-pill toggle rule (clicking an already-lit pill returns its section to the default choice) in filterPill so every pill row and drawer option shares one behaviour.
+- Keep the "All" pill's lit state in filterPill's allPillActive so it lights only when nothing is narrowed, never while another filter or a search term is applied.
 - Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.
 - Keep app store review links in storeReview so the account page's rating prompt and any later entry point share one URL; an unissued link stays null.
 - Keep canonical outbound links such as the app download page in appLinks so the share sheet and any later entry point share one URL.
