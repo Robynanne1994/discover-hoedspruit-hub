@@ -43,6 +43,12 @@ import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { pillToggle } from "@/lib/filterPill";
+import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
+import { PILL_ICON_SIZE, PILL_ICON_NUDGE } from "@/lib/pillIcon";
+
+// One height for every pill in the filters row — the Filters button, Clear all
+// and the date pills — so none of them can sit a hair taller than its neighbours.
+const PILL_HEIGHT = 29;
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -806,6 +812,35 @@ const Events = () => {
     updateParams({ f: activeFilter === v || v === "all" ? null : v });
   };
 
+  // What the page is narrowed by right now, in one place, so the pill row's
+  // count and its Clear all button can never disagree with each other.
+  const filterState = {
+    dateFilter: activeFilter,
+    tagFilter,
+    priceFilter,
+    durationFilter,
+    bookingFilter,
+    recurrenceFilter,
+    timeFilter,
+  };
+  const filtersOn = hasActiveEventFilters(filterState);
+  const activeFilterCount = activeEventFilterCount(filterState);
+
+  // Every filter back to its default in one press. The drawer's Clear All and
+  // the pill row's Clear all both run this same list.
+  const clearAllFilters = () => {
+    // One address write, not four: each separate write is measured against the
+    // address as it stood when the press began, so only the last one would
+    // survive and the earlier filter would quietly stay switched on.
+    updateParams({ t: null, s: null, f: null, q: null });
+    setPriceFilter("any");
+    setDurationFilter("all");
+    setBookingFilter("any");
+    setRecurrenceFilter("any");
+    setTimeFilter("any");
+    setOpenSection(null);
+  };
+
   return (
     <div
       style={{
@@ -874,24 +909,6 @@ const Events = () => {
             >
               {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
             </button>
-            <button
-              aria-label="FILTER & SORT"
-              onClick={() => setRefineOpen(true)}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 999,
-                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any" || recurrenceFilter !== "any" || timeFilter !== "any") ? "#423324" : "#FFFFFF",
-                border: "1px solid rgba(0,0,0,0.06)",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any" || recurrenceFilter !== "any" || timeFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
-              }}
-            >
-              <SlidersHorizontal size={18} strokeWidth={1.8} />
-            </button>
           </>
         }
       />
@@ -909,54 +926,159 @@ const Events = () => {
         </div>
       )}
 
-      {/* Filter pills — hidden while a search term is active */}
-      {!search.trim() && (
-        <div
-          ref={filterBarRef}
-          style={{
-            marginTop: 16,
-            paddingLeft: 20,
-            paddingRight: 20,
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-            overflowX: "auto",
-            scrollbarWidth: "none",
-          }}
-          className="scrollbar-hide"
-        >
-          {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
-            const active = activeFilter === f.value;
-            const count = getFilterCount(f.value, sortedEvents);
-            return (
-              <button
-                key={f.value}
-                ref={active ? activePillRef : undefined}
-                onClick={() => handleFilterPill(f.value)}
+      {/* Filters button, inline at the head of the pill row. It opens the same
+          drawer the header button used to, and wears a count of the filters
+          currently on. The button, its divider and Clear all hold their place
+          at the left while the date pills scroll past them. */}
+      <div
+        style={{
+          marginTop: 16,
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button
+            aria-label="Filters and sort"
+            aria-haspopup="dialog"
+            onClick={() => setRefineOpen(true)}
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(26,26,26,0.08)",
+              borderRadius: 999,
+              height: PILL_HEIGHT,
+              padding: "7px 12px 7px 14px",
+              cursor: "pointer",
+              ...tabStyle(false),
+              lineHeight: 1,
+              color: "#1A1A1A",
+              whiteSpace: "nowrap",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <SlidersHorizontal
+              size={PILL_ICON_SIZE}
+              strokeWidth={1.9}
+              style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
+            />
+            Filters
+            {activeFilterCount > 0 && (
+              <span
+                aria-label={`${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"} applied`}
                 style={{
-                  background: active ? "#423324" : "#FFFFFF",
-                  border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
-                  borderRadius: 999,
-                  padding: "7px 14px",
-                  cursor: "pointer",
-                  ...tabStyle(active),
-                  lineHeight: 1,
-                  color: active ? "#FFFFFF" : "#1A1A1A",
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 6,
+                  justifyContent: "center",
+                  height: 13,
+                  padding: "0 5px",
+                  borderRadius: 999,
+                  background: "#423324",
+                  color: "#FFFFFF",
+                  fontFamily: SANS,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  letterSpacing: 0,
                 }}
               >
-                {f.label} ({count})
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
 
-              </button>
-            );
-          })}
+          {/* Hairline between the Filters button and everything else. */}
+          {!search.trim() && (
+            <span
+              aria-hidden="true"
+              style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }}
+            />
+          )}
+
+          {filtersOn && (
+            <button
+              onClick={clearAllFilters}
+              style={{
+                background: "transparent",
+                border: "1.5px solid #423324",
+                borderRadius: 999,
+                height: PILL_HEIGHT,
+                padding: "6.5px 12px",
+                cursor: "pointer",
+                ...tabStyle(false),
+                lineHeight: 1,
+                color: "#423324",
+                whiteSpace: "nowrap",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <X
+                size={PILL_ICON_SIZE}
+                strokeWidth={2}
+                style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
+              />
+              Clear all
+            </button>
+          )}
         </div>
-      )}
-      {search.trim() && <div style={{ height: 20 }} />}
+
+
+        {/* Date pills — hidden while a search term is active */}
+        {!search.trim() && (
+          <div
+            ref={filterBarRef}
+            className="scrollbar-hide"
+            style={{
+              // The active pill is scrolled into view by offsetLeft, which is
+              // only measured against this box once it is the pills' container.
+              position: "relative",
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+              overflowX: "auto",
+              scrollbarWidth: "none",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
+              const active = activeFilter === f.value;
+              const count = getFilterCount(f.value, sortedEvents);
+              return (
+                <button
+                  key={f.value}
+                  ref={active ? activePillRef : undefined}
+                  onClick={() => handleFilterPill(f.value)}
+                  style={{
+                    background: active ? "#423324" : "#FFFFFF",
+                    border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
+                    borderRadius: 999,
+                    height: PILL_HEIGHT,
+                    padding: "7px 14px",
+                    cursor: "pointer",
+                    ...tabStyle(active),
+                    lineHeight: 1,
+                    color: active ? "#FFFFFF" : "#1A1A1A",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  {f.label} ({count})
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Featured Events */}
       {!search.trim() && activeFilter === "all" && !tagFilter && featuredEvents.length > 0 && (
@@ -1138,19 +1260,7 @@ const Events = () => {
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
-        onClear={() => {
-          setTagFilter(null);
-          updateParams({ s: null });
-          setPriceFilter("any");
-          setDurationFilter("all");
-          setBookingFilter("any");
-          setRecurrenceFilter("any");
-          setTimeFilter("any");
-          setActiveFilter("all");
-          
-          setSearch("");
-          setOpenSection(null);
-        }}
+        onClear={clearAllFilters}
         resultsCount={filtered.length}
         resultsLabel="events"
       >

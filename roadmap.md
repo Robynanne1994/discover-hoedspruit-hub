@@ -49,3 +49,5 @@
 - [x] Rule the event detail cover image slot with two rulers running across it at 59px and 324px down its 480x360 hero.
 - [x] Verify the rulers sit at 59 and 324 on the live editor with the hero chrome untouched.
 - [x] Add restaurant Summary, reorganise facility cards and verify the displayed values without changing listing data.
+- [x] Move the events Filters button inline with the pill row, with a filter count badge and a Clear all pill.
+- [x] Verify the badge count, Clear all reset, drawer Clear All and the search state on the live events page.
