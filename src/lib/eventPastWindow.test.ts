@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PAST_GROUP_LABEL, getPastWindowStart, isRecentPast, pastAwareSort } from "./eventPastWindow";
+import { PAST_GROUP_LABEL, defaultEventSort, effectiveEventSort, getPastWindowStart, isRecentPast } from "./eventPastWindow";
 
 // Fixed "today" so the window never drifts with the real clock.
 const TODAY = new Date(2026, 9, 19); // 19 Oct 2026, local
@@ -53,21 +53,29 @@ describe("past events default order", () => {
   const SORTS = ["date-asc", "date-desc", "title-asc"] as const;
   type Sort = (typeof SORTS)[number];
 
-  it("reads newest first while the past filter is on and nothing was chosen", () => {
-    expect(pastAwareSort<Sort>("past", "date-asc", "date-asc", "date-desc")).toBe("date-desc");
+  it("falls back to newest first while the past filter is on", () => {
+    expect(defaultEventSort<Sort>("past", "date-asc", "date-desc")).toBe("date-desc");
   });
 
-  it("keeps a sort the reader chose by hand while past is on", () => {
-    expect(pastAwareSort<Sort>("past", "title-asc", "date-asc", "date-desc")).toBe("title-asc");
+  it("falls back to soonest first for every other filter", () => {
+    expect(defaultEventSort<Sort>("all", "date-asc", "date-desc")).toBe("date-asc");
+    expect(defaultEventSort<Sort>("this-month", "date-asc", "date-desc")).toBe("date-asc");
   });
 
-  it("keeps the soonest-first choice reachable while past is on", () => {
-    expect(pastAwareSort<Sort>("past", "date-desc", "date-asc", "date-desc")).toBe("date-desc");
-    expect(pastAwareSort<Sort>("past", "date-asc", "date-asc", "date-desc")).toBe("date-desc");
+  it("reads newest first while past is on and nothing was chosen", () => {
+    expect(effectiveEventSort<Sort>("past", null, "date-asc", "date-desc")).toBe("date-desc");
   });
 
-  it("leaves every other filter in its own order", () => {
-    expect(pastAwareSort<Sort>("all", "date-asc", "date-asc", "date-desc")).toBe("date-asc");
-    expect(pastAwareSort<Sort>("this-month", "date-asc", "date-asc", "date-desc")).toBe("date-asc");
+  it("honours the soonest-first choice written into the address while past is on", () => {
+    expect(effectiveEventSort<Sort>("past", "date-asc", "date-asc", "date-desc")).toBe("date-asc");
+  });
+
+  it("keeps any other sort chosen while past is on", () => {
+    expect(effectiveEventSort<Sort>("past", "title-asc", "date-asc", "date-desc")).toBe("title-asc");
+  });
+
+  it("keeps every other filter on the sort it was given", () => {
+    expect(effectiveEventSort<Sort>("all", null, "date-asc", "date-desc")).toBe("date-asc");
+    expect(effectiveEventSort<Sort>("this-week", "title-asc", "date-asc", "date-desc")).toBe("title-asc");
   });
 });
