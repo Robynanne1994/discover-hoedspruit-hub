@@ -51,3 +51,5 @@
 - [x] Add restaurant Summary, reorganise facility cards and verify the displayed values without changing listing data.
 - [x] Move the events Filters button inline with the pill row, with a filter count badge and a Clear all pill.
 - [x] Verify the badge count, Clear all reset, drawer Clear All and the search state on the live events page.
+- [x] Centre the filter count digit inside its brown disc on the events page.
+- [x] Verify the drawn digit sits within a third of a pixel of the disc centre for one and two filters.

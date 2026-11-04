@@ -8,3 +8,19 @@
  */
 export const PILL_ICON_SIZE = 10.5;
 export const PILL_ICON_NUDGE = "-1.4px";
+
+/**
+ * The active-filter count mark: a digit in a dark disc beside the word Filters.
+ *
+ * Measured the same way as the icons above. The digit's drawn ink is 7px tall
+ * inside a 15px disc, while the line box it is centred in is taller than the
+ * ink, so the number rides high; this lift lands the ink dead centre. No
+ * side-to-side lift is wanted: measured digit by digit, every count from 1 to 9
+ * already lands within a third of a pixel of the disc's centre, and any lift
+ * big enough to see only pushes the wider digits off it.
+ */
+export const PILL_BADGE_SIZE = 15;
+export const PILL_BADGE_NUDGE = "1px";
+
+
+
