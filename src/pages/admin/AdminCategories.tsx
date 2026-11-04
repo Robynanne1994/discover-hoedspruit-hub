@@ -901,6 +901,7 @@ const SortableCategoryRow = ({
   onToggle,
   onEdit,
   onDelete,
+  onViewListings,
   children,
 }: {
   cat: Category;
@@ -910,6 +911,7 @@ const SortableCategoryRow = ({
   onToggle: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onViewListings: () => void;
   children?: React.ReactNode;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `cat:${cat.id}` });
