@@ -861,6 +861,9 @@ const Events = () => {
     filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
 
+  // Taking the last filter off brings the bar back to its initial view.
+  useFilterBarReset(filterBarRef, filtersOn || !!search.trim());
+
   // One removable chip per active filter, so each can be switched off alone.
   const appliedChips: { key: string; label: string; onRemove: () => void }[] = [];
   if (activeFilter !== "all") {

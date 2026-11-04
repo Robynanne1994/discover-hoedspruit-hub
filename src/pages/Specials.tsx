@@ -329,6 +329,9 @@ const Specials = () => {
     filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
 
+  // Taking the last filter off brings the bar back to its initial view.
+  useFilterBarReset(filterBarRef, filtersOn || !!search.trim());
+
   const toggleFilter = (val: string) => {
     setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
   };
