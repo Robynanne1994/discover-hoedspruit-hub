@@ -89,6 +89,7 @@ const MyAccount = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [rateOpen, setRateOpen] = useState(false);
+  const { data: storeLinks } = useStoreReviewLinks();
   const [activeSection, setActiveSection] = useState<ActiveSection>(null);
   
   const [unreadCount, setUnreadCount] = useState(0);
