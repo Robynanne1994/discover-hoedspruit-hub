@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays, ChevronRight } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -932,7 +932,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           minWidth: 0,
           display: "flex",
           flexDirection: "column",
-          padding: "10px 14px 8px 14px",
+          padding: "12px 14px 12px 16px",
         }}
       >
         <SpecialBadgePill
@@ -945,10 +945,10 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           style={{
             fontFamily: SANS,
             ...type.cardTitleM,
-            lineHeight: 1.25,
+            lineHeight: 1.2,
             letterSpacing: "-0.15px",
             color: COLOR.ink,
-            margin: "6px 0 0 0",
+            margin: "12px 0 0 0",
             overflowWrap: "break-word",
           }}
         >
@@ -974,8 +974,8 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
               lineHeight: 1.3,
               color: COLOR.mutedInk,
               // Air between the headline and the two rows beneath it; the offer
-              // line's own top padding (below) keeps the same breathing room.
-              marginTop: 9,
+              // chip's own top padding (below) keeps the same breathing room.
+              marginTop: 12,
               minWidth: 0,
             }}
           >
@@ -998,19 +998,49 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             </span>
           </div>
         )}
-        <div style={{ marginTop: "auto" }}>
-          <SpecialValueBar
-            special={special}
-            detail="full"
-            padding="9px 0 0 0"
-            surface="plain"
-            leading={
-              <OfferMark
-                size={OFFER_ICON_SIZE}
-                strokeWidth={1.8}
-                style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
-              />
-            }
+        {/* The deal's own line, worn as a chip at the foot of the column, with a
+            chevron at the rail's edge: the chip is the offer, the chevron says the
+            card opens. `marginTop: auto` keeps every card in the rail reading from
+            the same foot line; `paddingTop` holds the gap even on the tallest card,
+            where there is no slack for the auto margin to distribute. */}
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: 11,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              minWidth: 0,
+              background: OFFER_CHIP_BG,
+              borderRadius: 999,
+              padding: "1px 10px",
+            }}
+          >
+            <SpecialValueBar
+              special={special}
+              detail="compact"
+              padding="0"
+              surface="plain"
+              leading={
+                <OfferMark
+                  size={OFFER_ICON_SIZE}
+                  strokeWidth={1.8}
+                  style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
+                />
+              }
+            />
+          </div>
+          <ChevronRight
+            size={16}
+            strokeWidth={2}
+            style={{ flexShrink: 0, color: MUTED, opacity: 0.55 }}
           />
         </div>
       </div>
@@ -1032,15 +1062,19 @@ const META_ICON_SIZE = 9.1;
 // so it comes back down by the measured half-pixel.
 const META_ICON_NUDGE = "0.5px";
 
-// The featured card's offer line is set larger than the business row, so its
-// mark grows with it and keeps the relationship the business row has: measured
-// on screen, an 11.4px box draws 10px of ink, exactly the height of the capital
-// letters and figures it sits against.
-const OFFER_ICON_SIZE = 11.4;
-// Baseline alignment lands this larger mark a touch high against its line, so it
-// comes back down by the measured pixel and a half — its foot then sits on the
-// foot of the figures beside it, as the business row's mark does on its own line.
-const OFFER_ICON_NUDGE = "1.5px";
+// The featured card wears its deal line as a chip: the offer's red-brown ink on
+// a wash of the same colour, so the chip reads as one object rather than a new
+// hue. It is the accent at low alpha over the card's white, not a separate colour.
+const OFFER_CHIP_BG = "rgba(180, 82, 46, 0.09)";
+
+// The featured card's offer line sits inside that chip at the compact size, so
+// its mark keeps the relationship the business row has: an 9px box draws 8px of
+// ink, the height of the capital letters it sits against.
+const OFFER_ICON_SIZE = 9;
+// Baseline alignment lands this mark a touch high against its line, so it comes
+// back down by the measured pixel — its foot then sits on the foot of the words
+// beside it, as the business row's mark does on its own line.
+const OFFER_ICON_NUDGE = "1px";
 
 
 const DEAL_TITLE_LINES_2 = 38;
