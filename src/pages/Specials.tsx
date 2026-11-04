@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Star, Home } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -696,12 +696,12 @@ const FilterPill = ({
 
 const SectionHead = ({
   label,
-  icon,
   right,
+  hairline = true,
 }: {
   label: string;
-  icon?: React.ReactNode;
   right?: React.ReactNode;
+  hairline?: boolean;
 }) => (
   <div
     style={{
@@ -712,7 +712,6 @@ const SectionHead = ({
     }}
   >
     <span style={{ display: "inline-flex", alignItems: "center", gap: 6, minWidth: 0 }}>
-      {icon}
       <span
         style={{
           ...type.sectionTitle,
@@ -735,7 +734,7 @@ const SectionHead = ({
         ({right})
       </span>
     ) : null}
-    <span style={{ flex: 1, height: 1, background: COLOR.pillActiveBg }} />
+    {hairline ? <span style={{ flex: 1, height: 1, background: COLOR.pillActiveBg }} /> : null}
   </div>
 );
 
@@ -783,9 +782,10 @@ const FeaturedSection = ({
   }, [slideKeys]);
 
   return (
-    <section style={{ marginBottom: 24 }}>
+    // Matches the gap between the two carousels on the events page.
+    <section style={{ marginBottom: 42 }}>
       <SectionHead
-        icon={<Star size={13} strokeWidth={1.8} color={COLOR.pillActiveBg} />}
+        hairline={false}
         label="Top Active Deals"
         right={isCarousel ? `${index + 1} / ${items.length}` : undefined}
       />
