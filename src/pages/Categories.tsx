@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
+import { listingImage, LISTING_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import { isAnyOpenNow, withHoursColumns } from "@/lib/openHours";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -31,11 +32,10 @@ const COLORS = {
 };
 
 /**
- * Quick-filter result rows are a fixed height so a card with three lines of
- * meta sits flush beside one with a single line. It matches the 88px thumbnail,
- * which is what sets the row's floor anyway.
+ * Quick-filter rows leave space for a square homepage crop and a two-line title.
+ * The image stays square even when the text needs a taller card.
  */
-const QUICK_RESULT_HEIGHT = 88;
+const QUICK_RESULT_HEIGHT = 112;
 
 const QUICK_FILTERS = ["Open Now", "Saved", "Child Friendly", "Pet Friendly"];
 
@@ -151,7 +151,7 @@ const Categories = () => {
     queryKey: ["explore-quick-filter-listings", savedActive, savedActive ? savedListArray : "all"],
     queryFn: async () => withHoursColumns(async (hoursCols) => {
       const cols =
-        `id, title, title_override, image_url, location, category_id, ${hoursCols}, child_friendly, good_for_kids, pets_allowed`;
+        `id, title, title_override, ${LISTING_IMAGE_COLUMNS}, location, category_id, ${hoursCols}, child_friendly, good_for_kids, pets_allowed`;
 
       // When "Saved" is active the result can only ever be a subset of the
       // user's saved listings, so fetch those rows directly by id. This is
@@ -660,6 +660,7 @@ const Categories = () => {
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {quickFilteredResults.map((listing) => {
                 const cardCategories = categoryTitlesFor(listing);
+                const image = listingImage(listing, "homepage");
                 return (
                 <Link
                   key={listing.id}
@@ -671,7 +672,6 @@ const Categories = () => {
                     borderRadius: 16,
                     overflow: "hidden",
                     textDecoration: "none",
-                    height: QUICK_RESULT_HEIGHT,
                     minHeight: QUICK_RESULT_HEIGHT,
                     transition: "transform 150ms ease-out",
                   }}
@@ -679,12 +679,12 @@ const Categories = () => {
                   onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                   onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 >
-                  <div style={{ width: QUICK_RESULT_HEIGHT, height: QUICK_RESULT_HEIGHT, background: "#e6e0d2", flexShrink: 0 }}>
-                    {listing.image_url && (
+                  <div className="aspect-square w-28 shrink-0 self-start overflow-hidden bg-muted">
+                    {image && (
                       <img
-                        src={listing.image_url}
+                        src={image}
                         alt={listing.title}
-                        style={{ width: QUICK_RESULT_HEIGHT, height: QUICK_RESULT_HEIGHT, objectFit: "cover", display: "block" }}
+                        className="block h-full w-full object-cover"
                       />
                     )}
                   </div>
@@ -693,10 +693,10 @@ const Categories = () => {
                       style={{
                         flex: 1,
                         minWidth: 0,
-                        height: "100%",
                         display: "flex",
                         flexDirection: "column",
                         justifyContent: "space-between",
+                        gap: 8,
                       }}
                     >
                       <p
@@ -707,7 +707,10 @@ const Categories = () => {
                           color: COLORS.ink,
                           margin: 0,
                           lineHeight: 1.25,
-                          whiteSpace: "nowrap",
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflowWrap: "anywhere",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                         }}
