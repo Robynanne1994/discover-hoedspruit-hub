@@ -1118,6 +1118,41 @@ const Events = () => {
         )}
       </div>
 
+      {/* Applied filters — one removable chip per active filter */}
+      {appliedChips.length > 0 && (
+        <div
+          className="scrollbar-hide"
+          style={{ display: "flex", gap: 8, overflowX: "auto", padding: "6px 20px 4px" }}
+        >
+          {appliedChips.map((chip) => (
+            <button
+              key={chip.key}
+              onClick={chip.onRemove}
+              aria-label={`Remove ${chip.label} filter`}
+              style={{
+                background: "transparent",
+                border: "1.5px solid #423324",
+                borderRadius: 999,
+                height: PILL_HEIGHT,
+                padding: "6.5px 12px",
+                cursor: "pointer",
+                ...tabStyle(false),
+                lineHeight: 1,
+                color: "#423324",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Featured Events */}
       {!search.trim() && activeFilter === "all" && !tagFilter && featuredEvents.length > 0 && (
         <div>
