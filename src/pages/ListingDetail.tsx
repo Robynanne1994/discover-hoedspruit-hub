@@ -38,7 +38,7 @@ import {
 } from "@/lib/tileMap";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
-import { getCustomIcon } from "@/lib/customIcons";
+import { collectCustomRows } from "@/lib/listingCustomFields";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 import { getSpecialBadge } from "@/lib/specialBadge";
@@ -436,6 +436,8 @@ const ListingDetail = () => {
   // column on every row and every CSV import.
   const whatsappCta = "Chat on WhatsApp";
   const goodToKnow = ((l.good_to_know as string[] | null) ?? []).map((s) => (s || "").trim()).filter(Boolean);
+  // Admin custom rows sit on the About tab under "Good to know", not in Details.
+  const customRows = collectCustomRows(l);
   // "26km from Town" — shown in the header and on the location tab.
   const kmFromTown = (() => {
     if (!l.km_from_town) return null;
@@ -760,12 +762,6 @@ const ListingDetail = () => {
     if (products.length) sections.push({ key: "shop-products", title: "Products", iconComp: Package, fields: products.map((p: string) => ({ label: toTitleCase(p), on: true })) });
   }
 
-  // Custom rows
-  for (let i = 1; i <= 3; i++) {
-    const t = (l[`custom_title_${i}`] || "").toString().trim();
-    const v = (l[`custom_text_${i}`] || "").toString().trim();
-    if (t && v) sections.push({ key: `custom-${i}`, title: t, iconComp: getCustomIcon(null), fields: [{ label: v, on: "__text__" }] });
-  }
 
   if (isListingNGO) {
     [
@@ -887,16 +883,11 @@ const ListingDetail = () => {
     s.fields = [...s.fields].sort((a, b) => rank(a.on) - rank(b.on));
   });
 
-  // Move custom rows to the top so they appear above amenity/true-false cards
-  const customSections = sections.filter(s => s.key.startsWith("custom-"));
-  const otherSections = sections.filter(s => !s.key.startsWith("custom-"));
-  sections.length = 0;
-  sections.push(...customSections, ...otherSections);
 
   // Tag each section with its category group so we can build per-category sub-tabs
   type CatGroup = "restaurant" | "accommodation" | "shopping" | "ngo" | "trades" | "homegarden" | "weddings" | "wellness" | "shared";
   const sectionGroup = (key: string): CatGroup => {
-    if (key.startsWith("custom-") || key === "pricing") return "shared";
+    if (key === "pricing") return "shared";
     if (key.startsWith("accom-")) return "accommodation";
     if (key.startsWith("shop-")) return "shopping";
     if (key.startsWith("ngo-")) return "ngo";
@@ -943,7 +934,7 @@ const ListingDetail = () => {
 
   const hasDetails = sections.length > 0;
   // Hours no longer has its own tab — it renders inside About.
-  const hasAboutTab = hasAbout || goodToKnow.length > 0 || hasHours;
+  const hasAboutTab = hasAbout || goodToKnow.length > 0 || hasHours || customRows.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
     ...(hasAboutTab ? [{ key: "about" as TabKey, label: "About" }] : []),
     ...(hasContact ? [{ key: "contact" as TabKey, label: "Contact" }] : []),
@@ -1118,6 +1109,13 @@ const ListingDetail = () => {
           </div>
         </div>
       )}
+
+      {customRows.map((row) => (
+        <div key={row.key} style={{ ...cardStyle, padding: "20px 22px" }}>
+          <CardHead Icon={MessageCircleMore}>{row.title}</CardHead>
+          <div className="ld-richtext">{renderListingRichText(row.text)}</div>
+        </div>
+      ))}
 
       {renderHoursCard()}
 
