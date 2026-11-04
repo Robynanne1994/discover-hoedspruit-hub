@@ -38,6 +38,7 @@ import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch
 import { buildEventGroups } from "@/lib/eventGroups";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { oneDayDateLine } from "@/lib/eventDayLabel";
 import { compareFeaturedEvents } from "@/lib/featuredEventOrder";
 import Seo from "@/components/Seo";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
