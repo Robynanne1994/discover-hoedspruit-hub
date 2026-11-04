@@ -1062,15 +1062,19 @@ const META_ICON_SIZE = 9.1;
 // so it comes back down by the measured half-pixel.
 const META_ICON_NUDGE = "0.5px";
 
-// The featured card's offer line is set larger than the business row, so its
-// mark grows with it and keeps the relationship the business row has: measured
-// on screen, an 11.4px box draws 10px of ink, exactly the height of the capital
-// letters and figures it sits against.
-const OFFER_ICON_SIZE = 11.4;
-// Baseline alignment lands this larger mark a touch high against its line, so it
-// comes back down by the measured pixel and a half — its foot then sits on the
-// foot of the figures beside it, as the business row's mark does on its own line.
-const OFFER_ICON_NUDGE = "1.5px";
+// The featured card wears its deal line as a chip: the offer's red-brown ink on
+// a wash of the same colour, so the chip reads as one object rather than a new
+// hue. It is the accent at low alpha over the card's white, not a separate colour.
+const OFFER_CHIP_BG = "rgba(180, 82, 46, 0.09)";
+
+// The featured card's offer line sits inside that chip at the compact size, so
+// its mark keeps the relationship the business row has: an 9px box draws 8px of
+// ink, the height of the capital letters it sits against.
+const OFFER_ICON_SIZE = 9;
+// Baseline alignment lands this mark a touch high against its line, so it comes
+// back down by the measured pixel — its foot then sits on the foot of the words
+// beside it, as the business row's mark does on its own line.
+const OFFER_ICON_NUDGE = "1px";
 
 
 const DEAL_TITLE_LINES_2 = 38;
