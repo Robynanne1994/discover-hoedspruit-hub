@@ -30,7 +30,7 @@ export const specialPillIcon = (tab: string) => {
   if (t.includes("health") || t.includes("medical") || t.includes("clinic") || t.includes("pharmac")) return mark(HeartPulse);
   if (t.includes("game drive") || t.includes("safari") || t.includes("wildlife")) return mark(Car);
   if (t.includes("wellness") || t.includes("spa") || t.includes("massage") || t.includes("yoga")) return mark(Leaf);
-  if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return mark(Compass);
+  if (t.includes("activit") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return mark(Compass);
   if (t.includes("home") || t.includes("lifestyle") || t.includes("garden")) return mark(Home);
   if (t.includes("shop") || t.includes("retail") || t.includes("shopping")) return mark(ShoppingBag);
   if (t.includes("service") || t.includes("trade") || t.includes("business")) return mark(Wrench);
