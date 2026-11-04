@@ -994,8 +994,9 @@ const Events = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: 13,
-                  padding: "0 5px",
+                  minWidth: 15,
+                  height: 15,
+                  padding: "0 4px",
                   borderRadius: 999,
                   background: "#423324",
                   color: "#FFFFFF",
@@ -1043,7 +1044,7 @@ const Events = () => {
                 strokeWidth={2}
                 style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
               />
-              Clear all
+              Clear All
             </button>
           )}
         </div>
