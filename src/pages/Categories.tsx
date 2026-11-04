@@ -45,7 +45,7 @@ const COLORS = {
  */
 const QUICK_RESULT_HEIGHT = 112;
 
-const QUICK_FILTERS = ["Open Now", "Saved", "Child Friendly", "Pet Friendly"];
+const QUICK_FILTERS = ["Open Now", "Saved", "Child-Friendly", "Pet-Friendly"];
 
 type ViewMode = "grid" | "list";
 type SortMode = "default" | "count" | "az";
@@ -389,7 +389,7 @@ const Categories = () => {
       if (hasQuickFilter("Open Now") && !isAnyOpenNow(l)) return false;
       if (hasQuickFilter("Saved") && !(savedIds?.has(l.id))) return false;
       if (hasQuickFilter("Kid Friendly") && !l.child_friendly && !l.good_for_kids) return false;
-      if (hasQuickFilter("Pet Friendly") && !l.pets_allowed) return false;
+      if (hasQuickFilter("Pet-Friendly") && !l.pets_allowed) return false;
       return true;
     });
   }, [filteredListings, activeQuick, savedIds]);
