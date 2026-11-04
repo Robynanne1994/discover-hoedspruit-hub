@@ -965,6 +965,12 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
 /* ------------------------------------------------------------------ */
 
 // Title line-height 1.25 on a 15px face, so two lines of title reserve this much.
+// The mark beside a deal card's business name. Sized so its drawn ink spans
+// exactly the capital letters it sits against (measured on screen, not guessed),
+// and the row is aligned on the text baseline so a name that wraps to two lines
+// keeps the mark level with the first line.
+const META_ICON_SIZE = 9.1;
+
 const DEAL_TITLE_LINES_2 = 38;
 
 const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
@@ -1065,7 +1071,7 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
           <div
             style={{
               display: "flex",
-              alignItems: "center",
+              alignItems: "baseline",
               gap: 5,
               fontFamily: SANS,
               ...type.meta,
@@ -1075,7 +1081,7 @@ const DealCard = ({ special, onClick }: { special: any; onClick: () => void }) =
               minWidth: 0,
             }}
           >
-            <Store size={12} strokeWidth={1.8} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
+            <Store size={META_ICON_SIZE} strokeWidth={1.8} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
             <span
               ref={metaRef}
               style={{
