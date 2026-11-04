@@ -55,3 +55,5 @@
 - [x] Verify the drawn digit sits within a third of a pixel of the disc centre for one and two filters.
 - [x] Name the events list heading after a lone time-frame pill, falling back to "Events" once anything else narrows the list.
 - [x] Verify lone-pill headings (Today with its date, This Week, This Month, Past Month) and the two-filter fallback in the preview.
+- [x] Head a lone time-frame pill with its calendar dates instead of its words (Today, This Week, This Weekend, This Month, This Year, Next Year, Past Month).
+- [x] Verify every date heading and its count at 393px wide, with the count dropping to its own line when a long date leaves no room.
