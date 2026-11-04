@@ -44,7 +44,13 @@ import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { pillToggle } from "@/lib/filterPill";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
-import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
+import {
+  PILL_ICON_SIZE,
+  PILL_ICON_NUDGE,
+  PILL_BADGE_SIZE,
+  PILL_BADGE_NUDGE,
+  PILL_BADGE_NUDGE_X,
+} from "@/lib/pillIcon";
 
 // One height for every pill in the filters row — the Filters button, Clear all
 // and the date pills — so none of them can sit a hair taller than its neighbours.
