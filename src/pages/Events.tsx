@@ -1019,14 +1019,6 @@ const Events = () => {
             </button>
           )}
 
-          {/* Hairline between the filters controls and the date pills. */}
-          {!search.trim() && (
-            <span
-              aria-hidden="true"
-              style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }}
-            />
-          )}
-        </div>
 
         {/* Date pills — hidden while a search term is active */}
         {!search.trim() && (
