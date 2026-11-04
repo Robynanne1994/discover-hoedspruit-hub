@@ -1122,7 +1122,7 @@ const Events = () => {
                       ({group.events.length})
                     </span>
                   )}
-                  <span style={{ flex: 1, height: 1, background: "rgba(26,26,26,0.10)" }} />
+                  <span style={{ flex: 1, height: 1, background: "#423324" }} />
                 </div>
                 {group.events.map((e) => (
                   <EventCard key={e.id} event={e} />
