@@ -3,6 +3,7 @@ import {
   DEFAULT_HOURS_LABEL,
   HOURS_COLUMNS,
   LEGACY_HOURS_COLUMNS,
+  formatClock12,
   isMissingHoursColumn,
   withHoursColumns,
   getHoursSchedules,

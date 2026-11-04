@@ -58,6 +58,30 @@ export const opensAt = (openingHours: HoursMap | null | undefined): string | nul
   return m ? m[1].replace(".", ":") : null;
 };
 
+/**
+ * Say a clock time the way a card status bar does: no leading zero on the hour,
+ * and AM/PM butted straight on with no space, so "07:30" reads "7:30AM" and
+ * "17:00" reads "5:00PM". Midnight and noon are the two that surprise — both
+ * take hour 12, and only the suffix tells them apart.
+ *
+ * Hours are typed by hand in the editor, so a cell that doesn't parse comes
+ * back exactly as it was given rather than as a blank or a wrong time.
+ */
+export const formatClock12 = (raw: string | null | undefined): string => {
+  if (!raw) return "";
+  const trimmed = raw.trim();
+  const m = trimmed.match(/^(\d{1,2})[:.]?(\d{2})?/);
+  if (!m) return trimmed;
+  const h = parseInt(m[1], 10);
+  if (Number.isNaN(h)) return trimmed;
+  const minutes = m[2] ?? "00";
+  const hour24 = ((h % 24) + 24) % 24;
+  const suffix = hour24 < 12 ? "AM" : "PM";
+  const hour12 = hour24 % 12 || 12;
+  return `${hour12}:${minutes}${suffix}`;
+};
+
+
 // ----- Multiple schedules -----
 
 export const hasAnyHours = (hours: HoursMap | null | undefined): boolean =>

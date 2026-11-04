@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
-import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours, type HoursMap } from "@/lib/openHours";
+import { formatClock12, getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours, type HoursMap } from "@/lib/openHours";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -9,6 +9,12 @@ const MUTED = TOKEN_MUTED;
 const BROWN = "#715A3D";
 const SAGE = "#2b7f3f";
 const CLAY = "#C0392B";
+
+// The status dot rides above the row's centre. Centring it on the line box
+// instead leaves it under the middle of the capital letters, because the line
+// box keeps descender space below the baseline — measured 1.7px low on the
+// category cards, so it is lifted by that much.
+const STATUS_DOT_LIFT = "translateY(-1.7px)";
 
 const to24h = (raw?: string | null) => {
   if (!raw) return null;
@@ -52,12 +58,12 @@ export const listingStatus = (
   if (isOpenNow(hours)) {
     const until = closesAt(hours);
     return until
-      ? { label: `${prefix}Open`, detail: `Closes ${until}`, tone: SAGE }
+      ? { label: `${prefix}Open`, detail: `Closes ${formatClock12(until)}`, tone: SAGE }
       : { label: `${prefix}Open Now`, tone: SAGE };
   }
   const opens = to24h(opensAt(hours));
   return opens
-    ? { label: `${prefix}Closed`, detail: `Opens ${opens}`, tone: CLAY }
+    ? { label: `${prefix}Closed`, detail: `Opens ${formatClock12(opens)}`, tone: CLAY }
     : { label: `${prefix}Closed Now`, tone: CLAY };
 };
 
@@ -167,7 +173,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
           lineHeight: 1.2,
         }}
       >
-        <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0 }} />
+        <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0, transform: STATUS_DOT_LIFT }} />
         <span>{status.label}</span>
         {status.detail ? (
           <span style={{ fontWeight: 400 }}>· {status.detail}</span>
