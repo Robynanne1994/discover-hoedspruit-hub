@@ -44,5 +44,6 @@
 - Keep the gap under the events carousels equal to the gap above the events list below; adjust the shared value, not one gap alone.
 - Keep the specials page's section headings on the events page's group-heading treatment; the featured heading has no icon or hairline, the list keeps its brown hairline, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
+- Let a deal card's offer mark inherit its colour from SpecialValueBar's left slot, never its own, so it always matches the words beside it.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
 - Keep the listed event card's row icons at ROW_ICON_SIZE with a small upward nudge, matched to the drawn letters, and keep one shared gap between its date, time and location rows.
