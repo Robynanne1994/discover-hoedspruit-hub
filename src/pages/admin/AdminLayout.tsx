@@ -107,10 +107,6 @@ const AdminLayout = () => {
       </div>
     );
   if (!user) return <Navigate to="/auth" />;
-  if (!isAdmin) return <Navigate to="/" />;
-
-  const currentTitle =
-    navItems.find((i) => i.path === location.pathname)?.label ?? "Admin";
 
   return (
     <div className="min-h-screen flex bg-[#c5bcaa]">
