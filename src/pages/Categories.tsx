@@ -752,8 +752,9 @@ const Categories = () => {
                           <p
                             style={{
                               display: "flex",
-                              alignItems: "center",
+                              alignItems: "flex-start",
                               fontSize: 12,
+                              lineHeight: 1.3,
                               color: COLORS.muted,
                               margin: 0,
                               marginTop: 3,
@@ -761,12 +762,14 @@ const Categories = () => {
                               minWidth: 0,
                             }}
                           >
-                            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0 }} />
+                            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 2 }} />
                             <span
                               style={{
-                                whiteSpace: "nowrap",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                overflowWrap: "anywhere",
                                 overflow: "hidden",
-                                textOverflow: "ellipsis",
                                 minWidth: 0,
                               }}
                             >
