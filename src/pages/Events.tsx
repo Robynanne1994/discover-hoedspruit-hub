@@ -67,10 +67,12 @@ const C = {
 const ROW_ICON = {
   flexShrink: 0,
   color: C.muted,
+  // Helvetica Neue's letters sit high in their line box; lift the icon to the letters.
+  transform: "translateY(-1.6px)",
 } as const;
 
 // 13px text at lineHeight 1.35 -> the row's text box is 17.55px tall.
-const ROW_ICON_SIZE = 17.55;
+const ROW_ICON_SIZE = 14;
 
 
 type FilterType = "all" | "today" | "this-week" | "this-weekend" | "this-month" | "this-year" | "next-year" | "past";
