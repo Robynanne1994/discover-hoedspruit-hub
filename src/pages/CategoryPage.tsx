@@ -27,7 +27,11 @@ import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
 import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
-import { pillToggle } from "@/lib/filterPill";
+import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { useFilterBarReset } from "@/hooks/useFilterBarReset";
+import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
+import { NOHEMI, tab as tabStyle } from "@/lib/type";
+const PILL_HEIGHT = 29;
 
 
 // Coffee is deliberately absent — it is a drink, not a cuisine (Robyn).
@@ -674,6 +678,8 @@ const CategoryPage = () => {
     filterShopServices.length > 0 ? 1 : 0,
     filterProductCategories.length > 0 ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
+  const filterBarRef = useRef<HTMLDivElement | null>(null);
+  useFilterBarReset(filterBarRef, activeFilterCount > 0 || !!search.trim());
 
 
   const clearAllFilters = () => {
@@ -1130,160 +1136,24 @@ const CategoryPage = () => {
     );
   }
 
-  // The header row and its pinned copy are the same bar, so they are built
-  // once here and handed to both.
-  const headerSubtitle = countReady ? (
-    <div style={type.label}>
-      {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
-    </div>
-  ) : undefined;
-
-  const headerActions = (
-    <>
-      <button
-        onClick={() => {
-          setSearchOpen((v) => {
-            if (v) setSearch("");
-            return !v;
-          });
-        }}
-        aria-label={searchOpen ? "Close search" : "Search"}
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          background: "#FFFFFF",
-          border: "none",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          flexShrink: 0,
-        }}
-      >
-        {searchOpen ? (
-          <X size={18} strokeWidth={1.8} color={INK} />
-        ) : (
-          <Search size={18} strokeWidth={1.8} color={INK} />
-        )}
-      </button>
-      <button
-        onClick={() => setRefineOpen(true)}
-        aria-label="FILTER & SORT"
-        style={{
-          width: 40,
-          height: 40,
-          borderRadius: "50%",
-          background: activeFilterCount > 0 ? "#423324" : "#FFFFFF",
-          border: "none",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-          flexShrink: 0,
-          position: "relative",
-        }}
-      >
-        <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#1A1A1A"} />
-        {activeFilterCount > 0 && (
-          <span
-            style={{
-              position: "absolute",
-              top: -3,
-              right: -3,
-              minWidth: 16,
-              height: 16,
-              borderRadius: 999,
-              background: "#C0392B",
-              color: "#FFFFFF",
-              fontFamily: sans,
-              fontSize: 9,
-              fontWeight: 700,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "0 3px",
-            }}
-          >
-            {activeFilterCount}
-          </span>
-        )}
-      </button>
-    </>
-  );
-
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-
-        paddingBottom: "var(--nav-clearance)",
-        background: PAGE_BG,
-        fontFamily: sans,
-        color: INK,
-      }}
-    >
-      <Seo
-        title={`${displayTitle} in Hoedspruit`}
-        description={`Find ${displayTitle.toLowerCase()} in Hoedspruit and the Lowveld — browse listings, reviews and contact details on Hello Hoedspruit.`}
-        path={`/category/${category?.id ?? ""}`}
-      />
-      {/* Top bar */}
-      <PageHeader
-        title={displayTitle}
-        subtitle={headerSubtitle}
-        right={headerActions}
-      />
-      <StickyHeader
-        background={PAGE_BG}
-        title={displayTitle}
-        subtitle={headerSubtitle}
-        right={headerActions}
-      />
-
-
-      {searchOpen && (
-        <div style={{ padding: "16px 20px 0 20px" }}>
-          <SearchBar
-            variant="light"
-            value={search}
-            onChange={setSearch}
-            placeholder={`Search ${displayTitle}`}
-            autoFocus
-          />
-        </div>
-      )}
-
-      {/* Filter pills */}
-      <div
-        className="scrollbar-hide"
-        style={{
-          marginTop: 18,
-          marginBottom: 16,
-          paddingLeft: 20,
-          paddingRight: 20,
-          overflowX: "auto",
-        }}
-      >
-        <div style={{ display: "flex", gap: 8 }}>
-          <Pill active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)}>
-            Open Now
-          </Pill>
-          {user && (
-            <Pill active={filterSaved} onClick={() => setFilterSaved(!filterSaved)}>
-              Saved
-            </Pill>
-          )}
-        </div>
-      </div>
-
-      <RefineDrawer
-        open={refineOpen}
-        onClose={() => setRefineOpen(false)}
-        onClear={clearAllFilters}
-        resultsCount={filteredListings.length}
-        resultsLabel="listings"
-        activeChips={[
+  const barPill = (active: boolean): React.CSSProperties => ({
+    background: active ? "#423324" : "#FFFFFF",
+    border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
+    borderRadius: 999, height: PILL_HEIGHT, padding: "7px 14px", cursor: "pointer",
+    ...tabStyle(active), lineHeight: 1, color: active ? "#FFFFFF" : "#1A1A1A",
+    whiteSpace: "nowrap", flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6,
+  });
+  const outlinePill: React.CSSProperties = {
+    background: "transparent", border: "1.5px solid #423324", borderRadius: 999, height: PILL_HEIGHT,
+    padding: "6.5px 12px", cursor: "pointer", ...tabStyle(false), lineHeight: 1, color: "#423324",
+    whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6,
+  };
+  const handleQuickPill = (apply: () => void) => {
+    apply();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+  };
+  const appliedChips: { label: string; onRemove: () => void }[] = [
           ...(activeSubId
             ? [{
                 label: activeSubLabel || "Category",
@@ -1367,7 +1237,166 @@ const CategoryPage = () => {
             label: SHOPPING_SERVICE_OPTIONS.find((o) => o.key === k)?.label ?? k,
             onRemove: () => setFilterShopServices(filterShopServices.filter((x) => x !== k)),
           })),
-        ]}
+        ];
+  const filtersOn = activeFilterCount > 0;
+
+  // The header row and its pinned copy are the same bar, so they are built
+  // once here and handed to both.
+  const headerSubtitle = countReady ? (
+    <div style={type.label}>
+      {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
+    </div>
+  ) : undefined;
+
+  const headerActions = (
+    <>
+      <button
+        onClick={() => {
+          setSearchOpen((v) => {
+            if (v) setSearch("");
+            return !v;
+          });
+        }}
+        aria-label={searchOpen ? "Close search" : "Search"}
+        style={{
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          background: "#FFFFFF",
+          border: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          flexShrink: 0,
+        }}
+      >
+        {searchOpen ? (
+          <X size={18} strokeWidth={1.8} color={INK} />
+        ) : (
+          <Search size={18} strokeWidth={1.8} color={INK} />
+        )}
+      </button>
+    </>
+  );
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+
+        paddingBottom: "var(--nav-clearance)",
+        background: PAGE_BG,
+        fontFamily: sans,
+        color: INK,
+      }}
+    >
+      <Seo
+        title={`${displayTitle} in Hoedspruit`}
+        description={`Find ${displayTitle.toLowerCase()} in Hoedspruit and the Lowveld — browse listings, reviews and contact details on Hello Hoedspruit.`}
+        path={`/category/${category?.id ?? ""}`}
+      />
+      {/* Top bar */}
+      <PageHeader
+        title={displayTitle}
+        subtitle={headerSubtitle}
+        right={headerActions}
+      />
+      <StickyHeader
+        background={PAGE_BG}
+        title={displayTitle}
+        subtitle={headerSubtitle}
+        right={headerActions}
+      />
+
+
+      {searchOpen && (
+        <div style={{ padding: "16px 20px 0 20px" }}>
+          <SearchBar
+            variant="light"
+            value={search}
+            onChange={setSearch}
+            placeholder={`Search ${displayTitle}`}
+            autoFocus
+          />
+        </div>
+      )}
+
+      {/* Filters button inline at the head of the pill row, matching Events and Specials. */}
+      <div
+        ref={filterBarRef}
+        className="scrollbar-hide"
+        style={{ marginTop: 12, paddingLeft: 20, paddingTop: 4, paddingBottom: 4, display: "flex", alignItems: "center", gap: 8, overflowX: "auto", scrollbarWidth: "none" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button
+            aria-label="Filters and sort"
+            aria-haspopup="dialog"
+            onClick={() => setRefineOpen(true)}
+            style={{ ...barPill(false), padding: "7px 12px 7px 14px" }}
+          >
+            <SlidersHorizontal size={PILL_ICON_SIZE} strokeWidth={1.9} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+            Filters
+            {activeFilterCount > 0 && (
+              <span
+                aria-label={`${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"} applied`}
+                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: PILL_BADGE_SIZE, height: PILL_BADGE_SIZE, padding: "0 4px", borderRadius: 999, background: "#423324", color: "#FFFFFF", fontFamily: sans, fontSize: 10, fontWeight: 700, lineHeight: 1, letterSpacing: 0 }}
+              >
+                <span style={{ display: "block", transform: `translateY(${PILL_BADGE_NUDGE})` }}>{activeFilterCount}</span>
+              </span>
+            )}
+          </button>
+          <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />
+          {filtersOn && (
+            <button onClick={clearAllFilters} style={outlinePill}>
+              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+              Clear All
+            </button>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
+          <button onClick={() => { clearAllFilters(); }} style={barPill(allPillActive(filtersOn, !!search.trim()))}>
+            All{facetCounts ? ` (${facetCounts.total})` : ""}
+          </button>
+          <button onClick={() => handleQuickPill(() => setFilterOpenNow(!filterOpenNow))} style={barPill(filterOpenNow)}>
+            Open Now{facetCounts ? ` (${facetCounts.openNow})` : ""}
+          </button>
+          {user && (
+            <button onClick={() => handleQuickPill(() => setFilterSaved(!filterSaved))} style={barPill(filterSaved)}>
+              Saved{facetCounts ? ` (${facetCounts.saved})` : ""}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Applied filters, one removable chip each */}
+      {appliedChips.length > 0 && (
+        <div className="scrollbar-hide" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "6px 20px 4px" }}>
+          {appliedChips.map((chip, i) => (
+            <button key={`${chip.label}-${i}`} onClick={chip.onRemove} aria-label={`Remove ${chip.label} filter`} style={{ ...outlinePill, flexShrink: 0 }}>
+              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Results heading once anything is narrowed: one filter names itself. */}
+      {(filtersOn || search.trim()) && (
+        <h2 style={{ fontFamily: NOHEMI, fontSize: 24, fontWeight: 550, color: "#1A1A1A", margin: "16px 20px 12px", lineHeight: 1.2 }}>
+          {appliedChips.length === 1 && !search.trim() ? appliedChips[0].label : "Listings"}{" "}
+          {!isLoading && <span style={{ color: TOKEN_MUTED, fontWeight: 400, fontSize: 16, fontFamily: sans }}>({filteredListings.length})</span>}
+        </h2>
+      )}
+      {!(filtersOn || search.trim()) && <div style={{ height: 16 }} />}
+
+      <RefineDrawer
+        open={refineOpen}
+        onClose={() => setRefineOpen(false)}
+        onClear={clearAllFilters}
+        resultsCount={filteredListings.length}
+        resultsLabel="listings"
+        activeChips={appliedChips}
       >
         <RefineSection
           label="Sort By"
