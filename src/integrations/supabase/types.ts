@@ -663,6 +663,7 @@ export type Database = {
           email_label: string | null
           end_date: string | null
           end_time: string | null
+          featured_position: number | null
           gallery_images: string[] | null
           google_maps_link: string | null
           homepage_image_url: string | null
@@ -729,6 +730,7 @@ export type Database = {
           email_label?: string | null
           end_date?: string | null
           end_time?: string | null
+          featured_position?: number | null
           gallery_images?: string[] | null
           google_maps_link?: string | null
           homepage_image_url?: string | null
@@ -795,6 +797,7 @@ export type Database = {
           email_label?: string | null
           end_date?: string | null
           end_time?: string | null
+          featured_position?: number | null
           gallery_images?: string[] | null
           google_maps_link?: string | null
           homepage_image_url?: string | null
