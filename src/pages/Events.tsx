@@ -337,8 +337,8 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 13,
-              lineHeight: 1.35,
+              fontSize: ROW_FONT_SIZE,
+              lineHeight: ROW_LINE_HEIGHT,
               color: C.body,
               margin: 0,
               display: "flex",
@@ -346,7 +346,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <span style={ROW_ICON_DISC}><Calendar size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
+            <span style={ROW_ICON_DISC}><Calendar size={ROW_GLYPH_SIZE} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
@@ -364,17 +364,17 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 13,
-              lineHeight: 1.35,
+              fontSize: ROW_FONT_SIZE,
+              lineHeight: ROW_LINE_HEIGHT,
               color: C.body,
               margin: 0,
-              marginTop: 7,
+              marginTop: ROW_GAP,
               display: "flex",
               alignItems: "center",
               gap: 6,
             }}
           >
-            <span style={ROW_ICON_DISC}><Clock size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
+            <span style={ROW_ICON_DISC}><Clock size={ROW_GLYPH_SIZE} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
@@ -392,17 +392,17 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 13,
-              lineHeight: 1.35,
+              fontSize: ROW_FONT_SIZE,
+              lineHeight: ROW_LINE_HEIGHT,
               color: C.body,
               margin: 0,
-              marginTop: 7,
+              marginTop: ROW_GAP,
               display: "flex",
               alignItems: "center",
               gap: 6,
             }}
           >
-            <span style={ROW_ICON_DISC}><MapPin size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
+            <span style={ROW_ICON_DISC}><MapPin size={ROW_GLYPH_SIZE} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
