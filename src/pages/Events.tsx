@@ -1058,6 +1058,7 @@ const Events = () => {
                     background: active ? "#423324" : "#FFFFFF",
                     border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
                     borderRadius: 999,
+                    height: PILL_HEIGHT,
                     padding: "7px 14px",
                     cursor: "pointer",
                     ...tabStyle(active),
