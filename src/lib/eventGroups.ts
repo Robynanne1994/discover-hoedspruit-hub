@@ -7,11 +7,11 @@
 
 //   • Recurring events → one "Recurring" group
 //   • Past filter → one heading for the whole window, no month groups
-//   • One time-frame pill on its own → that pill's own heading; any further
-//     narrowing → one plain "Events" heading
+//   • One time-frame pill on its own → that pill's own dates as the heading;
+//     any further narrowing → one plain "Events" heading
 
 import { format } from "date-fns";
-import { PAST_GROUP_LABEL } from "./eventPastWindow";
+import { timeFrameHeading } from "./eventTimeFrames";
 import { hasPerformances, resolveRecurrenceRule } from "./eventSchedule";
 
 export type EventGroup = {
@@ -22,49 +22,34 @@ export type EventGroup = {
 };
 
 /**
- * The heading a lone time-frame pill wears in place of "Events". Each pill
- * keeps its own words, and "Today" carries the date too so the heading says
- * which day the list beneath it belongs to.
+ * The heading a lone time-frame pill wears in place of "Events": the calendar
+ * dates that pill covers, so "Today" reads "4 November 2026" and "This Week"
+ * reads "2-8 November 2026" rather than the pill's own words. A pill that
+ * covers no dates of its own leaves the heading as plain "Events".
  */
 export function eventTimeFrameHeading(activeFilter: string, today: Date = new Date()): string {
-  switch (activeFilter) {
-    case "today":
-      return `Today, ${format(today, "d MMMM")}`;
-    case "this-week":
-      return "This Week";
-    case "this-weekend":
-      return "This Weekend";
-    case "this-month":
-      return "This Month";
-    case "this-year":
-      return "This Year";
-    case "next-year":
-      return String(today.getFullYear() + 1);
-    case "past":
-      return PAST_GROUP_LABEL;
-    default:
-      return "Events";
-  }
+  return timeFrameHeading(activeFilter, today);
 }
 
 export function buildEventGroups(
   filtered: any[],
   activeFilter: string,
   filtersOn = false,
-  onlyDateFilter = false
+  onlyDateFilter = false,
+  today: Date = new Date()
 ): EventGroup[] {
   const groups: EventGroup[] = [];
 
   // Any filter applied → one plain "Events (N)" heading, since the results
   // may be narrowed by more than a date. A lone time-frame pill is the
   // exception: with nothing else switched on it says the whole narrowing, so
-  // the heading wears that pill's own words instead.
+  // the heading wears that pill's dates instead.
   if (filtersOn) {
     if (!filtered.length) return [];
     return [
       {
         key: onlyDateFilter ? `timeframe-${activeFilter}` : "filtered",
-        label: onlyDateFilter ? eventTimeFrameHeading(activeFilter) : "Events",
+        label: onlyDateFilter ? eventTimeFrameHeading(activeFilter, today) : "Events",
         events: filtered,
       },
     ];
@@ -72,7 +57,7 @@ export function buildEventGroups(
 
   if (activeFilter === "past") {
     return filtered.length
-      ? [{ key: "past", label: PAST_GROUP_LABEL, events: filtered, showCount: false }]
+      ? [{ key: "past", label: eventTimeFrameHeading("past", today), events: filtered, showCount: false }]
       : [];
   }
 

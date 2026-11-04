@@ -15,7 +15,6 @@ import {
   endOfWeek,
   endOfMonth,
   isWithinInterval,
-  addDays,
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
@@ -35,6 +34,7 @@ import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { PRICE_OPTIONS, countEventPrices, eventMatchesPrice, type PriceFilter } from "@/lib/eventPrice";
 import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { buildEventGroups } from "@/lib/eventGroups";
+import { calendarWeekend } from "@/lib/eventTimeFrames";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { oneDayDateLine, shortWeekday } from "@/lib/eventDayLabel";
@@ -112,15 +112,13 @@ const FILTERS: { label: string; value: FilterType }[] = [
   { label: "Past Month", value: "past" },
 ];
 
-// Weekend = Friday to Sunday (end of day) of the current Mon-start week.
-// Once the weekend has begun it runs from today, so earlier days never count.
+// Weekend = Friday to Sunday (end of day) of the current Mon-start week. The
+// shared calendar rule fixes which days the weekend spans (and what the list
+// heading says); the filter itself runs from today once the weekend has begun,
+// so earlier days never count.
 function getWeekendRange(today: Date): { start: Date; end: Date } {
-  const day = today.getDay(); // 0 Sun .. 6 Sat
-  const sinceMonday = (day + 6) % 7; // Mon 0 .. Sun 6
-  const friday = addDays(today, 4 - sinceMonday);
-  const start = sinceMonday >= 4 ? today : friday;
-  const end = new Date(addDays(today, 6 - sinceMonday).setHours(23, 59, 59, 999));
-  return { start, end };
+  const weekend = calendarWeekend(today);
+  return { start: isBefore(weekend.start, today) ? today : weekend.start, end: weekend.end };
 }
 
 function getFilterCount(
@@ -1306,7 +1304,9 @@ const Events = () => {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 10,
+                    flexWrap: "wrap",
+                    columnGap: 10,
+                    rowGap: 2,
                     marginTop: 22,
                     marginBottom: 6,
                   }}

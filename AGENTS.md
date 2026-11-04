@@ -7,7 +7,7 @@
 - Use the shared InstagramIcon for every Instagram symbol so its camera outline stays consistent while inheriting the placement's brand colour.
 - Keep restaurant meal choices and option exclusions in restaurantOptions so the editor, CSV references and filters agree.
 - Keep event category collection, matching and per-event counting in eventTags so all three tags use consistent filter rules.
-- Keep events list heading grouping and order in eventGroups; month headings title case; a lone date pill names the heading, more filters say "Events".
+- Keep events list heading grouping in eventGroups; a lone time-frame pill heads the list with its dates from eventTimeFrames, more filters say "Events".
 - Keep event duration bucketing and booking-required judgement, plus their per-option counts, in eventDuration so filter pills and the filtered list agree; an event with no booking link is booking not required.
 - Keep event price matching and free/paid counts in eventPrice so the drawer counts and filtered results agree; an event with no price populated is free.
 
@@ -47,5 +47,5 @@
 - Let a deal card's offer mark inherit its colour from SpecialValueBar's left slot, never its own, so it always matches the words beside it.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
 - Keep card and pill row icons and the filter-count digit on shared size and lift constants in pillIcon (ROW_ICON_SIZE; PILL_ICON_SIZE/NUDGE; PILL_BADGE_SIZE/NUDGE), matched to drawn ink, and keep one shared gap between event-card rows.
-- Keep the events filters row's active-filter count and Clear all visibility in eventFilterState so the badge and the clear control agree.
+- Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
 - Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.

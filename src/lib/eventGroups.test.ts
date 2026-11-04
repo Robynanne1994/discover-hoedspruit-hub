@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { format } from "date-fns";
 import { buildEventGroups, eventTimeFrameHeading } from "./eventGroups";
-import { PAST_GROUP_LABEL } from "./eventPastWindow";
 
 const Y = new Date().getFullYear();
+
+// Fixed "today" for every heading assertion, so the dates never drift with the
+// real clock: Wed 4 Nov 2026, inside a Mon 2 – Sun 8 week.
+const TODAY = new Date(2026, 10, 4);
 
 const dated = (id: string, date: Date) => ({ id, title: id, _parsed: date });
 
@@ -70,42 +72,45 @@ describe("buildEventGroups", () => {
   it("shows one heading without a count for the past window", () => {
     const groups = buildEventGroups(
       [dated("past-a", new Date(Y, 8, 12)), dated("past-b", new Date(Y, 7, 3))],
-      "past"
+      "past",
+      false,
+      false,
+      TODAY
     );
 
     expect(groups).toHaveLength(1);
     expect(groups[0]).toMatchObject({
       key: "past",
-      label: PAST_GROUP_LABEL,
+      label: "4 October - 3 November 2026",
       showCount: false,
     });
     expect(groups[0].events.map((e) => e.id)).toEqual(["past-a", "past-b"]);
   });
 
-  it("names the heading after a lone time-frame pill", () => {
-    const groups = buildEventGroups([dated("a", new Date(Y, 10, 4))], "this-week", true, true);
+  it("heads a lone time-frame pill with that week's dates, not its words", () => {
+    const groups = buildEventGroups([dated("a", new Date(2026, 10, 4))], "this-week", true, true, TODAY);
     expect(groups).toHaveLength(1);
-    expect(groups[0]).toMatchObject({ key: "timeframe-this-week", label: "This Week" });
+    expect(groups[0]).toMatchObject({ key: "timeframe-this-week", label: "2-8 November 2026" });
     expect(groups[0].events.map((e) => e.id)).toEqual(["a"]);
   });
 
-  it("writes today's date into the heading when Today is the only filter", () => {
-    const groups = buildEventGroups([dated("a", new Date(Y, 10, 4))], "today", true, true);
-    expect(groups[0].label).toBe(`Today, ${format(new Date(), "d MMMM")}`);
+  it("heads a lone Today pill with the date and year alone", () => {
+    const groups = buildEventGroups([dated("a", new Date(2026, 10, 4))], "today", true, true, TODAY);
+    expect(groups[0].label).toBe("4 November 2026");
   });
 
-  it("keeps the past window's own wording when Past is the only filter", () => {
-    const groups = buildEventGroups([dated("a", new Date(Y, 8, 12))], "past", true, true);
-    expect(groups[0].label).toBe(PAST_GROUP_LABEL);
+  it("heads a lone Past pill with the dates its window covers", () => {
+    const groups = buildEventGroups([dated("a", new Date(2026, 9, 20))], "past", true, true, TODAY);
+    expect(groups[0].label).toBe("4 October - 3 November 2026");
   });
 
   it("falls back to Events once anything else narrows the list beside the pill", () => {
-    const groups = buildEventGroups([dated("a", new Date(Y, 10, 4))], "this-week", true, false);
+    const groups = buildEventGroups([dated("a", new Date(2026, 10, 4))], "this-week", true, false, TODAY);
     expect(groups[0]).toMatchObject({ key: "filtered", label: "Events" });
   });
 
-  it("never hands a lone-pill heading to a filter that has no words of its own", () => {
-    expect(eventTimeFrameHeading("all")).toBe("Events");
+  it("never hands a lone-pill heading to a filter that has no dates of its own", () => {
+    expect(eventTimeFrameHeading("all", TODAY)).toBe("Events");
   });
 
   it("returns no groups when nothing matches", () => {
