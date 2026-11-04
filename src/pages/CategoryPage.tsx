@@ -1385,7 +1385,7 @@ const CategoryPage = () => {
       {(filtersOn || search.trim()) && (
         <h2 style={{ fontFamily: NOHEMI, fontSize: 24, fontWeight: 550, color: "#1A1A1A", margin: "16px 20px 12px", lineHeight: 1.2 }}>
           {appliedChips.length === 1 && !search.trim() ? appliedChips[0].label : "Listings"}{" "}
-          <span style={{ color: TOKEN_MUTED, fontWeight: 400, fontSize: 16, fontFamily: sans }}>({filteredListings.length})</span>
+          {!isLoading && <span style={{ color: TOKEN_MUTED, fontWeight: 400, fontSize: 16, fontFamily: sans }}>({filteredListings.length})</span>}
         </h2>
       )}
       {!(filtersOn || search.trim()) && <div style={{ height: 16 }} />}
