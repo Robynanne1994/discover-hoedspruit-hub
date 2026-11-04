@@ -1007,7 +1007,12 @@ const Events = () => {
               >
                 {/* The digit's ink is shorter than the line box it is centred
                     in, so it rides high in the disc without this lift. */}
-                <span style={{ display: "block", transform: `translateY(${PILL_BADGE_NUDGE})` }}>
+                <span
+                  style={{
+                    display: "block",
+                    transform: `translate(${PILL_BADGE_NUDGE_X}, ${PILL_BADGE_NUDGE})`,
+                  }}
+                >
                   {activeFilterCount}
                 </span>
               </span>

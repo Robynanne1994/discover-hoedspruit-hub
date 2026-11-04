@@ -18,4 +18,12 @@ export const PILL_ICON_NUDGE = "-1.4px";
  */
 export const PILL_BADGE_SIZE = 15;
 export const PILL_BADGE_NUDGE = "1px";
+/**
+ * Side-to-side lift for the same digit. Helvetica Neue's side bearings differ
+ * per digit ("1" carries a wide gap on its right, most others a small one), so
+ * no single value centres every count; this is the measured average, which
+ * removes most of the lean on a single-digit count without overshooting the rest.
+ */
+export const PILL_BADGE_NUDGE_X = "0.5px";
+
 
