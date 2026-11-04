@@ -325,16 +325,33 @@ export const RefineSection = ({ label, open, onToggle, summary, onClear, childre
                 </span>
               )}
             </span>
-            <ChevronDown
-              size={18}
-              strokeWidth={2}
-              color={INK}
+            {/*
+              The arrow hangs off the header's top edge on its own 36px box, the
+              same as the Clear control beside it, so both land on the 26px line
+              where the title sits. Left in the header's flex row it would centre
+              on the whole block instead and drift down beside the summary.
+            */}
+            <span
               style={{
-                flexShrink: 0,
-                transition: "transform 0.18s ease",
-                transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                position: "absolute",
+                right: 18,
+                top: 8,
+                height: 36,
+                display: "flex",
+                alignItems: "center",
+                pointerEvents: "none",
               }}
-            />
+            >
+              <ChevronDown
+                size={18}
+                strokeWidth={2}
+                color={INK}
+                style={{
+                  transition: "transform 0.18s ease",
+                  transform: open ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+              />
+            </span>
           </Button>
           {onClear && (
             // The header's own text block starts 16px below its top edge and its
