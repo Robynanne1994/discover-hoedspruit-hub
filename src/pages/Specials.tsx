@@ -15,7 +15,7 @@ import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
-import { dealCountLabel, isEndingSoon, isOngoingSpecial, savingValue, specialValue } from "@/lib/specialValue";
+import { dealCountLabel, isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
