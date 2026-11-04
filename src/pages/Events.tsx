@@ -38,7 +38,7 @@ import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch
 import { buildEventGroups } from "@/lib/eventGroups";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import { pinFeatured } from "@/lib/featuredFirst";
+import { compareFeaturedEvents } from "@/lib/featuredEventOrder";
 import Seo from "@/components/Seo";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
@@ -717,8 +717,8 @@ const Events = () => {
       });
     }
     // date-asc is already the default order from sortedEvents
-    // Featured events always pin to the top, keeping the chosen sort within groups
-    return pinFeatured(sorted);
+    // Strict chosen order; featured events get their own carousel instead.
+    return sorted;
 
   }, [categoryEvents, tagFilter, sortBy, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]);
 
@@ -735,6 +735,14 @@ const Events = () => {
     return sortedEvents
       .filter((e) => e._parsed && !isBefore(e._parsed, today) && !resolveRecurrenceRule(e))
       .slice(0, 3);
+  }, [sortedEvents]);
+
+  // Featured Events — every featured event not yet past, in the admin's order.
+  const featuredEvents = useMemo(() => {
+    const today = startOfToday();
+    return sortedEvents
+      .filter((e) => e.is_featured && (!e._parsed || !isBefore(e._parsed, today)))
+      .sort(compareFeaturedEvents);
   }, [sortedEvents]);
 
 
@@ -896,6 +904,41 @@ const Events = () => {
         </div>
       )}
       {search.trim() && <div style={{ height: 20 }} />}
+
+      {/* Featured Events */}
+      {!search.trim() && activeFilter === "all" && !tagFilter && featuredEvents.length > 0 && (
+        <div>
+          <h2
+            style={{
+              margin: "26px 20px 0",
+              fontFamily: HEAD,
+              fontSize: 24,
+              fontWeight: 550,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.1,
+              color: C.ink,
+            }}
+          >
+            Featured Events
+          </h2>
+          <div
+            className="no-scrollbar"
+            style={{
+              display: "flex",
+              gap: 10,
+              padding: "0 20px",
+              overflowX: "auto",
+              scrollbarWidth: "none",
+              alignItems: "flex-start",
+              marginTop: 12,
+            }}
+          >
+            {featuredEvents.map((e) => (
+              <PosterCard key={e.id} event={e} />
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Happening Soon */}
       {!search.trim() && activeFilter === "all" && !tagFilter && happeningSoon.length >= 2 && (
