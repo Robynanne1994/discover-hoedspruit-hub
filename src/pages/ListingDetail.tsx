@@ -28,6 +28,7 @@ import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts, isUsableSocialLink, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { formatDetailLabel } from "@/lib/detailLabel";
+import { restaurantDetailFields } from "@/lib/restaurantDetailFields";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
 import {
@@ -590,41 +591,27 @@ const ListingDetail = () => {
   // rating and again under the map on the Location tab.
 
   if (isListingRestaurant) {
+    const facilities = restaurantDetailFields(l);
+    sections.unshift({ key: "summary", title: "Summary", iconComp: ClipboardList, fields: facilities.summary });
     const known = ["Dine-in", "Takeaway", "Delivery"];
     const norm = (l.service_type || []).map((s: string) => {
       const t = s.trim().toLowerCase();
       if (["take away", "take-away", "takeaway"].includes(t)) return "Takeaway";
       if (["sit down", "sit-down", "dine-in", "dine in"].includes(t)) return "Dine-in";
       return s;
-    }).filter((s: string) => !/reservation/i.test(s));
+    }).filter((s: string) => !/reservation/i.test(s) && !/^drive[\s_-]*through$/i.test(s.trim()));
     const svc: DField[] = known.map(k => ({ label: k, on: norm.some((s: string) => s.toLowerCase() === k.toLowerCase()) }));
     norm.forEach((s: string) => { if (!known.some(k => k.toLowerCase() === s.toLowerCase())) svc.push({ label: s, on: true }); });
+    svc.push(...facilities.service);
     if (svc.length) sections.push({ key: "service", title: "Service Options", iconComp: ClipboardList, fields: svc });
 
-    const kids = filterDefined([
-      { label: "Good for kids", value: l.good_for_kids },
-      { label: "Kids' menu", value: l.kids_menu },
-      { label: "High chairs", value: l.high_chairs },
-      { label: "Nappy changing station", value: l.nappy_changing_station },
-      { label: "Kids playground", value: l.kids_playground },
-    ]);
-    if (kids.length) sections.push({ key: "kids", title: "Kids & Family", iconComp: Baby, fields: kids });
+    const kids = facilities.kids;
+    if (kids.length) sections.push({ key: "kids", title: "Babies & Kids", iconComp: Baby, fields: kids });
 
-    const access = filterDefined([
-      { label: "Accessible entrance", value: l.wheelchair_entrance },
-      { label: "Accessible seating", value: l.wheelchair_seating },
-      { label: "Accessible toilet", value: l.wheelchair_toilet },
-      { label: "Accessible parking", value: l.wheelchair_car_park },
-    ]);
+    const access = facilities.accessibility;
     if (access.length) sections.push({ key: "accessibility", title: "Accessibility", iconComp: Accessibility, fields: access });
 
-    const amen = filterDefined([
-      { label: "Toilets", value: l.has_toilet },
-      { label: l.has_wifi === true && l.has_free_wifi === true ? "WiFi (Free)" : "WiFi", value: l.has_wifi },
-      { label: "Smoking section", value: l.smoking_allowed },
-      { label: "Pet friendly", value: l.pets_allowed },
-      { label: "Drive-through", value: (l as any).drive_through },
-    ]);
+    const amen = facilities.amenities;
     if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconComp: Home, fields: amen });
 
     const drinks = filterDefined([
