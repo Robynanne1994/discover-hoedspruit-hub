@@ -29,3 +29,4 @@
 - Measure crop guides from layout px (offsetWidth), never from getBoundingClientRect, so an edit dialog's zoom animation cannot leave every guide stuck at the animation's scale.
 - Keep admin category rows unambiguous: the drag handle alone moves a category, the listings count opens that category's listings, and the labelled Order button is the only route to the per-category listing order page.
 - Keep listing detail-row label casing in detailLabel's formatDetailLabel so the Details section and its tests share one rule; every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the first letter of the whole label.
+- Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and rendered on the About tab under "Good to know", never as Details cards; a listing whose only detail was a custom row therefore has no Details tab.
