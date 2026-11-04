@@ -10,6 +10,12 @@ const BROWN = "#715A3D";
 const SAGE = "#2b7f3f";
 const CLAY = "#C0392B";
 
+// The status dot rides above the row's centre. Centring it on the line box
+// instead leaves it under the middle of the capital letters, because the line
+// box keeps descender space below the baseline — measured 1.7px low on the
+// category cards, so it is lifted by that much.
+const STATUS_DOT_LIFT = "translateY(-1.7px)";
+
 const to24h = (raw?: string | null) => {
   if (!raw) return null;
   const m = raw.trim().match(/^(\d{1,2})[:.]?(\d{2})?/);
@@ -167,7 +173,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
           lineHeight: 1.2,
         }}
       >
-        <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0 }} />
+        <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0, transform: STATUS_DOT_LIFT }} />
         <span>{status.label}</span>
         {status.detail ? (
           <span style={{ fontWeight: 400 }}>· {status.detail}</span>
