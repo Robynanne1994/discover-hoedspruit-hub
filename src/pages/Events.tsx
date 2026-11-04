@@ -998,7 +998,8 @@ const Events = () => {
         <div>
           <h2
             style={{
-              margin: "26px 20px 0",
+              // Matches the gap above the list below (20px container padding + 22px above the month heading).
+              margin: "42px 20px 0",
               fontFamily: HEAD,
               fontSize: 24,
               fontWeight: 550,
