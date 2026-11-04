@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useLayoutEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, MapPin, AlertTriangle, Phone, Siren, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X, Tag } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +13,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
 import { MUTED, type , MUTED as TOKEN_MUTED} from "@/lib/type";
+import {
+  QUICK_CARD_LOCATION_FONT_SIZE,
+  QUICK_CARD_LOCATION_LINE_HEIGHT,
+  QUICK_CARD_TITLE_FONT_SIZE,
+  QUICK_CARD_TITLE_LINE_HEIGHT,
+  categoryLineBudget,
+  countTextLines,
+} from "@/lib/quickCardLines";
 
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -41,6 +49,189 @@ const QUICK_FILTERS = ["Open Now", "Saved", "Child Friendly", "Pet Friendly"];
 
 type ViewMode = "grid" | "list";
 type SortMode = "default" | "count" | "az";
+
+/**
+ * A quick-filter result row: a square homepage crop beside the listing's title,
+ * category names and location. The category names are the only text allowed to
+ * wrap, and only while the title and the location have both stayed on one line —
+ * measured from the rendered card, so a two-line title keeps the names on a
+ * single ellipsised line as before.
+ */
+const QuickResultCard = ({
+  listing,
+  cardCategories,
+}: {
+  listing: any;
+  cardCategories: string[];
+}) => {
+  const titleRef = useRef<HTMLParagraphElement>(null);
+  const locationRef = useRef<HTMLParagraphElement>(null);
+  const [lineBudget, setLineBudget] = useState(1);
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const titleLines = countTextLines(
+        titleRef.current?.offsetHeight ?? 0,
+        QUICK_CARD_TITLE_FONT_SIZE,
+        QUICK_CARD_TITLE_LINE_HEIGHT,
+      );
+      const locationLines = countTextLines(
+        locationRef.current?.offsetHeight ?? 0,
+        QUICK_CARD_LOCATION_FONT_SIZE,
+        QUICK_CARD_LOCATION_LINE_HEIGHT,
+      );
+      const next = categoryLineBudget(titleLines, locationLines);
+      setLineBudget((prev) => (prev === next ? prev : next));
+    };
+    measure();
+    // Either line can reflow after the first paint: a late font load or a
+    // narrower window moves a title onto its second line, so re-measure.
+    const observer = new ResizeObserver(measure);
+    if (titleRef.current) observer.observe(titleRef.current);
+    if (locationRef.current) observer.observe(locationRef.current);
+    return () => observer.disconnect();
+  }, [listing.id, listing.title, listing.location]);
+
+  const image = listingImage(listing, "homepage");
+  const categoriesWrap = lineBudget > 1;
+
+  return (
+    <Link
+      to={`/listing/${listing.id}`}
+      style={{
+        display: "flex",
+        alignItems: "stretch",
+        background: COLORS.card,
+        borderRadius: 16,
+        overflow: "hidden",
+        textDecoration: "none",
+        minHeight: QUICK_RESULT_HEIGHT,
+        transition: "transform 150ms ease-out",
+      }}
+      onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
+      onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+    >
+      <div className="aspect-square w-28 shrink-0 self-start overflow-hidden bg-muted">
+        {image && (
+          <img
+            src={image}
+            alt={listing.title}
+            className="block h-full w-full object-cover"
+          />
+        )}
+      </div>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 14px 12px 14px" }}>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <p
+            {...noTitleCaseProps(listing)}
+            ref={titleRef}
+            style={{
+              fontSize: 15,
+              fontWeight: 600,
+              color: COLORS.ink,
+              margin: 0,
+              lineHeight: 1.25,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflowWrap: "anywhere",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {getDisplayTitle(listing)}
+          </p>
+          <div style={{ minWidth: 0 }}>
+            {cardCategories.length > 0 && (
+              <p
+                style={{
+                  display: "flex",
+                  alignItems: categoriesWrap ? "flex-start" : "center",
+                  fontFamily: FONT_BODY,
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  color: COLORS.eyebrow,
+                  margin: 0,
+                  gap: 4,
+                  minWidth: 0,
+                  lineHeight: 1.3,
+                }}
+              >
+                <Tag size={10} strokeWidth={2} style={{ flexShrink: 0, marginTop: categoriesWrap ? 1.5 : 0 }} />
+                <span
+                  style={
+                  categoriesWrap
+                    ? {
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflowWrap: "anywhere",
+                        overflow: "hidden",
+                        minWidth: 0,
+                      }
+                    : {
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        minWidth: 0,
+                      }
+                }
+                >
+                  {cardCategories.join(" · ")}
+                </span>
+              </p>
+            )}
+            {listing.location && (
+              <p
+                ref={locationRef}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  fontSize: 12,
+                  lineHeight: 1.3,
+                  color: COLORS.muted,
+                  margin: 0,
+                  marginTop: 3,
+                  gap: 4,
+                  minWidth: 0,
+                }}
+              >
+                <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 2 }} />
+                <span
+                  style={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflowWrap: "anywhere",
+                    overflow: "hidden",
+                    minWidth: 0,
+                  }}
+                >
+                  {listing.location}
+                </span>
+              </p>
+            )}
+          </div>
+        </div>
+        <ArrowUpRight size={18} color="#1A1A1A" style={{ flexShrink: 0 }} />
+      </div>
+
+    </Link>
+  );
+};
+
 
 const Categories = () => {
   const [search, setSearch] = useState("");
@@ -658,132 +849,13 @@ const Categories = () => {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {quickFilteredResults.map((listing) => {
-                const cardCategories = categoryTitlesFor(listing);
-                const image = listingImage(listing, "homepage");
-                return (
-                <Link
+{quickFilteredResults.map((listing) => (
+                <QuickResultCard
                   key={listing.id}
-                  to={`/listing/${listing.id}`}
-                  style={{
-                    display: "flex",
-                    alignItems: "stretch",
-                    background: COLORS.card,
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    textDecoration: "none",
-                    minHeight: QUICK_RESULT_HEIGHT,
-                    transition: "transform 150ms ease-out",
-                  }}
-                  onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.99)")}
-                  onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                  onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                >
-                  <div className="aspect-square w-28 shrink-0 self-start overflow-hidden bg-muted">
-                    {image && (
-                      <img
-                        src={image}
-                        alt={listing.title}
-                        className="block h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0, display: "flex", alignItems: "flex-start", gap: 12, padding: "11px 14px 12px 14px" }}>
-                    <div
-                      style={{
-                        flex: 1,
-                        minWidth: 0,
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        gap: 8,
-                      }}
-                    >
-                      <p
-                        {...noTitleCaseProps(listing)}
-                        style={{
-                          fontSize: 15,
-                          fontWeight: 600,
-                          color: COLORS.ink,
-                          margin: 0,
-                          lineHeight: 1.25,
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflowWrap: "anywhere",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                        }}
-                      >
-                        {getDisplayTitle(listing)}
-                      </p>
-                      <div style={{ minWidth: 0 }}>
-                        {cardCategories.length > 0 && (
-                          <p
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              fontFamily: FONT_BODY,
-                              fontSize: 10,
-                              fontWeight: 600,
-                              letterSpacing: "0.05em",
-                              textTransform: "uppercase",
-                              color: COLORS.eyebrow,
-                              margin: 0,
-                              gap: 4,
-                              minWidth: 0,
-                              lineHeight: 1.3,
-                            }}
-                          >
-                            <Tag size={10} strokeWidth={2} style={{ flexShrink: 0 }} />
-                            <span
-                              style={{
-                                whiteSpace: "nowrap",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                minWidth: 0,
-                              }}
-                            >
-                              {cardCategories.join(" · ")}
-                            </span>
-                          </p>
-                        )}
-                        {listing.location && (
-                          <p
-                            style={{
-                              display: "flex",
-                              alignItems: "flex-start",
-                              fontSize: 12,
-                              lineHeight: 1.3,
-                              color: COLORS.muted,
-                              margin: 0,
-                              marginTop: 3,
-                              gap: 4,
-                              minWidth: 0,
-                            }}
-                          >
-                            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 2 }} />
-                            <span
-                              style={{
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                overflowWrap: "anywhere",
-                                overflow: "hidden",
-                                minWidth: 0,
-                              }}
-                            >
-                              {listing.location}
-                            </span>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <ArrowUpRight size={18} color="#1A1A1A" style={{ flexShrink: 0 }} />
-                  </div>
-
-                </Link>
-                );
+                  listing={listing}
+                  cardCategories={categoryTitlesFor(listing)}
+                />
+              ))}
               })}
             </div>
           )}
