@@ -46,4 +46,4 @@
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Let a deal card's offer mark inherit its colour from SpecialValueBar's left slot, never its own, so it always matches the words beside it.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
-- Keep the listed event card's row icons at ROW_ICON_SIZE with a small upward nudge, matched to the drawn letters, and keep one shared gap between its date, time and location rows.
+- Keep card and pill row icons on their shared size and lift constants (ROW_ICON_SIZE; PILL_ICON_SIZE plus PILL_ICON_NUDGE), matched to the drawn letters, and keep one shared gap between event-card date, time and location rows.
