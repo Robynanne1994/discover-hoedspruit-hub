@@ -777,6 +777,7 @@ const AdminCategories = () => {
                     onToggle={() => setExpandedCat(isExpanded ? null : cat.id)}
                     onEdit={() => openEdit(cat)}
                     onDelete={() => deleteMut.mutate(cat.id)}
+                    onViewListings={() => setViewCat(cat)}
                   >
                     {isExpanded && (
                       <div className="bg-muted/30 px-4 py-3 border-t border-border">
