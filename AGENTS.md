@@ -46,4 +46,6 @@
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Let a deal card's offer mark inherit its colour from SpecialValueBar's left slot, never its own, so it always matches the words beside it.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
-- Keep card and pill row icons on their shared size and lift constants (ROW_ICON_SIZE; PILL_ICON_SIZE plus PILL_ICON_NUDGE), matched to the drawn letters, and keep one shared gap between event-card date, time and location rows.
+- Keep card and pill row icons on their shared size and lift constants (ROW_ICON_SIZE; PILL_ICON_SIZE plus PILL_ICON_NUDGE in pillIcon), matched to the drawn letters, and keep one shared gap between event-card date, time and location rows.
+- Keep the events filters row's active-filter count and Clear all visibility in eventFilterState so the badge and the clear control agree.
+- Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.
