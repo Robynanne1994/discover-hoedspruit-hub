@@ -991,6 +991,14 @@ const Events = () => {
             )}
           </button>
 
+          {/* Hairline between the Filters button and everything else. */}
+          {!search.trim() && (
+            <span
+              aria-hidden="true"
+              style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }}
+            />
+          )}
+
           {filtersOn && (
             <button
               onClick={clearAllFilters}
