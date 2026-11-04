@@ -65,6 +65,12 @@ const SpecialValueBar = ({
   // never print a lone icon.
   const leftShows = value.kind !== "none" || !!meta.text;
 
+  // The mark wears the colour of the words beside it: the offer's red against a
+  // written offer, the price's own ink against a price, and the calm grey when
+  // the line holds nothing but a date.
+  const leadInk =
+    value.kind === "none" ? BAR.muted : value.kind === "price" ? BAR.ink : BAR.accent;
+
   // Price, "was" price and a validity date is one item too many on a narrow
   // card. When the validity line is coming through on the right, the
   // crossed-out "was" price stands down and the card says just "now" and
@@ -99,6 +105,9 @@ const SpecialValueBar = ({
       <div
         style={{
           display: "flex",
+          // The mark inherits this: it carries no colour of its own, so it wears
+          // the same ink as the words it labels.
+          color: leadInk,
           alignItems: "baseline",
           gap: 5,
           minWidth: 0,
