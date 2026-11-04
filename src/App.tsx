@@ -315,6 +315,7 @@ const App = () => (
                 <Route path="event-hosts" element={<AdminEventHosts />} />
                 <Route path="specials" element={<AdminSpecials />} />
                 <Route path="specials/import" element={<AdminSpecialsImport />} />
+                <Route path="specials/order" element={<AdminSpecialsOrder />} />
                 
                 <Route path="local-channels" element={<AdminBushTelegraph />} />
                 <Route path="notifications" element={<AdminNotifications />} />

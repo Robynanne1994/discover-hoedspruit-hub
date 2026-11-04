@@ -296,6 +296,9 @@ const AdminSpecials = () => {
         <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Specials</h1>
         {!showForm && (
           <div className="flex flex-wrap gap-2">
+            <Link to="/admin/specials/order">
+              <Button variant="outline">Order Specials</Button>
+            </Link>
             <Link to="/admin/specials/import">
               <Button variant="outline" className="gap-2">
                 <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Import / Export</span><span className="sm:hidden">CSV</span>

@@ -20,6 +20,7 @@ import { specialImage } from "@/lib/specialCard";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
 import { pillToggle } from "@/lib/filterPill";
+import { compareSpecialDefault } from "@/lib/specialOrder";
 import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 
@@ -263,6 +264,8 @@ const Specials = () => {
     }
     if (sortBy === "default" && activeTab === UPCOMING_TAB) {
       result.sort((a, b) => (a.valid_from || "").localeCompare(b.valid_from || ""));
+    } else if (sortBy === "default") {
+      result.sort(compareSpecialDefault);
     }
 
     return result;
