@@ -778,24 +778,30 @@ const Events = () => {
 
   }, [categoryEvents, tagFilter, effectiveSort, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]);
 
+  // What the page is narrowed by right now, in one place, so the pill row's
+  // count, its Clear All button and the list heading can never disagree.
+  const filterState = {
+    dateFilter: activeFilter,
+    tagFilter,
+    priceFilter,
+    durationFilter,
+    bookingFilter,
+    recurrenceFilter,
+    timeFilter,
+  };
+  const filtersOn = hasActiveEventFilters(filterState);
+  const activeFilterCount = activeEventFilterCount(filterState);
+  // A lone time-frame pill is the whole narrowing, so the list may wear that
+  // pill's words as its heading. A second filter, or a search laid over it,
+  // and the results are no longer one pill's story, so "Events" takes over.
+  const onlyDateFilter =
+    activeFilter !== "all" && activeFilterCount === 1 && !search.trim();
+
   // Month groups, with Recurring collected into one section and next-year
   // events held below it.
   const groupedEvents = useMemo(
-    () =>
-      buildEventGroups(
-        filtered,
-        activeFilter,
-        hasActiveEventFilters({
-          dateFilter: activeFilter,
-          tagFilter,
-          priceFilter,
-          durationFilter,
-          bookingFilter,
-          recurrenceFilter,
-          timeFilter,
-        })
-      ),
-    [filtered, activeFilter, tagFilter, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]
+    () => buildEventGroups(filtered, activeFilter, filtersOn, onlyDateFilter),
+    [filtered, activeFilter, filtersOn, onlyDateFilter]
   );
 
   // Happening Soon — soonest dated events, excluding recurring ones
@@ -827,20 +833,6 @@ const Events = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
-
-  // What the page is narrowed by right now, in one place, so the pill row's
-  // count and its Clear all button can never disagree with each other.
-  const filterState = {
-    dateFilter: activeFilter,
-    tagFilter,
-    priceFilter,
-    durationFilter,
-    bookingFilter,
-    recurrenceFilter,
-    timeFilter,
-  };
-  const filtersOn = hasActiveEventFilters(filterState);
-  const activeFilterCount = activeEventFilterCount(filterState);
 
   // One removable chip per active filter, so each can be switched off alone.
   const appliedChips: { key: string; label: string; onRemove: () => void }[] = [];
