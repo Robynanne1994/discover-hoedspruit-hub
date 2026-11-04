@@ -945,10 +945,9 @@ const ListingDetail = () => {
       Icon: WhatsAppIcon, ext: true,
     },
     actionPhone && { key: "call", label: "Call", href: `tel:${actionPhone}`, Icon: Phone, ext: false },
-    (l.google_maps_link || listing.location) && {
+    directionsHref && {
       key: "directions", label: "Directions",
-      href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
-      Icon: Send, ext: true,
+      href: directionsHref, Icon: Send, ext: true,
     },
     // The website slot comes from the website column alone. A listing with no
     // website gets no button here — nothing stands in for it, so an empty

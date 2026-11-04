@@ -25,6 +25,7 @@ import { eventContactPairs } from "@/lib/eventContacts";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { copyToClipboard } from "@/lib/share";
+import { directionsHref as buildDirectionsHref, isSurroundsLocation } from "@/lib/locationDirections";
 import { isNativeApp, nativePlatform } from "@/lib/nativeBridge";
 import { useSuppressStatusBarCover } from "@/lib/statusBarCoverVisibility";
 import Seo from "@/components/Seo";
