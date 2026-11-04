@@ -301,7 +301,7 @@ const EventCard = ({ event }: { event: any }) => {
         >
           {getDisplayTitle(event)}
         </h3>
-        {dateLine && (
+        {datePart && (
           <p
             style={{
               fontFamily: SANS,
@@ -324,7 +324,35 @@ const EventCard = ({ event }: { event: any }) => {
                 overflow: "hidden",
               }}
             >
-              {dateLine}
+              {datePart}
+            </span>
+          </p>
+        )}
+        {timePart && (
+          <p
+            style={{
+              fontFamily: SANS,
+              fontWeight: 400,
+              fontSize: 13,
+              lineHeight: 1.35,
+              color: C.body,
+              margin: 0,
+              marginTop: 4,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <Clock size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <span
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 1,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {timePart}
             </span>
           </p>
         )}
