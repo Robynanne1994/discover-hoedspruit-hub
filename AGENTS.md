@@ -37,3 +37,4 @@
 - Keep the listing action bar's top-up rule (a bar left with only two tiles takes its next populated contact, email before the listing's own social pages, and never a link the bar already shows) in actionBarFill so the bar and its tests share one rule.
 - Keep the quick-filter card's line rule in quickCardLines so the Explore results and their tests agree: the category names may take a second line unless the title and the location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: admin sort_position first, then newest; featured specials are lifted above it so their position is ignored.
+- Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.
