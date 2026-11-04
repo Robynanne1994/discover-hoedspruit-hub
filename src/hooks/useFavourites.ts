@@ -50,16 +50,19 @@ export const useToggleFavourite = () => {
     }) => {
       if (!user) return;
       if (currentlyFavourited) {
-        await supabase
+        const { error } = await supabase
           .from("favourites" as any)
           .delete()
           .eq("user_id", user.id)
           .eq("item_id", itemId)
           .eq("item_type", itemType);
+        if (error) throw error;
       } else {
-        await supabase
+        const { error } = await supabase
           .from("favourites" as any)
           .insert({ user_id: user.id, item_id: itemId, item_type: itemType });
+        // 23505 = already saved; treat as success.
+        if (error && (error as any).code !== "23505") throw error;
       }
     },
     onMutate: async ({ itemId, itemType, currentlyFavourited }) => {
@@ -74,6 +77,12 @@ export const useToggleFavourite = () => {
     },
     onError: (_e, _v, ctx) => {
       if (ctx?.prev) qc.setQueryData(KEY(user?.id), ctx.prev);
+    },
+    onSuccess: () => {
+      // Refresh the saved lists and counts (not the heart set, which is
+      // already updated optimistically) so Saved pages show the change.
+      const keys = ["my-saved-listings","my-saved-events","my-saved-specials","my-saved-resources","my-saved-count","user-saved-listings","user-saved-events","user-saved-specials","user-saved-resources","user-saved-listings-full","user-saved-events-full","user-saved-specials-full","user-saved-resources-full","favourites","saved-resource-ids"];
+      keys.forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
     },
     // No global invalidate-everything — the optimistic cache update is
     // sufficient and avoids cascading refetches that cause UI flicker.
