@@ -1252,19 +1252,7 @@ const Events = () => {
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
-        onClear={() => {
-          setTagFilter(null);
-          updateParams({ s: null });
-          setPriceFilter("any");
-          setDurationFilter("all");
-          setBookingFilter("any");
-          setRecurrenceFilter("any");
-          setTimeFilter("any");
-          setActiveFilter("all");
-          
-          setSearch("");
-          setOpenSection(null);
-        }}
+        onClear={clearAllFilters}
         resultsCount={filtered.length}
         resultsLabel="events"
       >

@@ -28,7 +28,7 @@ describe("activeEventFilterCount", () => {
   });
 
   it("counts each drawer dimension on its own", () => {
-    expect(activeEventFilterCount({ ...OFF, priceFilter: "free", durationFilter: "weekend" })).toBe(2);
+    expect(activeEventFilterCount({ ...OFF, priceFilter: "free", durationFilter: "4-7" })).toBe(2);
     expect(
       activeEventFilterCount({
         ...OFF,
@@ -45,10 +45,10 @@ describe("activeEventFilterCount", () => {
         dateFilter: "this-month",
         tagFilter: "music",
         priceFilter: "paid",
-        durationFilter: "multi-day",
+        durationFilter: "8+",
         bookingFilter: "not-required",
-        recurrenceFilter: "once-off",
-        timeFilter: "evening",
+        recurrenceFilter: "none",
+        timeFilter: "night",
       })
     ).toBe(7);
   });
