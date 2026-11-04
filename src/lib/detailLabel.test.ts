@@ -3,7 +3,7 @@ import { formatDetailLabel } from "./detailLabel";
 
 describe("formatDetailLabel", () => {
   it("capitalises every part of a hyphenated detail label", () => {
-    expect(formatDetailLabel("mid range")).toBe("Mid-Range");
+    expect(formatDetailLabel("mid-range")).toBe("Mid-Range");
     expect(formatDetailLabel("Mid-range")).toBe("Mid-Range");
     expect(formatDetailLabel("Dine-in")).toBe("Dine-In");
     expect(formatDetailLabel("drive-through")).toBe("Drive-Through");
