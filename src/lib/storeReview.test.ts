@@ -34,3 +34,11 @@ describe("store review links", () => {
     expect(open).not.toHaveBeenCalled();
   });
 });
+
+describe("admin-saved rating links", () => {
+  it("uses a saved link over the default, and falls back when blank", async () => {
+    const { storeReviewUrl } = await import("./storeReview");
+    expect(storeReviewUrl("android", { android: "https://play.google.com/x" })).toBe("https://play.google.com/x");
+    expect(storeReviewUrl("apple", { apple: "  " })).toBe(APPLE_REVIEW_URL);
+  });
+});

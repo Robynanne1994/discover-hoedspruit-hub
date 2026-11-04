@@ -18,16 +18,34 @@ export const ANDROID_REVIEW_URL: string | null = null;
 export type StorePlatform = "apple" | "android";
 
 /** The rating URL for a platform, or `null` while one has not been added. */
-export const storeReviewUrl = (platform: StorePlatform): string | null =>
-  platform === "apple" ? APPLE_REVIEW_URL : ANDROID_REVIEW_URL;
+export type StoreReviewLinks = { apple?: string | null; android?: string | null };
+
+/** site_content section holding the admin-set rating links. */
+export const STORE_LINKS_SECTION = "app-store-review-links";
+
+/**
+ * The rating URL for a platform. An admin-saved link wins; a blank one falls
+ * back to the built-in default.
+ */
+export const storeReviewUrl = (
+  platform: StorePlatform,
+  links?: StoreReviewLinks | null,
+): string | null => {
+  const saved = links?.[platform]?.trim();
+  if (saved) return saved;
+  return platform === "apple" ? APPLE_REVIEW_URL : ANDROID_REVIEW_URL;
+};
 
 /**
  * Opens a store's rating screen in a new tab and reports whether a link exists.
  * Returns false when that platform's URL has not been added yet, so the caller
  * can tell the person instead of silently doing nothing.
  */
-export const openStoreReview = (platform: StorePlatform): boolean => {
-  const url = storeReviewUrl(platform);
+export const openStoreReview = (
+  platform: StorePlatform,
+  links?: StoreReviewLinks | null,
+): boolean => {
+  const url = storeReviewUrl(platform, links);
   if (!url) return false;
   window.open(url, "_blank", "noopener,noreferrer");
   return true;
