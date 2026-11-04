@@ -882,6 +882,16 @@ const Events = () => {
   if (timeFilter !== "any")
     appliedChips.push({ key: "time", label: TIME_OPTIONS.find((o) => o.value === timeFilter)?.label ?? String(timeFilter), onRemove: () => setTimeFilter("any") });
 
+  // One non-date filter on its own names the results ("Free Events") rather
+  // than the generic "Events".
+  const soleFilterHeading =
+    filtersOn && !onlyDateFilter && activeFilterCount === 1 && !search.trim() && appliedChips.length === 1
+      ? /events$/i.test(appliedChips[0].label) ? appliedChips[0].label : `${appliedChips[0].label} Events`
+      : null;
+  const listGroups = soleFilterHeading
+    ? groupedEvents.map((g) => (g.key === "filtered" ? { ...g, label: soleFilterHeading } : g))
+    : groupedEvents;
+
   // Every filter back to its default in one press. The drawer's Clear All and
   // the pill row's Clear all both run this same list.
   const clearAllFilters = () => {
@@ -1173,7 +1183,7 @@ const Events = () => {
       )}
 
       {/* Featured Events */}
-      {!search.trim() && activeFilter === "all" && !tagFilter && featuredEvents.length > 0 && (
+      {!search.trim() && !filtersOn && featuredEvents.length > 0 && (
         <div>
           <h2
             style={{
@@ -1208,7 +1218,7 @@ const Events = () => {
       )}
 
       {/* Happening Soon */}
-      {!search.trim() && activeFilter === "all" && !tagFilter && happeningSoon.length >= 2 && (
+      {!search.trim() && !filtersOn && happeningSoon.length >= 2 && (
         <div>
           <h2
             style={{
@@ -1306,7 +1316,7 @@ const Events = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {groupedEvents.map((group) => (
+            {listGroups.map((group) => (
               <div key={group.key} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <div
                   style={{
