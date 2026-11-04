@@ -41,8 +41,8 @@
 - Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
 - Keep the carousel poster card's date and location rows on one shared style (13px body ink, 12px lucide icons at stroke 2 in the primary dark brown) and show no time on those cards.
-- Keep the gap under the events carousels equal to the gap above the events list below, so every section transition on the page reads as one rhythm; adjust the shared value rather than one gap alone.
-- Keep the specials page's section headings on the events page's group-heading treatment; the featured heading carries no icon or hairline, the list heading keeps its brown hairline, and the gap under the featured rail equals the events carousels' gap.
+- Keep the gap under the events carousels equal to the gap above the events list below; adjust the shared value, not one gap alone.
+- Keep the specials page's section headings on the events page's group-heading treatment; the featured heading has no icon or hairline, the list keeps its brown hairline, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
-- Keep the listed event card's row icons at ROW_ICON_SIZE with a small upward nudge, matched to the drawn letters rather than the line box, and keep one shared gap value between its date, time and location rows so all three rows stay identical.
+- Keep the listed event card's row icons at ROW_ICON_SIZE with a small upward nudge, matched to the drawn letters, and keep one shared gap between its date, time and location rows.
