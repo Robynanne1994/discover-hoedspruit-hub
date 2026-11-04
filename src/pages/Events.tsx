@@ -1113,13 +1113,7 @@ const Events = () => {
                 >
                   <span
                     style={{
-                      fontFamily: NOHEMI,
-                      fontWeight: 400,
-                      fontSize: 24,
-                      lineHeight: 1.15,
-                      letterSpacing: "-0.02em",
-                      textTransform: "uppercase",
-                      color: C.muted,
+                      ...type.sectionTitle,
                       whiteSpace: "nowrap",
                     }}
                   >

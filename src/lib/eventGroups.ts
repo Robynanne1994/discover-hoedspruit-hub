@@ -43,7 +43,7 @@ export function buildEventGroups(filtered: any[], activeFilter: string): EventGr
     const label = e._parsed
       ? isFutureYear
         ? String(eventYear)
-        : format(e._parsed, eventYear === currentYear ? "MMMM" : "MMMM yyyy").toUpperCase()
+        : format(e._parsed, eventYear === currentYear ? "MMMM" : "MMMM yyyy")
       : "DATE TO BE CONFIRMED";
     const key = e._parsed ? (isFutureYear ? `y-${eventYear}` : format(e._parsed, "yyyy-MM")) : "tbc";
 
