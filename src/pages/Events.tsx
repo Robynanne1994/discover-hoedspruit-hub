@@ -85,13 +85,13 @@ const ROW_ICON = {
 // The three rows on a listed event card (date, time, location) share one text
 // size, one line height, one icon disc and one gap between rows, so no row can
 // drift from its neighbours and the carousels keep their own larger type.
-const ROW_FONT_SIZE = 12.5;
-const ROW_LINE_HEIGHT = 1.35;
-const ROW_GAP = 5;
-// ROW_FONT_SIZE at ROW_LINE_HEIGHT -> the row's text box is 16.9px tall, so the
+const ROW_FONT_SIZE = 12;
+const ROW_LINE_HEIGHT = 1.3;
+const ROW_GAP = 4;
+// ROW_FONT_SIZE at ROW_LINE_HEIGHT -> the row's text box is 15.6px tall, so the
 // brown disc is sized to it and the white glyph inside keeps its proportion.
-const ROW_ICON_SIZE = 17;
-const ROW_GLYPH_SIZE = 10.5;
+const ROW_ICON_SIZE = 16;
+const ROW_GLYPH_SIZE = 10;
 // White icon sitting in a dark brown circle, sized to the row's text box.
 const ROW_ICON_DISC = {
   flexShrink: 0,
@@ -268,7 +268,7 @@ const EventCard = ({ event }: { event: any }) => {
         display: "flex",
         alignItems: "stretch",
         gap: 14,
-        height: 188,
+        minHeight: 188,
         background: C.white,
         borderRadius: 16,
         overflow: "hidden",
@@ -291,7 +291,9 @@ const EventCard = ({ event }: { event: any }) => {
         style={{
           flex: 1,
           minWidth: 0,
-          padding: "12px 12px 12px 0",
+          // The price pill lives in this bottom band, so no detail row can run
+          // under it; a card grows past minHeight only when its content needs it.
+          padding: "12px 12px 40px 0",
           overflow: "hidden",
         }}
       >
