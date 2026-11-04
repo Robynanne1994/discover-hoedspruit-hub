@@ -987,6 +987,23 @@ const ListingDetail = () => {
     })(),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
 
+  // A bar that fell to two tiles — a surrounds area has no directions to offer —
+  // takes its next populated contact so the row reads as three. Email leads, then
+  // the listing's own social pages. A link the bar already shows is never added
+  // a second time, whatever label it sits under.
+  const actions = fillActionBar(baseActions, [
+    actionEmail
+      ? { key: "email", label: "Email", href: `mailto:${actionEmail}`, Icon: Mail, ext: false }
+      : null,
+    facebookLink
+      ? { key: "facebook", label: "Facebook", href: websiteHref(facebookLink), Icon: FacebookIcon, ext: true }
+      : null,
+    instagramLink
+      ? { key: "instagram", label: "Instagram", href: websiteHref(instagramLink), Icon: InstagramIcon, ext: true }
+      : null,
+  ]);
+
+
 
   // ----- Sub-components -----
   // Stacked icon-over-label tile used in the fixed action bar.
