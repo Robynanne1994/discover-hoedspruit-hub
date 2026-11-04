@@ -842,6 +842,27 @@ const Events = () => {
   const filtersOn = hasActiveEventFilters(filterState);
   const activeFilterCount = activeEventFilterCount(filterState);
 
+  // One removable chip per active filter, so each can be switched off alone.
+  const appliedChips: { key: string; label: string; onRemove: () => void }[] = [];
+  if (activeFilter !== "all") {
+    appliedChips.push({
+      key: "date",
+      label: FILTERS.find((f) => f.value === activeFilter)?.label ?? String(activeFilter),
+      onRemove: () => updateParams({ f: null }),
+    });
+  }
+  if (tagFilter) appliedChips.push({ key: "tag", label: tagFilter, onRemove: () => updateParams({ t: null }) });
+  if (priceFilter !== "any")
+    appliedChips.push({ key: "price", label: PRICE_OPTIONS.find((o) => o.value === priceFilter)?.label ?? String(priceFilter), onRemove: () => setPriceFilter("any") });
+  if (durationFilter !== "all")
+    appliedChips.push({ key: "duration", label: DURATION_OPTIONS.find((o) => o.value === durationFilter)?.label ?? String(durationFilter), onRemove: () => setDurationFilter("all") });
+  if (bookingFilter !== "any")
+    appliedChips.push({ key: "booking", label: bookingFilter === "required" ? "Booking Required" : "Booking Not Required", onRemove: () => setBookingFilter("any") });
+  if (recurrenceFilter !== "any")
+    appliedChips.push({ key: "recurrence", label: RECURRENCE_OPTIONS.find((o) => o.value === recurrenceFilter)?.label ?? String(recurrenceFilter), onRemove: () => setRecurrenceFilter("any") });
+  if (timeFilter !== "any")
+    appliedChips.push({ key: "time", label: TIME_OPTIONS.find((o) => o.value === timeFilter)?.label ?? String(timeFilter), onRemove: () => setTimeFilter("any") });
+
   // Every filter back to its default in one press. The drawer's Clear All and
   // the pill row's Clear all both run this same list.
   const clearAllFilters = () => {
@@ -1097,6 +1118,41 @@ const Events = () => {
         )}
       </div>
 
+      {/* Applied filters — one removable chip per active filter */}
+      {appliedChips.length > 0 && (
+        <div
+          className="scrollbar-hide"
+          style={{ display: "flex", gap: 8, overflowX: "auto", padding: "6px 20px 4px" }}
+        >
+          {appliedChips.map((chip) => (
+            <button
+              key={chip.key}
+              onClick={chip.onRemove}
+              aria-label={`Remove ${chip.label} filter`}
+              style={{
+                background: "transparent",
+                border: "1.5px solid #423324",
+                borderRadius: 999,
+                height: PILL_HEIGHT,
+                padding: "6.5px 12px",
+                cursor: "pointer",
+                ...tabStyle(false),
+                lineHeight: 1,
+                color: "#423324",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* Featured Events */}
       {!search.trim() && activeFilter === "all" && !tagFilter && featuredEvents.length > 0 && (
         <div>
@@ -1262,7 +1318,7 @@ const Events = () => {
                       ({group.events.length})
                     </span>
                   )}
-                  <span style={{ flex: 1, height: 1, background: "#423324" }} />
+                  {!filtersOn && <span style={{ flex: 1, height: 1, background: "#423324" }} />}
                 </div>
                 {group.events.map((e) => (
                   <EventCard key={e.id} event={e} />
