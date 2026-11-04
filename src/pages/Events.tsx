@@ -724,13 +724,34 @@ const Events = () => {
       return true;
     });
   }, [sortedEvents, search, activeFilter]);
-  const availableTags = useMemo(() => availableEventTags(categoryEvents), [categoryEvents]);
-  const tagCounts = useMemo(() => countEventTags(categoryEvents, availableTags), [categoryEvents, availableTags]);
-  const durationCounts = useMemo(() => countEventDurations(categoryEvents), [categoryEvents]);
-  const bookingCounts = useMemo(() => countEventBooking(categoryEvents), [categoryEvents]);
-  const timeCounts = useMemo(() => countEventTimes(categoryEvents), [categoryEvents]);
-  const recurrenceCounts = useMemo(() => countEventRecurrence(categoryEvents), [categoryEvents]);
-  const priceCounts = useMemo(() => countEventPrices(categoryEvents), [categoryEvents]);
+  // Faceted counts: each drawer section is counted against every other active
+  // filter (but not its own), so only options that would still populate results show.
+  type Facet = "tag" | "price" | "duration" | "booking" | "recurrence" | "time";
+  const matchesRefinements = (e: any, skip?: Facet) =>
+    (skip === "tag" || !tagFilter || eventMatchesTag(e, tagFilter)) &&
+    (skip === "price" || eventMatchesPrice(e, priceFilter)) &&
+    (skip === "duration" || durationFilter === "all" || eventMatchesDuration(e, durationFilter)) &&
+    (skip === "booking" || bookingFilter === "any" || eventRequiresBooking(e) === (bookingFilter === "required")) &&
+    (skip === "recurrence" || eventMatchesRecurrence(e, recurrenceFilter)) &&
+    (skip === "time" || eventMatchesTime(e, timeFilter));
+  const facetDeps = [categoryEvents, tagFilter, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter];
+  const facet = (skip: Facet) => categoryEvents.filter((e) => matchesRefinements(e, skip));
+  const tagBase = useMemo(() => facet("tag"), facetDeps);
+  const availableTags = useMemo(() => {
+    const tags = availableEventTags(tagBase);
+    return tagFilter && !tags.includes(tagFilter) ? [...tags, tagFilter] : tags;
+  }, [tagBase, tagFilter]);
+  const tagCounts = useMemo(() => countEventTags(tagBase, availableTags), [tagBase, availableTags]);
+  const durationCounts = useMemo(() => countEventDurations(facet("duration")), facetDeps);
+  const bookingCounts = useMemo(() => countEventBooking(facet("booking")), facetDeps);
+  const timeCounts = useMemo(() => countEventTimes(facet("time")), facetDeps);
+  const recurrenceCounts = useMemo(() => countEventRecurrence(facet("recurrence")), facetDeps);
+  const priceCounts = useMemo(() => countEventPrices(facet("price")), facetDeps);
+  // Date pills count events that pass search and every drawer filter.
+  const pillEvents = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return sortedEvents.filter((e) => (!q || eventMatchesSearch(e, q)) && matchesRefinements(e));
+  }, [sortedEvents, search, tagFilter, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]);
 
   const filtered = useMemo(() => {
     let list = categoryEvents;
@@ -1078,9 +1099,9 @@ const Events = () => {
         {/* Date pills — hidden while a search term is active */}
         {!search.trim() && (
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
-            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
+            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, pillEvents)).map((f) => {
               const active = activeFilter === f.value;
-              const count = getFilterCount(f.value, sortedEvents);
+              const count = getFilterCount(f.value, pillEvents);
               return (
                 <button
                   key={f.value}
@@ -1360,10 +1381,10 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
         >
           <div>
-            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => (
+            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, pillEvents)).map((f) => (
               <RefineRectOption
                 key={f.value}
-                label={`${f.label} (${getFilterCount(f.value, sortedEvents)})`}
+                label={`${f.label} (${getFilterCount(f.value, pillEvents)})`}
                 active={activeFilter === f.value}
                 onClick={() => handleFilterPill(f.value)}
               />
