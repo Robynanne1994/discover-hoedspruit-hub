@@ -1,10 +1,11 @@
 /**
  * The quick-filter rows on the Explore categories page are short cards: a square
  * homepage crop beside a listing's title, its category names and its location.
- * Only the category names may take a second line, and only while nothing else
- * needs the room — a title or a location that already runs to two lines has used
- * it up. Both are measured from the rendered text, so the rule follows the real
- * width of the card rather than a guess at character counts.
+ * Only the category names may take a second line, and only while the card has
+ * room for it. A title or a location that already runs to two lines has used up
+ * some of that room, and the names are still given a second line unless both of
+ * them have. Both are measured from the rendered text, so the rule follows the
+ * real width of the card rather than a guess at character counts.
  */
 
 // Text sizes the row is built with, kept here so the card and this rule cannot
@@ -31,9 +32,10 @@ export const countTextLines = (
 };
 
 /**
- * The category names get a second line only when both the title and the location
- * have stayed on one. Text that is not there measures as a single line, so a
- * listing with no location still leaves the room.
+ * The category names get a second line unless the title and the location have
+ * both already used two. One of them on two lines still leaves room, and text
+ * that is not there measures as a single line, so a listing with no location
+ * still leaves the room too.
  */
 export const categoryLineBudget = (titleLines: number, locationLines: number): number =>
-  titleLines <= 1 && locationLines <= 1 ? 2 : 1;
+  titleLines + locationLines <= 2 ? 2 : 1;

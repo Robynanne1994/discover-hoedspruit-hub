@@ -48,12 +48,12 @@ describe("categoryLineBudget", () => {
     expect(categoryLineBudget(1, 1)).toBe(2);
   });
 
-  it("keeps the names on one line when the title has already used two", () => {
-    expect(categoryLineBudget(2, 1)).toBe(1);
+  it("gives the names a second line when only the location has used two", () => {
+    expect(categoryLineBudget(1, 2)).toBe(2);
   });
 
-  it("keeps the names on one line when the location has already used two", () => {
-    expect(categoryLineBudget(1, 2)).toBe(1);
+  it("gives the names a second line when only the title has used two", () => {
+    expect(categoryLineBudget(2, 1)).toBe(2);
   });
 
   it("keeps the names on one line when both have used two", () => {
