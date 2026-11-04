@@ -64,6 +64,13 @@ const C = {
   tag: "#e8e1d4",
 };
 
+const ROW_ICON = {
+  flexShrink: 0,
+  color: C.muted,
+  transform: "translateY(-2.5px)",
+} as const;
+
+
 type FilterType = "all" | "today" | "this-week" | "this-weekend" | "this-month" | "this-year" | "next-year" | "past";
 
 const NEXT_YEAR = new Date().getFullYear() + 1;
@@ -315,7 +322,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <Calendar size={12} strokeWidth={1.8} style={ROW_ICON} />
             <span
               style={{
                 display: "-webkit-box",
@@ -343,7 +350,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <Clock size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <Clock size={12} strokeWidth={1.8} style={ROW_ICON} />
             <span
               style={{
                 display: "-webkit-box",
@@ -371,7 +378,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <MapPin size={12} strokeWidth={1.8} style={ROW_ICON} />
             <span
               style={{
                 display: "-webkit-box",
