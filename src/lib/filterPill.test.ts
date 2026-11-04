@@ -22,3 +22,17 @@ describe("pillToggle", () => {
     expect(pillToggle("Morning", "Night", "any")).toBe("Night");
   });
 });
+
+describe("allPillActive", () => {
+  it("lights the All pill when nothing is narrowed", () => {
+    expect(allPillActive(false, false)).toBe(true);
+  });
+
+  it("keeps All plain while any filter is applied", () => {
+    expect(allPillActive(true, false)).toBe(false);
+  });
+
+  it("keeps All plain while a search term is typed", () => {
+    expect(allPillActive(false, true)).toBe(false);
+  });
+});

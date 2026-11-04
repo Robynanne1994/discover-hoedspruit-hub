@@ -453,7 +453,7 @@ const Specials = () => {
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: PAGE_PAD }}>
           <FilterPill
             label={`All (${totalCount})`}
-            active={activeTab === ALL_TAB}
+            active={allPillActive(filtersOn, !!search.trim()) && activeTab === ALL_TAB}
             onClick={() => handlePill(ALL_TAB)}
           />
           {(endingSoonCount > 0 || activeTab === ENDING_SOON_TAB) && (

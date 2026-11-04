@@ -1116,7 +1116,12 @@ const Events = () => {
         {!search.trim() && (
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
             {filtersWithEvents(FILTERS, (f) => (f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents))).map((f) => {
-              const active = activeFilter === f.value;
+              // "All" stays plain once anything is narrowed, so a lit pill always
+              // names the filter that is actually doing the work.
+              const active =
+                f.value === "all"
+                  ? allPillActive(filtersOn, !!search.trim())
+                  : activeFilter === f.value;
               const count = getFilterCount(f.value, pillEvents);
               return (
                 <button
