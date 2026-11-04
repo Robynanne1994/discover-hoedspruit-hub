@@ -6,3 +6,13 @@
  */
 export const pillToggle = <T>(current: T, clicked: T, defaultValue: T): T =>
   current === clicked && clicked !== defaultValue ? defaultValue : clicked;
+
+/**
+ * Whether a page's "All" pill should look chosen.
+ *
+ * "All" means nothing has been narrowed yet, so it lights only while every
+ * filter is off and no search term is typed. Once any filter is applied, "All"
+ * stays plain so the lit pill always names the filter actually doing the work.
+ */
+export const allPillActive = (filtersOn: boolean, searching = false): boolean =>
+  !filtersOn && !searching;

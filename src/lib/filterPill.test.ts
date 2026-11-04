@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { pillToggle } from "./filterPill.ts";
+import { allPillActive, pillToggle } from "./filterPill.ts";
 
 describe("pillToggle", () => {
   it("selects a pill that is not chosen yet", () => {
