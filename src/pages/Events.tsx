@@ -79,15 +79,14 @@ const FILTERS: { label: string; value: FilterType }[] = [
   { label: "Past Month", value: "past" },
 ];
 
-// Weekend = Saturday + Sunday of the current ISO week (Mon-start).
-// If today is Sat/Sun, weekend starts today; otherwise the upcoming Sat.
+// Weekend = Friday to Sunday (end of day) of the current Mon-start week.
+// Once the weekend has begun it runs from today, so earlier days never count.
 function getWeekendRange(today: Date): { start: Date; end: Date } {
   const day = today.getDay(); // 0 Sun .. 6 Sat
-  let start: Date;
-  if (day === 6) start = today; // Saturday
-  else if (day === 0) start = addDays(today, -1); // Sunday → Sat
-  else start = addDays(today, 6 - day); // upcoming Saturday
-  const end = addDays(start, 1); // Sunday
+  const sinceMonday = (day + 6) % 7; // Mon 0 .. Sun 6
+  const friday = addDays(today, 4 - sinceMonday);
+  const start = sinceMonday >= 4 ? today : friday;
+  const end = new Date(addDays(today, 6 - sinceMonday).setHours(23, 59, 59, 999));
   return { start, end };
 }
 
