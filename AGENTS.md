@@ -40,4 +40,4 @@
 - Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.
 - Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
 - Keep the one-day event weekday tag in eventDayLabel so listed event cards and their tests share one rule; multi-day runs and carousel cards stay untagged.
-- Keep the listed event card's row icons on the shared ROW_ICON constant so date, time and location nudge their icon identically; the icon centres on the text's cap band, not the line box, because this font's line height leaves the extra space below the baseline.
+- Keep the listed event card's row icons at ROW_ICON_SIZE, the height of the row's text box (13px text at 1.35 line height), so every icon's top and bottom sit exactly on the text box edges; all three rows share that constant.
