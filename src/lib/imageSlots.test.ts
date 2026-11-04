@@ -4,11 +4,10 @@ import {
   CATEGORY_CARD_GRID,
   DEFAULT_PREVIEW_WIDTH,
   gridCardWidth,
-  insetWidth,
   PREVIEW_VIEWPORTS,
   SAVED_CARD_GRID,
   shellWidth,
-  SPECIALS_CARD_GRID,
+  specialsSlideWidth,
 } from "./appLayout";
 import { CATEGORY_CARD_CHROME, DETAIL_HERO_CHROME, SAVED_CARD_CHROME } from "./cardChrome";
 import { CHANNEL_IMAGE_SLOTS, channelImageSlot } from "./channelImageSlots";
@@ -199,11 +198,16 @@ describe("the boxes the app paints", () => {
     // Specials.tsx — FeaturedCard paints the picture as the card's left column,
     // whose shape the slot reads from the same constants the card does.
     expect(specialImageSlot("featured").aspect).toBeCloseTo(FEATURED_PHOTO_RATIO);
-    // The crop box is that column: FEATURED_PHOTO_FRACTION of the card's width.
+    // The column measured on screen at 390pt: 110.6 × 148.6 CSS px, so three
+    // parts wide to four tall.
+    expect(specialImageSlot("featured").aspect).toBeCloseTo(110.6 / 148.6, 3);
+    expect(specialImageSlot("featured").aspectLabel).toBe("3:4");
+    // The crop box is that column: FEATURED_PHOTO_FRACTION of the slide's width,
+    // and the slide is the inset page less the rail's gap and its peek at the
+    // next card. Measured on screen at 390pt: slide 316px, column 110.59px.
     const featured = specialImageSlot("featured");
-    expect(slotBox(featured, 390).width).toBe(
-      Math.round(insetWidth(SPECIALS_CARD_GRID.pageInset, 390) * FEATURED_PHOTO_FRACTION)
-    );
+    expect(specialsSlideWidth(390)).toBe(316);
+    expect(slotBox(featured, 390).width).toBe(111);
   });
 
   it("rules the specials card at 37px and 205px down a 214px tile", () => {

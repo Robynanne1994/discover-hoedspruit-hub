@@ -18,9 +18,9 @@
 import {
   fullBleedWidth,
   gridCardWidth,
-  insetWidth,
   previewViewport,
   SAVED_CARD_GRID,
+  specialsSlideWidth,
   SPECIALS_CARD_GRID,
 } from "./appLayout";
 import {
@@ -36,11 +36,13 @@ import { findSlot, fixedBox, fixedGuides, ratioBox, type ImageSlot } from "./ima
  * The Top Active Deals card paints its picture as the card's left-hand column:
  * this fraction of the slide's width, as tall as the card. The card and the
  * editor's crop box both read these two numbers so the crop preview and the
- * live screen agree. Measured from the design: 109 × 121 CSS px on a 393pt
- * phone, so the box is a touch taller than it is wide.
+ * live screen agree. Measured on screen at 390pt: 110.6 × 148.6 CSS px, so the
+ * column runs three parts wide to four tall. The card's height follows its own
+ * text — a title that wraps adds a line and stretches the box — so the pair is
+ * taken from a one-line title, the shape every deal can reach.
  */
 export const FEATURED_PHOTO_FRACTION = 0.35;
-export const FEATURED_PHOTO_RATIO = 164 / 182;
+export const FEATURED_PHOTO_RATIO = 110.6 / 148.6;
 
 export type SpecialImageSlotKey = "card" | "detail" | "homepage" | "featured" | "saved" | "search";
 
@@ -131,13 +133,14 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     where: "The Top Active Deals carousel at the top of the Specials page.",
     // Specials.tsx — FeaturedCard paints the picture as the card's left column:
     // FEATURED_PHOTO_FRACTION of the slide's width and as tall as the card. The
-    // card's height follows its own text, so the box is the one measured from
-    // the design rather than an exact paint box; whichever edge the card's
-    // height differs by is the one `cover` trims.
+    // slide is the inset page less the rail's gap and peek (appLayout), and the
+    // card's height follows its own text, so the box is measured on a one-line
+    // title rather than an exact paint box; whichever edge the card's height
+    // differs by is the one `cover` trims.
     aspect: FEATURED_PHOTO_RATIO,
-    aspectLabel: "9:10",
+    aspectLabel: "3:4",
     box: ratioBox(
-      (v) => Math.round(insetWidth(SPECIALS_CARD_GRID.pageInset, v) * FEATURED_PHOTO_FRACTION),
+      (v) => Math.round(specialsSlideWidth(v) * FEATURED_PHOTO_FRACTION),
       FEATURED_PHOTO_RATIO,
     ),
     fallback: "Falls back to the card cover image.",

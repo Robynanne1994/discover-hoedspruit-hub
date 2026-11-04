@@ -14,7 +14,7 @@ import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
 import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
-import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
+import { SPECIALS_CARD_GRID, SPECIALS_SLIDE_GAP, SPECIALS_SLIDE_PEEK } from "@/lib/appLayout";
 import { dealCountLabel, isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
@@ -45,8 +45,8 @@ const COLOR = {
 };
 
 // Horizontal gap between featured slides, and how much of the next slide peeks in.
-const SLIDE_GAP = 12;
-const SLIDE_PEEK = 22;
+const SLIDE_GAP = SPECIALS_SLIDE_GAP;
+const SLIDE_PEEK = SPECIALS_SLIDE_PEEK;
 const PAGE_PAD = SPECIALS_CARD_GRID.pageInset;
 
 const ENDING_SOON_TAB = "__ending_soon__";

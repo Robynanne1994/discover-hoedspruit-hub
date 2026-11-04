@@ -87,3 +87,16 @@ export const fullBleedWidth = (viewport: number) => shellWidth(viewport);
 /** A page-inset block, e.g. the featured specials card inside its 20px gutters. */
 export const insetWidth = (pageInset: number, viewport: number) =>
   shellWidth(viewport) - pageInset * 2;
+
+/**
+ * The Top Active Deals rail on the Specials page: the gap between slides and
+ * the sliver of the next slide that peeks past the page gutter. Specials.tsx
+ * paints both, and a slide is what is left of the inset page once the pair is
+ * taken off — the featured card's picture column is a fraction of that.
+ */
+export const SPECIALS_SLIDE_GAP = 12;
+export const SPECIALS_SLIDE_PEEK = 22;
+
+/** One Top Active Deals slide at a given device width. */
+export const specialsSlideWidth = (viewport: number) =>
+  insetWidth(SPECIALS_CARD_GRID.pageInset, viewport) - (SPECIALS_SLIDE_GAP + SPECIALS_SLIDE_PEEK);
