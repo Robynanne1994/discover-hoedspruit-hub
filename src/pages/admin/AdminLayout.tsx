@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard,
