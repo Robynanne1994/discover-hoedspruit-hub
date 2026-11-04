@@ -9,7 +9,7 @@ import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
   Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
-  ReceiptText, NotebookPen, Copy, ChevronRight,
+  ReceiptText, NotebookPen, Copy, ChevronRight, TicketX,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -954,7 +954,17 @@ const EventDetail = () => {
   const renderBooking = () => (
     <div style={{ padding: "16px 20px 20px" }}>
       {!bookingRow ? (
-        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No booking details yet.</p>
+        <>
+          {sectionHeading("Booking Details")}
+          <div style={{ ...cardStyle, padding: "4px 20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 0" }}>
+              <TicketX size={18} strokeWidth={1.5} color={C.primary} />
+              <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading }}>
+                Booking is not required.
+              </div>
+            </div>
+          </div>
+        </>
       ) : (
         <>
           {sectionHeading("Booking Details")}
@@ -1276,7 +1286,7 @@ const EventDetail = () => {
               {hasAboutContent && <TabBtn k="about" label="About" />}
               <TabBtn k="details" label="Details" />
               {hasContactContent && <TabBtn k="contact" label="Contact" />}
-              {bookingRow && <TabBtn k="booking" label="Booking" />}
+              <TabBtn k="booking" label="Booking" />
               {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
               <TabBtn k="location" label="Location" />
             </nav>
@@ -1285,7 +1295,7 @@ const EventDetail = () => {
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
               {tab === "contact" && hasContactContent && renderContact()}
-              {tab === "booking" && bookingRow && renderBooking()}
+              {tab === "booking" && renderBooking()}
               {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
               {tab === "location" && renderLocation()}
             </section>
