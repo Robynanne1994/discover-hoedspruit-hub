@@ -11,12 +11,13 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
-import SpecialCountdownTag, { countdownTagWidth } from "@/components/specials/SpecialCountdownTag";
+import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
 import { isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
+import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
 import { pillToggle } from "@/lib/filterPill";
@@ -798,7 +799,9 @@ const FeaturedSection = ({
             className="scrollbar-hide"
             style={{
               display: "flex",
-               alignItems: "flex-start",
+              // Stretch, not flex-start: every slide takes the rail's height so
+              // the cards line up and each offer reads from the same foot line.
+              alignItems: "stretch",
               gap: SLIDE_GAP,
               overflowX: "auto",
               scrollSnapType: "x mandatory",
@@ -875,87 +878,116 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
         overflow: "hidden",
         cursor: "pointer",
         display: "flex",
-        flexDirection: "column",
+        alignItems: "stretch",
         boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+        height: "100%",
         width: "100%",
       }}
     >
-      {/* Image with the headline sitting on the gradient. The 3:2 box is what
-          makes every featured card the same height. */}
-      <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 2", flex: "0 0 auto", background: "#EEE8DA" }}>
+      {/* Photo — the card's left column, as tall as the card itself. The picture
+          is out of flow on purpose: as an in-flow child it would fall back to
+          the file's own ratio and set the rail's height on its own. */}
+      <div
+        style={{
+          position: "relative",
+          flex: `0 0 ${FEATURED_PHOTO_FRACTION * 100}%`,
+          background: "#EEE8DA",
+        }}
+      >
         {image && (
           <img
             src={image}
             alt={special.title}
             loading="lazy"
-            // Taken out of flow on purpose. As an in-flow child with
-            // height:100% inside an auto-height parent, the percentage has
-            // nothing to resolve against, so the browser falls back to the
-            // file's own intrinsic ratio and the wrapper grows to match it —
-            // the declared 3:2 is quietly ignored. A 4:3 source then made its
-            // card taller than the rest of the rail, and the shortest card was
-            // left with a white band under its value bar. (It only appeared
-            // once the image had actually decoded, which is why it showed on
-            // the live site but not on a freshly-loaded measurement.)
-            // Absolute positioning lets the wrapper keep its own height.
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              display: "block",
+            }}
           />
         )}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.42) 38%, rgba(0,0,0,0.06) 68%, rgba(0,0,0,0) 100%)",
-          }}
-        />
-        <SpecialBadgePill
-          special={special}
-          size="md"
-          style={{ position: "absolute", top: 12, left: 12, maxWidth: "calc(100% - 24px)" }}
-        />
-        {/* The headline block gives up room on the right while the countdown
-            tab is showing, so the two can never sit on top of each other. */}
-        <div
-          style={{
-            position: "absolute",
-            left: 16,
-            right: 16 + countdownTagWidth(special),
-            bottom: 14,
-          }}
-        >
-          <h3
-            {...noTitleCaseProps(special)}
-            style={{
-              ...type.overlayTitle,
-              color: "#FFFFFF",
-              margin: 0,
-            }}
-          >
-            {getDisplayTitle(special)}
-          </h3>
-          {meta && (
-            <div
-              style={{
-                fontFamily: SANS,
-                ...type.meta,
-                color: "rgba(255,255,255,0.80)",
-                marginTop: 4,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {meta}
-            </div>
-          )}
-        </div>
-
         <SpecialCountdownTag special={special} />
       </div>
 
-      {/* Value bar — money left, time right */}
-      <SpecialValueBar special={special} detail="full" padding="12px 16px" />
+      {/* Details — badge, headline and business, then the offer pinned to the
+          foot of the column so every card in the rail reads from the same line. */}
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          display: "flex",
+          flexDirection: "column",
+          padding: "10px 14px 8px 14px",
+        }}
+      >
+        <SpecialBadgePill
+          special={special}
+          size="sm"
+          style={{ alignSelf: "flex-start", maxWidth: "100%" }}
+        />
+        <h3
+          {...noTitleCaseProps(special)}
+          style={{
+            fontFamily: SANS,
+            ...type.cardTitleM,
+            lineHeight: 1.25,
+            letterSpacing: "-0.15px",
+            color: COLOR.ink,
+            margin: "6px 0 0 0",
+            overflowWrap: "break-word",
+          }}
+        >
+          <span
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {getDisplayTitle(special)}
+          </span>
+        </h3>
+        {meta && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "baseline",
+              gap: 5,
+              fontFamily: SANS,
+              ...type.meta,
+              lineHeight: 1.3,
+              color: COLOR.mutedInk,
+              marginTop: 4,
+              minWidth: 0,
+            }}
+          >
+            <Store
+              size={META_ICON_SIZE}
+              strokeWidth={1.8}
+              color={COLOR.mutedInk}
+              style={{ flexShrink: 0, transform: `translateY(${META_ICON_NUDGE})` }}
+            />
+            <span
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                overflowWrap: "break-word",
+              }}
+            >
+              {meta}
+            </span>
+          </div>
+        )}
+        <div style={{ marginTop: "auto" }}>
+          <SpecialValueBar special={special} detail="full" padding="4px 0 0 0" surface="plain" />
+        </div>
+      </div>
     </article>
   );
 };
