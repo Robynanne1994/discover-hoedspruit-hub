@@ -25,10 +25,11 @@
 - Render the full-width brown call-to-action pill through the shared ArrowCta so search's Discover More and the follow lists' Find People and Share Profile stay identical; wrap it in each page's own content column.
 - Keep the one-day special rule (start and end share a calendar day reads "1 Day Only", not "Last day") in specialValue's countdownLabel.
 - Keep specials Special Type option collection, matching and counts in specialKind so the drawer and results agree.
-- Render a rich-text line holding only links through listingRichText's link-stack so every link fills its own line in the same card; a sentence that merely contains a link stays inline.
+- Render a rich-text line of only links through listingRichText's link-stack; a sentence that merely contains a link stays inline.
 - Keep every event host on the event page inside one shared card with hairline dividers between rows, never one card per host, so the Hosted by block reads as a single list.
-- Keep a slot's subject-placement rulers in its own slot definition as rulerBandGuides, measured in the slot's own box px, so the crop tool and the thumbnail draw the same pair.
-- Measure crop guides from layout px (offsetWidth), never from getBoundingClientRect, so an edit dialog's zoom animation cannot leave every guide stuck at the animation's scale.
+- Keep a slot's subject rulers in its own definition as rulerBandGuides, in the slot's own box px, so crop tool and thumbnail draw the same pair.
+- Measure crop guides from layout px (offsetWidth), never getBoundingClientRect, so a dialog's zoom animation cannot leave guides stuck at its scale.
+- Keep the featured deal card's deal line in an accent-wash chip with its mark inside, plus a chevron at the panel's right edge.
 - Keep admin category rows unambiguous: the drag handle moves a category, the listings count opens its listings, the labelled Order button alone reaches the per-category order page.
 - Keep listing detail-row label casing in detailLabel's formatDetailLabel so the Details section and its tests share one rule; every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the first letter of the whole label.
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and rendered on the About tab under "Good to know", never as Details cards; a listing whose only detail was a custom row therefore has no Details tab.
