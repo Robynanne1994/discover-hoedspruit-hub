@@ -22,6 +22,7 @@ import {
   ShieldAlert,
   HelpCircle,
   Search as SearchIcon,
+  Star,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -31,6 +32,7 @@ const navItems = [
   
   { label: "Homepage", path: "/admin/homepage", icon: Home },
   { label: "Search Suggested", path: "/admin/search-suggested", icon: SearchIcon },
+  { label: "App Store", path: "/admin/app-store", icon: Star },
   { label: "Users", path: "/admin/users", icon: Users },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },

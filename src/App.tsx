@@ -33,6 +33,7 @@ import AdminFeaturedEventsOrder from "./pages/admin/AdminFeaturedEventsOrder.tsx
 import AdminEventHosts from "./pages/admin/AdminEventHosts.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
 import AdminSearchSuggested from "./pages/admin/AdminSearchSuggested.tsx";
+import AdminAppStore from "./pages/admin/AdminAppStore.tsx";
 import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
@@ -307,6 +308,7 @@ const App = () => (
                 <Route index element={<AdminDashboard />} />
                 <Route path="homepage" element={<AdminHomepage />} />
                 <Route path="search-suggested" element={<AdminSearchSuggested />} />
+                <Route path="app-store" element={<AdminAppStore />} />
                 <Route path="categories" element={<AdminCategories />} />
                 <Route path="categories/:id/order" element={<AdminCategoryOrder />} />
 

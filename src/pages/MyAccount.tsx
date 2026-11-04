@@ -65,7 +65,8 @@ import { toast } from "sonner";
 import { useShare } from "@/hooks/useShare";
 import { APP_DOWNLOAD_URL } from "@/lib/appLinks";
 
-import { APPLE_REVIEW_URL, openStoreReview } from "@/lib/storeReview";
+import { openStoreReview, storeReviewUrl } from "@/lib/storeReview";
+import { useStoreReviewLinks } from "@/hooks/useStoreReviewLinks";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { MUTED as TOKEN_MUTED, SECTION_INSET, type } from "@/lib/type";
 import {
@@ -614,7 +615,8 @@ const MyAccount = () => {
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             <PrimaryButton
               as="a"
-              href={APPLE_REVIEW_URL}
+              href={storeReviewUrl("apple", storeLinks) ?? ""}
+              style={{ textTransform: "none" }}
               target="_blank"
               rel="noopener noreferrer"
               fullWidth
@@ -626,7 +628,7 @@ const MyAccount = () => {
               type="button"
               onClick={() => {
                 setRateOpen(false);
-                if (!openStoreReview("android")) toast("Android rating link coming soon.");
+                if (!openStoreReview("android", storeLinks)) toast("Android rating link coming soon.");
               }}
               style={{
                 width: "100%",
