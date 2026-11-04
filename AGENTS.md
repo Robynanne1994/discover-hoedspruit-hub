@@ -32,3 +32,4 @@
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and rendered on the About tab under "Good to know", never as Details cards; a listing whose only detail was a custom row therefore has no Details tab.
 - Keep restaurant facility placement and boolean visibility in restaurantDetailFields so Summary, service, family and accessibility cards share testable rules without duplicate fields.
 - Keep the "Hoedspruit & Surrounds" area rule and maps-link resolution in locationDirections so the action bar and the Location tab on listings, events and specials all refuse directions for an area that has no address.
+- Keep the listing action bar's top-up rule (a bar left with only two tiles takes its next populated contact, email before the listing's own social pages, and never a link the bar already shows) in actionBarFill so the bar and its tests share one rule.

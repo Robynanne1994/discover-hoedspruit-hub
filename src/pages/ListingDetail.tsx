@@ -30,6 +30,7 @@ import { formatServiceLabel } from "@/lib/serviceLabels";
 import { formatDetailLabel } from "@/lib/detailLabel";
 import { restaurantDetailFields } from "@/lib/restaurantDetailFields";
 import { directionsHref as buildDirectionsHref, isSurroundsLocation } from "@/lib/locationDirections";
+import { fillActionBar } from "@/lib/actionBarFill";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
 import {
@@ -950,7 +951,7 @@ const ListingDetail = () => {
   // ----- Action buttons (fixed bar above the bottom nav) -----
   // The first action is always rendered as the primary (filled brown) button,
   // matching the events detail page.
-  const actions = [
+  const baseActions = [
     actionWhatsappClean && {
       key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${actionWhatsappClean}`,
       Icon: WhatsAppIcon, ext: true,
@@ -985,6 +986,23 @@ const ListingDetail = () => {
       return null;
     })(),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
+
+  // A bar that fell to two tiles — a surrounds area has no directions to offer —
+  // takes its next populated contact so the row reads as three. Email leads, then
+  // the listing's own social pages. A link the bar already shows is never added
+  // a second time, whatever label it sits under.
+  const actions = fillActionBar(baseActions, [
+    actionEmail
+      ? { key: "email", label: "Email", href: `mailto:${actionEmail}`, Icon: Mail, ext: false }
+      : null,
+    facebookLink
+      ? { key: "facebook", label: "Facebook", href: websiteHref(facebookLink), Icon: FacebookIcon, ext: true }
+      : null,
+    instagramLink
+      ? { key: "instagram", label: "Instagram", href: websiteHref(instagramLink), Icon: InstagramIcon, ext: true }
+      : null,
+  ]);
+
 
 
   // ----- Sub-components -----
