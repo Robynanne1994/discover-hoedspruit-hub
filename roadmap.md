@@ -48,4 +48,4 @@
 - [x] Verify the rulers sit at 47 and 164 on the live editor.
 - [x] Rule the event detail cover image slot with two rulers running across it at 59px and 324px down its 480x360 hero.
 - [x] Verify the rulers sit at 59 and 324 on the live editor with the hero chrome untouched.
-- [ ] Add restaurant Summary, reorganise facility cards and verify the displayed values without changing listing data.
+- [x] Add restaurant Summary, reorganise facility cards and verify the displayed values without changing listing data.
