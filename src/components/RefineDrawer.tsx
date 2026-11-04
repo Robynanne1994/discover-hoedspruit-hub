@@ -293,9 +293,10 @@ export const RefineSection = ({ label, open, onToggle, summary, onClear, childre
               border: "none",
               cursor: "pointer",
               textAlign: "left",
+              position: "relative",
             }}
           >
-            <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }} className={onClear ? "pr-12" : undefined}>
+            <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }} className={onClear ? "pr-12" : "pr-8"}>
               {label && (
                 <span
                   style={{
