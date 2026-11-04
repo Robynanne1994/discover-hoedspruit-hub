@@ -43,6 +43,7 @@ import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
 import {
   PILL_ICON_SIZE,
