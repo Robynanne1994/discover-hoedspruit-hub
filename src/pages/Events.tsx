@@ -1099,7 +1099,7 @@ const Events = () => {
         {/* Date pills — hidden while a search term is active */}
         {!search.trim() && (
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
-            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, pillEvents)).map((f) => {
+            {filtersWithEvents(FILTERS, (f) => (f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents))).map((f) => {
               const active = activeFilter === f.value;
               const count = getFilterCount(f.value, pillEvents);
               return (
@@ -1381,7 +1381,7 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "time" ? null : "time")}
         >
           <div>
-            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, pillEvents)).map((f) => (
+            {filtersWithEvents(FILTERS, (f) => (f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents))).map((f) => (
               <RefineRectOption
                 key={f.value}
                 label={`${f.label} (${getFilterCount(f.value, pillEvents)})`}
