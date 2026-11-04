@@ -784,8 +784,21 @@ const Events = () => {
   // Month groups, with Recurring collected into one section and next-year
   // events held below it.
   const groupedEvents = useMemo(
-    () => buildEventGroups(filtered, activeFilter),
-    [filtered, activeFilter]
+    () =>
+      buildEventGroups(
+        filtered,
+        activeFilter,
+        hasActiveEventFilters({
+          dateFilter: activeFilter,
+          tagFilter,
+          priceFilter,
+          durationFilter,
+          bookingFilter,
+          recurrenceFilter,
+          timeFilter,
+        })
+      ),
+    [filtered, activeFilter, tagFilter, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]
   );
 
   // Happening Soon — soonest dated events, excluding recurring ones
