@@ -1276,6 +1276,7 @@ const EventDetail = () => {
               {hasAboutContent && <TabBtn k="about" label="About" />}
               <TabBtn k="details" label="Details" />
               {hasContactContent && <TabBtn k="contact" label="Contact" />}
+              {bookingRow && <TabBtn k="booking" label="Booking" />}
               {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
               <TabBtn k="location" label="Location" />
             </nav>
@@ -1284,6 +1285,7 @@ const EventDetail = () => {
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
               {tab === "contact" && hasContactContent && renderContact()}
+              {tab === "booking" && bookingRow && renderBooking()}
               {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
               {tab === "location" && renderLocation()}
             </section>
