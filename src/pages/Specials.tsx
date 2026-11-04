@@ -24,7 +24,7 @@ import { pillToggle } from "@/lib/filterPill";
 import { compareSpecialDefault } from "@/lib/specialOrder";
 import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
-import { PILL_ICON_SIZE, PILL_ICON_NUDGE } from "@/lib/pillIcon";
+import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -51,6 +51,8 @@ const ENDING_SOON_TAB = "__ending_soon__";
 const UPCOMING_TAB = "__upcoming__";
 const ONGOING_TAB = "__ongoing__";
 const ALL_TAB = "All Specials";
+// One height for every pill in the filters row, matching the Events page.
+const PILL_HEIGHT = 29;
 
 // The top pill row and the drawer's Validity section are one axis: picking a
 // validity lights the matching top pill, and picking one there lights it here.
@@ -102,6 +104,7 @@ const Specials = () => {
   const [kindFilter, setKindFilter] = useState<string>(persisted?.kindFilter ?? "");
   const [activeTab, setActiveTab] = useState<string>(persisted?.activeTab ?? ALL_TAB);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const filterBarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (searchOpen) searchInputRef.current?.focus();
@@ -146,11 +149,22 @@ const Specials = () => {
   }, [specials]);
 
 
-  // Counts per category tag, respecting search but not active category/filterType
+  // Drawer refinements (not the pill), so pill counts only promise results
+  // that would actually show with the other filters still on.
+  const matchesDrawer = (s: any) => {
+    if (filterType.length > 0) {
+      const lcCats = collectSpecialTags(s).map((c) => tagKey(c));
+      if (!filterType.some((x) => lcCats.includes(tagKey(x)))) return false;
+    }
+    return specialMatchesBooking(s, bookingFilter) && specialMatchesType(s, specialTypeFilter) && specialMatchesKind(s as any, kindFilter);
+  };
+
+  // Counts per category tag, respecting search and drawer refinements
   const categoryCounts = useMemo(() => {
     if (!specials) return new Map<string, number>();
     const q = search.trim().toLowerCase();
     const matching = specials.filter((s) => {
+      if (!matchesDrawer(s)) return false;
       if (!q) return true;
       return Boolean(
           (s.title && s.title.toLowerCase().includes(q)) ||
@@ -162,7 +176,8 @@ const Specials = () => {
       ...categoryTabs.filter((tab) => tab !== ALL_TAB),
       ...drawerCategoryTabs.filter((tab) => tab !== ALL_TAB),
     ]));
-  }, [specials, search, categoryTabs, drawerCategoryTabs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [specials, search, categoryTabs, drawerCategoryTabs, filterType, bookingFilter, specialTypeFilter, kindFilter]);
 
   // Validity totals for the top pills and the drawer's Validity section —
   // search-aware, category-agnostic, and an exact three-way split of the page.
@@ -174,6 +189,7 @@ const Specials = () => {
     let upcoming = 0;
     let ongoing = 0;
     for (const s of specials as any[]) {
+      if (!matchesDrawer(s)) continue;
       if (q) {
         const hit =
           (s.title && s.title.toLowerCase().includes(q)) ||
@@ -187,7 +203,8 @@ const Specials = () => {
       else ongoing += 1;
     }
     return { totalCount: total, endingSoonCount: soon, upcomingCount: upcoming, ongoingCount: ongoing };
-  }, [specials, search]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [specials, search, filterType, bookingFilter, specialTypeFilter, kindFilter]);
 
 
   const categorySpecials = useMemo(() => {
@@ -280,6 +297,44 @@ const Specials = () => {
   const rest = useMemo(() => filteredSpecials.filter((s) => !s.is_featured || isUpcomingSpecial(s)), [filteredSpecials]);
 
 
+  // Active filters, one removable chip each; sort only reorders so never counts.
+  const tabLabel = (tab: string) =>
+    tab === ENDING_SOON_TAB ? "Ending Soon" : tab === UPCOMING_TAB ? "Upcoming" : tab === ONGOING_TAB ? "Ongoing" : tab;
+  const appliedChips: { key: string; label: string; onRemove: () => void }[] = [];
+  if (activeTab !== ALL_TAB) appliedChips.push({ key: "tab", label: tabLabel(activeTab), onRemove: () => setActiveTab(ALL_TAB) });
+  filterType.forEach((t) => appliedChips.push({ key: `cat-${t}`, label: t, onRemove: () => setFilterType((prev) => prev.filter((v) => v !== t)) }));
+  if (bookingFilter !== "any")
+    appliedChips.push({ key: "booking", label: SPECIAL_BOOKING_OPTIONS.find((o) => o.key === bookingFilter)?.label ?? String(bookingFilter), onRemove: () => setBookingFilter("any") });
+  if (specialTypeFilter !== "any")
+    appliedChips.push({ key: "type", label: SPECIAL_TYPE_OPTIONS.find((o) => o.key === specialTypeFilter)?.label ?? String(specialTypeFilter), onRemove: () => setSpecialTypeFilter("any") });
+  if (kindFilter) appliedChips.push({ key: "kind", label: kindFilter, onRemove: () => setKindFilter("") });
+  const activeFilterCount = appliedChips.length;
+  const filtersOn = activeFilterCount > 0;
+  // One filter names the results; more than one reads plain "Specials".
+  const listHeading = !filtersOn
+    ? featured.length > 0 ? "Everything Else" : "All Deals"
+    : activeFilterCount === 1 && !search.trim()
+      ? /(specials|deals)$/i.test(appliedChips[0].label) ? appliedChips[0].label : `${appliedChips[0].label} Specials`
+      : "Specials";
+  const listItems = filtersOn ? filteredSpecials : rest;
+
+  const clearAllFilters = () => {
+    setFilterType([]);
+    setActiveTab(ALL_TAB);
+    setSortBy("default");
+    setBookingFilter("any");
+    setSpecialTypeFilter("any");
+    setKindFilter("");
+    setOpenSection(null);
+  };
+
+  // Picking a pill returns to the top with Filters and its count first in view.
+  const handlePill = (tab: string) => {
+    setActiveTab(activeTab === tab ? ALL_TAB : tab);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
+  };
+
   const toggleFilter = (val: string) => {
     setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
   };
@@ -351,30 +406,6 @@ const Specials = () => {
             >
               {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
             </button>
-            <button
-              aria-label="FILTER & SORT"
-              onClick={() => { setOpenSection(null); setShowFilters(true); }}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 999,
-                background:
-                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any" || kindFilter !== ""
-                    ? "#423324"
-                    : "#FFFFFF",
-                border: "1px solid rgba(0,0,0,0.06)",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                color:
-                  activeTab !== ALL_TAB || filterType.length > 0 || sortBy !== "default" || bookingFilter !== "any" || specialTypeFilter !== "any" || kindFilter !== ""
-                    ? "#FFFFFF"
-                    : "#1A1A1A",
-              }}
-            >
-              <SlidersHorizontal size={18} strokeWidth={1.8} />
-            </button>
           </>
         }
       />
@@ -393,55 +424,86 @@ const Specials = () => {
         </div>
       )}
 
-      {/* Category pills */}
+      {/* Filters button, divider, Clear All, then the pills, which scroll to the screen edge */}
       <div
-        style={{
-          marginTop: 16,
-          paddingLeft: PAGE_PAD,
-          paddingRight: PAGE_PAD,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-        }}
+        ref={filterBarRef}
         className="scrollbar-hide"
+        style={{ marginTop: 16, paddingLeft: PAGE_PAD, paddingTop: 4, paddingBottom: 4, display: "flex", alignItems: "center", gap: 8, overflowX: "auto", scrollbarWidth: "none" }}
       >
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button
+            aria-label="Filters and sort"
+            aria-haspopup="dialog"
+            onClick={() => { setOpenSection(null); setShowFilters(true); }}
+            style={{ background: "#FFFFFF", border: "1px solid rgba(26,26,26,0.08)", borderRadius: 999, height: PILL_HEIGHT, padding: "7px 12px 7px 14px", cursor: "pointer", fontFamily: SANS, ...tabStyle(false), lineHeight: 1, color: "#1A1A1A", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            <SlidersHorizontal size={PILL_ICON_SIZE} strokeWidth={1.9} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+            Filters
+            {activeFilterCount > 0 && (
+              <span
+                aria-label={`${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"} applied`}
+                style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", minWidth: PILL_BADGE_SIZE, height: PILL_BADGE_SIZE, padding: "0 4px", borderRadius: 999, background: "#423324", color: "#FFFFFF", fontFamily: SANS, fontSize: 10, fontWeight: 700, lineHeight: 1, letterSpacing: 0 }}
+              >
+                <span style={{ display: "block", transform: `translateY(${PILL_BADGE_NUDGE})` }}>{activeFilterCount}</span>
+              </span>
+            )}
+          </button>
+          <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />
+          {filtersOn && (
+            <button onClick={clearAllFilters} style={{ background: "transparent", border: "1.5px solid #423324", borderRadius: 999, height: PILL_HEIGHT, padding: "6.5px 12px", cursor: "pointer", fontFamily: SANS, ...tabStyle(false), lineHeight: 1, color: "#423324", whiteSpace: "nowrap", flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+              Clear All
+            </button>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: PAGE_PAD }}>
           <FilterPill
             label={`All (${totalCount})`}
             active={activeTab === ALL_TAB}
-            onClick={() => setActiveTab(ALL_TAB)}
+            onClick={() => handlePill(ALL_TAB)}
           />
-          {endingSoonCount > 0 && (
+          {(endingSoonCount > 0 || activeTab === ENDING_SOON_TAB) && (
             <FilterPill
               label={`Ending Soon (${endingSoonCount})`}
               icon={<Clock size={PILL_ICON_SIZE} strokeWidth={2} />}
               accent
               active={activeTab === ENDING_SOON_TAB}
-              onClick={() =>
-                setActiveTab(activeTab === ENDING_SOON_TAB ? ALL_TAB : ENDING_SOON_TAB)
-              }
+              onClick={() => handlePill(ENDING_SOON_TAB)}
             />
           )}
-          {upcomingCount > 0 && (
+          {(upcomingCount > 0 || activeTab === UPCOMING_TAB) && (
             <FilterPill
               label={`Upcoming (${upcomingCount})`}
               icon={<Clock size={PILL_ICON_SIZE} strokeWidth={2} />}
               active={activeTab === UPCOMING_TAB}
-              onClick={() => setActiveTab(activeTab === UPCOMING_TAB ? ALL_TAB : UPCOMING_TAB)}
+              onClick={() => handlePill(UPCOMING_TAB)}
             />
           )}
           {categoryTabs
-            .filter((tab) => tab !== ALL_TAB && (categoryCounts.get(tab) || 0) > 0)
+            .filter((tab) => tab !== ALL_TAB && ((categoryCounts.get(tab) || 0) > 0 || activeTab === tab))
             .map((tab) => (
               <FilterPill
                 key={tab}
                 label={`${tab} (${categoryCounts.get(tab) || 0})`}
                 icon={tabIcon(tab)}
                 active={activeTab === tab}
-                onClick={() => setActiveTab(activeTab === tab ? ALL_TAB : tab)}
+                onClick={() => handlePill(tab)}
               />
             ))}
         </div>
       </div>
+
+      {/* Applied filters, one removable chip each */}
+      {appliedChips.length > 0 && (
+        <div className="scrollbar-hide" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "6px 20px 4px" }}>
+          {appliedChips.map((chip) => (
+            <button key={chip.key} onClick={chip.onRemove} aria-label={`Remove ${chip.label} filter`} style={{ background: "transparent", border: "1.5px solid #423324", borderRadius: 999, height: PILL_HEIGHT, padding: "6.5px 12px", cursor: "pointer", fontFamily: SANS, ...tabStyle(false), lineHeight: 1, color: "#423324", whiteSpace: "nowrap", flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Content */}
       <div style={{ padding: "20px 20px 0 20px" }}>
@@ -456,18 +518,19 @@ const Specials = () => {
           </div>
         ) : filteredSpecials.length > 0 ? (
           <>
-            {featured.length > 0 && (
+            {!filtersOn && featured.length > 0 && (
               <FeaturedSection items={featured} onSelect={(s) => navigate(`/specials/${s.id}`)} />
             )}
 
-            {rest.length > 0 && (
+            {listItems.length > 0 && (
               <>
                 <SectionHead
-                  label={activeTab === UPCOMING_TAB ? "Upcoming" : featured.length > 0 ? "Everything Else" : "All Deals"}
-                  right={dealCountLabel(rest.length)}
+                  label={listHeading}
+                  right={dealCountLabel(listItems.length)}
+                  hairline={!filtersOn}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-                  {rest.map((s: any) => (
+                  {listItems.map((s: any) => (
                     <DealCard key={s.id} special={s} onClick={() => navigate(`/specials/${s.id}`)} />
                   ))}
                 </div>
@@ -497,15 +560,7 @@ const Specials = () => {
       <RefineDrawer
         open={showFilters}
         onClose={() => setShowFilters(false)}
-        onClear={() => {
-          setFilterType([]);
-          setActiveTab(ALL_TAB);
-          setSortBy("default");
-          setBookingFilter("any");
-          setSpecialTypeFilter("any");
-          setSearch("");
-          setOpenSection(null);
-        }}
+        onClear={clearAllFilters}
         resultsCount={filteredSpecials.length}
         resultsLabel="specials"
       >
@@ -679,6 +734,7 @@ const FilterPill = ({
       background: active ? COLOR.pillActiveBg : COLOR.pillInactiveBg,
       border: `1px solid ${active ? COLOR.pillActiveBg : accent ? "rgba(192,57,43,0.28)" : "rgba(26,26,26,0.08)"}`,
       borderRadius: 999,
+      height: PILL_HEIGHT,
       padding: "7px 14px",
       cursor: "pointer",
       fontFamily: SANS,
