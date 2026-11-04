@@ -1001,7 +1001,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
                 size={OFFER_ICON_SIZE}
                 strokeWidth={1.8}
                 color={COLOR.mutedInk}
-                style={{ flexShrink: 0, transform: `translateY(${META_ICON_NUDGE})` }}
+                style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
               />
             }
           />
@@ -1028,9 +1028,12 @@ const META_ICON_NUDGE = "0.5px";
 // The featured card's offer line is set larger than the business row, so its
 // mark grows with it and keeps the relationship the business row has: measured
 // on screen, an 11.4px box draws 10px of ink, exactly the height of the capital
-// letters and figures it sits against. The row's baseline alignment plus the
-// same half-pixel nudge then holds its foot on the text's foot.
+// letters and figures it sits against.
 const OFFER_ICON_SIZE = 11.4;
+// Baseline alignment lands this larger mark a touch high against its line, so it
+// comes back down by the measured pixel and a half — its foot then sits on the
+// foot of the figures beside it, as the business row's mark does on its own line.
+const OFFER_ICON_NUDGE = "1.5px";
 
 
 const DEAL_TITLE_LINES_2 = 38;
