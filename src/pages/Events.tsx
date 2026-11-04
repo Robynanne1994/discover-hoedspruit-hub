@@ -38,7 +38,7 @@ import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch
 import { buildEventGroups } from "@/lib/eventGroups";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import { oneDayDateLine } from "@/lib/eventDayLabel";
+import { oneDayDateLine, shortWeekday } from "@/lib/eventDayLabel";
 import { compareFeaturedEvents } from "@/lib/featuredEventOrder";
 import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
@@ -439,7 +439,7 @@ const PosterCard = ({ event }: { event: any }) => {
 
   const month = d ? format(d, "MMM") : "";
   const day = d ? format(d, "d") : "";
-  const weekday = d ? format(d, "EEE").toUpperCase() : "";
+  const weekday = d ? shortWeekday(d) : "";
   let timeLabel = "";
   const st = event.start_time && String(event.start_time).trim() ? String(event.start_time).slice(0, 5) : null;
   if (d && st) {
@@ -449,7 +449,9 @@ const PosterCard = ({ event }: { event: any }) => {
       timeLabel = st;
     }
   }
-  const eyebrow = [weekday, day, month].filter(Boolean).join(" ") + (timeLabel ? ` \u2022 ${timeLabel}` : "");
+  const dateText = [day, month].filter(Boolean).join(" ");
+  const eyebrow =
+    (weekday ? `${dateText} (${weekday})` : dateText) + (timeLabel ? ` \u2022 ${timeLabel}` : "");
 
 
   return (
