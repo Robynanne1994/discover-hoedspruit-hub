@@ -44,7 +44,7 @@ import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { pillToggle } from "@/lib/filterPill";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
-import { PILL_ICON_SIZE, PILL_ICON_NUDGE } from "@/lib/pillIcon";
+import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
 
 // One height for every pill in the filters row — the Filters button, Clear all
 // and the date pills — so none of them can sit a hair taller than its neighbours.
@@ -992,8 +992,8 @@ const Events = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  minWidth: 15,
-                  height: 15,
+                  minWidth: PILL_BADGE_SIZE,
+                  height: PILL_BADGE_SIZE,
                   padding: "0 4px",
                   borderRadius: 999,
                   background: "#423324",
@@ -1005,7 +1005,11 @@ const Events = () => {
                   letterSpacing: 0,
                 }}
               >
-                {activeFilterCount}
+                {/* The digit's ink is shorter than the line box it is centred
+                    in, so it rides high in the disc without this lift. */}
+                <span style={{ display: "block", transform: `translateY(${PILL_BADGE_NUDGE})` }}>
+                  {activeFilterCount}
+                </span>
               </span>
             )}
           </button>
