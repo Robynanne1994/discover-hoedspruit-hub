@@ -30,7 +30,7 @@ import {
   type DurationFilter,
   type BookingFilter,
 } from "@/lib/eventDuration";
-import { isRecentPast, pastAwareSort } from "@/lib/eventPastWindow";
+import { isRecentPast, defaultEventSort, effectiveEventSort } from "@/lib/eventPastWindow";
 import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventRecurrence, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { PRICE_OPTIONS, countEventPrices, eventMatchesPrice, type PriceFilter } from "@/lib/eventPrice";
@@ -565,11 +565,12 @@ const Events = () => {
   const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc", "duration-asc", "duration-desc"] as const;
   type SortType = typeof validSorts[number];
   const urlSort = searchParams.get("s") as SortType | null;
-  const sortBy: SortType = urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : "date-asc";
-  // The Past list reads newest first unless a sort was chosen by hand, so the
-  // order the page actually shows is settled here once and used everywhere.
-  const defaultSort: SortType = pastAwareSort(activeFilter, "date-asc", "date-asc", "date-desc");
-  const effectiveSort: SortType = pastAwareSort(activeFilter, sortBy, "date-asc", "date-desc");
+  const chosenSort: SortType | null =
+    urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : null;
+  // The Past list reads newest first unless a sort was written into the address,
+  // so the order the page actually shows is settled here once and used everywhere.
+  const defaultSort: SortType = defaultEventSort(activeFilter, "date-asc", "date-desc");
+  const effectiveSort: SortType = effectiveEventSort(activeFilter, chosenSort, "date-asc", "date-desc");
   const filterBarRef = useRef<HTMLDivElement | null>(null);
   const activePillRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {

@@ -21,15 +21,27 @@ export function isRecentPast(d: Date | null | undefined, today: Date = startOfTo
 }
 
 /**
- * The past list reads newest first: the event that finished most recently leads.
- * That is only its default order, so a sort chosen by hand still wins —
- * `defaultSort` is the value the page carries when nothing has been chosen.
+ * The order a list falls back to when nothing has been chosen. The past list
+ * reads newest first — the event that finished most recently leads — while
+ * every other list keeps soonest first.
  */
-export function pastAwareSort<S extends string>(
+export function defaultEventSort<S extends string>(
   activeFilter: string,
-  sortBy: S,
-  defaultSort: S,
+  soonestFirstSort: S,
   newestFirstSort: S,
 ): S {
-  return activeFilter === "past" && sortBy === defaultSort ? newestFirstSort : sortBy;
+  return activeFilter === "past" ? newestFirstSort : soonestFirstSort;
+}
+
+/**
+ * A sort written into the address always wins; otherwise the view's own default
+ * applies, so the past list can still be read oldest first on request.
+ */
+export function effectiveEventSort<S extends string>(
+  activeFilter: string,
+  chosenSort: S | null,
+  soonestFirstSort: S,
+  newestFirstSort: S,
+): S {
+  return chosenSort ?? defaultEventSort(activeFilter, soonestFirstSort, newestFirstSort);
 }
