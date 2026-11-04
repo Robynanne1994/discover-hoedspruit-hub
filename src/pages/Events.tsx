@@ -922,54 +922,155 @@ const Events = () => {
         </div>
       )}
 
-      {/* Filter pills — hidden while a search term is active */}
-      {!search.trim() && (
-        <div
-          ref={filterBarRef}
-          style={{
-            marginTop: 16,
-            paddingLeft: 20,
-            paddingRight: 20,
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-            overflowX: "auto",
-            scrollbarWidth: "none",
-          }}
-          className="scrollbar-hide"
-        >
-          {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
-            const active = activeFilter === f.value;
-            const count = getFilterCount(f.value, sortedEvents);
-            return (
-              <button
-                key={f.value}
-                ref={active ? activePillRef : undefined}
-                onClick={() => handleFilterPill(f.value)}
+      {/* Filters button, inline at the head of the pill row. It opens the same
+          drawer the header button used to, and wears a count of the filters
+          currently on. The button, its divider and Clear all hold their place
+          at the left while the date pills scroll past them. */}
+      <div
+        style={{
+          marginTop: 16,
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button
+            aria-label="Filters and sort"
+            aria-haspopup="dialog"
+            onClick={() => setRefineOpen(true)}
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(26,26,26,0.08)",
+              borderRadius: 999,
+              padding: "7px 12px 7px 14px",
+              cursor: "pointer",
+              ...tabStyle(false),
+              lineHeight: 1,
+              color: "#1A1A1A",
+              whiteSpace: "nowrap",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <SlidersHorizontal
+              size={PILL_ICON_SIZE}
+              strokeWidth={1.9}
+              style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
+            />
+            Filters
+            {activeFilterCount > 0 && (
+              <span
+                aria-label={`${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"} applied`}
                 style={{
-                  background: active ? "#423324" : "#FFFFFF",
-                  border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
-                  borderRadius: 999,
-                  padding: "7px 14px",
-                  cursor: "pointer",
-                  ...tabStyle(active),
-                  lineHeight: 1,
-                  color: active ? "#FFFFFF" : "#1A1A1A",
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
                   display: "inline-flex",
                   alignItems: "center",
-                  gap: 6,
+                  justifyContent: "center",
+                  height: 13,
+                  padding: "0 5px",
+                  borderRadius: 999,
+                  background: "#423324",
+                  color: "#FFFFFF",
+                  fontFamily: SANS,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  lineHeight: 1,
+                  letterSpacing: 0,
                 }}
               >
-                {f.label} ({count})
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
 
-              </button>
-            );
-          })}
+          {filtersOn && (
+            <button
+              onClick={clearAllFilters}
+              style={{
+                background: "transparent",
+                border: "1.5px solid #423324",
+                borderRadius: 999,
+                padding: "6.5px 12px",
+                cursor: "pointer",
+                ...tabStyle(false),
+                lineHeight: 1,
+                color: "#423324",
+                whiteSpace: "nowrap",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <X
+                size={PILL_ICON_SIZE}
+                strokeWidth={2}
+                style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
+              />
+              Clear all
+            </button>
+          )}
+
+          {/* Hairline between the filters controls and the date pills. */}
+          {!search.trim() && (
+            <span
+              aria-hidden="true"
+              style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }}
+            />
+          )}
         </div>
-      )}
-      {search.trim() && <div style={{ height: 20 }} />}
+
+        {/* Date pills — hidden while a search term is active */}
+        {!search.trim() && (
+          <div
+            ref={filterBarRef}
+            className="scrollbar-hide"
+            style={{
+              // The active pill is scrolled into view by offsetLeft, which is
+              // only measured against this box once it is the pills' container.
+              position: "relative",
+              display: "flex",
+              gap: 8,
+              alignItems: "center",
+              overflowX: "auto",
+              scrollbarWidth: "none",
+              flex: 1,
+              minWidth: 0,
+            }}
+          >
+            {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
+              const active = activeFilter === f.value;
+              const count = getFilterCount(f.value, sortedEvents);
+              return (
+                <button
+                  key={f.value}
+                  ref={active ? activePillRef : undefined}
+                  onClick={() => handleFilterPill(f.value)}
+                  style={{
+                    background: active ? "#423324" : "#FFFFFF",
+                    border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
+                    borderRadius: 999,
+                    padding: "7px 14px",
+                    cursor: "pointer",
+                    ...tabStyle(active),
+                    lineHeight: 1,
+                    color: active ? "#FFFFFF" : "#1A1A1A",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  {f.label} ({count})
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Featured Events */}
       {!search.trim() && activeFilter === "all" && !tagFilter && featuredEvents.length > 0 && (
