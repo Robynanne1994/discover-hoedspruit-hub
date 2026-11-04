@@ -26,8 +26,8 @@ export const specialPillIcon = (tab: string) => {
   if (t.includes("restaurant") || t.includes("food") || t.includes("café") || t.includes("cafe")) return mark(UtensilsCrossed);
   if (t.includes("accommodation") || t.includes("stay") || t.includes("lodge") || t.includes("hotel")) return mark(Bed);
   if (t.includes("beauty") || t.includes("nail") || t.includes("salon") || t.includes("hair")) return mark(Sparkles);
-  if (t.includes("couples") || t.includes("romance") || t.includes("honeymoon")) return mark(Heart);
-  if (t.includes("health") || t.includes("medical") || t.includes("clinic") || t.includes("pharmacy")) return mark(HeartPulse);
+  if (t.includes("couple") || t.includes("romance") || t.includes("honeymoon")) return mark(Heart);
+  if (t.includes("health") || t.includes("medical") || t.includes("clinic") || t.includes("pharmac")) return mark(HeartPulse);
   if (t.includes("game drive") || t.includes("safari") || t.includes("wildlife")) return mark(Car);
   if (t.includes("wellness") || t.includes("spa") || t.includes("massage") || t.includes("yoga")) return mark(Leaf);
   if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return mark(Compass);
