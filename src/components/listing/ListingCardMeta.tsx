@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
-import { getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours, type HoursMap } from "@/lib/openHours";
+import { formatClock12, getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours, type HoursMap } from "@/lib/openHours";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
