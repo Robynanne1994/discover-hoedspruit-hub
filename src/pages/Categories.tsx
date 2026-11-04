@@ -1,3 +1,4 @@
+import { categoryMatchesTerm, rankSmartResults } from "@/lib/smartSearch";
 import { useState, useMemo, useLayoutEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, MapPin, AlertTriangle, Phone, Siren, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X, Tag } from "lucide-react";
@@ -463,7 +464,7 @@ const Categories = () => {
   const matchingCategoryIds = useMemo(() => {
     if (!categories || !debouncedSearch) return [];
     const q = debouncedSearch.toLowerCase();
-    return categories.filter((c) => c.title.toLowerCase().includes(q)).map((c) => c.id);
+    return categories.filter((c) => categoryMatchesTerm(q, c.title)).map((c) => c.id);
   }, [categories, debouncedSearch]);
 
   const { data: searchedListings } = useQuery({
@@ -497,7 +498,6 @@ const Categories = () => {
       if (titleRes.error) throw titleRes.error;
 
       const map = new Map<string, any>();
-      (titleRes.data || []).forEach((l) => map.set(l.id, l));
       (catRes?.data || []).forEach((l) => map.set(l.id, l));
 
       const junctionIds = (juncRes?.data || []).map((r: any) => r.listing_id).filter(Boolean);
@@ -509,8 +509,9 @@ const Categories = () => {
           .in("id", missingIds);
         (extra || []).forEach((l) => map.set(l.id, l));
       }
-      // Featured listings head up the results, whatever they matched on.
-      return pinFeatured(Array.from(map.values())).slice(0, 30);
+      // Title matches lead (featured first), then category matches.
+      const titled = pinFeatured(titleRes.data || []);
+      return rankSmartResults(titled, pinFeatured(Array.from(map.values()))).slice(0, 40);
     },
     enabled: debouncedSearch.length >= 2,
   });
@@ -519,7 +520,7 @@ const Categories = () => {
     if (!categories) return [];
     if (!debouncedSearch) return categories;
     const q = debouncedSearch.toLowerCase();
-    return categories.filter((c) => c.title.toLowerCase().includes(q));
+    return categories.filter((c) => categoryMatchesTerm(q, c.title));
   }, [categories, debouncedSearch]);
 
   const hasSearch = debouncedSearch.length >= 2;

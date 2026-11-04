@@ -51,3 +51,4 @@
 - Keep pill icons and the filter-count digit on the pillIcon constants; keep the listed event card's three rows on one shared set in Events.tsx (ROW_FONT_SIZE, ROW_LINE_HEIGHT, ROW_GAP, ROW_ICON_SIZE, ROW_GLYPH_SIZE).
 - Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
 - Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.
+- Keep search's category matching and title-first ranking in smartSearch so the home search and Explore search agree.
