@@ -951,6 +951,49 @@ const EventDetail = () => {
     </div>
   );
 
+  const renderBooking = () => (
+    <div style={{ padding: "16px 20px 20px" }}>
+      {!bookingRow ? (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No booking details yet.</p>
+      ) : (
+        <>
+          {sectionHeading("Booking Details")}
+          <div style={{ ...cardStyle, padding: "4px 20px" }}>
+            {(() => {
+              const r = bookingRow;
+              const inner = (
+                <>
+                  <r.Icon size={18} strokeWidth={1.5} color={r.disabled ? C.muted : C.primary} />
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: r.disabled ? C.muted : C.heading, wordBreak: "break-word" }}>
+                    <div style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>
+                      {r.label}
+                    </div>
+                    {r.value}
+                  </div>
+                  {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                </>
+              );
+              const style: React.CSSProperties = {
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "14px 0", textDecoration: "none",
+                opacity: r.disabled ? 0.5 : 1,
+              };
+              if (r.href && !r.disabled) {
+                return (
+                  <a href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                    {inner}
+                  </a>
+                );
+              }
+              return <div style={{ ...style, cursor: r.disabled ? "not-allowed" : "default" }} aria-disabled={r.disabled || undefined}>{inner}</div>;
+            })()}
+          </div>
+        </>
+      )}
+    </div>
+  );
+
+
 
   const renderGallery = () => (
     <div style={{ padding: "16px 20px 20px" }}>
