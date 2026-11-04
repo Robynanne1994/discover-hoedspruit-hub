@@ -1491,8 +1491,6 @@ const ListingDetail = () => {
   );
 
   const renderLocation = () => {
-    const directionsHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
-    const isSurrounds = (listing.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
     // A business's own name is never its address — falling back to the title
     // here (as this used to) meant "Copy Address" silently copied the
     // listing's name whenever `location` was empty, which is what "copy

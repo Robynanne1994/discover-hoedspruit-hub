@@ -1026,7 +1026,7 @@ const EventDetail = () => {
   );
 
   const renderLocation = () => {
-    const isSurrounds = (event.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    const isSurrounds = isSurroundsLocation(event.location);
     // An event's own title is never its address — falling back to it here (as
     // this used to) meant "Copy Address" silently copied the event's name
     // whenever `location` was empty. The maps-search fallback below keeps
