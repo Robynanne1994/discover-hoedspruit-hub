@@ -784,8 +784,21 @@ const Events = () => {
   // Month groups, with Recurring collected into one section and next-year
   // events held below it.
   const groupedEvents = useMemo(
-    () => buildEventGroups(filtered, activeFilter),
-    [filtered, activeFilter]
+    () =>
+      buildEventGroups(
+        filtered,
+        activeFilter,
+        hasActiveEventFilters({
+          dateFilter: activeFilter,
+          tagFilter,
+          priceFilter,
+          durationFilter,
+          bookingFilter,
+          recurrenceFilter,
+          timeFilter,
+        })
+      ),
+    [filtered, activeFilter, tagFilter, priceFilter, durationFilter, bookingFilter, recurrenceFilter, timeFilter]
   );
 
   // Happening Soon — soonest dated events, excluding recurring ones
@@ -931,13 +944,20 @@ const Events = () => {
           currently on. The button, its divider and Clear all hold their place
           at the left while the date pills scroll past them. */}
       <div
+        ref={filterBarRef}
+        className="scrollbar-hide"
         style={{
-          marginTop: 16,
+          marginTop: 12,
           paddingLeft: 20,
-          paddingRight: 20,
+          paddingTop: 4,
+          paddingBottom: 4,
           display: "flex",
           alignItems: "center",
           gap: 8,
+          position: "relative",
+          overflowX: "auto",
+          overflowY: "visible",
+          scrollbarWidth: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
@@ -974,8 +994,9 @@ const Events = () => {
                   display: "inline-flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: 13,
-                  padding: "0 5px",
+                  minWidth: 15,
+                  height: 15,
+                  padding: "0 4px",
                   borderRadius: 999,
                   background: "#423324",
                   color: "#FFFFFF",
@@ -1023,7 +1044,7 @@ const Events = () => {
                 strokeWidth={2}
                 style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
               />
-              Clear all
+              Clear All
             </button>
           )}
         </div>
@@ -1031,22 +1052,7 @@ const Events = () => {
 
         {/* Date pills — hidden while a search term is active */}
         {!search.trim() && (
-          <div
-            ref={filterBarRef}
-            className="scrollbar-hide"
-            style={{
-              // The active pill is scrolled into view by offsetLeft, which is
-              // only measured against this box once it is the pills' container.
-              position: "relative",
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              overflowX: "auto",
-              scrollbarWidth: "none",
-              flex: 1,
-              minWidth: 0,
-            }}
-          >
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
             {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
               const active = activeFilter === f.value;
               const count = getFilterCount(f.value, sortedEvents);

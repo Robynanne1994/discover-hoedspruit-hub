@@ -19,8 +19,18 @@ export type EventGroup = {
   showCount?: boolean;
 };
 
-export function buildEventGroups(filtered: any[], activeFilter: string): EventGroup[] {
+export function buildEventGroups(
+  filtered: any[],
+  activeFilter: string,
+  filtersOn = false
+): EventGroup[] {
   const groups: EventGroup[] = [];
+
+  // Any filter applied → one plain "Events (N)" heading, since the results
+  // may be narrowed by more than a date.
+  if (filtersOn) {
+    return filtered.length ? [{ key: "filtered", label: "Events", events: filtered }] : [];
+  }
 
   if (activeFilter === "past") {
     return filtered.length
