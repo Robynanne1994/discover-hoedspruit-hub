@@ -967,7 +967,9 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
               ...type.meta,
               lineHeight: 1.3,
               color: COLOR.mutedInk,
-              marginTop: 4,
+              // Air between the headline and the two rows beneath it; the offer
+              // line's own top padding (below) keeps the same breathing room.
+              marginTop: 9,
               minWidth: 0,
             }}
           >
@@ -994,13 +996,12 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           <SpecialValueBar
             special={special}
             detail="full"
-            padding="4px 0 0 0"
+            padding="9px 0 0 0"
             surface="plain"
             leading={
               <OfferMark
                 size={OFFER_ICON_SIZE}
                 strokeWidth={1.8}
-                color={COLOR.mutedInk}
                 style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
               />
             }
