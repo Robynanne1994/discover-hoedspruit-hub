@@ -35,16 +35,28 @@ describe("fillActionBar", () => {
     ]);
   });
 
-  it("never adds a tile the bar already shows, by key or by the same link", () => {
-    // The website slot already holds this Facebook page under its own key.
+  it("never adds a tile the bar already shows under another label", () => {
+    // The website slot already holds this Facebook page, so a "Facebook" tile
+    // pointing at the same link would just repeat it.
     const bar = [whatsapp, call, { key: "website", href: "https://facebook.com/farmwatch" }];
-    expect(fillActionBar(bar, [facebook, instagram, email]).map((a) => a.key)).toEqual([
+    expect(fillActionBar(bar, [facebook, instagram, email], 4).map((a) => a.key)).toEqual([
       "whatsapp",
       "call",
       "website",
-      "email",
+      "instagram",
     ]);
   });
+
+  it("never adds a tile whose key is already in the bar", () => {
+    const bar = [whatsapp, call, facebook];
+    expect(fillActionBar(bar, [facebook, instagram], 4).map((a) => a.key)).toEqual([
+      "whatsapp",
+      "call",
+      "facebook",
+      "instagram",
+    ]);
+  });
+
 
   it("adds nothing when no further contact is populated", () => {
     expect(fillActionBar([whatsapp, call], [null, null, null]).map((a) => a.key)).toEqual([
