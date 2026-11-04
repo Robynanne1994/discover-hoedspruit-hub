@@ -1026,6 +1026,7 @@ const Events = () => {
               Clear all
             </button>
           )}
+        </div>
 
 
         {/* Date pills — hidden while a search term is active */}
