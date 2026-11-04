@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, Store, Tag, Percent, CalendarDays, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, Store, Percent, ChevronRight } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -928,12 +928,6 @@ const FeaturedSection = ({
 const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
   const image = specialImage(special, "featured");
   const meta = special.business_name || "";
-  // The offer line at the foot of the column wears the same mark as the business
-  // row above it — same size, colour and stroke — so the two read as one pair.
-  // The symbol follows what the line actually says: a bare date gets the
-  // calendar, a price or a written offer gets the tag.
-  const offer = specialValue(special, { card: true });
-  const OfferMark = offer.kind === "none" ? CalendarDays : Tag;
 
   return (
     <article
@@ -1082,13 +1076,6 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
               detail="compact"
               padding="0"
               surface="plain"
-              leading={
-                <OfferMark
-                  size={OFFER_ICON_SIZE}
-                  strokeWidth={1.8}
-                  style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
-                />
-              }
             />
           </div>
           <ChevronRight
@@ -1121,14 +1108,6 @@ const META_ICON_NUDGE = "0.5px";
 // hue. It is the accent at low alpha over the card's white, not a separate colour.
 const OFFER_CHIP_BG = "rgba(180, 82, 46, 0.09)";
 
-// The featured card's offer line sits inside that chip at the compact size, so
-// its mark keeps the relationship the business row has: an 9px box draws 8px of
-// ink, the height of the capital letters it sits against.
-const OFFER_ICON_SIZE = 9;
-// Baseline alignment lands this mark a touch high against its line, so it comes
-// back down by the measured pixel — its foot then sits on the foot of the words
-// beside it, as the business row's mark does on its own line.
-const OFFER_ICON_NUDGE = "1px";
 
 
 const DEAL_TITLE_LINES_2 = 38;
