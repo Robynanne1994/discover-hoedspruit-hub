@@ -27,3 +27,4 @@
 - Keep every event host on the event page inside one shared card with hairline dividers between rows, never one card per host, so the Hosted by block reads as a single list.
 - Keep a slot's subject-placement rulers in its own slot definition as rulerBandGuides, measured in the slot's own box px, so the crop tool and the thumbnail draw the same pair.
 - Measure crop guides from layout px (offsetWidth), never from getBoundingClientRect, so an edit dialog's zoom animation cannot leave every guide stuck at the animation's scale.
+- Keep admin category rows unambiguous: the drag handle alone moves a category, the listings count opens that category's listings, and the labelled Order button is the only route to the per-category listing order page.
