@@ -507,6 +507,16 @@ const ListingDetail = () => {
   const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || facebookLink || instagramLink || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
   const hasAbout = !!descriptionText;
   const hasLocation = !!(listing.location || mapPlace);
+  // "Hoedspruit & Surrounds" is an area, not an address: no map, no copyable
+  // address, and no directions — neither in the action bar nor on the Location
+  // tab. Both read these two values so the buttons can never promise a journey
+  // the page itself refuses to show.
+  const isSurrounds = isSurroundsLocation(listing.location);
+  const directionsHref = buildDirectionsHref({
+    mapsLink: l.google_maps_link,
+    location: listing.location,
+    title: listing.title,
+  });
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
