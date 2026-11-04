@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { formatEventDateRange } from "@/lib/eventDates";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
+import { categoryMatchesTerm, rankSmartResults } from "@/lib/smartSearch";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -572,7 +573,24 @@ const ListingsResults = ({ query }: { query: string }) => {
       if (term) q = q.ilike("title", `%${term}%`);
       const { data, error } = await q;
       if (error) throw error;
-      return data || [];
+      if (!term) return data || [];
+      // Smart search: listings in matching categories follow title matches.
+      const { data: cats } = await supabase.from("categories").select("id, title");
+      const catIds = (cats || []).filter((c: any) => categoryMatchesTerm(term, c.title)).map((c: any) => c.id);
+      if (!catIds.length) return data || [];
+      const [direct, junc] = await Promise.all([
+        supabase.from("listings").select(SEARCH_COLUMNS).in("category_id", catIds)
+          .order("is_featured", { ascending: false }).order("title").limit(100),
+        supabase.from("listing_categories").select("listing_id").in("category_id", catIds).limit(300),
+      ]);
+      let byCat: any[] = direct.data || [];
+      const have = new Set(byCat.map((l) => l.id));
+      const extraIds = (junc.data || []).map((r: any) => r.listing_id).filter((id: string) => id && !have.has(id));
+      if (extraIds.length) {
+        const { data: extra } = await supabase.from("listings").select(SEARCH_COLUMNS).in("id", extraIds);
+        byCat = byCat.concat(extra || []);
+      }
+      return rankSmartResults((data || []) as any[], byCat);
     },
   });
   if (isError) return <ErrorRow onRetry={() => refetch()} isFetching={isFetching} />;
