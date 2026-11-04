@@ -104,7 +104,7 @@ const floatBtn: React.CSSProperties = {
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
 
-type TabKey = "about" | "details" | "contact" | "gallery" | "location";
+type TabKey = "about" | "details" | "contact" | "booking" | "gallery" | "location";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const toIcsDate = (d: Date) =>
@@ -738,7 +738,10 @@ const EventDetail = () => {
     const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
   }
-  if (booking) contactRows.push({ Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast });
+  // Booking lives on its own tab, never inside the contact list.
+  const bookingRow = booking
+    ? { Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast }
+    : null;
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
