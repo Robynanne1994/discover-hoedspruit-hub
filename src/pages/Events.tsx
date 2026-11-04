@@ -1051,22 +1051,7 @@ const Events = () => {
 
         {/* Date pills — hidden while a search term is active */}
         {!search.trim() && (
-          <div
-            ref={filterBarRef}
-            className="scrollbar-hide"
-            style={{
-              // The active pill is scrolled into view by offsetLeft, which is
-              // only measured against this box once it is the pills' container.
-              position: "relative",
-              display: "flex",
-              gap: 8,
-              alignItems: "center",
-              overflowX: "auto",
-              scrollbarWidth: "none",
-              flex: 1,
-              minWidth: 0,
-            }}
-          >
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
             {filtersWithEvents(FILTERS, (f) => getFilterCount(f.value, sortedEvents)).map((f) => {
               const active = activeFilter === f.value;
               const count = getFilterCount(f.value, sortedEvents);
