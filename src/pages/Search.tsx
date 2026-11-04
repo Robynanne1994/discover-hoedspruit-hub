@@ -181,6 +181,7 @@ const Search = () => {
             placeholder="Search listings, events & specials"
             aria-label="Search"
             className="hh-search-input"
+            autoFocus
             style={{
               width: "100%",
               boxSizing: "border-box",
