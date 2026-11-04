@@ -28,6 +28,7 @@ import { formatDays, parseDays } from "@/lib/specialDays";
 import { collectContacts } from "@/lib/contacts";
 import { eventContactPairs } from "@/lib/eventContacts";
 import { renderListingRichText } from "@/lib/listingRichText";
+import { isSurroundsLocation } from "@/lib/locationDirections";
 import Seo from "@/components/Seo";
 import LocationMap from "@/components/LocationMap";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon } from "@/lib/type";

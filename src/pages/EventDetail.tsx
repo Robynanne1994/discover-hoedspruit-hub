@@ -468,7 +468,7 @@ const EventDetail = () => {
   ].filter((t) => t.text && String(t.text).trim() !== "");
   const eyebrowText = allTags[0]?.text || null;
 
-  const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
+  const directionsHref = buildDirectionsHref({ mapsLink, location: e.location });
   const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
 
   // Past = no upcoming occurrence of any kind.
