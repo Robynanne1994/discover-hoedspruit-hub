@@ -1304,7 +1304,9 @@ const Events = () => {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: 10,
+                    flexWrap: "wrap",
+                    columnGap: 10,
+                    rowGap: 2,
                     marginTop: 22,
                     marginBottom: 6,
                   }}
