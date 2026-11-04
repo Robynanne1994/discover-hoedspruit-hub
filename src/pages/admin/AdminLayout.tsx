@@ -137,17 +137,15 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile top bar */}
         <header className="lg:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-card border-b border-border">
-          {backPath && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="-ml-2 shrink-0"
-              aria-label="Back"
-              onClick={() => navigate(backPath)}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="-ml-2 shrink-0"
+            aria-label="Back"
+            onClick={goBack}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="-ml-2">
