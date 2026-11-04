@@ -63,16 +63,24 @@ const VALIDITY_OPTIONS = [
 
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
+// Every pill icon wears one size and one lift, both measured from rendered
+// pixels rather than guessed: the size makes the icon's drawn ink span the
+// capital letters beside it, and the lift lands that ink on the cap band
+// instead of hanging below the text's baseline. They live here so no pill can
+// drift away from its neighbours.
+const PILL_ICON_SIZE = 10.5;
+const PILL_ICON_NUDGE = "-1.4px";
+
 const tabIcon = (tab: string) => {
   const t = tab.toLowerCase();
-  if (t.includes("restaurant") || t.includes("food") || t.includes("café") || t.includes("cafe")) return <UtensilsCrossed size={13} strokeWidth={1.8} />;
-  if (t.includes("accommodation") || t.includes("stay") || t.includes("lodge") || t.includes("hotel")) return <Bed size={13} strokeWidth={1.8} />;
-  if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return <MapPin size={13} strokeWidth={1.8} />;
-  if (t.includes("home") || t.includes("lifestyle") || t.includes("garden")) return <Home size={13} strokeWidth={1.8} />;
-  if (t.includes("shop") || t.includes("retail") || t.includes("shopping")) return <ShoppingBag size={13} strokeWidth={1.8} />;
-  if (t.includes("service") || t.includes("trade") || t.includes("business")) return <Wrench size={13} strokeWidth={1.8} />;
-  if (tab === ALL_TAB) return <Percent size={13} strokeWidth={1.8} />;
-  return <Tag size={13} strokeWidth={1.8} />;
+  if (t.includes("restaurant") || t.includes("food") || t.includes("café") || t.includes("cafe")) return <UtensilsCrossed size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  if (t.includes("accommodation") || t.includes("stay") || t.includes("lodge") || t.includes("hotel")) return <Bed size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return <MapPin size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  if (t.includes("home") || t.includes("lifestyle") || t.includes("garden")) return <Home size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  if (t.includes("shop") || t.includes("retail") || t.includes("shopping")) return <ShoppingBag size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  if (t.includes("service") || t.includes("trade") || t.includes("business")) return <Wrench size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  if (tab === ALL_TAB) return <Percent size={PILL_ICON_SIZE} strokeWidth={1.8} />;
+  return <Tag size={PILL_ICON_SIZE} strokeWidth={1.8} />;
 };
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
@@ -411,7 +419,7 @@ const Specials = () => {
           {endingSoonCount > 0 && (
             <FilterPill
               label={`Ending Soon (${endingSoonCount})`}
-              icon={<Clock size={12} strokeWidth={2} />}
+              icon={<Clock size={PILL_ICON_SIZE} strokeWidth={2} />}
               accent
               active={activeTab === ENDING_SOON_TAB}
               onClick={() =>
@@ -422,7 +430,7 @@ const Specials = () => {
           {upcomingCount > 0 && (
             <FilterPill
               label={`Upcoming (${upcomingCount})`}
-              icon={<Clock size={12} strokeWidth={2} />}
+              icon={<Clock size={PILL_ICON_SIZE} strokeWidth={2} />}
               active={activeTab === UPCOMING_TAB}
               onClick={() => setActiveTab(activeTab === UPCOMING_TAB ? ALL_TAB : UPCOMING_TAB)}
             />
@@ -690,7 +698,11 @@ const FilterPill = ({
       gap: 6,
     }}
   >
-    {icon}
+    {icon ? (
+      <span style={{ display: "inline-flex", transform: `translateY(${PILL_ICON_NUDGE})` }}>
+        {icon}
+      </span>
+    ) : null}
     {label}
   </button>
 );
