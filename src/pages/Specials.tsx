@@ -1025,6 +1025,13 @@ const META_ICON_SIZE = 9.1;
 // so it comes back down by the measured half-pixel.
 const META_ICON_NUDGE = "0.5px";
 
+// The featured card's offer line is set larger than the business row, so its
+// mark grows with it and keeps the relationship the business row has: measured
+// on screen, an 11.4px box draws 10px of ink, exactly the height of the capital
+// letters and figures it sits against. The row's baseline alignment plus the
+// same half-pixel nudge then holds its foot on the text's foot.
+const OFFER_ICON_SIZE = 11.4;
+
 
 const DEAL_TITLE_LINES_2 = 38;
 
