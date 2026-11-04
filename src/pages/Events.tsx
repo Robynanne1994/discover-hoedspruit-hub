@@ -149,7 +149,7 @@ function eventDateParts(e: any): { date: string; time: string } {
     const next = getNextOccurrence(e);
     if (next) {
       return {
-        date: format(next.date, "d MMM"),
+        date: oneDayDateLine(format(next.date, "d MMM"), next.date, next.date),
         time: next.startTime ? fmtTime(next.startTime) : "",
       };
     }
@@ -168,7 +168,7 @@ function eventDateParts(e: any): { date: string; time: string } {
   const dPart = sameDay
     ? format(start, "d MMM")
     : `${format(start, "d")} – ${format(end!, "d MMM")}`;
-  return { date: dPart, time: sameDay ? fmtTime(e.start_time) : "" };
+  return { date: oneDayDateLine(dPart, start, end), time: sameDay ? fmtTime(e.start_time) : "" };
 }
 
 function eventMoreDatesLine(e: any): string | null {
