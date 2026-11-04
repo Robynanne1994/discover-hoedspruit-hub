@@ -43,6 +43,7 @@ import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
 import {
   PILL_ICON_SIZE,
@@ -860,6 +861,9 @@ const Events = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
+
+  // Taking the last filter off brings the bar back to its initial view.
+  useFilterBarReset(filterBarRef, filtersOn || !!search.trim());
 
   // One removable chip per active filter, so each can be switched off alone.
   const appliedChips: { key: string; label: string; onRemove: () => void }[] = [];

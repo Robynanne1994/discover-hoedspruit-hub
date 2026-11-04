@@ -21,6 +21,7 @@ import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
 import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { compareSpecialDefault } from "@/lib/specialOrder";
 import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
@@ -328,6 +329,9 @@ const Specials = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
+
+  // Taking the last filter off brings the bar back to its initial view.
+  useFilterBarReset(filterBarRef, filtersOn || !!search.trim());
 
   const toggleFilter = (val: string) => {
     setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
