@@ -38,4 +38,4 @@ export const countTextLines = (
  * still leaves the room too.
  */
 export const categoryLineBudget = (titleLines: number, locationLines: number): number =>
-  titleLines + locationLines <= 2 ? 2 : 1;
+  titleLines >= 2 && locationLines >= 2 ? 1 : 2;
