@@ -15,7 +15,6 @@ import {
   endOfWeek,
   endOfMonth,
   isWithinInterval,
-  addDays,
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
