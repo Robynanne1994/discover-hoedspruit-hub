@@ -36,11 +36,11 @@ import { findSlot, fixedBox, fixedGuides, ratioBox, type ImageSlot } from "./ima
  * The Top Active Deals card paints its picture as the card's left-hand column:
  * this fraction of the slide's width, as tall as the card. The card and the
  * editor's crop box both read these two numbers so the crop preview and the
- * live screen agree. Measured from the design: 109 × 121 CSS px on a 393pt
- * phone, so the box is a touch taller than it is wide.
+ * live screen agree. Measured from the design: 156 × 136 CSS px on a 393pt
+ * phone, so the box is a touch wider than it is tall.
  */
-export const FEATURED_PHOTO_FRACTION = 0.35;
-export const FEATURED_PHOTO_RATIO = 164 / 182;
+export const FEATURED_PHOTO_FRACTION = 0.43;
+export const FEATURED_PHOTO_RATIO = 156 / 136;
 
 export type SpecialImageSlotKey = "card" | "detail" | "homepage" | "featured" | "saved" | "search";
 
@@ -135,7 +135,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
     // the design rather than an exact paint box; whichever edge the card's
     // height differs by is the one `cover` trims.
     aspect: FEATURED_PHOTO_RATIO,
-    aspectLabel: "9:10",
+    aspectLabel: "8:7",
     box: ratioBox(
       (v) => Math.round(insetWidth(SPECIALS_CARD_GRID.pageInset, v) * FEATURED_PHOTO_FRACTION),
       FEATURED_PHOTO_RATIO,

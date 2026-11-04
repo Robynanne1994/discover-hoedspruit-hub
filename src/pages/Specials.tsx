@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays, ChevronRight } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -932,7 +932,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           minWidth: 0,
           display: "flex",
           flexDirection: "column",
-          padding: "10px 14px 8px 14px",
+          padding: "14px 14px 13px 16px",
         }}
       >
         <SpecialBadgePill
@@ -948,7 +948,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             lineHeight: 1.25,
             letterSpacing: "-0.15px",
             color: COLOR.ink,
-            margin: "6px 0 0 0",
+            margin: "12px 0 0 0",
             overflowWrap: "break-word",
           }}
         >
@@ -974,8 +974,8 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
               lineHeight: 1.3,
               color: COLOR.mutedInk,
               // Air between the headline and the two rows beneath it; the offer
-              // line's own top padding (below) keeps the same breathing room.
-              marginTop: 9,
+              // chip's own top padding (below) keeps the same breathing room.
+              marginTop: 12,
               minWidth: 0,
             }}
           >
@@ -998,19 +998,49 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             </span>
           </div>
         )}
-        <div style={{ marginTop: "auto" }}>
-          <SpecialValueBar
-            special={special}
-            detail="full"
-            padding="9px 0 0 0"
-            surface="plain"
-            leading={
-              <OfferMark
-                size={OFFER_ICON_SIZE}
-                strokeWidth={1.8}
-                style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
-              />
-            }
+        {/* The deal's own line, worn as a chip at the foot of the column, with a
+            chevron at the rail's edge: the chip is the offer, the chevron says the
+            card opens. `marginTop: auto` keeps every card in the rail reading from
+            the same foot line; `paddingTop` holds the gap even on the tallest card,
+            where there is no slack for the auto margin to distribute. */}
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: 12,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 8,
+          }}
+        >
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              minWidth: 0,
+              background: OFFER_CHIP_BG,
+              borderRadius: 999,
+              padding: "2px 10px",
+            }}
+          >
+            <SpecialValueBar
+              special={special}
+              detail="compact"
+              padding="0"
+              surface="plain"
+              leading={
+                <OfferMark
+                  size={OFFER_ICON_SIZE}
+                  strokeWidth={1.8}
+                  style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
+                />
+              }
+            />
+          </div>
+          <ChevronRight
+            size={16}
+            strokeWidth={2}
+            style={{ flexShrink: 0, color: MUTED, opacity: 0.55 }}
           />
         </div>
       </div>
