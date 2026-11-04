@@ -104,7 +104,7 @@ const floatBtn: React.CSSProperties = {
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
 
-type TabKey = "about" | "details" | "contact" | "gallery" | "location";
+type TabKey = "about" | "details" | "contact" | "booking" | "gallery" | "location";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const toIcsDate = (d: Date) =>
@@ -738,7 +738,10 @@ const EventDetail = () => {
     const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
   }
-  if (booking) contactRows.push({ Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast });
+  // Booking lives on its own tab, never inside the contact list.
+  const bookingRow = booking
+    ? { Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast }
+    : null;
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
@@ -947,6 +950,49 @@ const EventDetail = () => {
       )}
     </div>
   );
+
+  const renderBooking = () => (
+    <div style={{ padding: "16px 20px 20px" }}>
+      {!bookingRow ? (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No booking details yet.</p>
+      ) : (
+        <>
+          {sectionHeading("Booking Details")}
+          <div style={{ ...cardStyle, padding: "4px 20px" }}>
+            {(() => {
+              const r = bookingRow;
+              const inner = (
+                <>
+                  <r.Icon size={18} strokeWidth={1.5} color={r.disabled ? C.muted : C.primary} />
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: r.disabled ? C.muted : C.heading, wordBreak: "break-word" }}>
+                    <div style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>
+                      {r.label}
+                    </div>
+                    {r.value}
+                  </div>
+                  {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                </>
+              );
+              const style: React.CSSProperties = {
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "14px 0", textDecoration: "none",
+                opacity: r.disabled ? 0.5 : 1,
+              };
+              if (r.href && !r.disabled) {
+                return (
+                  <a href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                    {inner}
+                  </a>
+                );
+              }
+              return <div style={{ ...style, cursor: r.disabled ? "not-allowed" : "default" }} aria-disabled={r.disabled || undefined}>{inner}</div>;
+            })()}
+          </div>
+        </>
+      )}
+    </div>
+  );
+
 
 
   const renderGallery = () => (
@@ -1230,6 +1276,7 @@ const EventDetail = () => {
               {hasAboutContent && <TabBtn k="about" label="About" />}
               <TabBtn k="details" label="Details" />
               {hasContactContent && <TabBtn k="contact" label="Contact" />}
+              {bookingRow && <TabBtn k="booking" label="Booking" />}
               {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
               <TabBtn k="location" label="Location" />
             </nav>
@@ -1238,6 +1285,7 @@ const EventDetail = () => {
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
               {tab === "contact" && hasContactContent && renderContact()}
+              {tab === "booking" && bookingRow && renderBooking()}
               {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
               {tab === "location" && renderLocation()}
             </section>
