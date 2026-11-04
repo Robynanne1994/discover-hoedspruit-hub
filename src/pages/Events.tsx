@@ -17,7 +17,6 @@ import {
   isWithinInterval,
   addDays,
   format,
-  parse,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import {
@@ -440,18 +439,8 @@ const PosterCard = ({ event }: { event: any }) => {
   const month = d ? format(d, "MMM") : "";
   const day = d ? format(d, "d") : "";
   const weekday = d ? shortWeekday(d) : "";
-  let timeLabel = "";
-  const st = event.start_time && String(event.start_time).trim() ? String(event.start_time).slice(0, 5) : null;
-  if (d && st) {
-    try {
-      timeLabel = format(parse(st, "HH:mm", d), "h:mm a");
-    } catch {
-      timeLabel = st;
-    }
-  }
   const dateText = [day, month].filter(Boolean).join(" ");
-  const eyebrow =
-    (weekday ? `${dateText} (${weekday})` : dateText) + (timeLabel ? ` \u2022 ${timeLabel}` : "");
+  const eyebrow = weekday ? `${dateText} (${weekday})` : dateText;
 
 
   return (
@@ -567,7 +556,7 @@ const PosterCard = ({ event }: { event: any }) => {
               overflow: "hidden",
             }}
           >
-            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <Calendar size={12} strokeWidth={2} style={{ flexShrink: 0, color: "#423324" }} />
             <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{eyebrow}</span>
           </div>
         )}
@@ -581,14 +570,14 @@ const PosterCard = ({ event }: { event: any }) => {
               gap: 6,
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 12,
+              fontSize: 13,
               lineHeight: 1.35,
-              color: C.muted,
+              color: C.body,
               whiteSpace: "nowrap",
               overflow: "hidden",
             }}
           >
-            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <MapPin size={12} strokeWidth={2} style={{ flexShrink: 0, color: "#423324" }} />
             <span
               style={{
                 overflow: "hidden",
