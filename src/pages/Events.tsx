@@ -66,7 +66,7 @@ const C = {
 
 const ROW_ICON = {
   flexShrink: 0,
-  color: C.muted,
+  color: "#423324",
   // Helvetica Neue's letters sit high in their line box; lift the icon to the letters.
   transform: "translateY(-1.6px)",
 } as const;
@@ -326,7 +326,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <Calendar size={ROW_ICON_SIZE} strokeWidth={1.8} style={ROW_ICON} />
+            <Calendar size={ROW_ICON_SIZE} strokeWidth={2.1} style={ROW_ICON} />
             <span
               style={{
                 display: "-webkit-box",
@@ -354,7 +354,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <Clock size={ROW_ICON_SIZE} strokeWidth={1.8} style={ROW_ICON} />
+            <Clock size={ROW_ICON_SIZE} strokeWidth={2.1} style={ROW_ICON} />
             <span
               style={{
                 display: "-webkit-box",
@@ -382,7 +382,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <MapPin size={ROW_ICON_SIZE} strokeWidth={1.8} style={ROW_ICON} />
+            <MapPin size={ROW_ICON_SIZE} strokeWidth={2.1} style={ROW_ICON} />
             <span
               style={{
                 display: "-webkit-box",
