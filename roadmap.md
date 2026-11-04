@@ -53,3 +53,5 @@
 - [x] Verify the badge count, Clear all reset, drawer Clear All and the search state on the live events page.
 - [x] Centre the filter count digit inside its brown disc on the events page.
 - [x] Verify the drawn digit sits within a third of a pixel of the disc centre for one and two filters.
+- [x] Name the events list heading after a lone time-frame pill, falling back to "Events" once anything else narrows the list.
+- [x] Verify lone-pill headings (Today with its date, This Week, This Month, Past Month) and the two-filter fallback in the preview.
