@@ -336,12 +336,17 @@ export const RefineSection = ({ label, open, onToggle, summary, onClear, childre
             />
           </Button>
           {onClear && (
+            // The header's own text block starts 16px below its top edge and its
+            // title line is 20px tall, so the title's centre sits 26px down. This
+            // control keeps its comfortable 36px touch height but hangs from 8px,
+            // putting its word on that same 26px line instead of drifting down
+            // beside the summary.
             <Button
               type="button"
               variant="link"
               aria-label={`Clear ${label ?? "filter"}`}
               onClick={onClear}
-              className="absolute right-11 top-1/2 h-9 -translate-y-1/2 rounded-none px-2 text-xs font-normal"
+              className="absolute right-11 top-2 h-9 rounded-none px-2 text-xs font-normal"
             >
               Clear
             </Button>
