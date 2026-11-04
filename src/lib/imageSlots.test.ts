@@ -4,16 +4,23 @@ import {
   CATEGORY_CARD_GRID,
   DEFAULT_PREVIEW_WIDTH,
   gridCardWidth,
+  insetWidth,
   PREVIEW_VIEWPORTS,
   SAVED_CARD_GRID,
   shellWidth,
+  SPECIALS_CARD_GRID,
 } from "./appLayout";
 import { CATEGORY_CARD_CHROME, DETAIL_HERO_CHROME, SAVED_CARD_CHROME } from "./cardChrome";
 import { CHANNEL_IMAGE_SLOTS, channelImageSlot } from "./channelImageSlots";
 import { EVENT_IMAGE_SLOTS } from "./eventImageSlots";
 import { guideHeight } from "./imageSlotGuides";
 import { LISTING_IMAGE_SLOTS, listingImageSlot } from "./listingImageSlots";
-import { SPECIAL_IMAGE_SLOTS, specialImageSlot } from "./specialImageSlots";
+import {
+  FEATURED_PHOTO_FRACTION,
+  FEATURED_PHOTO_RATIO,
+  SPECIAL_IMAGE_SLOTS,
+  specialImageSlot,
+} from "./specialImageSlots";
 import { slotBox, slotGuides, type ImageSlot } from "./imageSlots";
 
 const FAMILIES: [string, ImageSlot[]][] = [
@@ -189,8 +196,14 @@ describe("the boxes the app paints", () => {
     expect(specialImageSlot("card").aspect).toBe(1);
     // SpecialDetail.tsx — hero `aspectRatio: "4 / 3"`.
     expect(specialImageSlot("detail").aspect).toBeCloseTo(4 / 3);
-    // Specials.tsx — FeaturedCard image `aspectRatio: "3 / 2"`.
-    expect(specialImageSlot("featured").aspect).toBeCloseTo(3 / 2);
+    // Specials.tsx — FeaturedCard paints the picture as the card's left column,
+    // whose shape the slot reads from the same constants the card does.
+    expect(specialImageSlot("featured").aspect).toBeCloseTo(FEATURED_PHOTO_RATIO);
+    // The crop box is that column: FEATURED_PHOTO_FRACTION of the card's width.
+    const featured = specialImageSlot("featured");
+    expect(slotBox(featured, 390).width).toBe(
+      Math.round(insetWidth(SPECIALS_CARD_GRID.pageInset, 390) * FEATURED_PHOTO_FRACTION)
+    );
   });
 
   it("rules the specials card at 37px and 205px down a 214px tile", () => {

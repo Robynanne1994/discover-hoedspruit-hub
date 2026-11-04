@@ -22,20 +22,20 @@
 - Render section-specific Clear controls in RefineSection using active-only onClear callbacks from each page so clearing never resets unrelated sections.
 - Keep app store review links in storeReview so the account page's rating prompt and any later entry point share one URL; a platform whose link is not issued yet stays null rather than pointing at a guess.
 - Keep canonical outbound links such as the app download page in appLinks so the share sheet and any later entry point share one URL.
-- Render the full-width brown call-to-action pill through the shared ArrowCta component so search's Discover More and the follow lists' Find People and Share Profile stay identical; wrap it in each page's own content column rather than restyling it per page.
+- Render the full-width brown call-to-action pill through the shared ArrowCta so search's Discover More and the follow lists' Find People and Share Profile stay identical; wrap it in each page's own content column.
 - Keep the one-day special rule (a deal whose start and end share a calendar day reads "1 Day Only" rather than "Last day") in specialValue's countdownLabel so every card that counts down uses the same wording.
 - Keep specials Special Type option collection, matching and counts in specialKind so the drawer and results agree.
 - Render a rich-text line holding only links through listingRichText's link-stack so every link fills its own line in the same card; a sentence that merely contains a link stays inline.
 - Keep every event host on the event page inside one shared card with hairline dividers between rows, never one card per host, so the Hosted by block reads as a single list.
 - Keep a slot's subject-placement rulers in its own slot definition as rulerBandGuides, measured in the slot's own box px, so the crop tool and the thumbnail draw the same pair.
 - Measure crop guides from layout px (offsetWidth), never from getBoundingClientRect, so an edit dialog's zoom animation cannot leave every guide stuck at the animation's scale.
-- Keep admin category rows unambiguous: the drag handle alone moves a category, the listings count opens that category's listings, and the labelled Order button is the only route to the per-category listing order page.
+- Keep admin category rows unambiguous: the drag handle moves a category, the listings count opens its listings, the labelled Order button alone reaches the per-category order page.
 - Keep listing detail-row label casing in detailLabel's formatDetailLabel so the Details section and its tests share one rule; every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the first letter of the whole label.
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and rendered on the About tab under "Good to know", never as Details cards; a listing whose only detail was a custom row therefore has no Details tab.
 - Keep restaurant facility placement and boolean visibility in restaurantDetailFields so Summary, service, family and accessibility cards share testable rules without duplicate fields.
 - Keep the "Hoedspruit & Surrounds" area rule and maps-link resolution in locationDirections so the action bar and the Location tab on listings, events and specials all refuse directions for an area that has no address.
 - Keep the listing action bar's top-up rule (a bar left with only two tiles takes its next populated contact, email before the listing's own social pages, and never a link the bar already shows) in actionBarFill so the bar and its tests share one rule.
-- Keep the quick-filter card's line rule in quickCardLines so the Explore results and their tests agree: the category names may take a second line unless the title and the location have both already used two, measured from rendered heights.
+- Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: admin sort_position first, then newest; featured specials are lifted above it so their position is ignored.
 - Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.
 - Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
@@ -43,5 +43,6 @@
 - Keep the carousel poster card's date and location rows on one shared style (13px body ink, 12px lucide icons at stroke 2 in the primary dark brown) and show no time on those cards.
 - Keep the gap under the events carousels equal to the gap above the events list below, so every section transition on the page reads as one rhythm; adjust the shared value rather than one gap alone.
 - Keep the specials page's section headings on the events page's group-heading treatment; the featured heading carries no icon or hairline, the list heading keeps its brown hairline, and the gap under the featured rail equals the events carousels' gap.
+- Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
 - Keep the listed event card's row icons at ROW_ICON_SIZE with a small upward nudge, matched to the drawn letters rather than the line box, and keep one shared gap value between its date, time and location rows so all three rows stay identical.

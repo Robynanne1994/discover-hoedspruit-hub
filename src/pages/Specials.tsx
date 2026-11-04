@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -15,7 +15,7 @@ import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
-import { isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
+import { dealCountLabel, isEndingSoon, isOngoingSpecial, savingValue, specialValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
@@ -462,7 +462,7 @@ const Specials = () => {
               <>
                 <SectionHead
                   label={activeTab === UPCOMING_TAB ? "Upcoming" : featured.length > 0 ? "Everything Else" : "All Deals"}
-                  right={`${rest.length} ${rest.length === 1 ? "Deal" : "Deals"}`}
+                  right={dealCountLabel(rest.length)}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {rest.map((s: any) => (
@@ -788,7 +788,7 @@ const FeaturedSection = ({
       <SectionHead
         hairline={false}
         label="Top Active Deals"
-        right={isCarousel ? `${index + 1} / ${items.length}` : undefined}
+        right={dealCountLabel(items.length)}
       />
 
       {isCarousel ? (
@@ -868,6 +868,12 @@ const FeaturedSection = ({
 const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
   const image = specialImage(special, "featured");
   const meta = special.business_name || "";
+  // The offer line at the foot of the column wears the same mark as the business
+  // row above it — same size, colour and stroke — so the two read as one pair.
+  // The symbol follows what the line actually says: a bare date gets the
+  // calendar, a price or a written offer gets the tag.
+  const offer = specialValue(special, { card: true });
+  const OfferMark = offer.kind === "none" ? CalendarDays : Tag;
 
   return (
     <article
@@ -985,7 +991,20 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           </div>
         )}
         <div style={{ marginTop: "auto" }}>
-          <SpecialValueBar special={special} detail="full" padding="4px 0 0 0" surface="plain" />
+          <SpecialValueBar
+            special={special}
+            detail="full"
+            padding="4px 0 0 0"
+            surface="plain"
+            leading={
+              <OfferMark
+                size={OFFER_ICON_SIZE}
+                strokeWidth={1.8}
+                color={COLOR.mutedInk}
+                style={{ flexShrink: 0, transform: `translateY(${OFFER_ICON_NUDGE})` }}
+              />
+            }
+          />
         </div>
       </div>
     </article>
@@ -1005,6 +1024,16 @@ const META_ICON_SIZE = 9.1;
 // Baseline alignment lands the mark a touch high against the capital letters,
 // so it comes back down by the measured half-pixel.
 const META_ICON_NUDGE = "0.5px";
+
+// The featured card's offer line is set larger than the business row, so its
+// mark grows with it and keeps the relationship the business row has: measured
+// on screen, an 11.4px box draws 10px of ink, exactly the height of the capital
+// letters and figures it sits against.
+const OFFER_ICON_SIZE = 11.4;
+// Baseline alignment lands this larger mark a touch high against its line, so it
+// comes back down by the measured pixel and a half — its foot then sits on the
+// foot of the figures beside it, as the business row's mark does on its own line.
+const OFFER_ICON_NUDGE = "1.5px";
 
 
 const DEAL_TITLE_LINES_2 = 38;

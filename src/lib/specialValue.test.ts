@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { describe, expect, it } from "vitest";
 import {
   countdownLabel,
+  dealCountLabel,
   hasStarted,
   isEndingSoon,
   isOngoingSpecial,

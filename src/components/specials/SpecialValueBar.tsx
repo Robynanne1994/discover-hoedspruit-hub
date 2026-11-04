@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { specialCard, type SpecialCardLike } from "@/lib/specialCard";
 import { MUTED } from "@/lib/type";
 
@@ -24,6 +25,7 @@ const SpecialValueBar = ({
   detail = "compact",
   padding = "9px 11px",
   surface = "band",
+  leading = null,
 }: {
   special: SpecialCardLike;
   detail?: "compact" | "full";
@@ -34,6 +36,13 @@ const SpecialValueBar = ({
    * featured card's details column is white right down to its foot.
    */
   surface?: "band" | "plain";
+  /**
+   * Small mark drawn at the head of the money slot, aligned on the text
+   * baseline. The card that wears one passes a lucide icon sized to the capitals
+   * it sits against, so the offer line and the business row above it read as one
+   * pair. Nothing is rendered when the slot has no text of its own.
+   */
+  leading?: ReactNode;
 }) => {
   const full = detail === "full";
   const { value, meta, saving: savingAccent } = specialCard(special, { compact: !full });
@@ -50,6 +59,11 @@ const SpecialValueBar = ({
   // part in this ranking — it has its own corner on the picture, so the
   // validity dates still show here beside it whenever there is room.
   const showMeta = !!meta.text && (full || value.kind === "price");
+
+  // The mark labels whatever the left slot says — a price, a written offer or a
+  // bare date. With nothing to label there is no mark either, so the slot can
+  // never print a lone icon.
+  const leftShows = value.kind !== "none" || !!meta.text;
 
   // Price, "was" price and a validity date is one item too many on a narrow
   // card. When the validity line is coming through on the right, the
@@ -96,6 +110,7 @@ const SpecialValueBar = ({
           height: lineBox,
         }}
       >
+        {leftShows ? leading : null}
         {value.kind === "price" && (
           <>
             <span
