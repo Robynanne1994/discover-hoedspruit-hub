@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp, MoveRight } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp, MoveRight, ListOrdered } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
@@ -65,6 +65,7 @@ const AdminCategories = () => {
   const [orderedSubSubs, setOrderedSubSubs] = useState<Record<string, SubSubcategory[]>>({});
 
   const [viewSub, setViewSub] = useState<Subcategory | null>(null);
+  const [viewCat, setViewCat] = useState<Category | null>(null);
   const [alphaSort, setAlphaSort] = useState<Record<string, boolean>>({});
 
   const { data: subListings, isLoading: subListingsLoading } = useQuery({
@@ -102,6 +103,43 @@ const AdminCategories = () => {
         .order("title");
       if (error) throw error;
       return data ?? [];
+    },
+  });
+
+  const { data: catListings, isLoading: catListingsLoading } = useQuery({
+    queryKey: ["admin-category-listings", viewCat?.id],
+    enabled: !!viewCat,
+    queryFn: async () => {
+      const [{ data: junction }, { data: legacy }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id").eq("category_id", viewCat!.id),
+        supabase.from("listings").select("id").eq("category_id", viewCat!.id),
+      ]);
+      const idSet = new Set<string>();
+      (junction ?? []).forEach((r: any) => idSet.add(r.listing_id as string));
+      (legacy ?? []).forEach((r: any) => idSet.add(r.id as string));
+      const ids = Array.from(idSet);
+      if (ids.length === 0) return [] as any[];
+
+      const [{ data: listings }, { data: orderRows }] = await Promise.all([
+        supabase.from("listings").select("id, title, location, image_url, is_featured").in("id", ids),
+        supabase.from("listing_category_order").select("listing_id, position").eq("category_id", viewCat!.id),
+      ]);
+      const posMap = new Map<string, number>();
+      (orderRows ?? []).forEach((r: any) => posMap.set(r.listing_id as string, r.position as number));
+
+      const rows: any[] = listings ?? [];
+      // Same arrangement the category page uses: featured first, then the
+      // saved order, then anything not placed yet, alphabetical.
+      rows.sort((a, b) => {
+        if (!!b.is_featured !== !!a.is_featured) return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
+        const ap = posMap.get(a.id);
+        const bp = posMap.get(b.id);
+        if (ap != null && bp != null) return ap - bp;
+        if (ap != null) return -1;
+        if (bp != null) return 1;
+        return (a.title ?? "").localeCompare(b.title ?? "");
+      });
+      return rows;
     },
   });
 
