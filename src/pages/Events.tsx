@@ -49,7 +49,6 @@ import {
   PILL_ICON_NUDGE,
   PILL_BADGE_SIZE,
   PILL_BADGE_NUDGE,
-  PILL_BADGE_NUDGE_X,
 } from "@/lib/pillIcon";
 
 // One height for every pill in the filters row — the Filters button, Clear all
@@ -1016,7 +1015,7 @@ const Events = () => {
                 <span
                   style={{
                     display: "block",
-                    transform: `translate(${PILL_BADGE_NUDGE_X}, ${PILL_BADGE_NUDGE})`,
+                    transform: `translateY(${PILL_BADGE_NUDGE})`,
                   }}
                 >
                   {activeFilterCount}

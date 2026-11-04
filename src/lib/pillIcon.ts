@@ -14,16 +14,13 @@ export const PILL_ICON_NUDGE = "-1.4px";
  *
  * Measured the same way as the icons above. The digit's drawn ink is 7px tall
  * inside a 15px disc, while the line box it is centred in is taller than the
- * ink, so the number rides high. The lift lands the ink dead centre in the disc.
+ * ink, so the number rides high; this lift lands the ink dead centre. No
+ * side-to-side lift is wanted: measured digit by digit, every count from 1 to 9
+ * already lands within a third of a pixel of the disc's centre, and any lift
+ * big enough to see only pushes the wider digits off it.
  */
 export const PILL_BADGE_SIZE = 15;
 export const PILL_BADGE_NUDGE = "1px";
-/**
- * Side-to-side lift for the same digit. Helvetica Neue's side bearings differ
- * per digit ("1" carries a wide gap on its right, most others a small one), so
- * no single value centres every count; this is the measured average, which
- * removes most of the lean on a single-digit count without overshooting the rest.
- */
-export const PILL_BADGE_NUDGE_X = "0.5px";
+
 
 
