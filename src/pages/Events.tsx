@@ -622,14 +622,6 @@ const Events = () => {
   const defaultSort: SortType = defaultEventSort(activeFilter, "date-asc", "date-desc");
   const effectiveSort: SortType = effectiveEventSort(activeFilter, chosenSort, "date-asc", "date-desc");
   const filterBarRef = useRef<HTMLDivElement | null>(null);
-  const activePillRef = useRef<HTMLButtonElement | null>(null);
-  useEffect(() => {
-    const bar = filterBarRef.current;
-    const pill = activePillRef.current;
-    if (!bar || !pill) return;
-    const target = pill.offsetLeft - (bar.clientWidth - pill.clientWidth) / 2;
-    bar.scrollTo({ left: Math.max(0, target), behavior: "auto" });
-  }, [activeFilter]);
   const updateParams = (patch: Record<string, string | null>) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -821,8 +813,14 @@ const Events = () => {
 
 
 
+  // A pill press narrows the list, so the view goes back to where that narrowing
+  // is legible: the page returns to the top and the row returns to its start, so
+  // the Filters button wearing the active count is the first thing in view
+  // rather than the newly-lit pill sitting where it was scrolled off to.
   const handleFilterPill = (v: FilterType) => {
     updateParams({ f: activeFilter === v || v === "all" ? null : v });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
 
   // What the page is narrowed by right now, in one place, so the pill row's
@@ -1059,7 +1057,6 @@ const Events = () => {
               return (
                 <button
                   key={f.value}
-                  ref={active ? activePillRef : undefined}
                   onClick={() => handleFilterPill(f.value)}
                   style={{
                     background: active ? "#423324" : "#FFFFFF",
