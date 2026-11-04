@@ -944,13 +944,20 @@ const Events = () => {
           currently on. The button, its divider and Clear all hold their place
           at the left while the date pills scroll past them. */}
       <div
+        ref={filterBarRef}
+        className="scrollbar-hide"
         style={{
-          marginTop: 16,
+          marginTop: 12,
           paddingLeft: 20,
-          paddingRight: 20,
+          paddingTop: 4,
+          paddingBottom: 4,
           display: "flex",
           alignItems: "center",
           gap: 8,
+          position: "relative",
+          overflowX: "auto",
+          overflowY: "visible",
+          scrollbarWidth: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
