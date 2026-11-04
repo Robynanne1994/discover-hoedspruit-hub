@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
-import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
+import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard,
   List,
+  ArrowLeft,
   Calendar,
   FolderOpen,
   LogOut,
@@ -76,7 +77,24 @@ const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
 const AdminLayout = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Mobile back navigation: deep pages step up to their parent section,
+  // section pages step up to the dashboard.
+  const segments = location.pathname.split("/").filter(Boolean); // ["admin", ...]
+  const depth = segments.length; // 1 = /admin, 2 = section, 3+ = nested
+  const backPath =
+    depth > 2 ? "/" + segments.slice(0, 2).join("/") : depth === 2 ? "/admin" : null;
+  const parentTitle =
+    depth > 2
+      ? navItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
+      : undefined;
+  const currentTitle =
+    navItems.find((i) => i.path === location.pathname)?.label ??
+    parentTitle ??
+    "Admin";
+
   // Only show the initial loading state. Subsequent auth events
   // (token refresh, focus) must not flash the layout.
   const hasResolvedRef = useRef(false);
@@ -90,9 +108,6 @@ const AdminLayout = () => {
     );
   if (!user) return <Navigate to="/auth" />;
   if (!isAdmin) return <Navigate to="/" />;
-
-  const currentTitle =
-    navItems.find((i) => i.path === location.pathname)?.label ?? "Admin";
 
   return (
     <div className="min-h-screen flex bg-[#c5bcaa]">
@@ -114,6 +129,17 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile top bar */}
         <header className="lg:hidden sticky top-0 z-30 flex items-center gap-3 h-14 px-4 bg-card border-b border-border">
+          {backPath && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="-ml-2 shrink-0"
+              aria-label="Back"
+              onClick={() => navigate(backPath)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="-ml-2">
