@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard,
   List,
+  ArrowLeft,
   Calendar,
   FolderOpen,
   LogOut,
