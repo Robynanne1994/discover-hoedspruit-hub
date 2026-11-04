@@ -41,7 +41,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { oneDayDateLine } from "@/lib/eventDayLabel";
 import { compareFeaturedEvents } from "@/lib/featuredEventOrder";
 import Seo from "@/components/Seo";
-import { MUTED, tab as tabStyle, type } from "@/lib/type";
+import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { pillToggle } from "@/lib/filterPill";
 
@@ -1107,18 +1107,19 @@ const Events = () => {
                     display: "flex",
                     alignItems: "center",
                     gap: 10,
-                    marginTop: 18,
-                    marginBottom: 2,
+                    marginTop: 22,
+                    marginBottom: 6,
                   }}
                 >
                   <span
                     style={{
-                      fontFamily: SANS,
-                      fontWeight: 700,
-                      fontSize: 12,
-                      letterSpacing: "0.12em",
+                      fontFamily: NOHEMI,
+                      fontWeight: 400,
+                      fontSize: 24,
+                      lineHeight: 1.15,
+                      letterSpacing: "-0.02em",
                       textTransform: "uppercase",
-                      color: C.ink,
+                      color: C.muted,
                       whiteSpace: "nowrap",
                     }}
                   >
@@ -1129,7 +1130,7 @@ const Events = () => {
                       style={{
                         fontFamily: SANS,
                         fontWeight: 400,
-                        fontSize: 12,
+                        fontSize: 16,
                         color: C.muted,
                       }}
                     >
