@@ -52,12 +52,12 @@ export const listingStatus = (
   if (isOpenNow(hours)) {
     const until = closesAt(hours);
     return until
-      ? { label: `${prefix}Open`, detail: `Closes ${until}`, tone: SAGE }
+      ? { label: `${prefix}Open`, detail: `Closes ${formatClock12(until)}`, tone: SAGE }
       : { label: `${prefix}Open Now`, tone: SAGE };
   }
   const opens = to24h(opensAt(hours));
   return opens
-    ? { label: `${prefix}Closed`, detail: `Opens ${opens}`, tone: CLAY }
+    ? { label: `${prefix}Closed`, detail: `Opens ${formatClock12(opens)}`, tone: CLAY }
     : { label: `${prefix}Closed Now`, tone: CLAY };
 };
 
