@@ -335,7 +335,6 @@ const EventDetail = () => {
     // Guests get a dismissable bottom sheet, not a full-screen redirect.
     if (!requireAuth("save favourites")) return;
     toggleFavourite.mutate({ itemId: id!, itemType: "event", currentlyFavourited: isFavourited });
-    toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };
 
   // Opens the phone's own share sheet (copy link + the user's apps); falls back
