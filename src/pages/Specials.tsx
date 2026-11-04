@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -15,7 +15,7 @@ import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
 import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID } from "@/lib/appLayout";
-import { isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
+import { dealCountLabel, isEndingSoon, isOngoingSpecial, savingValue, specialValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
@@ -462,7 +462,7 @@ const Specials = () => {
               <>
                 <SectionHead
                   label={activeTab === UPCOMING_TAB ? "Upcoming" : featured.length > 0 ? "Everything Else" : "All Deals"}
-                  right={`${rest.length} ${rest.length === 1 ? "Deal" : "Deals"}`}
+                  right={dealCountLabel(rest.length)}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {rest.map((s: any) => (
@@ -788,7 +788,7 @@ const FeaturedSection = ({
       <SectionHead
         hairline={false}
         label="Top Active Deals"
-        right={isCarousel ? `${index + 1} / ${items.length}` : undefined}
+        right={dealCountLabel(items.length)}
       />
 
       {isCarousel ? (
@@ -868,6 +868,12 @@ const FeaturedSection = ({
 const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
   const image = specialImage(special, "featured");
   const meta = special.business_name || "";
+  // The offer line at the foot of the column wears the same mark as the business
+  // row above it — same size, colour and stroke — so the two read as one pair.
+  // The symbol follows what the line actually says: a bare date gets the
+  // calendar, a price or a written offer gets the tag.
+  const offer = specialValue(special, { card: true });
+  const OfferMark = offer.kind === "none" ? CalendarDays : Tag;
 
   return (
     <article
@@ -985,7 +991,20 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           </div>
         )}
         <div style={{ marginTop: "auto" }}>
-          <SpecialValueBar special={special} detail="full" padding="4px 0 0 0" surface="plain" />
+          <SpecialValueBar
+            special={special}
+            detail="full"
+            padding="4px 0 0 0"
+            surface="plain"
+            leading={
+              <OfferMark
+                size={META_ICON_SIZE}
+                strokeWidth={1.8}
+                color={COLOR.mutedInk}
+                style={{ flexShrink: 0, transform: `translateY(${META_ICON_NUDGE})` }}
+              />
+            }
+          />
         </div>
       </div>
     </article>
