@@ -81,8 +81,16 @@ const ROW_ICON = {
   transform: "translateY(-1.6px)",
 } as const;
 
-// 13px text at lineHeight 1.35 -> the row's text box is 17.55px tall.
-const ROW_ICON_SIZE = 18;
+// The three rows on a listed event card (date, time, location) share one text
+// size, one line height, one icon disc and one gap between rows, so no row can
+// drift from its neighbours and the carousels keep their own larger type.
+const ROW_FONT_SIZE = 12.5;
+const ROW_LINE_HEIGHT = 1.35;
+const ROW_GAP = 5;
+// ROW_FONT_SIZE at ROW_LINE_HEIGHT -> the row's text box is 16.9px tall, so the
+// brown disc is sized to it and the white glyph inside keeps its proportion.
+const ROW_ICON_SIZE = 17;
+const ROW_GLYPH_SIZE = 10.5;
 // White icon sitting in a dark brown circle, sized to the row's text box.
 const ROW_ICON_DISC = {
   flexShrink: 0,
@@ -337,8 +345,8 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 13,
-              lineHeight: 1.35,
+              fontSize: ROW_FONT_SIZE,
+              lineHeight: ROW_LINE_HEIGHT,
               color: C.body,
               margin: 0,
               display: "flex",
@@ -346,7 +354,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <span style={ROW_ICON_DISC}><Calendar size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
+            <span style={ROW_ICON_DISC}><Calendar size={ROW_GLYPH_SIZE} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
@@ -364,17 +372,17 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 13,
-              lineHeight: 1.35,
+              fontSize: ROW_FONT_SIZE,
+              lineHeight: ROW_LINE_HEIGHT,
               color: C.body,
               margin: 0,
-              marginTop: 7,
+              marginTop: ROW_GAP,
               display: "flex",
               alignItems: "center",
               gap: 6,
             }}
           >
-            <span style={ROW_ICON_DISC}><Clock size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
+            <span style={ROW_ICON_DISC}><Clock size={ROW_GLYPH_SIZE} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
@@ -392,17 +400,17 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontWeight: 400,
-              fontSize: 13,
-              lineHeight: 1.35,
+              fontSize: ROW_FONT_SIZE,
+              lineHeight: ROW_LINE_HEIGHT,
               color: C.body,
               margin: 0,
-              marginTop: 7,
+              marginTop: ROW_GAP,
               display: "flex",
               alignItems: "center",
               gap: 6,
             }}
           >
-            <span style={ROW_ICON_DISC}><MapPin size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
+            <span style={ROW_ICON_DISC}><MapPin size={ROW_GLYPH_SIZE} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",

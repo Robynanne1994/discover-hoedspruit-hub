@@ -46,6 +46,6 @@
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Let a deal card's offer mark inherit its colour from SpecialValueBar's left slot, never its own, so it always matches the words beside it.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
-- Keep card and pill row icons and the filter-count digit on shared size and lift constants in pillIcon (ROW_ICON_SIZE; PILL_ICON_SIZE/NUDGE; PILL_BADGE_SIZE/NUDGE), matched to drawn ink, and keep one shared gap between event-card rows.
+- Keep pill icons and the filter-count digit on the pillIcon constants; keep the listed event card's three rows on one shared set in Events.tsx (ROW_FONT_SIZE, ROW_LINE_HEIGHT, ROW_GAP, ROW_ICON_SIZE, ROW_GLYPH_SIZE).
 - Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
 - Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.
