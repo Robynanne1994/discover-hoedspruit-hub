@@ -799,7 +799,9 @@ const FeaturedSection = ({
             className="scrollbar-hide"
             style={{
               display: "flex",
-               alignItems: "flex-start",
+              // Stretch, not flex-start: every slide takes the rail's height so
+              // the cards line up and each offer reads from the same foot line.
+              alignItems: "stretch",
               gap: SLIDE_GAP,
               overflowX: "auto",
               scrollSnapType: "x mandatory",
@@ -878,6 +880,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
         display: "flex",
         alignItems: "stretch",
         boxShadow: "0 1px 4px rgba(0,0,0,0.04)",
+        height: "100%",
         width: "100%",
       }}
     >
@@ -917,12 +920,12 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           minWidth: 0,
           display: "flex",
           flexDirection: "column",
-          padding: "12px 14px",
+          padding: "10px 14px 8px 14px",
         }}
       >
         <SpecialBadgePill
           special={special}
-          size="md"
+          size="sm"
           style={{ alignSelf: "flex-start", maxWidth: "100%" }}
         />
         <h3
@@ -933,7 +936,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             lineHeight: 1.25,
             letterSpacing: "-0.15px",
             color: COLOR.ink,
-            margin: "8px 0 0 0",
+            margin: "6px 0 0 0",
             overflowWrap: "break-word",
           }}
         >
@@ -982,7 +985,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           </div>
         )}
         <div style={{ marginTop: "auto" }}>
-          <SpecialValueBar special={special} detail="full" padding="10px 0 0 0" surface="plain" />
+          <SpecialValueBar special={special} detail="full" padding="4px 0 0 0" surface="plain" />
         </div>
       </div>
     </article>
