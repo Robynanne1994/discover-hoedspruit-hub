@@ -932,7 +932,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           minWidth: 0,
           display: "flex",
           flexDirection: "column",
-          padding: "14px 14px 13px 16px",
+          padding: "12px 14px 12px 16px",
         }}
       >
         <SpecialBadgePill
@@ -945,7 +945,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
           style={{
             fontFamily: SANS,
             ...type.cardTitleM,
-            lineHeight: 1.25,
+            lineHeight: 1.2,
             letterSpacing: "-0.15px",
             color: COLOR.ink,
             margin: "12px 0 0 0",
@@ -1006,7 +1006,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
         <div
           style={{
             marginTop: "auto",
-            paddingTop: 12,
+            paddingTop: 11,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -1020,7 +1020,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
               minWidth: 0,
               background: OFFER_CHIP_BG,
               borderRadius: 999,
-              padding: "2px 10px",
+              padding: "1px 10px",
             }}
           >
             <SpecialValueBar
