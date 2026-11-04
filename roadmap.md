@@ -1,59 +1,11 @@
-- [x] Add optional specials social media link and label fields.
-- [x] Include both fields in the editors and CSV imports, exports and template.
-- [x] Show labelled outbound links immediately below Deal on special detail pages.
-- [x] Verify field persistence, CSV round trip and link display.
-- [x] Include future-starting inactive specials in All and Upcoming filters.
-- [x] Verify upcoming special visibility, counts and filtering.
-- [x] Rename specials featured heading to TOP ACTIVE DEALS.
-- [x] Keep specials Filter & Sort sections closed on every opening.
-- [x] Add counted Booking and Special Type filters and verify filtering.
-- [x] Add event Recurrence filter with all requested frequencies.
-- [x] Add counted event Time filter and verify noon and 5pm boundaries.
-- [x] Rename event Time filter section to Time of Day.
-- [x] Add counts to event Recurrence pills and verify they match the stored recurrence field.
-- [x] Move each event contact label column directly after its contact column in CSV template, export and import.
-- [x] Verify downloaded template and export header order and that label values sit under their columns.
-- [x] Combine event CSV contacts and labels into six columns, preserving all contacts and labels in pipe-separated cells.
-- [x] Verify contact CSV round trips and first-contact actions without changing booking.
-- [x] Make every filter and sort pill toggle off when clicked again.
-- [x] Verify pill toggle behaviour on events, specials, category and profile pages.
-- [x] Add counted Validity filter (All / Upcoming / Ending Soon / Ongoing) to specials Filter & Sort.
-- [x] Verify Validity counts add to the page total, filtering and toggling off.
-- [x] Add section-specific Clear controls to every Filter & Sort dropdown and verify isolated resets.
-- [x] Add counted events Price filter (blank price = free) and verify counts, filtering and toggle-off.
-- [x] Add a Community Love section to Settings with Share the App and Rate Us on App Store.
-- [x] Verify the rating pop-up offers Apple and Android and that Apple carries the App Store review link.
-- [x] Restyle the rating pop-up: "Choose Your App Store" title, white panel, close button clear of the title.
-- [x] Round the rating pop-up corners to 16px to match app card styling.
-- [x] Point Share the App at https://hellohoedspruit.co/download via a shared appLinks constant.
-- [x] Match the follow lists' Find People / Share Profile button to search's Discover More via a shared ArrowCta component.
-- [x] Remove Plant Types from Home & Garden admin editing, frontend and CSV import/export; verify legacy CSVs ignore it.
-- [x] Show "1 Day Only" instead of "Last day" on cards for specials valid for a single day.
-- [x] Verify the one-day label renders on the live specials page and "Last day" disappears.
-- [x] Rename the specials filter section "Special Type" to "Savings Type".
-- [x] Verify the drawer heading reads SAVINGS TYPE with its counted options unchanged.
-- [x] Add Health and Game Drives to the specials top pill row (Couples already there).
-- [x] Verify the new pills show counts and filter the list on the live specials page.
-- [x] Render each link in a custom row or description on its own line inside the same card.
-- [x] Verify links stack on phone and wide screens and that a link inside a sentence stays inline.
-- [x] Put every event host on the event page into one card with hairlines between rows instead of a card each.
-- [x] Verify the Hosted by block shows no gaps between hosts on the live event page.
-- [x] Rule the homepage upcoming events image slot with two rulers running across it at 28px and 126px down its 144x192 tile.
-- [x] Verify the rulers sit at 28 and 126 on the live editor, with both labels fully readable.
-- [x] Rule the specials card cover image slot with two rulers running across it at 37px and 205px down its 214x214 tile.
-- [x] Verify the rulers sit at 37 and 205 on the live editor, with both labels fully readable.
-- [x] Rule the specials individual page image slot with two rulers running across it at 69px and 316px down its 360px hero.
-- [x] Verify the rulers sit at 69 and 316 on the live editor with the hero chrome untouched.
-- [x] Rule the specials homepage feature image slot with two rulers running across it at 47px and 164px down its 190px tile.
-- [x] Verify the rulers sit at 47 and 164 on the live editor.
-- [x] Rule the event detail cover image slot with two rulers running across it at 59px and 324px down its 480x360 hero.
-- [x] Verify the rulers sit at 59 and 324 on the live editor with the hero chrome untouched.
-- [x] Add restaurant Summary, reorganise facility cards and verify the displayed values without changing listing data.
-- [x] Move the events Filters button inline with the pill row, with a filter count badge and a Clear all pill.
-- [x] Verify the badge count, Clear all reset, drawer Clear All and the search state on the live events page.
-- [x] Centre the filter count digit inside its brown disc on the events page.
-- [x] Verify the drawn digit sits within a third of a pixel of the disc centre for one and two filters.
-- [x] Name the events list heading after a lone time-frame pill, falling back to "Events" once anything else narrows the list.
-- [x] Verify lone-pill headings (Today with its date, This Week, This Month, Past Month) and the two-filter fallback in the preview.
-- [x] Head a lone time-frame pill with its calendar dates instead of its words (Today, This Week, This Weekend, This Month, This Year, Next Year, Past Month).
-- [x] Verify every date heading and its count at 393px wide, with the count dropping to its own line when a long date leaves no room.
+# Roadmap
+
+## Pending
+(none)
+
+## Done
+- (2026-11-04) Events page: Filters button moved inline at the head of the pill row with a
+  count badge and Clear all; both clear buttons now write the address once.
+- (2026-11-04) Events page: active date pill's brown count badge checked on a phone screen.
+- (2026-11-04) Events page: listed event cards' date, time and location rows tightened to a
+  5px gap and 12.5px text, all on shared constants; the two carousels were left alone.
