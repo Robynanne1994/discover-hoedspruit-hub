@@ -601,7 +601,9 @@ const AdminCategories = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <div>
           <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Categories</h1>
-          <p className="text-sm text-muted-foreground mt-1">Drag to reorder or nest between levels.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Drag the handle to move a category. Tap the listings count to see what is inside, or Order to set the order listings appear in.
+          </p>
         </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
@@ -728,11 +730,60 @@ const AdminCategories = () => {
         </DialogContent>
       </Dialog>
 
+      {/* View category listings dialog */}
+      <Dialog open={!!viewCat} onOpenChange={(v) => { if (!v) setViewCat(null); }}>
+        <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {viewCat?.title} <span className="text-muted-foreground font-normal text-sm">({catListings?.length ?? 0} listings)</span>
+            </DialogTitle>
+          </DialogHeader>
+          {viewCat && (
+            <Button asChild size="sm" className="gap-1.5 self-start">
+              <a href={`/admin/categories/${viewCat.id}/order`}>
+                <ListOrdered className="h-4 w-4" /> Order these listings
+              </a>
+            </Button>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Listed in the order they appear on this category&apos;s page. Tap one to edit it.
+          </p>
+          {catListingsLoading ? (
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          ) : !catListings || catListings.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No listings in this category yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {catListings.map((l: any) => (
+                <a
+                  key={l.id}
+                  href={`/admin/listings?edit=${l.id}`}
+                  className="flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2 hover:border-primary transition-colors"
+                >
+                  {l.image_url ? (
+                    <img src={l.image_url} alt={l.title} className="h-10 w-10 rounded object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="h-10 w-10 rounded bg-muted flex-shrink-0" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-foreground truncate">{l.title}</div>
+                    {l.location && <div className="text-xs text-muted-foreground truncate">{l.location}</div>}
+                  </div>
+                  {l.is_featured && (
+                    <span className="text-[10px] uppercase tracking-wide bg-primary/10 text-primary rounded px-1.5 py-0.5">Featured</span>
+                  )}
+                </a>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="grid grid-cols-[32px_1fr_140px_120px_80px_120px] gap-3 px-3 py-2 bg-muted text-xs font-medium text-muted-foreground">
+          <div className="grid grid-cols-[32px_1fr_140px_120px_90px_210px] gap-3 px-3 py-2 bg-muted text-xs font-medium text-muted-foreground">
             <div></div>
             <div>Title</div>
             <div>Icon</div>
