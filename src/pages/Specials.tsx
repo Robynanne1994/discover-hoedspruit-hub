@@ -998,7 +998,7 @@ const FeaturedCard = ({ special, onClick }: { special: any; onClick: () => void 
             surface="plain"
             leading={
               <OfferMark
-                size={META_ICON_SIZE}
+                size={OFFER_ICON_SIZE}
                 strokeWidth={1.8}
                 color={COLOR.mutedInk}
                 style={{ flexShrink: 0, transform: `translateY(${META_ICON_NUDGE})` }}
