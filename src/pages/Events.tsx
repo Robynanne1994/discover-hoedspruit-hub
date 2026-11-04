@@ -46,6 +46,10 @@ import { pillToggle } from "@/lib/filterPill";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
 import { PILL_ICON_SIZE, PILL_ICON_NUDGE } from "@/lib/pillIcon";
 
+// One height for every pill in the filters row — the Filters button, Clear all
+// and the date pills — so none of them can sit a hair taller than its neighbours.
+const PILL_HEIGHT = 29;
+
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -825,15 +829,15 @@ const Events = () => {
   // Every filter back to its default in one press. The drawer's Clear All and
   // the pill row's Clear all both run this same list.
   const clearAllFilters = () => {
-    setTagFilter(null);
-    updateParams({ s: null });
+    // One address write, not four: each separate write is measured against the
+    // address as it stood when the press began, so only the last one would
+    // survive and the earlier filter would quietly stay switched on.
+    updateParams({ t: null, s: null, f: null, q: null });
     setPriceFilter("any");
     setDurationFilter("all");
     setBookingFilter("any");
     setRecurrenceFilter("any");
     setTimeFilter("any");
-    setActiveFilter("all");
-    setSearch("");
     setOpenSection(null);
   };
 
