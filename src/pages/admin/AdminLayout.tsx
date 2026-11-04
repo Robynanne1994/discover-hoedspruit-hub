@@ -80,12 +80,20 @@ const AdminLayout = () => {
   const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Mobile back navigation: deep pages step up to their parent section,
-  // section pages step up to the dashboard.
+  // Mobile back navigation: the dashboard steps back through history
+  // (to where the admin was before); deep pages step up to their parent
+  // section; section pages step up to the dashboard.
   const segments = location.pathname.split("/").filter(Boolean); // ["admin", ...]
   const depth = segments.length; // 1 = /admin, 2 = section, 3+ = nested
   const backPath =
     depth > 2 ? "/" + segments.slice(0, 2).join("/") : depth === 2 ? "/admin" : null;
+  const goBack = () => {
+    if (backPath) return navigate(backPath);
+    // Dashboard: history back when we arrived from somewhere in the app,
+    // otherwise the app home page.
+    if (location.key !== "default") navigate(-1);
+    else navigate("/");
+  };
   const parentTitle =
     depth > 2
       ? navItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
