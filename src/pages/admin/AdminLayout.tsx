@@ -107,6 +107,7 @@ const AdminLayout = () => {
       </div>
     );
   if (!user) return <Navigate to="/auth" />;
+  if (!isAdmin) return <Navigate to="/" />;
 
   return (
     <div className="min-h-screen flex bg-[#c5bcaa]">
