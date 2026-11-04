@@ -35,6 +35,7 @@ import AdminSearchSuggested from "./pages/admin/AdminSearchSuggested.tsx";
 import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
+import AdminSpecialsOrder from "./pages/admin/AdminSpecialsOrder.tsx";
 import AdminBushTelegraph from "./pages/admin/AdminBushTelegraph.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
