@@ -27,6 +27,7 @@ import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts, isUsableSocialLink, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
+import { formatDetailLabel } from "@/lib/detailLabel";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
 import {
@@ -104,32 +105,6 @@ const pressScale = (s = "0.98") => ({
 const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
-const SMALL_WORDS_DETAILS = new Set(["of", "for", "from", "to", "by", "a", "an"]);
-const formatDetailLabel = (s: string): string => {
-  if (!s) return s;
-  const parts = s.split(/(\s+)/);
-  let firstIdx = -1;
-  for (let i = 0; i < parts.length; i++) { if (parts[i].trim()) { firstIdx = i; break; } }
-  return parts.map((p, i) => {
-    if (!p.trim()) return p;
-    const lower = p.toLowerCase();
-    
-    // Special cases
-    if (lower === "wifi") return "WiFi";
-    if (lower === "(free)") return "(Free)";
-    if (lower === "wifi(free)") return "WiFi (Free)";
-
-    const cleaned = lower.replace(/[^a-z']/g, "");
-    if (i !== firstIdx && SMALL_WORDS_DETAILS.has(cleaned)) return lower;
-    
-    // Handle words starting with punctuation like (
-    if (p.startsWith("(")) {
-      return "(" + lower.charAt(1).toUpperCase() + lower.slice(2);
-    }
-    
-    return lower.charAt(0).toUpperCase() + lower.slice(1);
-  }).join("");
-};
 
 type TabKey = "about" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
 
