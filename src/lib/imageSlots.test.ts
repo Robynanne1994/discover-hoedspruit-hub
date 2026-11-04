@@ -8,7 +8,6 @@ import {
   SAVED_CARD_GRID,
   shellWidth,
   specialsSlideWidth,
-  SPECIALS_CARD_GRID,
 } from "./appLayout";
 import { CATEGORY_CARD_CHROME, DETAIL_HERO_CHROME, SAVED_CARD_CHROME } from "./cardChrome";
 import { CHANNEL_IMAGE_SLOTS, channelImageSlot } from "./channelImageSlots";
