@@ -274,3 +274,10 @@ export const specialMeta = (
   if (s.valid_until) return { text: countdownLabel(s), urgent };
   return { text: "", urgent };
 };
+
+// A section heading's bracketed count: "Everything Else (2 Deals)". One deal
+// reads "1 Deal", never "1 Deals". Both specials headings build their count
+// here, so the featured rail and the list below it can never word the same
+// number differently.
+export const dealCountLabel = (count: number): string =>
+  `${count} ${count === 1 ? "Deal" : "Deals"}`;
