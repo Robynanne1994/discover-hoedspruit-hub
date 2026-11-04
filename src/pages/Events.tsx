@@ -43,6 +43,8 @@ import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { pillToggle } from "@/lib/filterPill";
+import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
+import { PILL_ICON_SIZE, PILL_ICON_NUDGE } from "@/lib/pillIcon";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -806,6 +808,35 @@ const Events = () => {
     updateParams({ f: activeFilter === v || v === "all" ? null : v });
   };
 
+  // What the page is narrowed by right now, in one place, so the pill row's
+  // count and its Clear all button can never disagree with each other.
+  const filterState = {
+    dateFilter: activeFilter,
+    tagFilter,
+    priceFilter,
+    durationFilter,
+    bookingFilter,
+    recurrenceFilter,
+    timeFilter,
+  };
+  const filtersOn = hasActiveEventFilters(filterState);
+  const activeFilterCount = activeEventFilterCount(filterState);
+
+  // Every filter back to its default in one press. The drawer's Clear All and
+  // the pill row's Clear all both run this same list.
+  const clearAllFilters = () => {
+    setTagFilter(null);
+    updateParams({ s: null });
+    setPriceFilter("any");
+    setDurationFilter("all");
+    setBookingFilter("any");
+    setRecurrenceFilter("any");
+    setTimeFilter("any");
+    setActiveFilter("all");
+    setSearch("");
+    setOpenSection(null);
+  };
+
   return (
     <div
       style={{
@@ -873,24 +904,6 @@ const Events = () => {
               }}
             >
               {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
-            </button>
-            <button
-              aria-label="FILTER & SORT"
-              onClick={() => setRefineOpen(true)}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 999,
-                background: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any" || recurrenceFilter !== "any" || timeFilter !== "any") ? "#423324" : "#FFFFFF",
-                border: "1px solid rgba(0,0,0,0.06)",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                color: (tagFilter || activeFilter !== "all" || priceFilter !== "any" || durationFilter !== "all" || bookingFilter !== "any" || recurrenceFilter !== "any" || timeFilter !== "any") ? "#FFFFFF" : "#1A1A1A",
-              }}
-            >
-              <SlidersHorizontal size={18} strokeWidth={1.8} />
             </button>
           </>
         }

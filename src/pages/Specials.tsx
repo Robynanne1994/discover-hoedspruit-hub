@@ -24,6 +24,7 @@ import { pillToggle } from "@/lib/filterPill";
 import { compareSpecialDefault } from "@/lib/specialOrder";
 import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
+import { PILL_ICON_SIZE, PILL_ICON_NUDGE } from "@/lib/pillIcon";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -63,13 +64,6 @@ const VALIDITY_OPTIONS = [
 
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
-// Every pill icon wears one size and one lift, both measured from rendered
-// pixels rather than guessed: the size makes the icon's drawn ink span the
-// capital letters beside it, and the lift lands that ink on the cap band
-// instead of hanging below the text's baseline. They live here so no pill can
-// drift away from its neighbours.
-const PILL_ICON_SIZE = 10.5;
-const PILL_ICON_NUDGE = "-1.4px";
 
 const tabIcon = (tab: string) => {
   const t = tab.toLowerCase();
