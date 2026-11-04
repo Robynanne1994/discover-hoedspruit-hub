@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, MapPin, Store, Tag, UtensilsCrossed, Bed, ShoppingBag, Wrench, Percent, Home, CalendarDays, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, Clock, ArrowLeft, Store, Tag, Percent, CalendarDays, ChevronRight } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -25,6 +25,7 @@ import { compareSpecialDefault } from "@/lib/specialOrder";
 import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
 import { MUTED, tab as tabStyle, type } from "@/lib/type";
 import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
+import { specialPillIcon } from "@/lib/specialPillIcons";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -67,17 +68,10 @@ const VALIDITY_OPTIONS = [
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
 
-const tabIcon = (tab: string) => {
-  const t = tab.toLowerCase();
-  if (t.includes("restaurant") || t.includes("food") || t.includes("café") || t.includes("cafe")) return <UtensilsCrossed size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  if (t.includes("accommodation") || t.includes("stay") || t.includes("lodge") || t.includes("hotel")) return <Bed size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  if (t.includes("activity") || t.includes("adventure") || t.includes("tour") || t.includes("experience")) return <MapPin size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  if (t.includes("home") || t.includes("lifestyle") || t.includes("garden")) return <Home size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  if (t.includes("shop") || t.includes("retail") || t.includes("shopping")) return <ShoppingBag size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  if (t.includes("service") || t.includes("trade") || t.includes("business")) return <Wrench size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  if (tab === ALL_TAB) return <Percent size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-  return <Tag size={PILL_ICON_SIZE} strokeWidth={1.8} />;
-};
+// Category marks live in specialPillIcons so the rules are shared and testable;
+// the "All Specials" tab keeps its own percent mark.
+const tabIcon = (tab: string) =>
+  tab === ALL_TAB ? <Percent size={PILL_ICON_SIZE} strokeWidth={1.8} /> : specialPillIcon(tab);
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "default", label: "Default" },
