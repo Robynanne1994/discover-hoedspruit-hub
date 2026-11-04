@@ -240,7 +240,7 @@ const ContactUs = () => {
         <div style={{ display: "flex", gap: 8 }}>
           <SocialTile icon={<InstagramIcon size={22} color={INK} />} label="Instagram" href={INSTAGRAM_URL} />
           <SocialTile icon={<FacebookIcon size={22} color={INK} />} label="Facebook" href={FACEBOOK_URL} />
-          <SocialTile icon={<ThreadsIcon size={22} color={INK} />} label="Threads" href={THREADS_URL} />
+          <SocialTile icon={<Globe size={22} color={INK} strokeWidth={1.6} />} label="Website" href="https://hellohoedspruit.co/" />
         </div>
       </div>
 
