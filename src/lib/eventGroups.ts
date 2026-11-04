@@ -1,6 +1,7 @@
 // Heading groups for the events list, shared by the page and its tests so the
 // order of sections is defined in one place:
-//   • This year → one group per month ("OCTOBER")
+//   • This year → one group per month ("October"), title case like every
+//     other heading in the app
 //   • Any future year → one group carrying the year alone ("2027"), always
 //     rendered after Recurring so the near-term list stays short
 
