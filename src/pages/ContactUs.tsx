@@ -194,13 +194,6 @@ const ContactUs = () => {
             subtitle={CONTACT_PHONE}
             href={WHATSAPP_URL}
           />
-          <div style={{ height: 1, background: LINE, marginLeft: 50, marginRight: 16 }} />
-          <Row
-            icon={<Globe size={20} color={BROWN} strokeWidth={1.6} />}
-            label="Contact Form"
-            subtitle="Fill out a contact form on our website"
-            href={WEBSITE_CONTACT_URL}
-          />
         </div>
       </div>
 
