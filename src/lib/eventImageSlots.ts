@@ -55,8 +55,9 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     field: "image_url",
     label: "Card Cover Image",
     where: "The card on the Events list.",
-    // Events.tsx — EventCard row is `height: 188` with a `width: 140` image
-    // column set to `alignSelf: stretch`.
+    // Events.tsx — EventCard row is `minHeight: 188` with a `width: 140` image
+    // column set to `alignSelf: stretch`; a three-line title can make the card a
+    // few px taller, so the crop is set for the 188 case and `cover` trims the rest.
     aspect: 140 / 188,
     aspectLabel: "35:47",
     box: fixedBox(140, 188),
