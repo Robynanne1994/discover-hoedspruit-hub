@@ -46,7 +46,7 @@ const COLORS = {
  */
 const QUICK_RESULT_HEIGHT = 112;
 
-const QUICK_FILTERS = ["Open Now", "Saved", "Child-Friendly", "Pet-Friendly"];
+const QUICK_FILTERS = ["Open Now", "Saved", "Child-Friendly", "Pet-Friendly", "Wheelchair Accessible"];
 
 type ViewMode = "grid" | "list";
 type SortMode = "default" | "count" | "az";
@@ -343,7 +343,7 @@ const Categories = () => {
     queryKey: ["explore-quick-filter-listings", savedActive, savedActive ? savedListArray : "all"],
     queryFn: async () => withHoursColumns(async (hoursCols) => {
       const cols =
-        `id, title, title_override, ${LISTING_IMAGE_COLUMNS}, location, category_id, ${hoursCols}, child_friendly, good_for_kids, pets_allowed`;
+        `id, title, title_override, ${LISTING_IMAGE_COLUMNS}, location, category_id, ${hoursCols}, child_friendly, good_for_kids, pets_allowed, wheelchair_friendly, wheelchair_car_park`;
 
       // When "Saved" is active the result can only ever be a subset of the
       // user's saved listings, so fetch those rows directly by id. This is
@@ -389,8 +389,9 @@ const Categories = () => {
     return filteredListings.filter((l: any) => {
       if (hasQuickFilter("Open Now") && !isAnyOpenNow(l)) return false;
       if (hasQuickFilter("Saved") && !(savedIds?.has(l.id))) return false;
-      if (hasQuickFilter("Kid Friendly") && !l.child_friendly && !l.good_for_kids) return false;
+      if (hasQuickFilter("Child-Friendly") && !l.child_friendly && !l.good_for_kids) return false;
       if (hasQuickFilter("Pet-Friendly") && !l.pets_allowed) return false;
+      if (hasQuickFilter("Wheelchair Accessible") && !l.wheelchair_friendly && !l.wheelchair_car_park) return false;
       return true;
     });
   }, [filteredListings, activeQuick, savedIds]);
@@ -454,6 +455,18 @@ const Categories = () => {
       .sort((a, b) => (categoryIndex.rankById.get(a) ?? 0) - (categoryIndex.rankById.get(b) ?? 0))
       .map((cid) => categoryIndex.titleById.get(cid)!);
   };
+
+  // Wheelchair Accessible: restaurants, cafes and accommodation count when
+  // wheelchair_friendly is yes; shopping counts when wheelchair_car_park is yes.
+  const wheelchairOk = (listing: any): boolean => {
+    const titles = categoryTitlesFor(listing).map((t) => t.toLowerCase());
+    const dining = titles.some((t) => /restaurant|caf|accommodation|stay/.test(t));
+    const shopping = titles.some((t) => /shop/.test(t));
+    return (dining && !!listing.wheelchair_friendly) || (shopping && !!listing.wheelchair_car_park);
+  };
+  const quickResults = hasQuickFilter("Wheelchair Accessible")
+    ? (categoryIndex ? quickFilteredResults.filter(wheelchairOk) : [])
+    : quickFilteredResults;
 
   // Treat "waiting for the saved set" as loading too, otherwise the empty
   // state flashes before the saved ids resolve.
@@ -799,7 +812,7 @@ const Categories = () => {
               <p style={{ ...type.meta, margin: "4px 0 0" }}>
                 {quickLoading
                   ? "Loading..."
-                  : `${quickFilteredResults.length} ${quickFilteredResults.length === 1 ? "Result" : "Results"}`}
+                  : `${quickResults.length} ${quickResults.length === 1 ? "Result" : "Results"}`}
               </p>
             </div>
             <button
@@ -832,7 +845,7 @@ const Categories = () => {
                 <Skeleton key={i} style={{ width: "100%", height: QUICK_RESULT_HEIGHT, borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
               ))}
             </div>
-          ) : quickFilteredResults.length === 0 ? (
+          ) : quickResults.length === 0 ? (
             <div
               style={{
                 background: COLORS.card,
@@ -850,7 +863,7 @@ const Categories = () => {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {quickFilteredResults.map((listing) => (
+              {quickResults.map((listing) => (
                 <QuickResultCard
                   key={listing.id}
                   listing={listing}
