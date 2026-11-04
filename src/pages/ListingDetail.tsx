@@ -30,6 +30,7 @@ import { formatServiceLabel } from "@/lib/serviceLabels";
 import { formatDetailLabel } from "@/lib/detailLabel";
 import { restaurantDetailFields } from "@/lib/restaurantDetailFields";
 import { directionsHref as buildDirectionsHref, isSurroundsLocation } from "@/lib/locationDirections";
+import { fillActionBar } from "@/lib/actionBarFill";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import LocationMap from "@/components/LocationMap";
 import {
