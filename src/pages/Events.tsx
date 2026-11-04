@@ -72,7 +72,19 @@ const ROW_ICON = {
 } as const;
 
 // 13px text at lineHeight 1.35 -> the row's text box is 17.55px tall.
-const ROW_ICON_SIZE = 14;
+const ROW_ICON_SIZE = 18;
+// White icon sitting in a dark brown circle, sized to the row's text box.
+const ROW_ICON_DISC = {
+  flexShrink: 0,
+  width: ROW_ICON_SIZE,
+  height: ROW_ICON_SIZE,
+  borderRadius: 999,
+  background: "#423324",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  transform: "translateY(-1px)",
+} as const;
 
 
 type FilterType = "all" | "today" | "this-week" | "this-weekend" | "this-month" | "this-year" | "next-year" | "past";
@@ -326,7 +338,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <Calendar size={ROW_ICON_SIZE} strokeWidth={2.1} style={ROW_ICON} />
+            <span style={ROW_ICON_DISC}><Calendar size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
@@ -354,7 +366,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <Clock size={ROW_ICON_SIZE} strokeWidth={2.1} style={ROW_ICON} />
+            <span style={ROW_ICON_DISC}><Clock size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
@@ -382,7 +394,7 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 6,
             }}
           >
-            <MapPin size={ROW_ICON_SIZE} strokeWidth={2.1} style={ROW_ICON} />
+            <span style={ROW_ICON_DISC}><MapPin size={11} strokeWidth={2.1} color="#FFFFFF" /></span>
             <span
               style={{
                 display: "-webkit-box",
