@@ -67,7 +67,7 @@ const C = {
 const ROW_ICON = {
   flexShrink: 0,
   color: C.muted,
-  transform: "translateY(-1.5px)",
+  transform: "translateY(-2.5px)",
 } as const;
 
 
