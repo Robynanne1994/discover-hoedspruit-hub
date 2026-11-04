@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp, MoveRight } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp, MoveRight, ListOrdered } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
@@ -65,6 +65,7 @@ const AdminCategories = () => {
   const [orderedSubSubs, setOrderedSubSubs] = useState<Record<string, SubSubcategory[]>>({});
 
   const [viewSub, setViewSub] = useState<Subcategory | null>(null);
+  const [viewCat, setViewCat] = useState<Category | null>(null);
   const [alphaSort, setAlphaSort] = useState<Record<string, boolean>>({});
 
   const { data: subListings, isLoading: subListingsLoading } = useQuery({
@@ -102,6 +103,43 @@ const AdminCategories = () => {
         .order("title");
       if (error) throw error;
       return data ?? [];
+    },
+  });
+
+  const { data: catListings, isLoading: catListingsLoading } = useQuery({
+    queryKey: ["admin-category-listings", viewCat?.id],
+    enabled: !!viewCat,
+    queryFn: async () => {
+      const [{ data: junction }, { data: legacy }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id").eq("category_id", viewCat!.id),
+        supabase.from("listings").select("id").eq("category_id", viewCat!.id),
+      ]);
+      const idSet = new Set<string>();
+      (junction ?? []).forEach((r: any) => idSet.add(r.listing_id as string));
+      (legacy ?? []).forEach((r: any) => idSet.add(r.id as string));
+      const ids = Array.from(idSet);
+      if (ids.length === 0) return [] as any[];
+
+      const [{ data: listings }, { data: orderRows }] = await Promise.all([
+        supabase.from("listings").select("id, title, location, image_url, is_featured").in("id", ids),
+        supabase.from("listing_category_order").select("listing_id, position").eq("category_id", viewCat!.id),
+      ]);
+      const posMap = new Map<string, number>();
+      (orderRows ?? []).forEach((r: any) => posMap.set(r.listing_id as string, r.position as number));
+
+      const rows: any[] = listings ?? [];
+      // Same arrangement the category page uses: featured first, then the
+      // saved order, then anything not placed yet, alphabetical.
+      rows.sort((a, b) => {
+        if (!!b.is_featured !== !!a.is_featured) return (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0);
+        const ap = posMap.get(a.id);
+        const bp = posMap.get(b.id);
+        if (ap != null && bp != null) return ap - bp;
+        if (ap != null) return -1;
+        if (bp != null) return 1;
+        return (a.title ?? "").localeCompare(b.title ?? "");
+      });
+      return rows;
     },
   });
 
@@ -601,7 +639,9 @@ const AdminCategories = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <div>
           <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Categories</h1>
-          <p className="text-sm text-muted-foreground mt-1">Drag to reorder or nest between levels.</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Drag the handle to move a category. Tap the listings count to see what is inside, or Order to set the order listings appear in.
+          </p>
         </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
@@ -728,11 +768,60 @@ const AdminCategories = () => {
         </DialogContent>
       </Dialog>
 
+      {/* View category listings dialog */}
+      <Dialog open={!!viewCat} onOpenChange={(v) => { if (!v) setViewCat(null); }}>
+        <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {viewCat?.title} <span className="text-muted-foreground font-normal text-sm">({catListings?.length ?? 0} listings)</span>
+            </DialogTitle>
+          </DialogHeader>
+          {viewCat && (
+            <Button asChild size="sm" className="gap-1.5 self-start">
+              <a href={`/admin/categories/${viewCat.id}/order`}>
+                <ListOrdered className="h-4 w-4" /> Order these listings
+              </a>
+            </Button>
+          )}
+          <p className="text-xs text-muted-foreground">
+            Listed in the order they appear on this category&apos;s page. Tap one to edit it.
+          </p>
+          {catListingsLoading ? (
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          ) : !catListings || catListings.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No listings in this category yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {catListings.map((l: any) => (
+                <a
+                  key={l.id}
+                  href={`/admin/listings?edit=${l.id}`}
+                  className="flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2 hover:border-primary transition-colors"
+                >
+                  {l.image_url ? (
+                    <img src={l.image_url} alt={l.title} className="h-10 w-10 rounded object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="h-10 w-10 rounded bg-muted flex-shrink-0" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-foreground truncate">{l.title}</div>
+                    {l.location && <div className="text-xs text-muted-foreground truncate">{l.location}</div>}
+                  </div>
+                  {l.is_featured && (
+                    <span className="text-[10px] uppercase tracking-wide bg-primary/10 text-primary rounded px-1.5 py-0.5">Featured</span>
+                  )}
+                </a>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="grid grid-cols-[32px_1fr_140px_120px_80px_120px] gap-3 px-3 py-2 bg-muted text-xs font-medium text-muted-foreground">
+          <div className="grid grid-cols-[32px_1fr_140px_120px_90px_210px] gap-3 px-3 py-2 bg-muted text-xs font-medium text-muted-foreground">
             <div></div>
             <div>Title</div>
             <div>Icon</div>
@@ -777,6 +866,7 @@ const AdminCategories = () => {
                     onToggle={() => setExpandedCat(isExpanded ? null : cat.id)}
                     onEdit={() => openEdit(cat)}
                     onDelete={() => deleteMut.mutate(cat.id)}
+                    onViewListings={() => setViewCat(cat)}
                   >
                     {isExpanded && (
                       <div className="bg-muted/30 px-4 py-3 border-t border-border">
@@ -901,6 +991,7 @@ const SortableCategoryRow = ({
   onToggle,
   onEdit,
   onDelete,
+  onViewListings,
   children,
 }: {
   cat: Category;
@@ -910,6 +1001,7 @@ const SortableCategoryRow = ({
   onToggle: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onViewListings: () => void;
   children?: React.ReactNode;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `cat:${cat.id}` });
@@ -920,8 +1012,13 @@ const SortableCategoryRow = ({
   };
   return (
     <div ref={setNodeRef} style={style} className="border-t border-border">
-      <div className="grid grid-cols-[32px_1fr_140px_120px_80px_120px] gap-3 items-center px-3 py-2.5">
-        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+      <div className="grid grid-cols-[32px_1fr_140px_120px_90px_210px] gap-3 items-center px-3 py-2.5">
+        <button
+          {...attributes}
+          {...listeners}
+          title="Drag to move this category"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+        >
           <GripVertical className="h-4 w-4" />
         </button>
         <button type="button" className="flex items-center gap-1 hover:text-primary text-left font-medium text-foreground" onClick={onToggle}>
@@ -931,17 +1028,25 @@ const SortableCategoryRow = ({
         </button>
         <div className="text-sm text-muted-foreground truncate">{cat.icon}</div>
         <div className="text-sm text-muted-foreground">{cat.is_quick_category ? "Quick" : "Featured"}</div>
-        <div className="text-sm text-muted-foreground">{listingCount}</div>
+        <button
+          type="button"
+          onClick={onViewListings}
+          title="See the listings in this category"
+          className="text-sm text-primary underline decoration-dotted underline-offset-4 hover:decoration-solid text-left"
+        >
+          {listingCount}
+        </button>
         <div className="flex gap-1 justify-end">
-          <Button variant="ghost" size="icon" onClick={onEdit}>
+          <Button variant="ghost" size="icon" onClick={onEdit} title="Edit this category">
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" asChild title="Order listings">
-            <a href={`/admin/categories/${cat.id}/order`}>
-              <ArrowDownUp className="h-4 w-4" />
+          <Button variant="ghost" size="sm" asChild title="Change the order listings appear in on this category's page">
+            <a href={`/admin/categories/${cat.id}/order`} className="gap-1.5 px-2.5">
+              <ListOrdered className="h-4 w-4" />
+              <span className="text-xs">Order</span>
             </a>
           </Button>
-          <Button variant="ghost" size="icon" onClick={onDelete}>
+          <Button variant="ghost" size="icon" onClick={onDelete} title="Delete this category">
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
