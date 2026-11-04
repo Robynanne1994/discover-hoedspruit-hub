@@ -920,8 +920,13 @@ const SortableCategoryRow = ({
   };
   return (
     <div ref={setNodeRef} style={style} className="border-t border-border">
-      <div className="grid grid-cols-[32px_1fr_140px_120px_80px_120px] gap-3 items-center px-3 py-2.5">
-        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+      <div className="grid grid-cols-[32px_1fr_140px_120px_90px_210px] gap-3 items-center px-3 py-2.5">
+        <button
+          {...attributes}
+          {...listeners}
+          title="Drag to move this category"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+        >
           <GripVertical className="h-4 w-4" />
         </button>
         <button type="button" className="flex items-center gap-1 hover:text-primary text-left font-medium text-foreground" onClick={onToggle}>
@@ -931,17 +936,25 @@ const SortableCategoryRow = ({
         </button>
         <div className="text-sm text-muted-foreground truncate">{cat.icon}</div>
         <div className="text-sm text-muted-foreground">{cat.is_quick_category ? "Quick" : "Featured"}</div>
-        <div className="text-sm text-muted-foreground">{listingCount}</div>
+        <button
+          type="button"
+          onClick={onViewListings}
+          title="See the listings in this category"
+          className="text-sm text-primary underline decoration-dotted underline-offset-4 hover:decoration-solid text-left"
+        >
+          {listingCount}
+        </button>
         <div className="flex gap-1 justify-end">
-          <Button variant="ghost" size="icon" onClick={onEdit}>
+          <Button variant="ghost" size="icon" onClick={onEdit} title="Edit this category">
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" asChild title="Order listings">
-            <a href={`/admin/categories/${cat.id}/order`}>
-              <ArrowDownUp className="h-4 w-4" />
+          <Button variant="ghost" size="sm" asChild title="Change the order listings appear in on this category's page">
+            <a href={`/admin/categories/${cat.id}/order`} className="gap-1.5 px-2.5">
+              <ListOrdered className="h-4 w-4" />
+              <span className="text-xs">Order</span>
             </a>
           </Button>
-          <Button variant="ghost" size="icon" onClick={onDelete}>
+          <Button variant="ghost" size="icon" onClick={onDelete} title="Delete this category">
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
