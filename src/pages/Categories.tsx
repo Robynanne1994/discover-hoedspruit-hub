@@ -172,22 +172,22 @@ const QuickResultCard = ({
                 <Tag size={10} strokeWidth={2} style={{ flexShrink: 0, marginTop: categoriesWrap ? 1.5 : 0 }} />
                 <span
                   style={
-                  categoriesWrap
-                    ? {
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: "vertical",
-                        overflowWrap: "anywhere",
-                        overflow: "hidden",
-                        minWidth: 0,
-                      }
-                    : {
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        minWidth: 0,
-                      }
-                }
+                    categoriesWrap
+                      ? {
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflowWrap: "anywhere",
+                          overflow: "hidden",
+                          minWidth: 0,
+                        }
+                      : {
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          minWidth: 0,
+                        }
+                  }
                 >
                   {cardCategories.join(" · ")}
                 </span>
@@ -849,14 +849,13 @@ const Categories = () => {
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-{quickFilteredResults.map((listing) => (
+              {quickFilteredResults.map((listing) => (
                 <QuickResultCard
                   key={listing.id}
                   listing={listing}
                   cardCategories={categoryTitlesFor(listing)}
                 />
               ))}
-              })}
             </div>
           )}
         </div>
