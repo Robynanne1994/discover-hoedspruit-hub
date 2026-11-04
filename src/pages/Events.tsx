@@ -75,7 +75,7 @@ const FILTERS: { label: string; value: FilterType }[] = [
   { label: "This Month", value: "this-month" },
   { label: "This Year", value: "this-year" },
   { label: String(NEXT_YEAR), value: "next-year" },
-  { label: "Past", value: "past" },
+  { label: "Past Month", value: "past" },
 ];
 
 // Weekend = Saturday + Sunday of the current ISO week (Mon-start).
@@ -142,13 +142,16 @@ function recurrenceLabel(rule: any): string | null {
 }
 
 
-function eventDateLine(e: any): string {
+// The list card shows the date and the time on their own rows, so the two parts
+// are settled here rather than joined into one line.
+function eventDateParts(e: any): { date: string; time: string } {
   if (hasPerformances(e)) {
     const next = getNextOccurrence(e);
     if (next) {
-      const time = next.startTime ? fmtTime(next.startTime) : "";
-      const datePart = format(next.date, "d MMM");
-      return time ? `${datePart} • ${time}` : datePart;
+      return {
+        date: format(next.date, "d MMM"),
+        time: next.startTime ? fmtTime(next.startTime) : "",
+      };
     }
   }
   const rule = parseRecurrenceRule(e.recurrence);
@@ -156,17 +159,16 @@ function eventDateLine(e: any): string {
     const next = getNextOccurrence(e);
     const time = next?.startTime ? fmtTime(next.startTime) : fmtTime(e.start_time);
     const datePart = recurrenceLabel(rule) ?? (next ? `Next: ${format(next.date, "d MMM")}` : "");
-    if (datePart) return time ? `${datePart} • ${time}` : datePart;
+    if (datePart) return { date: datePart, time };
   }
 
   const { start, end } = getEventDates(e);
-  if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
+  if (!start) return { date: (e.date || "").replace(/<[^>]*>/g, "").trim(), time: "" };
   const sameDay = !end || start.getTime() === end.getTime();
   const dPart = sameDay
     ? format(start, "d MMM")
     : `${format(start, "d")} – ${format(end!, "d MMM")}`;
-  const time = sameDay ? fmtTime(e.start_time) : "";
-  return time ? `${dPart} • ${time}` : dPart;
+  return { date: dPart, time: sameDay ? fmtTime(e.start_time) : "" };
 }
 
 function eventMoreDatesLine(e: any): string | null {
@@ -204,7 +206,7 @@ const EventCard = ({ event }: { event: any }) => {
   const navigate = useNavigate();
   const loc = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
   const price = formatPrice(event.price);
-  const dateLine = eventDateLine(event);
+  const { date: datePart, time: timePart } = eventDateParts(event);
   const image = eventImage(event, "card");
 
   return (
