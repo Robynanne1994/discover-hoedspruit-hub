@@ -8,6 +8,7 @@ import {
   PREVIEW_VIEWPORTS,
   SAVED_CARD_GRID,
   shellWidth,
+  specialsSlideWidth,
   SPECIALS_CARD_GRID,
 } from "./appLayout";
 import { CATEGORY_CARD_CHROME, DETAIL_HERO_CHROME, SAVED_CARD_CHROME } from "./cardChrome";
