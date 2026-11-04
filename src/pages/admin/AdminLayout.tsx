@@ -89,9 +89,9 @@ const AdminLayout = () => {
     depth > 2 ? "/" + segments.slice(0, 2).join("/") : depth === 2 ? "/admin" : null;
   const goBack = () => {
     if (backPath) return navigate(backPath);
-    // Dashboard: history back when we arrived from somewhere in the app,
-    // otherwise the app home page.
-    if (location.key !== "default") navigate(-1);
+    // Dashboard: step back through history to where the admin was before,
+    // or the app home page when there is nothing to go back to.
+    if (window.history.length > 1) navigate(-1);
     else navigate("/");
   };
   const parentTitle =
