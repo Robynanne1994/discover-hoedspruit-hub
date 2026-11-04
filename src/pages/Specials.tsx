@@ -460,7 +460,7 @@ const Specials = () => {
             {rest.length > 0 && (
               <>
                 <SectionHead
-                  label={activeTab === UPCOMING_TAB ? "Upcoming" : featured.length > 0 ? "Everything else" : "All deals"}
+                  label={activeTab === UPCOMING_TAB ? "Upcoming" : featured.length > 0 ? "Everything Else" : "All Deals"}
                   right={`${rest.length} ${rest.length === 1 ? "Deal" : "Deals"}`}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
@@ -707,8 +707,7 @@ const SectionHead = ({
     style={{
       display: "flex",
       alignItems: "center",
-      justifyContent: "space-between",
-      gap: 12,
+      gap: 10,
       marginBottom: 10,
     }}
   >
@@ -716,18 +715,27 @@ const SectionHead = ({
       {icon}
       <span
         style={{
-          fontFamily: SANS,
-          ...type.label,
-          textTransform: "uppercase",
-          color: COLOR.pillActiveBg,
+          ...type.sectionTitle,
+          whiteSpace: "nowrap",
         }}
       >
         {label}
       </span>
     </span>
     {right ? (
-      <span style={{ ...type.meta, flexShrink: 0 }}>{right}</span>
+      <span
+        style={{
+          fontFamily: SANS,
+          fontWeight: 400,
+          fontSize: 16,
+          color: COLOR.mutedInk,
+          flexShrink: 0,
+        }}
+      >
+        ({right})
+      </span>
     ) : null}
+    <span style={{ flex: 1, height: 1, background: COLOR.pillActiveBg }} />
   </div>
 );
 
@@ -778,7 +786,7 @@ const FeaturedSection = ({
     <section style={{ marginBottom: 24 }}>
       <SectionHead
         icon={<Star size={13} strokeWidth={1.8} color={COLOR.pillActiveBg} />}
-        label="TOP ACTIVE DEALS"
+        label="Top Active Deals"
         right={isCarousel ? `${index + 1} / ${items.length}` : undefined}
       />
 
