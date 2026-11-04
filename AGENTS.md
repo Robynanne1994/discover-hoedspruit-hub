@@ -7,7 +7,7 @@
 - Use the shared InstagramIcon for every Instagram symbol so its camera outline stays consistent while inheriting the placement's brand colour.
 - Keep restaurant meal choices and option exclusions in restaurantOptions so the editor, CSV references and filters agree.
 - Keep event category collection, matching and per-event counting in eventTags so all three tags use consistent filter rules.
-- Keep events list heading grouping and section order in eventGroups so the page, its tests and any future view share one rule.
+- Keep events list heading grouping and section order in eventGroups so the page, its tests and any future view share one rule; month headings stay title case ("October"), never uppercased.
 - Keep event duration bucketing and booking-required judgement, plus their per-option counts, in eventDuration so filter pills and the filtered list agree; an event with no booking link is booking not required.
 - Keep event price matching and free/paid counts in eventPrice so the drawer counts and filtered results agree; an event with no price populated is free.
 
