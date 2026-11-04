@@ -31,7 +31,7 @@
 - Keep every event host on the event page in one shared card with hairline dividers, never one card per host.
 - Keep a slot's subject rulers in its own definition as rulerBandGuides, in the slot's own box px, so crop tool and thumbnail draw the same pair.
 - Measure crop guides from layout px (offsetWidth), never getBoundingClientRect, so a dialog's zoom animation cannot leave guides stuck at its scale.
-- Keep the featured deal card's deal line in an accent-wash chip with its mark inside, plus a chevron at the panel's right edge.
+- Keep the featured deal card's deal line in an accent-wash chip with words only, no mark, plus a chevron at the panel's right edge.
 - Keep admin category rows unambiguous: the drag handle moves a category, the listings count opens its listings, the labelled Order button alone reaches the per-category order page.
 - Keep listing detail-row label casing in detailLabel's formatDetailLabel: every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the whole label's first letter.
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and shown on the About tab under "Good to know", never as Details cards; a listing whose only detail was custom has no Details tab.
@@ -47,7 +47,6 @@
 - Keep the gap under the events carousels equal to the gap above the events list below; adjust the shared value, not one gap alone.
 - Keep the specials page's section headings on the events page's group-heading treatment; the featured heading has no icon or hairline, the list keeps its brown hairline, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
-- Let a deal card's offer mark inherit its colour from SpecialValueBar's left slot, never its own, so it always matches the words beside it.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION and FEATURED_PHOTO_RATIO (specialImageSlots) so the card and its editor crop box agree.
 - Keep pill icons and the filter-count digit on the pillIcon constants; keep the listed event card's three rows on one shared set in Events.tsx (ROW_FONT_SIZE, ROW_LINE_HEIGHT, ROW_GAP, ROW_ICON_SIZE, ROW_GLYPH_SIZE).
 - Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
