@@ -1378,11 +1378,19 @@ const CategoryPage = () => {
               {p.label}{listings ? ` (${p.n})` : ""}
             </button>
           )))}
-          {/health/i.test(category?.title || "") && ["Hospitals", "GPs", "Pharmacies", "Dentists", "Clinics"].map((name) => {
-            const opt = subOptions.find((o) =>
-              o.label.toLowerCase() === name.toLowerCase() ||
-              o.subIds.some((sid) => (subcategories || []).find((s: any) => s.id === sid)?.title?.toLowerCase() === name.toLowerCase()),
-            );
+          {(/emergency/i.test(category?.title || "")
+            ? [["Hospitals"], ["Ambulances", "Ambulance"], ["Emergency Aviation"], ["Police & Community", "Police & Community Safety"], ["Wildlife Emergencies"], ["Fire & Rescue"]]
+            : /health/i.test(category?.title || "")
+              ? [["Hospitals"], ["GPs"], ["Pharmacies"], ["Dentists"], ["Clinics"]]
+              : []
+          ).map(([name, ...aliases]) => {
+            const names = [name, ...aliases].map((x) => x.toLowerCase());
+            const opt = subOptions
+              .filter((o) =>
+                names.includes(o.label.toLowerCase()) ||
+                o.subIds.some((sid) => names.includes(((subcategories || []).find((s: any) => s.id === sid)?.title || "").toLowerCase())),
+              )
+              .sort((a, b) => subCountFor(b) - subCountFor(a))[0];
             if (!opt) return null;
             const on = activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId));
             const n = subCountFor(opt);
