@@ -249,6 +249,75 @@ const CategoryPage = () => {
   const [filterVibe, setFilterVibe] = useState<string[]>(persisted?.filterVibe ?? []);
   const [filterMeal, setFilterMeal] = useState<string[]>(persisted?.filterMeal ?? []);
   const [filterSeating, setFilterSeating] = useState<string[]>(persisted?.filterSeating ?? []);
+  // Faceted filtering: each option list counts against the listings that
+  // already pass every other active filter, so the drawer never offers a
+  // choice that would leave no results. "Any of" sections skip their own
+  // filter; "all of" sections (yes/no ticks) count with it applied.
+  const passesFilters = (l: any, skip?: string): boolean => {
+    const anyOf = (vals: unknown, picked: string[]) => {
+      const have = ((vals as string[]) || []).map((v) => (v || "").trim().toLowerCase());
+      return picked.some((p) => have.includes(p.toLowerCase()));
+    };
+    const scalar = (v: unknown) => String(v ?? "").trim().toLowerCase();
+    if (sortBy === "rating" && !hasGoogleRating(l)) return false;
+    if (skip !== "cuisine" && filterCuisine.length > 0 && !anyOf(l.cuisine, filterCuisine)) return false;
+    if (skip !== "vibe" && filterVibe.length > 0 && !anyOf(l.vibe, filterVibe)) return false;
+    if (skip !== "meal" && filterMeal.length > 0 && !anyOf(l.meal, filterMeal)) return false;
+    if (skip !== "foods" && filterFoods.length > 0 && !anyOf(l.foods, filterFoods)) return false;
+    if (skip !== "service_type" && filterServiceType.length > 0 && !anyOf(l.service_type, filterServiceType)) return false;
+    if (skip !== "seating" && filterSeating.length > 0 && !anyOf(l.seating, filterSeating)) return false;
+    if (filterKids.length > 0 && !filterKids.every((k) => l[k] === true)) return false;
+    if (filterDrinks.length > 0 && !filterDrinks.every((k) => l[k] === true)) return false;
+    if (filterAccessibility.length > 0 && !filterAccessibility.every((k) => l[k] === true)) return false;
+    if (filterChildFriendly && !l.good_for_kids && !l.child_friendly) return false;
+    if (filterPetFriendly && !l.pets_allowed) return false;
+    if (filterWheelchair && !l.wheelchair_friendly) return false;
+    if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
+    if (filterOpenNow && !isAnyOpenNow(l)) return false;
+    if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
+    if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
+    if (skip !== "km" && filterMaxKm < MAX_KM) {
+      const raw = l.km_from_town;
+      const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
+      if (!Number.isFinite(km) || km > filterMaxKm) return false;
+    }
+    if (skip !== "property_type" && filterPropertyTypes.length > 0) {
+      const pt = scalar(l.property_type);
+      if (!pt || !filterPropertyTypes.some((t) => t.toLowerCase() === pt)) return false;
+    }
+    if (skip !== "min_nights" && filterMinNights.length > 0) {
+      // An empty minimum stay counts as one night.
+      const mn = Number(l.min_nights) || 1;
+      if (!filterMinNights.some((n) => mn <= n)) return false;
+    }
+    if (skip !== "grading" && filterGrading.length > 0 && !filterGrading.includes(Number(l.star_rating) || 0)) return false;
+    if (skip !== "shop_type" && filterShopTypes.length > 0) {
+      const st = scalar(l.shop_type);
+      if (!st || !filterShopTypes.includes(st)) return false;
+    }
+    if (skip !== "price_range" && filterPriceRanges.length > 0) {
+      const pr = scalar(l.price_range);
+      if (!pr || !filterPriceRanges.includes(pr)) return false;
+    }
+    if (skip !== "product_categories" && filterProductCategories.length > 0 && !anyOf(l.primary_product_categories, filterProductCategories)) return false;
+    if (filterShopServices.length > 0 && !filterShopServices.every((k) => l[k] === true)) return false;
+    if (filterAccomAmenities.length > 0 && !filterAccomAmenities.every((k) => l[k] === true)) return false;
+    return true;
+  };
+  const poolFor = (skip?: string): any[] => (listings || []).filter((l: any) => passesFilters(l, skip));
+  const countValues = (field: string, pool: any[]) => {
+    const m = new Map<string, number>();
+    pool.forEach((l) => {
+      const seen = new Set<string>();
+      ((l[field] as string[]) || []).forEach((v) => { const k = (v || "").trim().toLowerCase(); if (k) seen.add(k); });
+      seen.forEach((k) => m.set(k, (m.get(k) || 0) + 1));
+    });
+    return m;
+  };
+  const cuisineCounts = countValues("cuisine", poolFor("cuisine"));
+  const vibeCounts = countValues("vibe", poolFor("vibe"));
+  const mealCounts = countValues("meal", poolFor("meal"));
+
   // Restaurant & cafe facets
   const [filterFoods, setFilterFoods] = useState<string[]>(persisted?.filterFoods ?? []);
   const [filterServiceType, setFilterServiceType] = useState<string[]>(persisted?.filterServiceType ?? []);
@@ -726,9 +795,9 @@ const CategoryPage = () => {
 
   // Restaurant & cafe facets, all derived from what the listings actually carry
   // so that values added later show up as filters on their own.
-  const arrayFacetOptions = (field: string) => {
+  const arrayFacetOptions = (field: string, picked: string[]) => {
     if (!isRestaurant || !listings) return [];
-    const counts = new Map<string, number>();
+    const counts = countValues(field, poolFor(field));
     const labels = new Map<string, string>();
     (listings as any[]).forEach((l) => {
       (l[field] || []).forEach((raw: string) => {
@@ -736,8 +805,8 @@ const CategoryPage = () => {
         if (!val) return;
         if (!isRestaurantOptionAllowed(field, val)) return;
         const key = val.toLowerCase();
+        if (!(counts.get(key) || picked.some((p) => p.toLowerCase() === key))) return;
         if (!labels.has(key)) labels.set(key, formatServiceLabel(val));
-        counts.set(key, (counts.get(key) || 0) + 1);
       });
     });
     return Array.from(labels.entries())
@@ -745,22 +814,23 @@ const CategoryPage = () => {
       .map(([key, label]) => ({ value: key, label: withCount(label, counts.get(key)) }));
   };
 
-  const boolFacetOptions = (opts: { key: string; label: string }[]) => {
+  const boolFacetOptions = (opts: { key: string; label: string }[], picked: string[]) => {
     if (!isRestaurant || !listings) return [];
+    const pool = poolFor();
     return opts
       .map(({ key, label }) => {
-        const count = (listings as any[]).filter((l) => l[key] === true).length;
+        const count = pool.filter((l) => l[key] === true).length;
         return { key, label: withCount(label, count), count };
       })
-      .filter((o) => o.count > 0);
+      .filter((o) => o.count > 0 || picked.includes(o.key));
   };
 
-  const foodsOptions = useMemo(() => arrayFacetOptions("foods"), [isRestaurant, listings]);
-  const serviceTypeOptions = useMemo(() => arrayFacetOptions("service_type"), [isRestaurant, listings]);
-  const seatingOptions = useMemo(() => arrayFacetOptions("seating"), [isRestaurant, listings]);
-  const kidsOptions = useMemo(() => boolFacetOptions(KIDS_OPTIONS), [isRestaurant, listings]);
-  const drinkOptions = useMemo(() => boolFacetOptions(DRINK_OPTIONS), [isRestaurant, listings]);
-  const accessibilityOptions = useMemo(() => boolFacetOptions(ACCESSIBILITY_OPTIONS), [isRestaurant, listings]);
+  const foodsOptions = arrayFacetOptions("foods", filterFoods);
+  const serviceTypeOptions = arrayFacetOptions("service_type", filterServiceType);
+  const seatingOptions = arrayFacetOptions("seating", filterSeating);
+  const kidsOptions = boolFacetOptions(KIDS_OPTIONS, filterKids);
+  const drinkOptions = boolFacetOptions(DRINK_OPTIONS, filterDrinks);
+  const accessibilityOptions = boolFacetOptions(ACCESSIBILITY_OPTIONS, filterAccessibility);
 
 
   // Accommodation filter options derived from what is actually in use.
@@ -903,82 +973,7 @@ const CategoryPage = () => {
       if (q) {
         return (l.title || "").toLowerCase().includes(q);
       }
-      if (filterCuisine.length > 0) {
-        const lc = (l.cuisine || []).map((c) => c.toLowerCase());
-        if (!filterCuisine.some((c) => lc.includes(c.toLowerCase()))) return false;
-      }
-      if (filterVibe.length > 0) {
-        const lv = (l.vibe || []).map((v) => v.toLowerCase());
-        if (!filterVibe.some((v) => lv.includes(v.toLowerCase()))) return false;
-      }
-      if (filterMeal.length > 0) {
-        const lm = (l.meal || []).map((m) => m.toLowerCase());
-        if (!filterMeal.some((m) => lm.includes(m.toLowerCase()))) return false;
-      }
-      if (filterFoods.length > 0) {
-        const lf = ((l as any).foods || []).map((f: string) => f.toLowerCase());
-        if (!filterFoods.some((f) => lf.includes(f.toLowerCase()))) return false;
-      }
-      if (filterServiceType.length > 0) {
-        const lst = ((l as any).service_type || []).map((s: string) => s.toLowerCase());
-        if (!filterServiceType.some((s) => lst.includes(s.toLowerCase()))) return false;
-      }
-      if (filterKids.length > 0 && !filterKids.every((k) => (l as any)[k] === true)) return false;
-      if (filterDrinks.length > 0 && !filterDrinks.every((k) => (l as any)[k] === true)) return false;
-      if (filterAccessibility.length > 0 && !filterAccessibility.every((k) => (l as any)[k] === true)) return false;
-      if (filterSeating.length > 0) {
-        const ls = (l.seating || []).map((s) => s.toLowerCase());
-        if (!filterSeating.some((s) => ls.includes(s.toLowerCase()))) return false;
-      }
-      if (filterChildFriendly && !l.good_for_kids && !l.child_friendly) return false;
-      if (filterPetFriendly && !l.pets_allowed) return false;
-      if (filterWheelchair && !l.wheelchair_friendly) return false;
-      if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
-      if (filterOpenNow && !isAnyOpenNow(l)) return false;
-      if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
-      if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
-      if (filterMaxKm < MAX_KM) {
-        const raw = (l as any).km_from_town;
-        const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(",", ".").replace(/[^0-9.]/g, ""));
-        if (!Number.isFinite(km) || km > filterMaxKm) return false;
-      }
-      if (filterPropertyTypes.length > 0) {
-        const pt = ((l as any).property_type || "").trim().toLowerCase();
-        if (!pt || !filterPropertyTypes.some((t) => t.toLowerCase() === pt)) return false;
-      }
-      if (filterMinNights.length > 0) {
-        // A place qualifies if its minimum stay fits within any selected
-        // maximum — an empty value is treated as a 1-night minimum.
-        const mn = Number((l as any).min_nights) || 1;
-        if (!filterMinNights.some((n) => mn <= n)) return false;
-      }
-      if (filterGrading.length > 0) {
-        const sr = Number((l as any).star_rating) || 0;
-        if (!filterGrading.includes(sr)) return false;
-      }
-      if (filterShopTypes.length > 0) {
-        const st = ((l as any).shop_type || "").trim().toLowerCase();
-        if (!st || !filterShopTypes.includes(st)) return false;
-      }
-      if (filterPriceRanges.length > 0) {
-        const pr = ((l as any).price_range || "").trim().toLowerCase();
-        if (!pr || !filterPriceRanges.includes(pr)) return false;
-      }
-      if (filterProductCategories.length > 0) {
-        const pcs = ((((l as any).primary_product_categories as string[]) || []))
-          .map((v) => (v || "").trim().toLowerCase());
-        if (!filterProductCategories.some((v) => pcs.includes(v))) return false;
-      }
-
-
-      if (filterShopServices.length > 0) {
-        if (!filterShopServices.every((k) => (l as any)[k] === true)) return false;
-      }
-      if (filterAccomAmenities.length > 0) {
-        // Every selected amenity must be present on the listing.
-        if (!filterAccomAmenities.every((k) => (l as any)[k] === true)) return false;
-      }
-      return true;
+      return passesFilters(l);
     });
 
 
