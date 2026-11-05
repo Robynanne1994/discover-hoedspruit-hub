@@ -1392,7 +1392,7 @@ const CategoryPage = () => {
 
       {/* Results heading once anything is narrowed: one filter names itself. */}
       {(filtersOn || search.trim()) && (
-        <h2 style={{ fontFamily: NOHEMI, fontSize: 24, fontWeight: 550, color: "#1A1A1A", margin: "16px 20px 12px", lineHeight: 1.2, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+        <h2 style={{ fontFamily: NOHEMI, fontSize: 24, fontWeight: 550, color: "#1A1A1A", margin: "42px 20px 14px", lineHeight: 1.2, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
           {appliedChips.length === 1 && !search.trim() ? appliedChips[0].label : "Listings"}
           {!isLoading && <span style={{ color: TOKEN_MUTED, fontWeight: 400, fontSize: 16, fontFamily: sans, lineHeight: 1, transform: "translateY(1px)" }}>({filteredListings.length})</span>}
         </h2>
