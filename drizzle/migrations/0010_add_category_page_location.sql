@@ -1,0 +1,2 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS category_page_location text;
+COMMENT ON COLUMN public.listings.category_page_location IS 'Optional shorter location shown on category page cards; falls back to location when blank.';
