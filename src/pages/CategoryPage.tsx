@@ -1965,7 +1965,7 @@ const CategoryPage = () => {
                     wordBreak: "break-word",
                   }}
                   eyebrow={eyebrow}
-                  location={l.location}
+                  location={(l as any).category_page_location?.trim() || l.location}
                   listing={l}
                 />
 

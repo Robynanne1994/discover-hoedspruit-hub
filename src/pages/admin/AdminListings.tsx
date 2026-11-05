@@ -495,6 +495,7 @@ const AdminListings = () => {
         saved_image_url: (values.saved_image_url || "").trim() || null,
         search_image_url: (values.search_image_url || "").trim() || null,
         location: values.location || null,
+        category_page_location: values.category_page_location?.trim() || null,
         phone: values.phone || null,
         phone_label: (values.phone_label || "").trim() || null,
         email: values.email || null,
@@ -806,6 +807,7 @@ const AdminListings = () => {
       homepage_image_url: (l as any).homepage_image_url ?? "",
       search_image_url: (l as any).search_image_url ?? "",
       location: l.location ?? "",
+      category_page_location: (l as any).category_page_location ?? "",
       phone: l.phone ?? "",
       phone_label: (l as any).phone_label ?? "",
       email: l.email ?? "",
@@ -1361,6 +1363,7 @@ const AdminListings = () => {
                 </div>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
+                  <div><Label>Category Page Location</Label><Input value={form.category_page_location ?? ""} placeholder="Optional shorter location for category page cards" onChange={(e) => setForm({ ...form, category_page_location: e.target.value })} /></div>
                   <div>
                     <Label>KM from Town</Label>
                     <Input

@@ -27,6 +27,7 @@ export const LISTING_FIELD_SPECS = {
   detail_image_url: { type: "str" },
   gallery_images: { type: "str_array" },
   location: { type: "str" },
+  category_page_location: { type: "str" },
 
   // ---------- Universal: contacts ----------
   phone: { type: "str" },
@@ -202,6 +203,7 @@ export const UNIVERSAL_FIELDS = [
   // Images (image_url, detail_image_url, gallery_images) are deliberately absent:
   // they are managed in the backend editor only and never travel via CSV.
   "location",
+  "category_page_location",
   "km_from_town",
   "phone", "phone_label", "email", "email_label",
   "website", "website_label", "whatsapp", "whatsapp_label",
