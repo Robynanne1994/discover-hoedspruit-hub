@@ -15,7 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { formatEventDateRange } from "@/lib/eventDates";
 import { mergeFeaturedFirst } from "@/lib/featuredFirst";
-import { categoryMatchesTerm, rankSmartResults } from "@/lib/smartSearch";
+import { categoryMatchesTerm, rankSmartResults, titleSearchRegex } from "@/lib/smartSearch";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -570,7 +570,7 @@ const ListingsResults = ({ query }: { query: string }) => {
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(term ? 50 : SUGGESTED_LIMIT);
-      if (term) q = q.ilike("title", `%${term}%`);
+      if (term) q = titleSearchRegex(term) ? q.filter("title", "imatch", titleSearchRegex(term)) : q.ilike("title", `%${term}%`);
       const { data, error } = await q;
       if (error) throw error;
       if (!term) return data || [];
@@ -629,7 +629,7 @@ const EventsResults = ({ query }: { query: string }) => {
         .order("is_featured", { ascending: false })
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
-      if (term) q = q.ilike("title", `%${term}%`);
+      if (term) q = titleSearchRegex(term) ? q.filter("title", "imatch", titleSearchRegex(term)) : q.ilike("title", `%${term}%`);
       const { data, error } = await q;
       if (error) throw error;
       return data || [];
@@ -672,7 +672,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(term ? 50 : 10);
-      if (term) q = q.ilike("title", `%${term}%`);
+      if (term) q = titleSearchRegex(term) ? q.filter("title", "imatch", titleSearchRegex(term)) : q.ilike("title", `%${term}%`);
       const { data, error } = await q;
       if (error) throw error;
       return data || [];
@@ -713,7 +713,7 @@ const ChannelsResults = ({ query }: { query: string }) => {
         .order("is_featured", { ascending: false })
         .order("sort_order", { ascending: true })
         .limit(term ? 50 : SUGGESTED_LIMIT);
-      if (term) q = q.ilike("title", `%${term}%`);
+      if (term) q = titleSearchRegex(term) ? q.filter("title", "imatch", titleSearchRegex(term)) : q.ilike("title", `%${term}%`);
       const { data, error } = await q;
       if (error) throw error;
       return data || [];

@@ -13,3 +13,10 @@ describe("smartSearch", () => {
     expect(r.map((x) => x.id)).toEqual(["a", "b"]);
   });
 });
+
+import { titleSearchRegex } from "./smartSearch";
+describe("titleSearchRegex", () => {
+  it.each(["farmwatch", "farm watch", "plaas wag", "plaaswag", "Farm Watch"])("%s finds Farm Watch", (t) => {
+    expect(new RegExp(titleSearchRegex(t), "i").test("Hoedspruit Farm Watch (Plaaswag)")).toBe(true);
+  });
+});
