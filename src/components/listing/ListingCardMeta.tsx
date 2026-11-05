@@ -102,6 +102,24 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
 
   const clamp = titleLines > 1 ? 1 : 2;
 
+  // Category text may take a second line only when title and location each
+  // used one, so the card stays at four text lines.
+  const locRef = useRef<HTMLSpanElement>(null);
+  const [locLines, setLocLines] = useState(1);
+  useEffect(() => {
+    const el = locRef.current;
+    if (!el) { setLocLines(0); return; }
+    const measure = () => {
+      const lh = parseFloat(getComputedStyle(el).lineHeight) || 1;
+      setLocLines(Math.max(1, Math.round(el.scrollHeight / lh)));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [location, clamp]);
+  const eyebrowTwoLines = titleLines <= 1 && locLines <= 1;
+
   return (
     <>
       <div style={{ padding: "10px 12px 12px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
@@ -129,9 +147,10 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
               textTransform: "uppercase",
               color: BROWN,
               margin: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              lineHeight: 1.35,
+              ...(eyebrowTwoLines
+                ? { display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }
+                : { whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }),
             }}
           >
             {eyebrow}
@@ -144,6 +163,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
               <MapPin size={12} strokeWidth={1.6} color={MUTED} style={{ display: "block", transform: "translateY(-0.75px)" }} />
             </span>
             <span
+              ref={locRef}
               style={{
                 display: "-webkit-box",
                 WebkitLineClamp: clamp,
