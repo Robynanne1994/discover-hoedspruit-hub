@@ -1361,6 +1361,11 @@ const CategoryPage = () => {
           <button onClick={() => handleQuickPill(() => setFilterOpenNow(!filterOpenNow))} style={barPill(filterOpenNow)}>
             Open Now{facetCounts ? ` (${facetCounts.openNow})` : ""}
           </button>
+          {user && (filterSaved || (facetCounts?.saved ?? 0) > 0) && (
+            <button onClick={() => handleQuickPill(() => setFilterSaved(!filterSaved))} style={barPill(filterSaved)}>
+              My Saved{facetCounts ? ` (${facetCounts.saved})` : ""}
+            </button>
+          )}
           {isRestaurant && ([
             { label: "Pet-Friendly", on: filterPetFriendly, set: setFilterPetFriendly, n: (listings || []).filter((l: any) => l.pets_allowed === true).length },
             { label: "Child-Friendly", on: filterChildFriendly, set: setFilterChildFriendly, n: (listings || []).filter((l: any) => l.good_for_kids === true || l.child_friendly === true).length },
@@ -1370,11 +1375,6 @@ const CategoryPage = () => {
               {p.label}{listings ? ` (${p.n})` : ""}
             </button>
           )))}
-          {user && (filterSaved || (facetCounts?.saved ?? 0) > 0) && (
-            <button onClick={() => handleQuickPill(() => setFilterSaved(!filterSaved))} style={barPill(filterSaved)}>
-              Saved{facetCounts ? ` (${facetCounts.saved})` : ""}
-            </button>
-          )}
         </div>
       </div>
 
