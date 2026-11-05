@@ -1369,7 +1369,7 @@ const CategoryPage = () => {
           {isRestaurant && ([
             { label: "Pet-Friendly", on: filterPetFriendly, set: setFilterPetFriendly, n: (listings || []).filter((l: any) => l.pets_allowed === true).length },
             { label: "Child-Friendly", on: filterChildFriendly, set: setFilterChildFriendly, n: (listings || []).filter((l: any) => l.good_for_kids === true || l.child_friendly === true).length },
-            { label: "Wheelchair Accessible", on: filterWheelchair, set: setFilterWheelchair, n: (listings || []).filter((l: any) => l.wheelchair_friendly === true).length },
+            { label: "Wheelchair-Friendly", on: filterWheelchair, set: setFilterWheelchair, n: (listings || []).filter((l: any) => l.wheelchair_friendly === true).length },
           ].filter((p) => p.on || p.n > 0).map((p) => (
             <button key={p.label} onClick={() => handleQuickPill(() => p.set(!p.on))} style={barPill(p.on)}>
               {p.label}{listings ? ` (${p.n})` : ""}
