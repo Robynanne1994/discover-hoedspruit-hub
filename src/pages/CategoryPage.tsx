@@ -1378,6 +1378,21 @@ const CategoryPage = () => {
               {p.label}{listings ? ` (${p.n})` : ""}
             </button>
           )))}
+          {/health/i.test(category?.title || "") && ["Hospitals", "GPs", "Pharmacies", "Dentists", "Clinics"].map((name) => {
+            const opt = subOptions.find((o) =>
+              o.label.toLowerCase() === name.toLowerCase() ||
+              o.subIds.some((sid) => (subcategories || []).find((s: any) => s.id === sid)?.title?.toLowerCase() === name.toLowerCase()),
+            );
+            if (!opt) return null;
+            const on = activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId));
+            const n = subCountFor(opt);
+            if (!on && facetCounts && n === 0) return null;
+            return (
+              <button key={name} onClick={() => handleSubFilter(on ? null : opt.key)} style={barPill(on)}>
+                {name}{facetCounts ? ` (${n})` : ""}
+              </button>
+            );
+          })}
         </div>
       </div>
 
