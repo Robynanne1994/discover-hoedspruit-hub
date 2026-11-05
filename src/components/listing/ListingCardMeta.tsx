@@ -139,8 +139,10 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
         ) : null}
 
         {location ? (
-          <div style={{ ...t.meta, fontFamily: SANS, color: MUTED, display: "flex", alignItems: "center", gap: 4, minWidth: 0, lineHeight: 1.35 }}>
-            <MapPin size={12} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
+          <div style={{ ...t.meta, fontFamily: SANS, color: MUTED, display: "flex", alignItems: "flex-start", gap: 4, minWidth: 0, lineHeight: 1.35 }}>
+            <span style={{ height: "1.35em", display: "inline-flex", alignItems: "center", flexShrink: 0 }}>
+              <MapPin size={12} strokeWidth={1.6} color={MUTED} style={{ display: "block", transform: "translateY(-0.75px)" }} />
+            </span>
             <span
               style={{
                 display: "-webkit-box",
