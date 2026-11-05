@@ -1393,11 +1393,6 @@ const CategoryPage = () => {
               </button>
             );
           })}
-          {false && ([] as any[]).map((p: any) => (
-            <button key={p.label} onClick={() => handleQuickPill(p.toggle)} style={barPill(p.on)}>
-              {p.label}{listings ? ` (${p.n})` : ""}
-            </button>
-          )))}
         </div>
       </div>
 
