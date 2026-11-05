@@ -70,7 +70,7 @@ const DRINK_OPTIONS: { key: string; label: string }[] = [
   { key: "has_wine_list", label: "Wine" },
   { key: "has_cocktails", label: "Cocktails" },
   { key: "has_craft_beer", label: "Craft Beer" },
-  { key: "has_beers_ciders", label: "Beers / Ciders" },
+  { key: "has_beers_ciders", label: "Beers & Ciders" },
   { key: "has_champagne", label: "Champagne" },
   { key: "has_mocktails", label: "Mocktails" },
   { key: "has_smoothies", label: "Smoothies" },
@@ -530,11 +530,12 @@ const CategoryPage = () => {
   // matches the result list.
   const subCountFor = (opt: SubOption): number => {
     if (!facetCounts) return 0;
-    if (opt.subIds.length === 1) return facetCounts.subCounts.get(opt.subIds[0]) || 0;
+    // With no sub picked, only listings passing the other filters count.
+    const keep = !activeSubId && listings ? new Set(poolFor().map((l: any) => l.id)) : null;
     const unique = new Set<string>();
     for (const sid of opt.subIds) {
       const ids = facetCounts.subListings.get(sid);
-      if (ids) ids.forEach((lid: string) => unique.add(lid));
+      if (ids) ids.forEach((lid: string) => { if (!keep || keep.has(lid)) unique.add(lid); });
     }
     return unique.size;
   };
@@ -792,6 +793,9 @@ const CategoryPage = () => {
   const cuisineCounts = countValues("cuisine", poolFor("cuisine"));
   const vibeCounts = countValues("vibe", poolFor("vibe"));
   const mealCounts = countValues("meal", poolFor("meal"));
+  // Top pill counts follow every filter already applied, like the drawer.
+  const barPool = poolFor();
+  const savedInPool = savedIds ? barPool.filter((l: any) => savedIds.has(l.id)).length : 0;
 
   // Restaurant & cafe facets, all derived from what the listings actually carry
   // so that values added later show up as filters on their own.
@@ -1337,17 +1341,17 @@ const CategoryPage = () => {
             All{facetCounts ? ` (${facetCounts.total})` : ""}
           </button>
           <button onClick={() => handleQuickPill(() => setFilterOpenNow(!filterOpenNow))} style={barPill(filterOpenNow)}>
-            Open Now{facetCounts ? ` (${facetCounts.openNow})` : ""}
+            Open Now{listings ? ` (${barPool.filter((l: any) => isAnyOpenNow(l)).length})` : ""}
           </button>
-          {user && (filterSaved || (facetCounts?.saved ?? 0) > 0) && (
+          {user && (filterSaved || savedInPool > 0) && (
             <button onClick={() => handleQuickPill(() => setFilterSaved(!filterSaved))} style={barPill(filterSaved)}>
-              My Saved{facetCounts ? ` (${facetCounts.saved})` : ""}
+              My Saved{listings ? ` (${savedInPool})` : ""}
             </button>
           )}
           {isRestaurant && ([
-            { label: "Pet-Friendly", on: filterPetFriendly, set: setFilterPetFriendly, n: (listings || []).filter((l: any) => l.pets_allowed === true).length },
-            { label: "Child-Friendly", on: filterChildFriendly, set: setFilterChildFriendly, n: (listings || []).filter((l: any) => l.good_for_kids === true || l.child_friendly === true).length },
-            { label: "Wheelchair-Friendly", on: filterWheelchair, set: setFilterWheelchair, n: (listings || []).filter((l: any) => l.wheelchair_friendly === true).length },
+            { label: "Pet-Friendly", on: filterPetFriendly, set: setFilterPetFriendly, n: barPool.filter((l: any) => l.pets_allowed === true).length },
+            { label: "Child-Friendly", on: filterChildFriendly, set: setFilterChildFriendly, n: barPool.filter((l: any) => l.good_for_kids === true || l.child_friendly === true).length },
+            { label: "Wheelchair-Friendly", on: filterWheelchair, set: setFilterWheelchair, n: barPool.filter((l: any) => l.wheelchair_friendly === true).length },
           ].filter((p) => p.on || p.n > 0).map((p) => (
             <button key={p.label} onClick={() => handleQuickPill(() => p.set(!p.on))} style={barPill(p.on)}>
               {p.label}{listings ? ` (${p.n})` : ""}
