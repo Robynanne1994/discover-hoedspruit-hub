@@ -892,13 +892,13 @@ const CategoryPage = () => {
 
   const minNightsOptions = (() => {
     if (!isAccom || !listings) return [];
-    // Which stay lengths exist comes from the whole category; counts follow the other filters.
+    // Stay lengths come from the whole category; each counts places whose minimum fits, under the other filters.
     const vals = Array.from(new Set((listings as any[]).map((l) => Number(l.min_nights) || 1)))
       .filter((v) => v > 1)
       .sort((x, y) => x - y);
     if (vals.length === 0) return [];
     const pool = poolFor("min_nights");
-    const fits = (n: number) => pool.filter((l) => (Number(l.min_nights) || 1) === n).length;
+    const fits = (n: number) => pool.filter((l) => (Number(l.min_nights) || 1) <= n).length;
     return [
       { value: 1, label: withCount("1 Night", fits(1)), n: fits(1) },
       ...vals.map((n) => ({ value: n, label: withCount(`${n} Nights`, fits(n)), n: fits(n) })),
