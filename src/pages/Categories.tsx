@@ -1,4 +1,4 @@
-import { categoryMatchesTerm, rankSmartResults } from "@/lib/smartSearch";
+import { categoryMatchesTerm, rankSmartResults, titleSearchRegex } from "@/lib/smartSearch";
 import { useState, useMemo, useLayoutEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, MapPin, AlertTriangle, Phone, Siren, ChevronRight, ArrowUpRight, ArrowLeft, LayoutGrid, List, X, Tag } from "lucide-react";
@@ -488,7 +488,7 @@ const Categories = () => {
       const titleQ = supabase
         .from("listings")
         .select("id, title, title_override, image_url, location, category_id, is_featured")
-        .ilike("title", `%${escaped}%`)
+        .filter("title", "imatch", titleSearchRegex(escaped) || ".")
         .limit(20);
 
       const catDirectQ = matchingCategoryIds.length

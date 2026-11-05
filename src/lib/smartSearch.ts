@@ -21,3 +21,12 @@ export function rankSmartResults<T extends { id: string }>(titleMatches: T[], ca
   const seen = new Set(titleMatches.map((l) => l.id));
   return [...titleMatches, ...categoryMatches.filter((l) => !seen.has(l.id) && seen.add(l.id))];
 }
+
+/**
+ * Space-insensitive title regex for PostgREST `imatch`: "farmwatch", "farm watch",
+ * "plaas wag" and "plaaswag" all match "Hoedspruit Farm Watch (Plaaswag)".
+ */
+export function titleSearchRegex(term: string): string {
+  const chars = term.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+  return chars.split("").join("[^a-z0-9]*");
+}
