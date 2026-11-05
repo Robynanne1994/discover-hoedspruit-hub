@@ -516,8 +516,8 @@ const CategoryPage = () => {
   });
 
   const handleSubFilter = (subId: string | null) => {
-    if (subId) setSearchParams({ sub: subId });
-    else setSearchParams({});
+    if (subId) setSearchParams({ sub: subId }, { replace: true, state: location.state });
+    else setSearchParams({}, { replace: true, state: location.state });
   };
 
   // Drawer options for the Category section: merged groups collapsed into one
@@ -685,7 +685,7 @@ const CategoryPage = () => {
 
 
   const clearAllFilters = () => {
-    setSearchParams({});
+    setSearchParams({}, { replace: true, state: location.state });
     setSearch("");
     setSortBy("default");
     setFilterCuisine([]);
