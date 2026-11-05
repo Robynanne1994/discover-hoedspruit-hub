@@ -1351,6 +1351,7 @@ export type Database = {
           card_image_url: string | null
           card_primary_subcategory: string | null
           category_id: string | null
+          category_page_location: string | null
           cause: string | null
           child_friendly: boolean | null
           click_and_collect: boolean | null
@@ -1511,6 +1512,7 @@ export type Database = {
           card_image_url?: string | null
           card_primary_subcategory?: string | null
           category_id?: string | null
+          category_page_location?: string | null
           cause?: string | null
           child_friendly?: boolean | null
           click_and_collect?: boolean | null
@@ -1671,6 +1673,7 @@ export type Database = {
           card_image_url?: string | null
           card_primary_subcategory?: string | null
           category_id?: string | null
+          category_page_location?: string | null
           cause?: string | null
           child_friendly?: boolean | null
           click_and_collect?: boolean | null

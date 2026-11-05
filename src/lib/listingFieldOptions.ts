@@ -45,6 +45,7 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   gallery_images: "pipe-separated image URLs",
   image_url: "single image URL",
   detail_image_url: "single image URL",
+  category_page_location: "optional shorter location for the cards on category pages only. Leave blank and the cards show the location column as is. The listing's own page always shows the location column",
   google_maps_link: "URL",
   google_reviews_url: "URL",
   google_place_id: "back-office only, never shown in the app: the listing's Google Place ID (e.g. ChIJN1t_tDeuEmsRUsoyG83frY4), which is what the nightly sync fetches the rating and review count with. Leave blank to let the sync find it itself; fill it in for listings it can't match. A full Places URL is fine too, the ID is read out of it",
