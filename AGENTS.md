@@ -9,7 +9,7 @@
 - Keep event category collection, matching and per-event counting in eventTags so all three tags use consistent filter rules.
 - Keep events list heading grouping in eventGroups; a lone time-frame pill heads the list with its dates from eventTimeFrames, more filters say "Events".
 - Keep event duration bucketing and booking-required judgement, plus their per-option counts, in eventDuration so filter pills and the filtered list agree; an event with no booking link is booking not required.
-- Keep event price matching and free/paid counts in eventPrice so the drawer counts and filtered results agree; an event with no price populated is free.
+- Keep event price matching and free/paid counts in eventPrice so the drawer counts and filtered results agree; an event with no price populated is neither free nor paid and only counts under Any.
 
 - Resolve specials social links through specialSocialLink so only labelled web destinations are displayed.
 - Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and photo/link/subtitle fallback in eventHosts so the event page and tests share one rule.
