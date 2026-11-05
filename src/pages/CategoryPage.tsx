@@ -1181,7 +1181,7 @@ const CategoryPage = () => {
 
           ...(filterChildFriendly ? [{ label: "Child-Friendly", onRemove: () => setFilterChildFriendly(false) }] : []),
           ...(filterPetFriendly ? [{ label: "Pet-Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
-          ...(filterWheelchair ? [{ label: "Wheelchair Accessible", onRemove: () => setFilterWheelchair(false) }] : []),
+          ...(filterWheelchair ? [{ label: "Wheelchair-Friendly", onRemove: () => setFilterWheelchair(false) }] : []),
           ...(filterWifi ? [{ label: "WiFi", onRemove: () => setFilterWifi(false) }] : []),
           ...filterPropertyTypes.map((t) => ({
             label: t,
