@@ -765,7 +765,7 @@ const CategoryPage = () => {
     if (skip !== "min_nights" && filterMinNights.length > 0) {
       // An empty minimum stay counts as one night.
       const mn = Number(l.min_nights) || 1;
-      if (!filterMinNights.some((n) => mn <= n)) return false;
+      if (!filterMinNights.includes(mn)) return false;
     }
     if (skip !== "grading" && filterGrading.length > 0 && !filterGrading.includes(Number(l.star_rating) || 0)) return false;
     if (skip !== "shop_type" && filterShopTypes.length > 0) {
@@ -897,13 +897,13 @@ const CategoryPage = () => {
 
   const minNightsOptions = (() => {
     if (!isAccom || !listings) return [];
-    // Stay lengths come from the whole category; each counts places whose minimum fits, under the other filters.
+    // Each stay length matches only places with exactly that minimum stay.
     const vals = Array.from(new Set((listings as any[]).map((l) => Number(l.min_nights) || 1)))
       .filter((v) => v > 1)
       .sort((x, y) => x - y);
     if (vals.length === 0) return [];
     const pool = poolFor("min_nights");
-    const fits = (n: number) => pool.filter((l) => (Number(l.min_nights) || 1) <= n).length;
+    const fits = (n: number) => pool.filter((l) => (Number(l.min_nights) || 1) === n).length;
     return [
       { value: 1, label: withCount("1 Night", fits(1)), n: fits(1) },
       ...vals.map((n) => ({ value: n, label: withCount(`${n} Nights`, fits(n)), n: fits(n) })),
@@ -1204,7 +1204,7 @@ const CategoryPage = () => {
             onRemove: () => setFilterPropertyTypes(filterPropertyTypes.filter((x) => x !== t)),
           })),
           ...filterMinNights.map((n) => ({
-            label: `Max ${n}-night min stay`,
+            label: n === 1 ? "1-Night Min Stay" : `${n}-Night Min Stay`,
             onRemove: () => setFilterMinNights(filterMinNights.filter((x) => x !== n)),
           })),
           ...filterGrading.map((g) => ({
