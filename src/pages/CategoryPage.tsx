@@ -67,7 +67,7 @@ const KIDS_OPTIONS: { key: string; label: string }[] = [
 ];
 
 const DRINK_OPTIONS: { key: string; label: string }[] = [
-  { key: "has_wine_list", label: "Wine List" },
+  { key: "has_wine_list", label: "Wine" },
   { key: "has_cocktails", label: "Cocktails" },
   { key: "has_craft_beer", label: "Craft Beer" },
   { key: "has_beers_ciders", label: "Beers / Ciders" },
@@ -1578,7 +1578,7 @@ const CategoryPage = () => {
               )}
               {kidsOptions.length > 0 && (
                 <RefineSection
-                  label="Kids"
+                  label="Kids & Babies"
                   onClear={filterKids.length > 0 ? () => setFilterKids([]) : undefined}
                   summary={filterKids.length > 0 ? `${filterKids.length} selected` : undefined}
                   open={openSection === "kids"}
