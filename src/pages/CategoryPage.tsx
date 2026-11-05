@@ -70,7 +70,7 @@ const DRINK_OPTIONS: { key: string; label: string }[] = [
   { key: "has_wine_list", label: "Wine" },
   { key: "has_cocktails", label: "Cocktails" },
   { key: "has_craft_beer", label: "Craft Beer" },
-  { key: "has_beers_ciders", label: "Beers / Ciders" },
+  { key: "has_beers_ciders", label: "Beers & Ciders" },
   { key: "has_champagne", label: "Champagne" },
   { key: "has_mocktails", label: "Mocktails" },
   { key: "has_smoothies", label: "Smoothies" },
