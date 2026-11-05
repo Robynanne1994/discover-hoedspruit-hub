@@ -181,8 +181,10 @@ export const RefineDrawer = ({
             onClick={onClear}
             style={{
               background: "transparent",
-              border: "none",
-              padding: "10px 6px",
+              border: "1px solid rgba(26,26,26,0.12)",
+              borderRadius: 9999,
+              height: 48,
+              padding: "0 20px",
               fontFamily: SANS,
               fontSize: 15,
               fontWeight: 500,
