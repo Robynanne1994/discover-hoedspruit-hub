@@ -1,3 +1,4 @@
+import { formatDetailLabel } from "@/lib/detailLabel";
 import { useParams, useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
@@ -53,8 +54,8 @@ const ACCOM_AMENITY_OPTIONS: { key: string; label: string }[] = [
   { key: "has_laundry", label: "Laundry Service" },
   { key: "has_airport_shuttle", label: "Airport Shuttle" },
   { key: "has_secure_parking", label: "Secure Parking" },
-  { key: "child_friendly", label: "Child Friendly" },
-  { key: "pets_allowed", label: "Pet Friendly" },
+  { key: "child_friendly", label: "Child-Friendly" },
+  { key: "pets_allowed", label: "Pet-Friendly" },
 ];
 
 // Restaurant boolean facets. Each is a boolean column on `listings`; only the
@@ -913,7 +914,18 @@ const CategoryPage = () => {
 
   // Shopping facets, derived from the listings so new values appear on their own.
   const shopTypeOptions = isShopping ? scalarOptions("shop_type", filterShopTypes, (k) => k) : [];
-  const priceRangeOptions = isShopping ? scalarOptions("price_range", filterPriceRanges, (k) => k) : [];
+  // Accommodation reads its price band (Budget, Mid-Range, Luxury) cheapest first.
+  const PRICE_BAND_ORDER = ["budget", "mid-range", "luxury"];
+  const priceRangeOptions = isShopping
+    ? scalarOptions("price_range", filterPriceRanges, (k) => k)
+    : isAccom
+      ? scalarOptions("price_range", filterPriceRanges, (k) => k)
+          .map((o) => ({ ...o, label: formatDetailLabel(o.label), plain: formatDetailLabel(o.plain) }))
+          .sort((x, y) => {
+            const rank = (v: string) => { const i = PRICE_BAND_ORDER.indexOf(v.replace(/[–—\s]+/g, "-")); return i < 0 ? 99 : i; };
+            return rank(x.value) - rank(y.value) || x.plain.localeCompare(y.plain);
+          })
+      : [];
   const productCategoryOptions = (() => {
     if (!isShopping || !listings) return [];
     // Filter-only field: the displayed `product_categories` never contribute.
@@ -1181,7 +1193,7 @@ const CategoryPage = () => {
           ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
           ...(user && filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
           ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
-          ...(filterMaxKm < MAX_KM ? [{ label: `Max ${filterMaxKm} km from town`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
+          ...(filterMaxKm < MAX_KM ? [{ label: `Max ${filterMaxKm}km from town`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
 
           ...(filterChildFriendly ? [{ label: "Child-Friendly", onRemove: () => setFilterChildFriendly(false) }] : []),
           ...(filterPetFriendly ? [{ label: "Pet-Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
@@ -1354,6 +1366,15 @@ const CategoryPage = () => {
             { label: "Wheelchair-Friendly", on: filterWheelchair, set: setFilterWheelchair, n: barPool.filter((l: any) => l.wheelchair_friendly === true).length },
           ].filter((p) => p.on || p.n > 0).map((p) => (
             <button key={p.label} onClick={() => handleQuickPill(() => p.set(!p.on))} style={barPill(p.on)}>
+              {p.label}{listings ? ` (${p.n})` : ""}
+            </button>
+          )))}
+          {isAccom && ([
+            { label: "Free Breakfast", on: filterAccomAmenities.includes("breakfast_included"), toggle: () => toggleArrayFilter(filterAccomAmenities, "breakfast_included", setFilterAccomAmenities), n: barPool.filter((l: any) => l.breakfast_included === true).length },
+            { label: "Child-Friendly", on: filterAccomAmenities.includes("child_friendly"), toggle: () => toggleArrayFilter(filterAccomAmenities, "child_friendly", setFilterAccomAmenities), n: barPool.filter((l: any) => l.child_friendly === true).length },
+            { label: "5-Star", on: filterGrading.includes(5), toggle: () => setFilterGrading(filterGrading.includes(5) ? filterGrading.filter((g) => g !== 5) : [...filterGrading, 5]), n: barPool.filter((l: any) => Number(l.star_rating) === 5).length },
+          ].filter((p) => p.on || p.n > 0).map((p) => (
+            <button key={p.label} onClick={() => handleQuickPill(p.toggle)} style={barPill(p.on)}>
               {p.label}{listings ? ` (${p.n})` : ""}
             </button>
           )))}
@@ -1708,9 +1729,9 @@ const CategoryPage = () => {
           </RefineSection>
         )}
 
-        {isShopping && priceRangeOptions.length > 0 && (
+        {(isShopping || isAccom) && priceRangeOptions.length > 0 && (
           <RefineSection
-            label="Price Range"
+            label={isAccom ? "Pricing" : "Price Range"}
             onClear={filterPriceRanges.length > 0 ? () => setFilterPriceRanges([]) : undefined}
             summary={filterPriceRanges.length > 0 ? `${filterPriceRanges.length} selected` : undefined}
             open={openSection === "pricerange"}
@@ -1778,8 +1799,8 @@ const CategoryPage = () => {
             max={MAX_KM}
             step={0.5}
             onChange={setFilterMaxKm}
-            formatValue={(v) => `${v} km`}
-            minLabel="0.5 km"
+            formatValue={(v) => `${v}km`}
+            minLabel="0.5km"
             maxLabel="Anywhere"
           />
         </RefineSection>
