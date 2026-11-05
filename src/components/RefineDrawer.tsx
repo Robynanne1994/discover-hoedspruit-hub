@@ -1,5 +1,9 @@
 import { useEffect, ReactNode } from "react";
-import { ChevronDown, X } from "lucide-react";
+import {
+  ChevronDown, X, ArrowUpDown, CalendarDays, Tag, Banknote, Hourglass, Ticket, Repeat, Clock, ShieldCheck,
+  Percent, Sparkles, LayoutGrid, UtensilsCrossed, Music, Coffee, Armchair, Wine, Store, Baby, Accessibility,
+  Home, Moon, Star, BedDouble, ShoppingBag, Wallet, Package, MapPin, SlidersHorizontal, type LucideIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
 
@@ -263,8 +267,67 @@ interface RefineSectionProps {
 // Card-style section. If `onToggle` is provided the section becomes a
 // collapsible accordion (closed by default unless `open` is true). Otherwise
 // the card is always open with an optional uppercase label.
-export const RefineSection = ({ label, open, onToggle, summary, onClear, children }: RefineSectionProps) => {
+// Group headings inside the drawer, styled like its "Filter & Sort" title.
+const DrawerGroupHeading = ({ children }: { children: ReactNode }) => (
+  <h3 style={{ margin: "4px 0 -4px", fontFamily: SANS, fontSize: 22, lineHeight: 1.1, fontWeight: 550, color: INK, letterSpacing: "-0.01em" }}>
+    {children}
+  </h3>
+);
+
+// A small icon for each section title, picked from its label.
+const SECTION_ICONS: [RegExp, LucideIcon][] = [
+  [/^sort/i, ArrowUpDown],
+  [/time frame|validity/i, CalendarDays],
+  [/time of day/i, Clock],
+  [/duration/i, Hourglass],
+  [/booking/i, Ticket],
+  [/recurrence/i, Repeat],
+  [/savings/i, Percent],
+  [/special type/i, Sparkles],
+  [/price range/i, Wallet],
+  [/price/i, Banknote],
+  [/cuisine|foods/i, UtensilsCrossed],
+  [/vibe/i, Music],
+  [/meal/i, Coffee],
+  [/seating/i, Armchair],
+  [/drinks/i, Wine],
+  [/service type/i, Store],
+  [/kids|babies/i, Baby],
+  [/accessib/i, Accessibility],
+  [/property/i, Home],
+  [/nights/i, Moon],
+  [/star|grading/i, Star],
+  [/amenit/i, BedDouble],
+  [/shop type/i, Store],
+  [/product/i, Package],
+  [/shopping/i, ShoppingBag],
+  [/distance/i, MapPin],
+  [/category/i, LayoutGrid],
+  [/insurance|safety/i, ShieldCheck],
+];
+const iconFor = (label?: string): LucideIcon => {
+  if (!label) return SlidersHorizontal;
+  return SECTION_ICONS.find(([re]) => re.test(label))?.[1] ?? Tag;
+};
+
+export const RefineSection = (props: RefineSectionProps) => {
+  // Sort always comes first, so it opens the "Sort" group and the "Filter"
+  // group starts straight after it.
+  if (props.label && /^sort/i.test(props.label)) {
+    return (
+      <>
+        <DrawerGroupHeading>Sort</DrawerGroupHeading>
+        <RefineSectionCard {...props} />
+        <DrawerGroupHeading>Filter</DrawerGroupHeading>
+      </>
+    );
+  }
+  return <RefineSectionCard {...props} />;
+};
+
+const RefineSectionCard = ({ label, open, onToggle, summary, onClear, children }: RefineSectionProps) => {
   const isAccordion = typeof onToggle === "function";
+  const SectionIcon = iconFor(label);
   return (
     <section
       style={{
@@ -308,8 +371,12 @@ export const RefineSection = ({ label, open, onToggle, summary, onClear, childre
                     color: INK,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                 >
+                  <SectionIcon size={15} strokeWidth={2} color={DARK_BROWN} style={{ flexShrink: 0 }} aria-hidden />
                   {label}
                 </span>
               )}
@@ -386,8 +453,12 @@ export const RefineSection = ({ label, open, onToggle, summary, onClear, childre
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 marginBottom: 14,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
+              <SectionIcon size={15} strokeWidth={2} color={DARK_BROWN} style={{ flexShrink: 0 }} aria-hidden />
               {label}
             </div>
           )}
