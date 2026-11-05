@@ -1361,7 +1361,7 @@ const CategoryPage = () => {
           <button onClick={() => handleQuickPill(() => setFilterOpenNow(!filterOpenNow))} style={barPill(filterOpenNow)}>
             Open Now{facetCounts ? ` (${facetCounts.openNow})` : ""}
           </button>
-          {user && (
+          {user && (filterSaved || (facetCounts?.saved ?? 0) > 0) && (
             <button onClick={() => handleQuickPill(() => setFilterSaved(!filterSaved))} style={barPill(filterSaved)}>
               Saved{facetCounts ? ` (${facetCounts.saved})` : ""}
             </button>
