@@ -453,8 +453,12 @@ const RefineSectionCard = ({ label, open, onToggle, summary, onClear, children }
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 marginBottom: 14,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
+              <SectionIcon size={15} strokeWidth={2} color={DARK_BROWN} style={{ flexShrink: 0 }} aria-hidden />
               {label}
             </div>
           )}
