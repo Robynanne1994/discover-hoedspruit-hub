@@ -56,7 +56,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
       >
         {title && (
           <div style={{
-            position: "absolute", top: 72, left: 40, right: 40, zIndex: 20,
+            position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 72px)", left: 40, right: 40, zIndex: 20,
             textAlign: "center",
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontSize: 13, lineHeight: 1.4, fontWeight: 500, color: "#5F5E52",
@@ -69,7 +69,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
           onClick={() => onOpenChange(false)}
           aria-label="Close"
           style={{
-            position: "absolute", top: 16, right: 16, zIndex: 20,
+            position: "absolute", top: "calc(env(safe-area-inset-top, 0px) + 16px)", right: "calc(env(safe-area-inset-right, 0px) + 16px)", zIndex: 20,
             width: 44, height: 44, borderRadius: 999,
             background: "#E6E0CC", border: "1px solid #E2DAC6", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
@@ -83,7 +83,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
           style={{
             flex: "1 1 auto", minHeight: 0, width: "100%",
             display: "flex", alignItems: "center", justifyContent: "center",
-            paddingTop: 64, paddingBottom: 16,
+            paddingTop: "calc(env(safe-area-inset-top, 0px) + 64px)", paddingBottom: 16,
           }}
           onClick={(e) => { if (e.target === e.currentTarget) onOpenChange(false); }}
         >
@@ -97,7 +97,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "", tit
         {images.length > 1 && (
           <div
             style={{
-              flex: "0 0 auto", width: "100%", padding: "12px 16px 28px",
+              flex: "0 0 auto", width: "100%", padding: "12px 16px calc(env(safe-area-inset-bottom, 0px) + 28px)",
               display: "flex", alignItems: "center", justifyContent: "center", gap: 24,
               zIndex: 20,
             }}
