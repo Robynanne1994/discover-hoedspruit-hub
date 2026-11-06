@@ -3,7 +3,9 @@ import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { listingImage } from "@/lib/imageFallback";
+import { listingImage, channelImage } from "@/lib/imageFallback";
+import { compareChannels } from "@/lib/channelOrder";
+import { getDisplayTitle } from "@/lib/displayTitle";
 import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation, ChevronRight, Clock, Flag, Copy,
@@ -109,7 +111,7 @@ const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
 
-type TabKey = "about" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
+type TabKey = "about" | "contact" | "details" | "specials" | "events" | "resources" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -229,6 +231,20 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  const { data: relatedChannels } = useQuery({
+    queryKey: ["listing-detail-channels", id],
+    queryFn: async () => {
+      if (!id) return [];
+      const { data, error } = await supabase
+        .from("bush_telegraph_resources")
+        .select("*")
+        .eq("associated_business_id", id);
+      if (error) throw error;
+      return (data ?? []).sort(compareChannels);
+    },
+    enabled: !!id,
+  });
+
   const isFavourited = useIsFavourited(id!, "listing");
   const toggleFavourite = useToggleFavourite();
 
@@ -267,11 +283,12 @@ const ListingDetail = () => {
   useEffect(() => {
     const hasS = (relatedSpecials?.length ?? 0) > 0;
     const hasE = (relatedEvents?.length ?? 0) > 0;
+    const hasR = (relatedChannels?.length ?? 0) > 0;
     const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
-    const keys: TabKey[] = ["about", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    const keys: TabKey[] = ["about", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasR ? ["resources" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
     if (!keys.includes(tab)) setTab("about");
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [relatedSpecials, relatedEvents, listing, tab]);
+  }, [relatedSpecials, relatedEvents, relatedChannels, listing, tab]);
 
   // Does the description need a "Read more"? Measured rather than guessed at a
   // character count, so short-but-tall copy (headings, lists) clamps correctly.
@@ -451,6 +468,7 @@ const ListingDetail = () => {
   const hasGallery = galleryImages.length > 0;
   const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
   const hasEvents = (relatedEvents?.length ?? 0) > 0;
+  const hasResources = (relatedChannels?.length ?? 0) > 0;
 
   // Pick the chosen contact for the top action buttons.
   // Index 0 = primary (listing.phone / .email / .whatsapp / .website),
@@ -940,6 +958,7 @@ const ListingDetail = () => {
     ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
     ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
     ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
+    ...(hasResources ? [{ key: "resources" as TabKey, label: "Resources" }] : []),
     ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
     ...(hasLocation ? [{ key: "location" as TabKey, label: "Location" }] : []),
   ];
@@ -1498,6 +1517,23 @@ const ListingDetail = () => {
     </div>
   );
 
+  const renderResources = () => (
+    <div className="px-5 pt-4 pb-5">
+      <h2 style={{ ...headStyle, marginBottom: 14 }}>Local Channels</h2>
+      <div className="flex flex-col gap-3">
+        {(relatedChannels ?? []).map((channel) => renderRelatedCard(
+          {
+            id: channel.id,
+            title: getDisplayTitle(channel),
+            image_url: channelImage(channel, "listing"),
+            subtitle: channel.platform,
+          },
+          `/local-channels/${channel.slug}`,
+        ))}
+      </div>
+    </div>
+  );
+
   const renderGallery = () => (
     <div style={{ padding: "20px" }}>
       {galleryImages.length === 0 ? (
@@ -1836,6 +1872,7 @@ const ListingDetail = () => {
         {activeTab === "details" && renderDetails()}
         {activeTab === "specials" && renderSpecials()}
         {activeTab === "events" && renderEvents()}
+        {activeTab === "resources" && renderResources()}
         {activeTab === "gallery" && renderGallery()}
         {activeTab === "location" && renderLocation()}
       </section>
