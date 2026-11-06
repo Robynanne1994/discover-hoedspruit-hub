@@ -1,10 +1,16 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
 
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { listingImage } from "@/lib/imageFallback";
 import { type } from "@/lib/type";
+
+/** Brand brown — the same value ArrowCta and PrimaryButton paint their CTAs. */
+const DARK = "#423324";
+/** The rail's tile width, shared by every listing card and the closing card. */
+const TILE_WIDTH = 138;
 
 
 interface Props {
