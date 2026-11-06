@@ -16,6 +16,7 @@ import ChannelBusinessSelect from "@/components/admin/ChannelBusinessSelect";
 import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } from "@/lib/channelBusiness";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
+import { channelButtonLabelFromCsv, channelButtonLabelToCsv } from "@/lib/channelButtonLabel";
 import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
@@ -31,7 +32,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
+const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
 
 type Resource = {
   id: string;
@@ -399,6 +400,7 @@ const AdminBushTelegraph = () => {
           description: r.description || null,
           url: r.url?.trim() || "",
           resource_type: r.resource_type?.trim() || "link",
+          ...channelButtonLabelFromCsv(r),
           // Images are backend-only: CSV never sets or clears them.
           admin_name: r.admin_name?.trim() || null,
           admins: (r.admin_name || "")
@@ -464,6 +466,7 @@ const AdminBushTelegraph = () => {
     const rows = resources.map((r) => [
       r.title, titleOverrideToCsv(r), r.platform, r.meta ?? "", r.meta_2 ?? "", channelBusinessToCsv(r.associated_business_id, businessListings), r.description ?? "", r.url ?? "",
       r.resource_type ?? "link",
+      channelButtonLabelToCsv(r),
       (Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
         : (r.admin_name ?? "")),
