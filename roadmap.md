@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Pending
-- Separate specials CSV imports and exports into New Only, Active and Passed; verify cross-scope protection.
+(none)
 
 ## Done
+- (2026-11-06) Specials CSV: New Only, Active and Passed choices before upload; separate downloads and ID matching; no deletion; signed-in cross-scope protections verified and 38 tests passed.
 - (2026-11-06) Events CSV: Past, Upcoming and New Only choices before upload; separate scoped downloads; no deletion; cross-scope guards verified signed-in and 27 tests passed.
 - (2026-11-04) Events page: Filters button moved inline at the head of the pill row with a
   count badge and Clear all; both clear buttons now write the address once.
