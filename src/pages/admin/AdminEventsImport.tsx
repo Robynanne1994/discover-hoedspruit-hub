@@ -334,6 +334,7 @@ const AdminEventsImport = () => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-events"] });
       qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["events-page"] });
       toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`);
     },
     onError: (e) => toast.error(e.message),
