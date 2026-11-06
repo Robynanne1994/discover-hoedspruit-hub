@@ -1,10 +1,17 @@
+import { type PointerEvent } from "react";
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
 
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { listingImage } from "@/lib/imageFallback";
 import { type } from "@/lib/type";
+
+/** Brand brown — the same value ArrowCta and PrimaryButton paint their CTAs. */
+const DARK = "#423324";
+/** The rail's tile width, shared by every listing card and the closing card. */
+const TILE_WIDTH = 138;
 
 
 interface Props {
@@ -17,6 +24,55 @@ interface Props {
 }
 
 const cleanName = (s: string) => s.replace(/\s*&\s*/g, " and ");
+
+/** The rail's press feedback: nudge the tile in, let it back out on release. */
+const pressScale = {
+  onPointerDown: (e: PointerEvent) =>
+    ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
+  onPointerUp: (e: PointerEvent) =>
+    ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+  onPointerLeave: (e: PointerEvent) =>
+    ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+};
+
+/**
+ * The closing tile: same box as a listing card, but it carries the rail's
+ * "View All" instead of a photo so the last thing you scroll to is the way out
+ * to the whole category.
+ */
+const ViewAllCard = ({ href }: { href: string }) => (
+  <Link
+    to={href}
+    aria-label="View All"
+    {...pressScale}
+    style={{
+      width: TILE_WIDTH,
+      flexShrink: 0,
+      textDecoration: "none",
+      transition: "transform 150ms ease-out",
+      display: "block",
+    }}
+  >
+    <div
+      style={{
+        width: "100%",
+        aspectRatio: "1 / 1",
+        borderRadius: 16,
+        overflow: "hidden",
+        background: DARK,
+        marginBottom: 8,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+      }}
+    >
+      <span style={{ ...type.cardTitleM, color: "#FFFFFF" }}>View All</span>
+      <ArrowUpRight size={20} strokeWidth={2} color="#FFFFFF" />
+    </div>
+  </Link>
+);
 
 const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: Props) => {
   const { data: listings } = useHomepageSection(sectionKey, categorySearch);
@@ -41,7 +97,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: 138,
+                width: TILE_WIDTH,
                 flexShrink: 0,
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
@@ -87,6 +143,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
             </Link>
             );
           })}
+          <ViewAllCard href={seeAllHref} />
         </div>
       </div>
     </section>
