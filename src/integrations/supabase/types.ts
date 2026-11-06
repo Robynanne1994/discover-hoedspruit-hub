@@ -1104,32 +1104,38 @@ export type Database = {
         Row: {
           created_at: string
           errors: Json
+          event_id: string | null
           id: string
           imported_count: number
           listing_id: string | null
           mode: string | null
           new_urls: string[]
           requested_count: number
+          target: string | null
         }
         Insert: {
           created_at?: string
           errors?: Json
+          event_id?: string | null
           id?: string
           imported_count?: number
           listing_id?: string | null
           mode?: string | null
           new_urls?: string[]
           requested_count?: number
+          target?: string | null
         }
         Update: {
           created_at?: string
           errors?: Json
+          event_id?: string | null
           id?: string
           imported_count?: number
           listing_id?: string | null
           mode?: string | null
           new_urls?: string[]
           requested_count?: number
+          target?: string | null
         }
         Relationships: []
       }
@@ -2789,6 +2795,10 @@ export type Database = {
       register_push_device: {
         Args: { _platform: string; _token: string }
         Returns: undefined
+      }
+      request_event_gallery_import: {
+        Args: { p_event_id: string; p_image_urls: string[]; p_mode?: string }
+        Returns: number
       }
       request_gallery_import: {
         Args: { p_image_urls: string[]; p_listing_id: string; p_mode?: string }
