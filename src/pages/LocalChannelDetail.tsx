@@ -59,6 +59,18 @@ const cardStyle: React.CSSProperties = {
   borderRadius: 20,
   border: "none",
 };
+const detailSubtitleStyle: React.CSSProperties = {
+  ...type.label,
+  fontWeight: 400,
+  letterSpacing: "0.08em",
+  marginBottom: 2,
+};
+const detailValueStyle: React.CSSProperties = {
+  fontSize: 14,
+  fontWeight: 400,
+  color: C.heading,
+  wordBreak: "break-word",
+};
 const categoryLineStyle: React.CSSProperties = {
   marginTop: 0,
   marginBottom: 8,
@@ -370,27 +382,36 @@ const LocalChannelDetail = () => {
                 <div className="flex flex-col gap-5 px-5 pt-4 pb-5">
                   {yearsValue && <section>
                     <h2 style={headStyle}>Years Running</h2>
-                    <div className="flex items-center gap-3.5 p-5" style={cardStyle}>
+                    <div className="flex items-center gap-3.5 px-5 py-[18px]" style={cardStyle}>
                       <Calendar size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
-                      <span className="min-w-0 break-words" style={type.body}>{yearsValue}</span>
+                      <div className="min-w-0 flex-1" style={detailValueStyle}>
+                        <div style={detailSubtitleStyle}>Years Running</div>
+                        {yearsValue}
+                      </div>
                     </div>
                   </section>}
                   {resource.post_frequency?.trim() && <section>
                     <h2 style={headStyle}>Posts</h2>
-                    <div className="flex items-center gap-3.5 p-5" style={cardStyle}>
+                    <div className="flex items-center gap-3.5 px-5 py-[18px]" style={cardStyle}>
                       <Clock size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
-                      <span className="min-w-0 break-words" style={type.body}>{resource.post_frequency}</span>
+                      <div className="min-w-0 flex-1" style={detailValueStyle}>
+                        <div style={detailSubtitleStyle}>Average post frequency</div>
+                        {resource.post_frequency}
+                      </div>
                     </div>
                   </section>}
                   {admins.length > 0 && <section>
                     <h2 style={headStyle}>{admins.length === 1 ? "Admin" : "Admins"}</h2>
-                    <div className="flex items-start gap-3.5 p-5" style={cardStyle}>
-                      <Users size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-primary" />
-                      <div className="min-w-0 flex-1 flex flex-col gap-2.5">
-                        {admins.map((a, i) => <div key={i} className="flex items-center gap-2.5">
-                          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                          <span className="min-w-0 break-words" style={type.body}>{a.name}</span>
-                        </div>)}
+                    <div className="flex items-center gap-3.5 px-5 py-[18px]" style={cardStyle}>
+                      <Users size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
+                      <div className="min-w-0 flex-1" style={detailValueStyle}>
+                        <div style={detailSubtitleStyle}>{resource.platform === "Instagram" ? "Account admins" : "Group admins"}</div>
+                        <div className="flex flex-col gap-2.5">
+                          {admins.map((a, i) => <div key={i} className="flex items-center gap-2.5">
+                            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                            <span className="min-w-0 break-words">{a.name}</span>
+                          </div>)}
+                        </div>
                       </div>
                     </div>
                   </section>}
