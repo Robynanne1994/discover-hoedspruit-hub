@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Local Channels: associated business selection, exact-title CSV mapping after meta_2, and linked Business card on Details.
 
 ## Done
 - Local Channels: CSV sort_order removed; Order dialog saves drag-and-drop order; featured-first preserved across All, home, search and saved channels; desktop save/readback and phone controls verified.
