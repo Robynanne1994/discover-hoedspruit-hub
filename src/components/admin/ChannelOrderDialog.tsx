@@ -43,6 +43,9 @@ export default function ChannelOrderDialog({ open, onOpenChange, channels }: { o
         qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] }),
         qc.invalidateQueries({ queryKey: ["bush-telegraph"] }),
         qc.invalidateQueries({ queryKey: ["home-local-channels"] }),
+        qc.invalidateQueries({ queryKey: ["my-saved-resources"] }),
+        qc.invalidateQueries({ queryKey: ["user-saved-resources"] }),
+        qc.invalidateQueries({ queryKey: ["user-saved-resources-full"] }),
       ]);
       toast.success("Order saved");
       onOpenChange(false);

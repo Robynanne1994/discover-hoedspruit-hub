@@ -16,6 +16,7 @@ import Seo from "@/components/Seo";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
 import { isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
 import { pillToggle } from "@/lib/filterPill";
+import { compareChannels } from "@/lib/channelOrder";
 
 const PAGE_BG = "#E6E0CC";
 const INK = "#1A1A1A";
@@ -208,10 +209,10 @@ const UserSaved = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
-        .select(`id, title, title_override, platform, meta, meta_2, slug, ${CHANNEL_IMAGE_COLUMNS}`)
+        .select(`id, title, title_override, platform, meta, meta_2, slug, is_featured, sort_order, ${CHANNEL_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
-      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id).sort(compareChannels);
     },
   });
 
