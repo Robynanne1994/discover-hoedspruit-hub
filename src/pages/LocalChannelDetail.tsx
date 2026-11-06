@@ -125,7 +125,6 @@ const LocalChannelDetail = () => {
     enabled: !!slug,
   });
 
-  // The hero below always renders edge-to-edge behind the status bar once the
   const { data: associatedBusiness } = useQuery({
     queryKey: ["channel-associated-business", resource?.associated_business_id],
     enabled: !!resource?.associated_business_id,
