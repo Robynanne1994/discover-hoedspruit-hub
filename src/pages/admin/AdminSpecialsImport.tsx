@@ -11,6 +11,7 @@ import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { daysToCsv, parseDays } from "@/lib/specialDays";
 import { formatSpecialPriceCell } from "@/lib/specialPrice";
+import { specialCsvAction, specialCsvScope, type SpecialCsvImportMode, type SpecialCsvScope } from "@/lib/specialCsvScope";
 
 const stripTrailingZeros = (val: string | null | undefined) => {
   if (!val) return val ?? null;
@@ -29,7 +30,7 @@ const normalizeDiscountType = (val?: string) => normalizeEnum(VALID_DISCOUNT_TYP
 const normalizeDealType = (val?: string) => normalizeEnum(VALID_DEAL_TYPES, val);
 
 const EXPECTED_HEADERS = [
-  "title", "title_override", "badge_override", "deal_type", "day_of_week",
+  "id", "title", "title_override", "badge_override", "deal_type", "day_of_week",
   "discount_type", "discount_value", "special_type", "freebie_text", "card_deal_text", "redemption_note", "business_name", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until",
@@ -86,9 +87,14 @@ const AdminSpecialsImport = () => {
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
   const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; skipped?: number; errors: string[] } | null>(null);
-  // "sync" = current behaviour (update matches, create new, delete missing).
-  // "add" = only insert rows whose title isn't already there; touch nothing else.
-  const [importMode, setImportMode] = useState<"sync" | "add">("sync");
+  const [importMode, setImportMode] = useState<SpecialCsvImportMode>("new");
+  const changeImportMode = (mode: SpecialCsvImportMode) => {
+    setImportMode(mode);
+    setParsed(null);
+    setFileName("");
+    setImportResult(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -111,8 +117,11 @@ const AdminSpecialsImport = () => {
       if (!parsed) throw new Error("No data");
       const results = { created: 0, updated: 0, deleted: 0, skipped: 0, errors: [] as string[] };
 
-      const { data: existing } = await supabase.from("specials").select("id, title");
-      const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
+      const now = new Date();
+      const { data: existing, error: existingError } = await supabase.from("specials").select("id, title, is_active, valid_from, valid_until");
+      if (existingError) throw existingError;
+      const existingMap = new Map((existing ?? []).map((e) => [e.title.trim().toLowerCase(), e]));
+      const existingById = new Map((existing ?? []).map((e) => [e.id, e]));
       // Link each special to the listing whose title matches its business name.
       const { data: listingRows } = await supabase.from("listings").select("id, title");
       const listingByTitle = new Map<string, string>();
@@ -120,13 +129,20 @@ const AdminSpecialsImport = () => {
         const key = (l.title ?? "").trim().toLowerCase();
         if (key && !listingByTitle.has(key)) listingByTitle.set(key, l.id);
       }
-      const csvTitles = new Set<string>();
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
         const title = row.title?.trim();
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
-        csvTitles.add(title.toLowerCase());
+        const match = row.id?.trim()
+          ? existingById.get(row.id.trim())
+          : existingMap.get(title.toLowerCase());
+        if (row.id?.trim() && !match) {
+          results.skipped++;
+          results.errors.push(`Row ${i + 2}: Special ID not found, left untouched`);
+          continue;
+        }
+        if (match && importMode === "new") { results.skipped++; continue; }
 
         // "Wednesday|Thursday" — a weekly deal can run on several days. Commas,
         // slashes and short forms ("Wed") are accepted too; anything that isn't
@@ -192,27 +208,34 @@ const AdminSpecialsImport = () => {
         const matchedListingId = listingByTitle.get((row.business_name ?? "").trim().toLowerCase());
         if (matchedListingId) payload.business_id = matchedListingId;
 
-        const existingId = existingMap.get(title.toLowerCase());
-        if (existingId && importMode === "add") { results.skipped++; continue; }
-        if (existingId) {
-          const { error } = await supabase.from("specials").update(payload as any).eq("id", existingId);
+        const action = specialCsvAction(importMode, {
+          is_active: payload.is_active,
+          valid_from: payload.valid_from,
+          valid_until: payload.valid_until,
+        }, match, now);
+        if (action === "skip") {
+          results.skipped++;
+          results.errors.push(`Row ${i + 2}: Outside the selected scope or not an existing passed special, left untouched`);
+          continue;
+        }
+        if (action === "update" && match) {
+          const { error } = await supabase.from("specials").update(payload as any).eq("id", match.id);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else results.updated++;
         } else {
-          const { error } = await supabase.from("specials").insert(payload as any);
+          const { data: inserted, error } = await supabase.from("specials").insert(payload as any).select("id, title, is_active, valid_from, valid_until").single();
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
-          else results.created++;
+          else {
+            results.created++;
+            if (inserted) {
+              existingMap.set(title.toLowerCase(), inserted);
+              existingById.set(inserted.id, inserted);
+            }
+          }
         }
       }
 
-      for (const [existingTitle, existingId] of existingMap) {
-        if (importMode === "add") break;
-        if (!csvTitles.has(existingTitle)) {
-          const { error } = await supabase.from("specials").delete().eq("id", existingId);
-          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
-          else results.deleted++;
-        }
-      }
+      // Omitted specials are never deleted by these separate-sheet imports.
 
       return results;
     },
@@ -222,7 +245,7 @@ const AdminSpecialsImport = () => {
       qc.invalidateQueries({ queryKey: ["special-detail"] });
       qc.invalidateQueries({ queryKey: ["all-specials"] });
       qc.invalidateQueries({ queryKey: ["home-specials"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`);
     },
     onError: (e) => toast.error(e.message),
   });
@@ -239,14 +262,14 @@ const AdminSpecialsImport = () => {
     // One value per header, in header order — a short row silently shifts every
     // column after it, so the two lists are kept side by side.
     const example = [
-      "Sunset Dinner Deal", "false", "50% OFF", "weekly", "Wednesday|Thursday",
+      "", "Sunset Dinner Deal", "false", "50% OFF", "weekly", "Wednesday|Thursday",
       "percent_off", "50", "Dinner Deal", "", "Half-price dinner", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
       "true", "link", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
       "https://www.facebook.com/example/posts/123", "Facebook Post",
       "+27 123 456 789|+27 987 654 321", "Reception|After Hours", "+27 123 456 789", "Bookings", "info@example.com", "",
-      "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
+      "T's & C's apply. Sit down only.", "Restaurant|Dinner|Wine pairing",
       "true", "false",
     ];
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
@@ -254,12 +277,15 @@ const AdminSpecialsImport = () => {
     downloadCSV(csv, "specials_template.csv");
   };
 
-  const downloadSpecials = async () => {
-    const { data: specials } = await supabase.from("specials").select("*").order("created_at", { ascending: false });
-    if (!specials?.length) { toast.error("No specials to export"); return; }
+  const downloadSpecials = async (scope: SpecialCsvScope) => {
+    const { data, error } = await supabase.from("specials").select("*").order("created_at", { ascending: false });
+    if (error) { toast.error(error.message); return; }
+    const now = new Date();
+    const specials = (data ?? []).filter((special) => specialCsvScope(special, now) === scope);
+    if (!specials.length) { toast.error(`No ${scope} specials to export`); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.title ?? "", titleOverrideToCsv(s), s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
+      s.id, s.title ?? "", titleOverrideToCsv(s), s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.special_type ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
@@ -273,7 +299,7 @@ const AdminSpecialsImport = () => {
       specialTagList(s).join("|"),
       s.is_active ? "true" : "false", s.is_featured ? "true" : "false",
     ].map((v: any) => escapeCSV(String(v))).join(","));
-    downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "specials_export.csv");
+    downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", `specials_${scope}.csv`);
     toast.success(`Exported ${specials.length} specials`);
   };
 
@@ -288,25 +314,37 @@ const AdminSpecialsImport = () => {
           <h1 className="font-heading text-xl sm:text-2xl lg:text-3xl font-[550] text-foreground truncate">Import/Export Specials</h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadSpecials} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
-            <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Specials</span><span className="sm:hidden">Specials</span>
+          <Button variant="outline" size="sm" onClick={() => downloadSpecials("active")} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> Download Active
           </Button>
-          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
+          <Button variant="outline" size="sm" onClick={() => downloadSpecials("passed")} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> Download Passed
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2">
             <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Template</span><span className="sm:hidden">Template</span>
           </Button>
         </div>
       </div>
 
       <div className="bg-card border border-border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="CSV import scope">
+          {(["new", "active", "passed"] as const).map((mode) => (
+            <Button key={mode} variant={importMode === mode ? "default" : "outline"}
+              aria-pressed={importMode === mode} disabled={importMutation.isPending}
+              onClick={() => changeImportMode(mode)}>
+              {mode === "new" ? "New Only" : mode === "active" ? "Active" : "Passed"}
+            </Button>
+          ))}
+        </div>
         <div
-          className="border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary transition-colors"
-          onClick={() => fileRef.current?.click()}
+          className="border-2 border-dashed border-border rounded-xl p-4 sm:p-12 text-center cursor-pointer hover:border-primary transition-colors"
+          onClick={() => { if (!importMutation.isPending) fileRef.current?.click(); }}
         >
           <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Specials are matched by title (case-insensitive). Full Sync updates matches and deletes missing specials; Add New Only only adds new ones.
+            Specials match by ID, or by title when ID is blank. New Only adds new specials without changing existing ones. Active updates and adds enabled, unexpired specials. Passed updates existing expired or inactive specials only. No import deletes specials. Dates use Johannesburg time.
           </p>
           <p className="text-xs text-muted-foreground mt-1">
             day_of_week, contact_phone, contact_whatsapp, contact_email, their labels and terms take several
@@ -317,7 +355,7 @@ const AdminSpecialsImport = () => {
             price and original_price: a plain number like 4999 is stored as R4,999;
             free-text prices like R450pp are kept exactly as written.
           </p>
-          <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
+          <input ref={fileRef} type="file" accept=".csv" className="hidden" disabled={importMutation.isPending} onChange={handleFile} />
         </div>
 
         {parsed && (
@@ -325,31 +363,15 @@ const AdminSpecialsImport = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <p className="text-sm text-muted-foreground">
                 <strong className="text-foreground">{parsed.rows.length}</strong> rows found.{" "}
-                {importMode === "sync"
-                  ? "Matching specials by title will be updated, new ones created, missing ones deleted."
-                  : "Only new specials will be added. Existing specials stay exactly as they are."}
+                {importMode === "passed"
+                  ? "Only matching passed specials will be updated. Active specials stay untouched."
+                  : importMode === "active"
+                    ? "Only active specials will be updated or added. Passed specials stay untouched."
+                    : "Only new specials will be added. Existing specials stay exactly as they are."}
               </p>
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="flex rounded-lg border border-border overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => setImportMode("sync")}
-                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "sync" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
-                  >
-                    Full Sync
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setImportMode("add")}
-                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "add" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
-                  >
-                    Add New Only
-                  </button>
-                </div>
-                <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
-                  {importMutation.isPending ? "Importing..." : importMode === "add" ? "Add New" : "Import All"}
-                </Button>
-              </div>
+              <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2 shrink-0">
+                {importMutation.isPending ? "Importing..." : importMode === "new" ? "Add New" : importMode === "active" ? "Import Active" : "Import Passed"}
+              </Button>
             </div>
             <div className="overflow-x-auto max-h-80 overflow-y-auto border border-border rounded-lg">
               <table className="w-full text-xs">
@@ -381,13 +403,13 @@ const AdminSpecialsImport = () => {
 
         {importResult && (
           <div className="space-y-3">
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="h-4 w-4 text-green-600" />
+                <CheckCircle className="h-4 w-4 text-primary" />
                 <span className="text-foreground"><strong>{importResult.created}</strong> created</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="h-4 w-4 text-blue-600" />
+                <CheckCircle className="h-4 w-4 text-primary" />
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
@@ -397,7 +419,7 @@ const AdminSpecialsImport = () => {
               {(importResult.skipped ?? 0) > 0 && (
                 <div className="flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-foreground"><strong>{importResult.skipped}</strong> already existed, left untouched</span>
+                  <span className="text-foreground"><strong>{importResult.skipped}</strong> skipped, left untouched</span>
                 </div>
               )}
             </div>
