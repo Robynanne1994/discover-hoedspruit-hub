@@ -87,20 +87,6 @@ const platformIcon = (p?: string | null) => {
   return Megaphone;
 };
 
-const InfoRow = ({ icon: Icon, label, value, first }: { icon: any; label: string; value: React.ReactNode; first?: boolean }) => (
-  <div style={{
-    display: "flex", alignItems: "center", gap: 14,
-    padding: "16px 0",
-    borderTop: first ? "none" : `1px solid ${C.divider}`,
-  }}>
-    <Icon size={18} strokeWidth={1.5} color={C.primary} style={{ flexShrink: 0 }} />
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <div style={type.label}>{label}</div>
-      <div style={{ fontFamily: FONT, fontSize: 15, fontWeight: 400, color: C.heading, wordBreak: "break-word", marginTop: 2 }}>{value}</div>
-    </div>
-  </div>
-);
-
 const LocalChannelDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -381,50 +367,35 @@ const LocalChannelDetail = () => {
               )}
 
               {activeTab === "details" && hasDetails && (
-                <div style={{ padding: "16px 20px 20px" }}>
-                  {hasInfoDetails && <h2 style={headStyle}>Details</h2>}
-                  {hasInfoDetails && <div style={{ ...cardStyle, padding: "4px 20px" }}>
-                    {yearsValue && (
-                      <InfoRow
-                        first
-                        icon={Calendar}
-                        label="Years Running"
-                        value={yearsValue}
-                      />
-                    )}
-                    {resource.post_frequency && (
-                      <InfoRow
-                        first={!yearsValue}
-                        icon={Clock}
-                        label="Avg. Posts"
-                        value={resource.post_frequency}
-                      />
-                    )}
-                    {admins.length > 0 && (
-                      <div style={{
-                        display: "flex", alignItems: "flex-start", gap: 14,
-                        padding: "16px 0",
-                        borderTop: (yearsValue || resource.post_frequency) ? `1px solid ${C.divider}` : "none",
-                      }}>
-                        <Users size={18} strokeWidth={1.5} color={C.primary} style={{ marginTop: 2, flexShrink: 0 }} />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ ...type.label, marginBottom: 10 }}>
-                            {admins.length === 1 ? "Admin" : "Admins"}
-                          </div>
-                          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                            {admins.map((a, i) => (
-                              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                                <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>{a.name}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
+                <div className="flex flex-col gap-6 px-5 pt-4 pb-5">
+                  {yearsValue && <section>
+                    <h2 data-no-title-case="true" style={headStyle}>YEARS RUNNING</h2>
+                    <div className="flex items-center gap-3.5 p-5" style={cardStyle}>
+                      <Calendar size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
+                      <span className="min-w-0 break-words" style={type.body}>{yearsValue}</span>
+                    </div>
+                  </section>}
+                  {resource.post_frequency?.trim() && <section>
+                    <h2 data-no-title-case="true" style={headStyle}>POSTS</h2>
+                    <div className="flex items-center gap-3.5 p-5" style={cardStyle}>
+                      <Clock size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
+                      <span className="min-w-0 break-words" style={type.body}>{resource.post_frequency}</span>
+                    </div>
+                  </section>}
+                  {admins.length > 0 && <section>
+                    <h2 data-no-title-case="true" style={headStyle}>{admins.length === 1 ? "ADMIN" : "ADMINS"}</h2>
+                    <div className="flex items-start gap-3.5 p-5" style={cardStyle}>
+                      <Users size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-primary" />
+                      <div className="min-w-0 flex-1 flex flex-col gap-2.5">
+                        {admins.map((a, i) => <div key={i} className="flex items-center gap-2.5">
+                          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                          <span className="min-w-0 break-words" style={type.body}>{a.name}</span>
+                        </div>)}
                       </div>
-                    )}
-                  </div>}
-                  {associatedBusiness && <>
-                    <h2 style={{ ...headStyle, marginTop: hasInfoDetails ? 24 : 0 }}>Business</h2>
+                    </div>
+                  </section>}
+                  {associatedBusiness && <section>
+                    <h2 data-no-title-case="true" style={headStyle}>BUSINESS</h2>
                     <Button asChild variant="ghost" className="h-auto w-full whitespace-normal justify-start hover:bg-card" style={{ ...cardStyle, padding: "20px", ...type.body, color: C.heading }}>
                       <Link to={`/listing/${associatedBusiness.id}`}>
                         <Store size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
@@ -432,7 +403,7 @@ const LocalChannelDetail = () => {
                         <ChevronRight size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
                       </Link>
                     </Button>
-                  </>}
+                  </section>}
                 </div>
               )}
             </section>
