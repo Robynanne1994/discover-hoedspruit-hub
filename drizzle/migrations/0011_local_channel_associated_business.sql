@@ -1,0 +1,3 @@
+ALTER TABLE public.bush_telegraph_resources ADD COLUMN associated_business_id uuid REFERENCES public.listings(id) ON DELETE SET NULL;
+CREATE INDEX bush_telegraph_associated_business_idx ON public.bush_telegraph_resources(associated_business_id);
+COMMENT ON COLUMN public.bush_telegraph_resources.associated_business_id IS 'Optional listing selected by the channel editor or exact listing title in the associated_business CSV column.';

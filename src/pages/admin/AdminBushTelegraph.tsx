@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import ChannelOrderDialog from "@/components/admin/ChannelOrderDialog";
+import ChannelBusinessSelect from "@/components/admin/ChannelBusinessSelect";
+import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } from "@/lib/channelBusiness";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
 import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
@@ -29,7 +31,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "resource_type", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
+const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
 
 type Resource = {
   id: string;
@@ -38,6 +40,7 @@ type Resource = {
   platform: string;
   meta: string | null;
   meta_2: string | null;
+  associated_business_id: string | null;
   description: string | null;
   url: string;
   resource_type: string;
@@ -67,6 +70,7 @@ const emptyForm = {
   platform: "Facebook",
   meta: "",
   meta_2: "",
+  associated_business_id: "",
   description: "",
   url: "",
   resource_type: "link",
@@ -141,6 +145,19 @@ const AdminBushTelegraph = () => {
   const [fileName, setFileName] = useState("");
   const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
 
+  const { data: businessListings = [], isLoading: businessesLoading, isError: businessesError } = useQuery({
+    queryKey: ["channel-business-listings"],
+    queryFn: async () => {
+      const listings: ChannelBusiness[] = [];
+      for (let from = 0; ; from += 1000) {
+        const { data, error } = await supabase.from("listings").select("id, title").order("title").order("id").range(from, from + 999);
+        if (error) throw error;
+        listings.push(...(data ?? []));
+        if (!data || data.length < 1000) return listings;
+      }
+    },
+  });
+
   const { data: resources = [], isLoading } = useQuery({
     queryKey: ["admin-bush-telegraph"],
     queryFn: async () => {
@@ -197,6 +214,7 @@ const AdminBushTelegraph = () => {
         title_override: use_title_override && rest.title_override?.trim() ? rest.title_override.trim() : null,
         meta: rest.meta || null,
         meta_2: rest.meta_2 || null,
+        associated_business_id: rest.associated_business_id || null,
         description: rest.description || null,
         image_url: rest.image_url || null,
         detail_image_url: rest.detail_image_url || null,
@@ -225,6 +243,7 @@ const AdminBushTelegraph = () => {
       qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["home-local-channels"] });
+      qc.invalidateQueries({ queryKey: ["local-channel"] });
       setOpen(false);
       setEditing(null);
       setForm(emptyForm);
@@ -266,6 +285,7 @@ const AdminBushTelegraph = () => {
       platform: r.platform,
       meta: r.meta ?? "",
       meta_2: r.meta_2 ?? "",
+      associated_business_id: r.associated_business_id ?? "",
       description: r.description ?? "",
       url: r.url ?? "",
       resource_type: r.resource_type || "link",
@@ -345,6 +365,12 @@ const AdminBushTelegraph = () => {
   const importMutation = useMutation({
     mutationFn: async () => {
       if (!parsed) throw new Error("No data");
+      if (businessesLoading || businessesError) throw new Error("Business listings could not be loaded. Please try again before importing.");
+      const businessesByRow = parsed.rows.map((row, i) => {
+        if (row.associated_business === undefined) return {};
+        try { return { associated_business_id: resolveChannelBusiness(row.associated_business, businessListings) }; }
+        catch (error) { throw new Error(`Row ${i + 2}: ${error instanceof Error ? error.message : "Invalid associated business"}`); }
+      });
       const importNow = new Date();
       const yearsByRow = parsed.rows.map((row, i) => {
         try { return channelCsvYears(row, importNow); }
@@ -369,6 +395,7 @@ const AdminBushTelegraph = () => {
           platform,
           meta: r.meta || null,
           meta_2: r.meta_2 || null,
+          ...businessesByRow[i],
           description: r.description || null,
           url: r.url?.trim() || "",
           resource_type: r.resource_type?.trim() || "link",
@@ -413,6 +440,7 @@ const AdminBushTelegraph = () => {
       qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["bush-telegraph"] });
       toast.success(`Import complete: ${r.created} created, ${r.updated} updated, ${r.deleted} deleted`);
+      qc.invalidateQueries({ queryKey: ["local-channel"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -432,8 +460,9 @@ const AdminBushTelegraph = () => {
 
   const downloadExport = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
+    if (businessesLoading || businessesError) { toast.error("Business listings could not be loaded. Please try again."); return; }
     const rows = resources.map((r) => [
-      r.title, titleOverrideToCsv(r), r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
+      r.title, titleOverrideToCsv(r), r.platform, r.meta ?? "", r.meta_2 ?? "", channelBusinessToCsv(r.associated_business_id, businessListings), r.description ?? "", r.url ?? "",
       r.resource_type ?? "link",
       (Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
@@ -706,6 +735,12 @@ const AdminBushTelegraph = () => {
             <div>
               <Label>Description</Label>
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Associated Business</Label>
+              <ChannelBusinessSelect value={form.associated_business_id} onChange={(value) => setForm({ ...form, associated_business_id: value })} listings={businessListings} loading={businessesLoading} />
+              {businessesError && <p className="text-sm text-destructive">Business listings could not be loaded.</p>}
             </div>
 
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
