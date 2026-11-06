@@ -51,7 +51,7 @@ const floatBtn: React.CSSProperties = {
 };
 
 const headStyle: React.CSSProperties = {
-  margin: "0 0 12px",
+  margin: "0 0 14px",
   ...type.sectionTitle, textTransform: "none",
 };
 const cardStyle: React.CSSProperties = {
@@ -367,23 +367,23 @@ const LocalChannelDetail = () => {
               )}
 
               {activeTab === "details" && hasDetails && (
-                <div className="flex flex-col gap-6 px-5 pt-4 pb-5">
+                <div className="flex flex-col gap-5 px-5 pt-4 pb-5">
                   {yearsValue && <section>
-                    <h2 data-no-title-case="true" style={headStyle}>YEARS RUNNING</h2>
+                    <h2 style={headStyle}>Years Running</h2>
                     <div className="flex items-center gap-3.5 p-5" style={cardStyle}>
                       <Calendar size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
                       <span className="min-w-0 break-words" style={type.body}>{yearsValue}</span>
                     </div>
                   </section>}
                   {resource.post_frequency?.trim() && <section>
-                    <h2 data-no-title-case="true" style={headStyle}>POSTS</h2>
+                    <h2 style={headStyle}>Posts</h2>
                     <div className="flex items-center gap-3.5 p-5" style={cardStyle}>
                       <Clock size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
                       <span className="min-w-0 break-words" style={type.body}>{resource.post_frequency}</span>
                     </div>
                   </section>}
                   {admins.length > 0 && <section>
-                    <h2 data-no-title-case="true" style={headStyle}>{admins.length === 1 ? "ADMIN" : "ADMINS"}</h2>
+                    <h2 style={headStyle}>{admins.length === 1 ? "Admin" : "Admins"}</h2>
                     <div className="flex items-start gap-3.5 p-5" style={cardStyle}>
                       <Users size={18} strokeWidth={1.5} className="mt-0.5 shrink-0 text-primary" />
                       <div className="min-w-0 flex-1 flex flex-col gap-2.5">
@@ -395,7 +395,7 @@ const LocalChannelDetail = () => {
                     </div>
                   </section>}
                   {associatedBusiness && <section>
-                    <h2 data-no-title-case="true" style={headStyle}>BUSINESS</h2>
+                    <h2 style={headStyle}>Business</h2>
                     <Button asChild variant="ghost" className="h-auto w-full whitespace-normal justify-start hover:bg-card" style={{ ...cardStyle, padding: "20px", ...type.body, color: C.heading }}>
                       <Link to={`/listing/${associatedBusiness.id}`}>
                         <Store size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
