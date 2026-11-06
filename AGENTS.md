@@ -39,7 +39,7 @@
 - Keep the "Hoedspruit & Surrounds" area rule and maps-link resolution in locationDirections so the action bar and the Location tab on listings, events and specials all refuse directions for an area that has no address.
 - Keep the listing action bar's top-up rule in actionBarFill: a bar left with two tiles takes its next populated contact, email before the listing's social pages, never a link already shown.
 - Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
-- Keep the specials default (All) order in specialOrder: admin sort_position first, then newest; featured specials are lifted above it so their position is ignored.
+- Keep the specials default (All) order in specialOrder: unpositioned first (newest), then admin sort_position; featured specials are lifted above it.
 - Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.
 - Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
