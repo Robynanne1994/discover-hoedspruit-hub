@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Local Channels: remove CSV sort order, add drag-and-drop order controls and keep featured channels first everywhere.
 
 ## Done
 - (2026-11-06) Specials CSV: New Only, Active and Passed choices before upload; separate downloads and ID matching; no deletion; signed-in cross-scope protections verified and 38 tests passed.

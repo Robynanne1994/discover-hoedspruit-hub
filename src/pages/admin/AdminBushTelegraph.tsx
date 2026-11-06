@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
+import ChannelOrderDialog from "@/components/admin/ChannelOrderDialog";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
 import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
@@ -28,7 +29,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "resource_type", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured", "sort_order"];
+const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "resource_type", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
 
 type Resource = {
   id: string;
@@ -133,6 +134,7 @@ const AdminBushTelegraph = () => {
   const [editing, setEditing] = useState<Resource | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [open, setOpen] = useState(false);
+  const [orderOpen, setOrderOpen] = useState(false);
   const [newPlatformOpen, setNewPlatformOpen] = useState(false);
   const [newPlatformName, setNewPlatformName] = useState("");
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
@@ -145,6 +147,7 @@ const AdminBushTelegraph = () => {
       const { data, error } = await supabase
         .from("bush_telegraph_resources")
         .select("*")
+        .order("is_featured", { ascending: false })
         .order("sort_order", { ascending: true });
       if (error) throw error;
       return (data as any[]) as Resource[];
@@ -381,7 +384,6 @@ const AdminBushTelegraph = () => {
           tag_1: r.tag_1?.trim() || null,
           tag_2: r.tag_2?.trim() || null,
           is_featured: r.is_featured?.toLowerCase() === "true" || r.is_featured === "1",
-          sort_order: r.sort_order ? parseInt(r.sort_order) || 0 : 0,
         };
 
         const id = existingMap.get(title.toLowerCase());
@@ -438,7 +440,7 @@ const AdminBushTelegraph = () => {
         : (r.admin_name ?? "")),
       String(channelYearStarted(r) ?? ""), r.post_frequency ?? "",
       r.tag_1 ?? "", r.tag_2 ?? "",
-      r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
+      r.is_featured ? "true" : "false",
     ].map(escapeCSV).join(","));
     downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
     toast.success(`Exported ${resources.length} resources`);
@@ -452,6 +454,9 @@ const AdminBushTelegraph = () => {
           <p className="text-sm text-muted-foreground mb-6 text-slate-950">Manage off-app resources, groups and feeds.</p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={() => setOrderOpen(true)} disabled={isLoading} className="gap-2">
+            <ArrowUpDown className="h-4 w-4" /> Order
+          </Button>
           <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
             <FileSpreadsheet className="h-4 w-4" /> Export
           </Button>
@@ -559,6 +564,7 @@ const AdminBushTelegraph = () => {
       </div>
 
       {/* Edit Dialog */}
+      <ChannelOrderDialog open={orderOpen} onOpenChange={setOrderOpen} channels={resources} />
       <Dialog open={open} onOpenChange={(o) => {
         setOpen(o);
         if (!o && returnTo) {
@@ -800,12 +806,6 @@ const AdminBushTelegraph = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 items-end">
-              <div>
-                <Label>Sort Order</Label>
-                <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} />
-              </div>
-            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
