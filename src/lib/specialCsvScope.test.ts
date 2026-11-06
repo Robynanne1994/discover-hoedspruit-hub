@@ -28,12 +28,13 @@ describe("specials CSV scope protection", () => {
   it("includes current, ongoing and upcoming deals under Active", () => {
     expect(specialCsvScope({ is_active: true, valid_until: "2026-11-06" }, now)).toBe("active");
     expect(specialCsvScope({ is_active: true }, now)).toBe("active");
-    expect(specialCsvScope({ is_active: false, valid_from: "2026-11-10" }, now)).toBe("active");
+    expect(specialCsvScope({ is_active: true, valid_from: "2026-11-10" }, now)).toBe("active");
   });
   it("includes expired and inactive deals under Passed", () => {
     expect(specialCsvScope(passed, now)).toBe("passed");
     expect(specialCsvScope({ is_active: false }, now)).toBe("passed");
     expect(specialCsvScope({ is_active: false, valid_until: "2026-11-30" }, now)).toBe("passed");
+    expect(specialCsvScope({ is_active: false, valid_from: "2026-11-10" }, now)).toBe("passed");
   });
   it("uses Johannesburg midnight to determine expiry", () => {
     expect(specialCsvScope({ is_active: true, valid_until: "2026-11-05" }, new Date("2026-11-05T21:59:00Z"))).toBe("active");

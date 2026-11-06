@@ -1,11 +1,11 @@
-import { isVisibleSpecial, specialToday, type SpecialVisibilityFields } from "./specialVisibility";
+import { specialToday, type SpecialVisibilityFields } from "./specialVisibility";
 
 export type SpecialCsvScope = "active" | "passed";
 export type SpecialCsvImportMode = "new" | SpecialCsvScope;
 
-/** Active includes current and upcoming deals; Passed includes expired or inactive deals. */
+/** Match the admin tabs: Active is enabled and unexpired; Passed is expired or inactive. */
 export function specialCsvScope(special: SpecialVisibilityFields, now: Date = new Date()): SpecialCsvScope {
-  return isVisibleSpecial(special, specialToday(now)) ? "active" : "passed";
+  return special.is_active && (!special.valid_until || special.valid_until >= specialToday(now)) ? "active" : "passed";
 }
 
 /** Check both stored and incoming scope so a sheet cannot change another group's specials. */
