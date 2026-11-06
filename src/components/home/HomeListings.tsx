@@ -1,3 +1,4 @@
+import { type PointerEvent } from "react";
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
@@ -26,11 +27,11 @@ const cleanName = (s: string) => s.replace(/\s*&\s*/g, " and ");
 
 /** The rail's press feedback: nudge the tile in, let it back out on release. */
 const pressScale = {
-  onPointerDown: (e: React.PointerEvent) =>
+  onPointerDown: (e: PointerEvent) =>
     ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
-  onPointerUp: (e: React.PointerEvent) =>
+  onPointerUp: (e: PointerEvent) =>
     ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
-  onPointerLeave: (e: React.PointerEvent) =>
+  onPointerLeave: (e: PointerEvent) =>
     ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
 };
 
@@ -96,7 +97,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: 138,
+                width: TILE_WIDTH,
                 flexShrink: 0,
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
@@ -142,6 +143,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
             </Link>
             );
           })}
+          <ViewAllCard href={seeAllHref} />
         </div>
       </div>
     </section>
