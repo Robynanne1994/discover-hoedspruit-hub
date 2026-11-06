@@ -13,6 +13,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
+import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
@@ -361,7 +362,7 @@ const AdminBushTelegraph = () => {
 
         const payload: any = {
           title,
-          title_override: r.title_override?.trim() || null,
+          title_override: titleOverrideValue(parseTitleOverrideCell(r.title_override) === true, title),
           platform,
           meta: r.meta || null,
           meta_2: r.meta_2 || null,
@@ -430,7 +431,7 @@ const AdminBushTelegraph = () => {
   const downloadExport = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
-      r.title, r.title_override ?? "", r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
+      r.title, titleOverrideToCsv(r), r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
       r.resource_type ?? "link",
       (Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
