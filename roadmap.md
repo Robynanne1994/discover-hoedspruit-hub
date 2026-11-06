@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Verify and deploy backend-only event gallery import support while preserving listing imports.
 
 ## Done
 - Local Channels: searchable Associated Business selector, exact-title CSV column after meta_2 and linked Business card on Details; signed-in selection/save/navigation, export and invalid-match protection verified; 17 tests passed.
