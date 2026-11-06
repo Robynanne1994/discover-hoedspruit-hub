@@ -1521,14 +1521,21 @@ const ListingDetail = () => {
     <div className="px-5 pt-4 pb-5">
       <h2 style={{ ...headStyle, marginBottom: 14 }}>Local Channels</h2>
       <div className="flex flex-col gap-3">
-        {(relatedChannels ?? []).map((channel) => renderRelatedCard(
-          {
-            id: channel.id,
-            title: getDisplayTitle(channel),
-            image_url: channelImage(channel, "listing"),
-            subtitle: channel.platform,
-          },
-          `/local-channels/${channel.slug}`,
+        {(relatedChannels ?? []).map((channel) => (
+          <Link
+            key={channel.id}
+            to={`/local-channels/${channel.slug}`}
+            className="flex min-h-20 items-center gap-3 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground"
+          >
+            <div className="h-20 w-20 shrink-0 bg-secondary">
+              <img src={channelImage(channel, "listing")} alt="" className="h-full w-full object-cover" loading="lazy" />
+            </div>
+            <div className="min-w-0 flex-1 py-3">
+              <div className="line-clamp-2" style={type.cardTitleM}>{getDisplayTitle(channel)}</div>
+              {channel.meta?.trim() && <div className="mt-1" style={type.meta}>{channel.meta}</div>}
+            </div>
+            <ArrowUpRight size={18} strokeWidth={1.75} aria-hidden="true" className="mr-4 shrink-0 text-primary" />
+          </Link>
         ))}
       </div>
     </div>
