@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { channelImage } from "@/lib/imageFallback";
+import { compareChannels } from "@/lib/channelOrder";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
@@ -239,7 +240,7 @@ const BushTelegraph = () => {
     if (active === "All") {
       return [{
         platform: "All",
-        items: [...resources].sort((a, b) => a.sort_order - b.sort_order),
+        items: [...resources].sort(compareChannels),
         showHeader: false,
       }];
     }

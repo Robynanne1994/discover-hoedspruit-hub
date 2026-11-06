@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { compareChannels } from "@/lib/channelOrder";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -335,10 +336,10 @@ const UserProfile = () => {
       const ids = favs.map((f: any) => f.item_id);
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
-        .select(`id, title, title_override, platform, meta, meta_2, slug, ${CHANNEL_IMAGE_COLUMNS}`)
+        .select(`id, title, title_override, platform, meta, meta_2, slug, is_featured, sort_order, ${CHANNEL_IMAGE_COLUMNS}`)
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
-      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r: any) => r.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r: any) => r.id).sort(compareChannels);
     },
     enabled: canSeeActivity,
   });
