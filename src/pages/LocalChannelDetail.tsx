@@ -414,13 +414,7 @@ const LocalChannelDetail = () => {
                           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                             {admins.map((a, i) => (
                               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                                <div style={{
-                                  width: 32, height: 32, borderRadius: 999, overflow: "hidden",
-                                  background: C.ivory, display: "flex", alignItems: "center", justifyContent: "center",
-                                  fontFamily: FONT, fontSize: 13, fontWeight: 700, color: C.primary, flexShrink: 0,
-                                }}>
-                                  {(a.name || "?").trim().charAt(0).toUpperCase()}
-                                </div>
+                                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                                 <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>{a.name}</span>
                               </div>
                             ))}
