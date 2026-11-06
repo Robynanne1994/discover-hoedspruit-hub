@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Split event CSV import/export into Past, Upcoming and New Only with cross-scope protection and tests.
 
 ## Done
 - (2026-11-04) Events page: Filters button moved inline at the head of the pill row with a
