@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Verify event-page editor gallery upload, saving and readback.
 
 ## Done
 - Backend-only event gallery import: migration applied and import-gallery-images deployed; six regression tests passed, schema and service-only permissions checked, live missing-key rejection checked; original listing SQL wrapper unchanged. Real keyed imports were not run because the read-only tools cannot invoke service-only wrappers.
