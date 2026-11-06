@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
+import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
@@ -26,7 +27,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "is_featured", "sort_order"];
+const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "description", "url", "resource_type", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
@@ -340,6 +341,11 @@ const AdminBushTelegraph = () => {
   const importMutation = useMutation({
     mutationFn: async () => {
       if (!parsed) throw new Error("No data");
+      const importNow = new Date();
+      const yearsByRow = parsed.rows.map((row, i) => {
+        try { return channelCsvYears(row, importNow); }
+        catch (error) { throw new Error(`Row ${i + 2}: ${error instanceof Error ? error.message : "Invalid year started"}`); }
+      });
       const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
       const { data: existing } = await supabase.from("bush_telegraph_resources").select("id, title");
       const existingMap = new Map((existing ?? []).map((e: any) => [e.title.toLowerCase(), e.id]));
@@ -369,7 +375,7 @@ const AdminBushTelegraph = () => {
             .map((n) => n.trim())
             .filter(Boolean)
             .map((name) => ({ name })),
-          years_running: r.years_running ? parseInt(r.years_running) || null : null,
+          ...yearsByRow[i],
           post_frequency: r.post_frequency?.trim() || null,
           tag_1: r.tag_1?.trim() || null,
           tag_2: r.tag_2?.trim() || null,
@@ -429,7 +435,7 @@ const AdminBushTelegraph = () => {
       (Array.isArray(r.admins) && r.admins.length
         ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
         : (r.admin_name ?? "")),
-      r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
+      String(channelYearStarted(r) ?? ""), r.post_frequency ?? "",
       r.tag_1 ?? "", r.tag_2 ?? "",
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
     ].map(escapeCSV).join(","));
