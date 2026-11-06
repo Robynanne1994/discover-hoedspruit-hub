@@ -34,16 +34,21 @@ Deno.serve(async (req) => {
 
   let body: any;
   try { body = await req.json(); } catch { return json({ error: "Invalid JSON" }, 400); }
-  const listingId = body?.listing_id;
+  const target = body?.target ?? "listing";
+  if (target !== "listing" && target !== "event") return json({ error: "target must be listing or event" }, 400);
+  const isEvent = target === "event";
+  const table = isEvent ? "events" : "listings";
+  const idField = isEvent ? "event_id" : "listing_id";
+  const targetId = isEvent ? (body?.event_id ?? body?.listing_id) : body?.listing_id;
   const imageUrls = body?.image_urls;
   const mode = body?.mode ?? "append";
-  if (typeof listingId !== "string" || !UUID_RE.test(listingId)) return json({ error: "listing_id must be a uuid" }, 400);
+  if (typeof targetId !== "string" || !UUID_RE.test(targetId)) return json({ error: `${idField} must be a uuid` }, 400);
   if (!Array.isArray(imageUrls) || imageUrls.some((u) => typeof u !== "string")) return json({ error: "image_urls must be an array of strings" }, 400);
   if (mode !== "append" && mode !== "replace") return json({ error: "mode must be append or replace" }, 400);
 
-  const { data: listing, error: lErr } = await admin.from("listings").select("id, gallery_images").eq("id", listingId).maybeSingle();
+  const { data: listing, error: lErr } = await admin.from(table).select("id, gallery_images").eq("id", targetId).maybeSingle();
   if (lErr) return json({ error: lErr.message }, 500);
-  if (!listing) return json({ error: "Listing not found" }, 404);
+  if (!listing) return json({ error: isEvent ? "Event not found" : "Listing not found" }, 404);
 
   const errors: { url: string; reason: string }[] = [];
   const newUrls: string[] = [];
@@ -66,7 +71,7 @@ Deno.serve(async (req) => {
       const contentType = EXT_BY_TYPE[headerType] ? headerType : TYPE_BY_EXT[ext];
       if (contentType === "image/jpg") ext = "jpg";
       const bytes = new Uint8Array(await res.arrayBuffer());
-      const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const path = `${isEvent ? "events" : "gallery"}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const { error: upErr } = await admin.storage.from(BUCKET).upload(path, bytes, { contentType: contentType === "image/jpg" ? "image/jpeg" : contentType });
       if (upErr) { errors.push({ url: src, reason: `upload failed: ${upErr.message}` }); continue; }
       newUrls.push(admin.storage.from(BUCKET).getPublicUrl(path).data.publicUrl);
@@ -78,12 +83,15 @@ Deno.serve(async (req) => {
   if (newUrls.length > 0 || mode === "replace") {
     const existing: string[] = Array.isArray(listing.gallery_images) ? listing.gallery_images : [];
     const next = mode === "replace" ? newUrls : [...existing, ...newUrls.filter((u) => !existing.includes(u))];
-    const { error: updErr } = await admin.from("listings").update({ gallery_images: next }).eq("id", listingId);
-    if (updErr) errors.push({ url: "", reason: `listing update failed: ${updErr.message}` });
+    const { error: updErr } = await admin.from(table).update({ gallery_images: next }).eq("id", targetId);
+    if (updErr) errors.push({ url: "", reason: `${target} update failed: ${updErr.message}` });
   }
 
   const result = {
-    listing_id: listingId, mode,
+    target,
+    listing_id: isEvent ? null : targetId,
+    event_id: isEvent ? targetId : null,
+    mode,
     requested_count: imageUrls.length,
     imported_count: newUrls.length,
     new_urls: newUrls,
