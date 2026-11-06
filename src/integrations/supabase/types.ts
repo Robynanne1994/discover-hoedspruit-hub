@@ -158,6 +158,7 @@ export type Database = {
         Row: {
           admin_name: string | null
           admins: Json
+          associated_business_id: string | null
           created_at: string
           cta_label: string | null
           description: string | null
@@ -188,6 +189,7 @@ export type Database = {
         Insert: {
           admin_name?: string | null
           admins?: Json
+          associated_business_id?: string | null
           created_at?: string
           cta_label?: string | null
           description?: string | null
@@ -218,6 +220,7 @@ export type Database = {
         Update: {
           admin_name?: string | null
           admins?: Json
+          associated_business_id?: string | null
           created_at?: string
           cta_label?: string | null
           description?: string | null
@@ -245,7 +248,15 @@ export type Database = {
           url?: string
           years_running?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "bush_telegraph_resources_associated_business_id_fkey"
+            columns: ["associated_business_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       business_accounts: {
         Row: {
