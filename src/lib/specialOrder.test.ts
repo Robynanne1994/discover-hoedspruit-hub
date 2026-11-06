@@ -9,12 +9,12 @@ describe("sortSpecialsDefault", () => {
     ] as any[]);
     expect(out.map((s: any) => s.id)).toEqual(["b", "a"]);
   });
-  it("places unpositioned specials after positioned ones, newest first", () => {
+  it("places unpositioned specials before positioned ones, newest first", () => {
     const out = sortSpecialsDefault([
       { id: "old", sort_position: null, created_at: "2025-01-01" },
       { id: "new", sort_position: null, created_at: "2026-06-01" },
       { id: "pos", sort_position: 5, created_at: "2024-01-01" },
     ] as any[]);
-    expect(out.map((s: any) => s.id)).toEqual(["pos", "new", "old"]);
+    expect(out.map((s: any) => s.id)).toEqual(["new", "old", "pos"]);
   });
 });
