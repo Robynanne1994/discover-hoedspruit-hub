@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Separate specials CSV imports and exports into New Only, Active and Passed; verify cross-scope protection.
 
 ## Done
 - (2026-11-06) Events CSV: Past, Upcoming and New Only choices before upload; separate scoped downloads; no deletion; cross-scope guards verified signed-in and 27 tests passed.
