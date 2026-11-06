@@ -9,12 +9,13 @@ import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { stripImageCsvColumns, omitImageKeys } from "@/lib/csvImageColumns";
 import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventContacts";
+import { eventCsvAction, eventCsvScope, type EventCsvImportMode, type EventCsvScope } from "@/lib/eventCsvScope";
 
 // Image columns are deliberately excluded, exactly as in the listings import /
 // export: pictures are cropped and set in the admin editor only, so a CSV can
 // never carry, overwrite or clear them.
 const EXPECTED_HEADERS = stripImageCsvColumns([
-
+  "id",
   "title",
   "title_override",
   "description",
@@ -153,9 +154,14 @@ const AdminEventsImport = () => {
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
   const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; skipped?: number; errors: string[] } | null>(null);
-  // "sync" = current behaviour (update matches, create new, delete missing).
-  // "add" = only insert rows whose title isn't already there; touch nothing else.
-  const [importMode, setImportMode] = useState<"sync" | "add">("sync");
+  const [importMode, setImportMode] = useState<EventCsvImportMode>("upcoming");
+  const changeImportMode = (mode: EventCsvImportMode) => {
+    setImportMode(mode);
+    setParsed(null);
+    setFileName("");
+    setImportResult(null);
+    if (fileRef.current) fileRef.current.value = "";
+  };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -184,9 +190,11 @@ const AdminEventsImport = () => {
       if (!parsed) throw new Error("No data");
       const results = { created: 0, updated: 0, deleted: 0, skipped: 0, errors: [] as string[] };
 
-      const { data: existing } = await supabase.from("events").select("id, title");
-      const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
-      const csvTitles = new Set<string>();
+      const now = new Date();
+      const { data: existing, error: existingError } = await supabase.from("events").select("id, title, date, start_date, end_date, recurrence, performances");
+      if (existingError) throw existingError;
+      const existingMap = new Map((existing ?? []).map((e) => [e.title.trim().toLowerCase(), e]));
+      const existingById = new Map((existing ?? []).map((e) => [e.id, e]));
 
       const { data: allListings } = await supabase.from("listings").select("id, title");
       const listingMap = new Map((allListings ?? []).map((l) => [l.title.toLowerCase().trim(), l.id]));
@@ -207,7 +215,15 @@ const AdminEventsImport = () => {
         const row = parsed.rows[i];
         const title = row.title?.trim();
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
-        csvTitles.add(title.toLowerCase());
+        const match = row.id?.trim()
+          ? existingById.get(row.id.trim())
+          : existingMap.get(title.toLowerCase());
+        if (row.id?.trim() && !match) {
+          results.skipped++;
+          results.errors.push(`Row ${i + 2}: Event ID not found, left untouched`);
+          continue;
+        }
+        if (match && importMode === "new") { results.skipped++; continue; }
 
         // Resolve linked businesses — supports single business_name and multi business_names (pipe-separated)
         const businessNames = [
@@ -287,36 +303,39 @@ const AdminEventsImport = () => {
           payload.end_date = sorted[sorted.length - 1].date;
         }
 
-        const existingId = existingMap.get(title.toLowerCase());
-        if (existingId && importMode === "add") { results.skipped++; continue; }
-        if (existingId) {
-          const { error } = await supabase.from("events").update(payload as any).eq("id", existingId);
+        const action = eventCsvAction(importMode, payload, match, now);
+        if (action === "skip") {
+          results.skipped++;
+          results.errors.push(`Row ${i + 2}: Outside the selected scope or not an existing past event, left untouched`);
+          continue;
+        }
+        if (action === "update" && match) {
+          const { error } = await supabase.from("events").update(payload as any).eq("id", match.id);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else results.updated++;
         } else {
-          const { error } = await supabase.from("events").insert(payload as any);
+          const { data: inserted, error } = await supabase.from("events").insert(payload as any).select("id, title, date, start_date, end_date, recurrence, performances").single();
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
-          else results.created++;
+          else {
+            results.created++;
+            if (inserted) {
+              existingMap.set(title.toLowerCase(), inserted);
+              existingById.set(inserted.id, inserted);
+            }
+          }
         }
       }
 
-
-      // Delete events not in CSV (full sync mode only)
-      for (const [existingTitle, existingId] of existingMap) {
-        if (importMode === "add") break;
-        if (!csvTitles.has(existingTitle)) {
-          const { error } = await supabase.from("events").delete().eq("id", existingId);
-          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
-          else results.deleted++;
-        }
-      }
+      // No mode deletes missing rows. Separate sheets cannot remove other events.
 
       return results;
     },
     onSuccess: (results) => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-events"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
+      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["events-page"] });
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.skipped} skipped`);
     },
     onError: (e) => toast.error(e.message),
   });
@@ -388,9 +407,12 @@ const AdminEventsImport = () => {
     downloadCSV(csv, "events_template.csv");
   };
 
-  const downloadEvents = async () => {
-    const { data: events } = await supabase.from("events").select("*").order("created_at", { ascending: false });
-    if (!events?.length) { toast.error("No events to export"); return; }
+  const downloadEvents = async (scope: EventCsvScope) => {
+    const { data, error } = await supabase.from("events").select("*").order("created_at", { ascending: false });
+    if (error) { toast.error(error.message); return; }
+    const now = new Date();
+    const events = (data ?? []).filter((event) => eventCsvScope(event, now) === scope);
+    if (!events.length) { toast.error(`No ${scope} events to export`); return; }
 
     // Resolve linked business titles for export
     const linkedIds = Array.from(new Set(
@@ -417,6 +439,7 @@ const AdminEventsImport = () => {
       const phones = serializeEventContactCells(e.contact_phone, e.phone_label, e.additional_phones, e.additional_phone_labels);
       const whatsapps = serializeEventContactCells(e.contact_whatsapp, e.whatsapp_label, e.additional_whatsapps, e.additional_whatsapp_labels);
       const record: Record<string, string> = {
+        id: e.id,
         title: e.title ?? "",
         title_override: titleOverrideToCsv(e),
         description: e.description ?? "",
@@ -464,7 +487,7 @@ const AdminEventsImport = () => {
       };
       return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
     });
-    downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
+    downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", `events_${scope}.csv`);
     toast.success(`Exported ${events.length} events`);
   };
 
@@ -479,27 +502,39 @@ const AdminEventsImport = () => {
           <h1 className="font-heading text-xl sm:text-2xl lg:text-3xl font-[550] text-foreground truncate">Import/Export Events</h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadEvents} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
-            <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Events</span><span className="sm:hidden">Events</span>
+          <Button variant="outline" size="sm" onClick={() => downloadEvents("past")} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> Download Past
           </Button>
-          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
+          <Button variant="outline" size="sm" onClick={() => downloadEvents("upcoming")} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> Download Upcoming
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2">
             <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Template</span><span className="sm:hidden">Template</span>
           </Button>
         </div>
       </div>
 
       <div className="bg-card border border-border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="CSV import scope">
+          {(["past", "upcoming", "new"] as const).map((mode) => (
+            <Button key={mode} variant={importMode === mode ? "default" : "outline"}
+              aria-pressed={importMode === mode} disabled={importMutation.isPending}
+              onClick={() => changeImportMode(mode)}>
+              {mode === "new" ? "New Only" : mode === "past" ? "Past" : "Upcoming"}
+            </Button>
+          ))}
+        </div>
         <div
-          className="border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary transition-colors"
-          onClick={() => fileRef.current?.click()}
+          className="border-2 border-dashed border-border rounded-xl p-4 sm:p-12 text-center cursor-pointer hover:border-primary transition-colors"
+          onClick={() => { if (!importMutation.isPending) fileRef.current?.click(); }}
         >
           <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Events are matched by title (case-insensitive). Full Sync updates matches and deletes missing events; Add New Only only adds new ones. Use <code>|</code> to separate contacts and their labels in matching order, included values and business_names. Contact actions use the first populated contact.
+            Events match by ID, or by title when ID is blank. Past updates existing past events only. Upcoming updates and adds current or future events. New Only adds new events without changing existing ones. No import deletes events. Today and ongoing events belong to Upcoming. Use <code>|</code> to separate contacts and their labels in matching order, included values and business_names. Contact actions use the first populated contact.
           </p>
-          <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
+          <input ref={fileRef} type="file" accept=".csv" className="hidden" disabled={importMutation.isPending} onChange={handleFile} />
         </div>
 
         {parsed && (
@@ -507,31 +542,15 @@ const AdminEventsImport = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <p className="text-sm text-muted-foreground">
                 <strong className="text-foreground">{parsed.rows.length}</strong> rows found.{" "}
-                {importMode === "sync"
-                  ? "Matching events by title will be updated, new ones created, missing ones deleted."
-                  : "Only new events will be added. Existing events stay exactly as they are."}
+                {importMode === "past"
+                  ? "Only matching past events will be updated. Upcoming events stay untouched."
+                  : importMode === "upcoming"
+                    ? "Only current or future events will be updated or added. Past events stay untouched."
+                    : "Only new events will be added. Existing events stay exactly as they are."}
               </p>
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="flex rounded-lg border border-border overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => setImportMode("sync")}
-                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "sync" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
-                  >
-                    Full Sync
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setImportMode("add")}
-                    className={`px-3 py-2 text-xs font-medium transition-colors ${importMode === "add" ? "bg-primary text-primary-foreground" : "bg-card text-muted-foreground hover:text-foreground"}`}
-                  >
-                    Add New Only
-                  </button>
-                </div>
-                <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
-                  {importMutation.isPending ? "Importing..." : importMode === "add" ? "Add New" : "Import All"}
-                </Button>
-              </div>
+              <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2 shrink-0">
+                {importMutation.isPending ? "Importing..." : importMode === "new" ? "Add New" : importMode === "past" ? "Import Past" : "Import Upcoming"}
+              </Button>
             </div>
             <div className="overflow-x-auto max-h-80 overflow-y-auto border border-border rounded-lg">
               <table className="w-full text-xs">
@@ -563,13 +582,13 @@ const AdminEventsImport = () => {
 
         {importResult && (
           <div className="space-y-3">
-            <div className="flex gap-4">
+            <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="h-4 w-4 text-green-600" />
+                <CheckCircle className="h-4 w-4 text-primary" />
                 <span className="text-foreground"><strong>{importResult.created}</strong> created</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="h-4 w-4 text-blue-600" />
+                <CheckCircle className="h-4 w-4 text-primary" />
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
@@ -579,7 +598,7 @@ const AdminEventsImport = () => {
               {(importResult.skipped ?? 0) > 0 && (
                 <div className="flex items-center gap-2 text-sm">
                   <CheckCircle className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-foreground"><strong>{importResult.skipped}</strong> already existed, left untouched</span>
+                  <span className="text-foreground"><strong>{importResult.skipped}</strong> skipped, left untouched</span>
                 </div>
               )}
             </div>
