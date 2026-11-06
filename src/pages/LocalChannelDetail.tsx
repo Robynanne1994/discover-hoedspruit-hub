@@ -402,11 +402,11 @@ const LocalChannelDetail = () => {
                   </section>}
                   {admins.length > 0 && <section>
                     <h2 style={headStyle}>{admins.length === 1 ? "Admin" : "Admins"}</h2>
-                    <div className="flex items-center gap-3.5 px-5 py-[18px]" style={cardStyle}>
+                    <div className="flex items-start gap-3.5 px-5 py-[18px]" style={cardStyle}>
                       <Users size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
                       <div className="min-w-0 flex-1" style={detailValueStyle}>
                         <div style={detailSubtitleStyle}>{resource.platform === "Instagram" ? "Account admins" : "Group admins"}</div>
-                        <div className="flex flex-col gap-2.5">
+                        <div className="flex flex-col gap-1">
                           {admins.map((a, i) => <div key={i} className="flex items-center gap-2.5">
                             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                             <span className="min-w-0 break-words">{a.name}</span>
