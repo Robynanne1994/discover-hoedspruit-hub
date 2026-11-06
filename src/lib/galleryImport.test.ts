@@ -1,9 +1,10 @@
-// @vitest-environment node
 import { readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { describe, expect, it } from "vitest";
 
 const source = readFileSync("supabase/functions/import-gallery-images/index.ts", "utf8")
   .replace(/^import .*;\n/gm, "");
+const code = execFileSync(process.execPath, ["-e", "let s=''; process.stdin.on('data',d=>s+=d); process.stdin.on('end',()=>process.stdout.write(require('esbuild').transformSync(s,{loader:'ts'}).code));"], { input: source, encoding: "utf8" });
 
 async function run(body: object, key = "test-key") {
   const writes: { table: string; value: any }[] = [];
@@ -28,8 +29,6 @@ async function run(body: object, key = "test-key") {
       };
     } },
   };
-  const { transform } = await import("esbuild");
-  const code = (await transform(source, { loader: "ts" })).code;
   new Function("Deno", "createClient", "corsHeaders", "fetch", code)(
     { env: { get: () => "test-env" }, serve: (fn: typeof handler) => { handler = fn; } },
     () => client, {}, async () => new Response(new Uint8Array([1]), { headers: { "content-type": "image/png" } }),
