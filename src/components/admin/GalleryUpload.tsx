@@ -10,9 +10,10 @@ import ImageCropDialog from "./ImageCropDialog";
 interface GalleryUploadProps {
   value: string; // newline-separated URLs
   onChange: (value: string) => void;
+  folder?: "gallery" | "events";
 }
 
-const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
+const GalleryUpload = ({ value, onChange, folder = "gallery" }: GalleryUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [queue, setQueue] = useState<string[]>([]);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -45,7 +46,7 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
   };
 
   const uploadBlob = async (blob: Blob): Promise<string | null> => {
-    const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
     const { error } = await supabase.storage
       .from("listing-images")
       .upload(path, blob, { contentType: "image/jpeg" });
@@ -144,6 +145,7 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
                   size="icon"
                   className="h-6 w-6"
                   onClick={() => removeUrl(i)}
+                  aria-label={`Remove gallery image ${i + 1}`}
                 >
                   <X className="h-3 w-3" />
                 </Button>
@@ -178,7 +180,7 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
           size="sm"
           disabled={uploading}
           onClick={() => fileRef.current?.click()}
-          className="gap-1.5 bg-gray-500 opacity-100 text-slate-50 border-slate-950"
+          className="gap-1.5"
         >
           {uploading ? (
             <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</>

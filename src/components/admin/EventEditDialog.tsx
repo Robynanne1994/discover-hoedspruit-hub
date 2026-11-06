@@ -19,6 +19,7 @@ import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
 import ImageSlotField from "./ImageSlotField";
+import GalleryUpload from "./GalleryUpload";
 import {
   ADMIN_EDITOR_DIALOG,
   ADMIN_FIELD_GRID_TIGHT,
@@ -35,7 +36,7 @@ const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "poster_image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "search_image_url", "recurrence", "performances", "price", "included", "price_notes", "notes", "booking_link", "booking_link_label", "booking_link_type",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
-  "business_id", "business_ids", "is_featured",
+  "business_id", "business_ids", "is_featured", "gallery_images",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link", "hosted_by_listing_id",
   "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2", "hosted_by_link_2", "hosted_by_listing_id_2",
   "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3", "hosted_by_link_3", "hosted_by_listing_id_3",
@@ -243,6 +244,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               );
             })}
           </div>
+          <GalleryUpload
+            folder="events"
+            value={(form.gallery_images ?? []).join("\n")}
+            onChange={(value) => set("gallery_images", value.split("\n").map((url) => url.trim()).filter(Boolean))}
+          />
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
