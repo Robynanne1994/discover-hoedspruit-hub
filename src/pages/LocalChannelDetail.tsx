@@ -8,6 +8,7 @@ import {
 import InstagramIcon from "@/components/ui/InstagramIcon";
 import { supabase } from "@/integrations/supabase/client";
 import { channelImage } from "@/lib/imageFallback";
+import { channelYearsRunning } from "@/lib/channelYears";
 import ImageLightbox from "@/components/ImageLightbox";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useAuth } from "@/hooks/useAuth";
@@ -205,11 +206,10 @@ const LocalChannelDetail = () => {
     : (resource.admin_name
         ? resource.admin_name.split("|").map((n: string) => n.trim()).filter(Boolean).map((name: string) => ({ name }))
         : []);
-  const yearsValue = resource.since_year
-    ? `Since ${resource.since_year}`
-    : (resource.years_running != null
-        ? `${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`
-        : null);
+  const yearsRunning = channelYearsRunning(resource);
+  const yearsValue = yearsRunning != null
+    ? `${yearsRunning} ${yearsRunning === 1 ? "year" : "years"}`
+    : null;
   const hasAnyDetails = admins.length > 0 || !!yearsValue || !!resource.post_frequency;
 
   const TabBtn = ({ k, label }: { k: "details" | "about"; label: string }) => {
@@ -373,7 +373,7 @@ const LocalChannelDetail = () => {
                       <InfoRow
                         first
                         icon={Calendar}
-                        label={resource.since_year ? "Running" : "Years Running"}
+                        label="Years Running"
                         value={yearsValue}
                       />
                     )}
