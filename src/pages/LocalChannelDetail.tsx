@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Link, useNavigate, useParams, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { getDisplayTitle } from "@/lib/displayTitle";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil, Calendar, Clock, Users,
-  Heart, Share2, Megaphone, Facebook,
+  Heart, Share2, Megaphone, Facebook, Store, ChevronRight,
 } from "lucide-react";
 import InstagramIcon from "@/components/ui/InstagramIcon";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,6 +126,19 @@ const LocalChannelDetail = () => {
   });
 
   // The hero below always renders edge-to-edge behind the status bar once the
+  const { data: associatedBusiness } = useQuery({
+    queryKey: ["channel-associated-business", resource?.associated_business_id],
+    enabled: !!resource?.associated_business_id,
+    queryFn: async () => {
+      const id = resource?.associated_business_id;
+      if (!id) return null;
+      const { data, error } = await supabase.from("listings").select("id, title, title_override").eq("id", id).maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  // The hero below always renders edge-to-edge behind the status bar once the
   // resource has loaded (the loading/not-found state above it uses ordinary
   // padding instead) — called unconditionally, ahead of the isLoading early
   // return, since a hook can't be skipped on some renders and not others.
@@ -210,7 +225,8 @@ const LocalChannelDetail = () => {
   const yearsValue = yearsRunning != null
     ? `${yearsRunning} ${yearsRunning === 1 ? "year" : "years"}`
     : null;
-  const hasAnyDetails = admins.length > 0 || !!yearsValue || !!resource.post_frequency;
+  const hasInfoDetails = admins.length > 0 || !!yearsValue || !!resource.post_frequency;
+  const hasAnyDetails = hasInfoDetails || !!resource.associated_business_id;
 
   const TabBtn = ({ k, label }: { k: "details" | "about"; label: string }) => {
     const active = tab === k;
@@ -367,8 +383,8 @@ const LocalChannelDetail = () => {
 
               {activeTab === "details" && hasDetails && (
                 <div style={{ padding: "16px 20px 20px" }}>
-                  <h2 style={headStyle}>Details</h2>
-                  <div style={{ ...cardStyle, padding: "4px 20px" }}>
+                  {hasInfoDetails && <h2 style={headStyle}>Details</h2>}
+                  {hasInfoDetails && <div style={{ ...cardStyle, padding: "4px 20px" }}>
                     {yearsValue && (
                       <InfoRow
                         first
@@ -413,7 +429,17 @@ const LocalChannelDetail = () => {
                         </div>
                       </div>
                     )}
-                  </div>
+                  </div>}
+                  {associatedBusiness && <>
+                    <h2 style={{ ...headStyle, marginTop: hasInfoDetails ? 24 : 0 }}>Business</h2>
+                    <Button asChild variant="ghost" className="h-auto w-full whitespace-normal justify-start hover:bg-card" style={{ ...cardStyle, padding: "20px", ...type.body, color: C.heading }}>
+                      <Link to={`/listing/${associatedBusiness.id}`}>
+                        <Store size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
+                        <span className="min-w-0 flex-1 text-left break-words">{getDisplayTitle(associatedBusiness)}</span>
+                        <ChevronRight size={18} strokeWidth={1.5} className="shrink-0 text-primary" />
+                      </Link>
+                    </Button>
+                  </>}
                 </div>
               )}
             </section>
