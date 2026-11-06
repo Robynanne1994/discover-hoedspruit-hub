@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Pending
-- Split event CSV import/export into Past, Upcoming and New Only with cross-scope protection and tests.
+(none)
 
 ## Done
+- (2026-11-06) Events CSV: Past, Upcoming and New Only choices before upload; separate scoped downloads; no deletion; cross-scope guards verified signed-in and 27 tests passed.
 - (2026-11-04) Events page: Filters button moved inline at the head of the pill row with a
   count badge and Clear all; both clear buttons now write the address once.
 - (2026-11-04) Events page: active date pill's brown count badge checked on a phone screen.
