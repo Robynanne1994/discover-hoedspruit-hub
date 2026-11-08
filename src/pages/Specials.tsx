@@ -323,6 +323,7 @@ const Specials = () => {
       <AppliedFilterBar
         ref={filterBarRef}
         chips={appliedChips}
+        clearAllMinimum={2}
         onOpen={() => { setOpenSection(null); setShowFilters(true); }}
         onClear={clearAllFilters}
       >

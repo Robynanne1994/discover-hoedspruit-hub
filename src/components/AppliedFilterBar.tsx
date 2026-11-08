@@ -9,8 +9,9 @@ export const AppliedFilterBar = forwardRef<HTMLDivElement, {
   chips: Chip[];
   onOpen: () => void;
   onClear: () => void;
+  clearAllMinimum?: number;
   children?: ReactNode;
-}>(({ chips, onOpen, onClear, children }, ref) => (
+}>(({ chips, onOpen, onClear, clearAllMinimum = 1, children }, ref) => (
   <div ref={ref} className="applied-filter-bar scrollbar-hide">
     <div className="applied-filter-controls">
       <Button variant="ghost" className="applied-filter-button" aria-label="Filters and sort" aria-haspopup="dialog" onClick={onOpen}>
@@ -22,9 +23,9 @@ export const AppliedFilterBar = forwardRef<HTMLDivElement, {
       </Button>
       {chips.length > 0 && <>
         <span className="applied-filter-divider" aria-hidden="true" />
-        <Button variant="ghost" className="applied-filter-chip" onClick={onClear}>
+        {chips.length >= clearAllMinimum && <Button variant="ghost" className="applied-filter-chip" onClick={onClear}>
           <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ transform: `translateY(${PILL_ICON_NUDGE})` }} />Clear All
-        </Button>
+        </Button>}
       </>}
     </div>
     {chips.length > 0 && <div className="applied-filter-chips">
