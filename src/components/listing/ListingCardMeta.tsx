@@ -59,8 +59,9 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
     const measure = () => {
       const currentSize = parseFloat(getComputedStyle(text).fontSize);
       const available = text.clientWidth;
-      if (available <= 0 || text.scrollWidth <= 0) return;
-      const naturalWidth = text.scrollWidth / currentSize;
+      const contentWidth = text.firstElementChild?.getBoundingClientRect().width ?? 0;
+      if (available <= 0 || contentWidth <= 0) return;
+      const naturalWidth = contentWidth / currentSize;
       setStatusFontSize(Math.min(12, available / naturalWidth));
     };
     measure();
@@ -183,8 +184,10 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
       >
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0, transform: STATUS_DOT_LIFT }} />
         <span ref={statusTextRef} style={{ whiteSpace: "nowrap", minWidth: 0, flex: 1, fontSize: statusFontSize, overflow: "hidden" }}>
-          {status.label}
-          {status.detail ? <span style={{ fontWeight: 400 }}> · {status.detail}</span> : null}
+          <span>
+            {status.label}
+            {status.detail ? <span style={{ fontWeight: 400 }}> · {status.detail}</span> : null}
+          </span>
         </span>
       </div>
     </>
