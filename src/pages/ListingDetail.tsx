@@ -1915,16 +1915,16 @@ const ListingDetail = () => {
         )}
 
         {(l.google_rating != null || kmFromTown) && (
-          <div style={{ marginTop: 12, display: "flex", alignItems: "flex-start", flexWrap: "wrap", gap: "10px 18px" }}>
+          <div style={{ marginTop: 12, display: "flex", alignItems: "center", flexWrap: "wrap", gap: "10px 18px" }}>
             {l.google_rating != null && (() => {
               const reviewsHref: string | null = l.google_reviews_url || null;
               const row: React.CSSProperties = {
                 ...metaRow, display: "inline-flex", gap: 5,
-                ...type.meta, color: C.heading, textDecoration: "none",
+                ...type.meta, alignItems: "center", lineHeight: "20px", color: C.heading, textDecoration: "none",
               };
               const inner = (
                 <>
-                  <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} style={metaIconSolid()} />
+                  <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} style={{ flexShrink: 0 }} />
                   <span style={{ fontWeight: 700 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
                   {l.google_reviews_count != null && (
                     <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
@@ -1939,7 +1939,7 @@ const ListingDetail = () => {
             })()}
 
             {kmFromTown && (
-              <div style={{ ...metaRow, ...type.meta, alignItems: "center" }}>
+              <div style={{ ...metaRow, ...type.meta, alignItems: "center", lineHeight: "20px" }}>
                 <MapPin size={14} strokeWidth={1.75} color={MUTED} style={{ ...metaIcon(), alignSelf: "center", transform: "none" }} />
                 <span>{kmFromTown}</span>
               </div>
