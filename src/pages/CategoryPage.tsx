@@ -23,7 +23,7 @@ import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
 import { getHoursSchedules, isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
 import { listingMatchesHours, type ListingHoursFilter } from "@/lib/listingCardHours";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Switch } from "@/components/ui/switch";
 import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
@@ -1354,19 +1354,19 @@ const CategoryPage = () => {
         )}
       </div>
 
-      <ToggleGroup
-        type="single"
-        aria-label="Opening status"
-        value={hoursFilter}
-        onValueChange={(value) => setHoursFilter(value === "open" || value === "closed" ? value : "all")}
-        className="mx-5 mt-3 grid grid-cols-3 gap-1 rounded-full bg-card p-1"
-      >
-        {([["all", "All"], ["open", "Open Now"], ["closed", "Closed Now"]] as const).map(([value, label]) => (
-          <ToggleGroupItem key={value} value={value} className="h-8 min-w-0 rounded-full px-2 text-xs font-medium text-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+      <div role="group" aria-label="Opening status" className="mx-5 mt-3 flex flex-wrap items-center gap-x-6 gap-y-3">
+        {([["open", "Open Now"], ["closed", "Closed Now"]] as const).map(([value, label]) => (
+          <label key={value} className="inline-flex cursor-pointer items-center gap-2 text-xs text-foreground">
+            <Switch
+              aria-label={label}
+              checked={hoursFilter === value}
+              onCheckedChange={(checked) => setHoursFilter(checked ? value : "all")}
+              className="border-transparent bg-input"
+            />
             {label}
-          </ToggleGroupItem>
+          </label>
         ))}
-      </ToggleGroup>
+      </div>
 
       {/* Results heading once anything is narrowed: one filter names itself. */}
       {(filtersOn || search.trim()) && (
