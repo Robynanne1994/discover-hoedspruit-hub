@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { eventImage } from "@/lib/imageFallback";
 import { RefineDrawer, RefineSection, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { AppliedFilterBar } from "@/components/AppliedFilterBar";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   isToday,
@@ -43,7 +44,7 @@ import { compareFeaturedEvents } from "@/lib/featuredEventOrder";
 import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
-import { pillToggle } from "@/lib/filterPill";
+import { allPillActive, pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -992,7 +993,18 @@ const Events = () => {
         chips={appliedChips}
         onOpen={() => setRefineOpen(true)}
         onClear={clearAllFilters}
-      />
+      >
+        {!search.trim() && filtersWithEvents(FILTERS, (f) => f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents)).map((f) => {
+          const active = f.value === "all" ? allPillActive(filtersOn, !!search.trim()) : activeFilter === f.value;
+          return <Button
+            key={f.value}
+            variant="ghost"
+            className={active ? "applied-filter-button event-timeframe-active" : "applied-filter-button"}
+            aria-pressed={active}
+            onClick={() => handleFilterPill(f.value)}
+          >{f.label} ({getFilterCount(f.value, pillEvents)})</Button>;
+        })}
+      </AppliedFilterBar>
 
       {/* Featured Events */}
       {!search.trim() && !filtersOn && featuredEvents.length > 0 && (
