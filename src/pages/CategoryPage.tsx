@@ -1357,7 +1357,10 @@ const CategoryPage = () => {
       </div>
 
       <div role="group" aria-label="Opening status" className="mx-5 mt-3 flex flex-wrap items-center gap-x-6 gap-y-3">
-          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-foreground">
+          <label
+            className="inline-flex cursor-pointer items-center gap-2"
+            style={{ fontFamily: sans, fontSize: 12, fontWeight: 500, letterSpacing: "0.01em", color: INK }}
+          >
             <Switch
               aria-label="Open Now"
               checked={hoursFilter === "open"}
