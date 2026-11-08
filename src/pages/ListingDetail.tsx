@@ -1632,7 +1632,8 @@ const ListingDetail = () => {
   );
 
   const renderGallery = () => (
-    <div style={{ padding: "20px" }}>
+    <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <h2 style={{ ...headStyle, margin: 0 }}>Gallery</h2>
       {galleryImages.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No photos yet.</p>
       ) : (
