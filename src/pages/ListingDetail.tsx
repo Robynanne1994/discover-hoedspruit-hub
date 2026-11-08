@@ -1130,7 +1130,7 @@ const ListingDetail = () => {
 
       {goodToKnow.length > 0 && (
         <>
-          <h2 style={{ ...headStyle, margin: descriptionText ? "14px 0 0" : 0 }}>Good to know</h2>
+          <h2 style={{ ...headStyle, margin: descriptionText ? "14px 0 0" : 0 }}>Good to Know</h2>
           <div style={{ ...cardStyle, padding: "20px 22px" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {goodToKnow.map((item) => (
