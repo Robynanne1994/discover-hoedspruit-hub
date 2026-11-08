@@ -37,19 +37,19 @@ export function listingCardHours(listing: HoursSource, now = new Date()): {
   const hours = schedule.hours;
   const today = (now.getDay() + 6) % 7;
   const value = hours[DAY_KEYS[today]];
-  if (isAlwaysOpen(value)) return { state: "open", label: "Open now", detail: "Always Open" };
+  if (isAlwaysOpen(value)) return { state: "open", label: "Open", detail: "Always Open" };
   const current = now.getHours() * 60 + now.getMinutes();
   // An overnight opening belongs to yesterday, not to tonight's schedule.
   const previous = range(hours[DAY_KEYS[(today + 6) % 7]]);
   if (previous && previous.closes <= previous.opens && current <= previous.closes) {
-    return { state: "open", label: "Open now", detail: `Closes ${formatClock12(previous.end)}` };
+    return { state: "open", label: "Open", detail: `Closes ${formatClock12(previous.end)}` };
   }
   const todayRange = range(value);
   if (todayRange) {
     const closing = todayRange.closes <= todayRange.opens ? todayRange.closes + 1440 : todayRange.closes;
     if (current >= todayRange.opens && current <= closing) {
-      return { state: "open", label: "Open now", detail: `Closes ${formatClock12(todayRange.end)}` };
+      return { state: "open", label: "Open", detail: `Closes ${formatClock12(todayRange.end)}` };
     }
   }
-  return { state: "closed", label: "Closed now", detail: nextOpening(hours, now, true) };
+  return { state: "closed", label: "Closed", detail: nextOpening(hours, now, true) };
 }
