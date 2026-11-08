@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allPillActive, pillToggle } from "./filterPill.ts";
+import { allPillActive, categoryClearAllVisible, pillToggle } from "./filterPill.ts";
 
 describe("pillToggle", () => {
   it("selects a pill that is not chosen yet", () => {
@@ -34,5 +34,14 @@ describe("allPillActive", () => {
 
   it("keeps All plain while a search term is typed", () => {
     expect(allPillActive(false, true)).toBe(false);
+  });
+});
+
+describe("categoryClearAllVisible", () => {
+  it("shows bulk clear only for more than one applied filter", () => {
+    expect(categoryClearAllVisible(0)).toBe(false);
+    expect(categoryClearAllVisible(1)).toBe(false);
+    expect(categoryClearAllVisible(2)).toBe(true);
+    expect(categoryClearAllVisible(3)).toBe(true);
   });
 });

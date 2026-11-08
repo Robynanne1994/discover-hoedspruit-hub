@@ -16,3 +16,7 @@ export const pillToggle = <T>(current: T, clicked: T, defaultValue: T): T =>
  */
 export const allPillActive = (filtersOn: boolean, searching = false): boolean =>
   !filtersOn && !searching;
+
+/** Category bars need a bulk clear only when multiple removable filters exist. */
+export const categoryClearAllVisible = (appliedFilterCount: number): boolean =>
+  appliedFilterCount > 1;
