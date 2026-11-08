@@ -1,5 +1,5 @@
 import { buildHostDirectory, resolveHost } from "@/lib/eventHosts";
-import { isEventHappeningNow } from "@/lib/eventLive";
+import { getEventLiveStatus } from "@/lib/eventLive";
 import InstagramIcon from "@/components/ui/InstagramIcon";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -20,7 +20,7 @@ import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
-import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
+import { getPerformances, hasPerformances, getNextOccurrence, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { eventContactPairs } from "@/lib/eventContacts";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
@@ -472,9 +472,10 @@ const EventDetail = () => {
   const directionsHref = buildDirectionsHref({ mapsLink, location: e.location });
   const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
 
-  // Past = no upcoming occurrence of any kind.
-  const isPast = isEventPastUnified(e);
-  const happeningNow = isEventHappeningNow(e);
+  // Status includes Johannesburg start/end times, not just calendar dates.
+  const liveStatus = getEventLiveStatus(e);
+  const isPast = liveStatus === "past";
+  const happeningNow = liveStatus === "happening";
 
   // Action pills
   const actions = [
