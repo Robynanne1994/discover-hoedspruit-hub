@@ -1184,7 +1184,7 @@ const CategoryPage = () => {
             label: ACCESSIBILITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
             onRemove: () => setFilterAccessibility(filterAccessibility.filter((x) => x !== k)),
           })),
-          ...(hoursFilter !== "all" ? [{ label: hoursFilter === "open" ? "Open Now" : "Closed Now", onRemove: () => setHoursFilter("all") }] : []),
+          // Open Now lives only in its own toggle below the bar, never as a removable chip.
           ...(user && filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
           ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
           ...(filterMaxKm < MAX_KM ? [{ label: `Max ${filterMaxKm}km from town`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
@@ -1227,6 +1227,9 @@ const CategoryPage = () => {
           })),
         ];
   const filtersOn = activeFilterCount > 0;
+  // Open Now is applied like any filter but is switched off from its own toggle, so it
+  // only adds to the Clear All count, never to the chip row.
+  const clearAllVisible = categoryClearAllVisible(appliedChips.length + (hoursFilter !== "all" ? 1 : 0));
 
   // The header row and its pinned copy are the same bar, so they are built
   // once here and handed to both.
@@ -1334,8 +1337,8 @@ const CategoryPage = () => {
               </span>
             )}
           </button>
-          {filtersOn && <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />}
-          {categoryClearAllVisible(appliedChips.length) && (
+          {(clearAllVisible || appliedChips.length > 0) && <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />}
+          {clearAllVisible && (
             <button onClick={clearAllFilters} style={outlinePill}>
               <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
               Clear All
