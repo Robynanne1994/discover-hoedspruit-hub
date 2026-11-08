@@ -113,7 +113,7 @@ const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
 
-type TabKey = "about" | "contact" | "details" | "specials" | "events" | "resources" | "gallery" | "location";
+type TabKey = "about" | "hours" | "contact" | "details" | "specials" | "events" | "resources" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -287,7 +287,7 @@ const ListingDetail = () => {
     const hasE = (relatedEvents?.length ?? 0) > 0;
     const hasR = (relatedChannels?.length ?? 0) > 0;
     const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
-    const keys: TabKey[] = ["about", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasR ? ["resources" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    const keys: TabKey[] = ["about", ...(hasHours ? ["hours" as TabKey] : []), "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasR ? ["resources" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
     if (!keys.includes(tab)) setTab("about");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relatedSpecials, relatedEvents, relatedChannels, listing, tab]);
@@ -952,10 +952,11 @@ const ListingDetail = () => {
     : sections;
 
   const hasDetails = sections.length > 0;
-  // Hours no longer has its own tab — it renders inside About.
-  const hasAboutTab = hasAbout || goodToKnow.length > 0 || hasHours || customRows.length > 0;
+  // Hours moved out of About into their own tab, so About no longer counts them.
+  const hasAboutTab = hasAbout || goodToKnow.length > 0 || customRows.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
     ...(hasAboutTab ? [{ key: "about" as TabKey, label: "About" }] : []),
+    ...(hasHours ? [{ key: "hours" as TabKey, label: "Hours" }] : []),
     ...(hasContact ? [{ key: "contact" as TabKey, label: "Contact" }] : []),
     ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
     ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
@@ -965,7 +966,7 @@ const ListingDetail = () => {
     ...(hasLocation ? [{ key: "location" as TabKey, label: "Location" }] : []),
   ];
   // Falls back to the first available tab when the selected one has no content
-  // (e.g. a listing with no description, no hours and no "good to know" chips).
+  // (e.g. a listing with no description, no "good to know" chips and no details).
   const activeTab: TabKey = visibleTabs.some((t) => t.key === tab) ? tab : (visibleTabs[0]?.key ?? "about");
 
 
@@ -1158,14 +1159,13 @@ const ListingDetail = () => {
         </div>
       ))}
 
-      {renderHoursCard()}
-
       <SuggestEditCard onClick={() => setSuggestEditOpen(true)} />
     </div>
   );
 
-  // Opening hours now live inside the About tab rather than a tab of their own.
-  const renderHoursCard = () => {
+  // Opening hours get their own tab: the title, the open/closed line directly
+  // under it, then the hours card itself.
+  const renderHours = () => {
     if (!hasHours) return null;
     // With two schedules the card shows one at a time behind a small switch,
     // opening on whichever is running now.
@@ -1186,10 +1186,9 @@ const ListingDetail = () => {
     const heading = multipleSchedules
       ? "Opening Hours"
       : active.label === DEFAULT_HOURS_LABEL ? "Opening Hours" : `${active.label} Hours`;
-    const hasPriorSection = !!descriptionText || goodToKnow.length > 0 || customRows.length > 0;
     return (
-      <>
-        <div style={{ marginTop: hasPriorSection ? 14 : 0 }}>
+      <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <div>
           <h2 style={{ ...headStyle, margin: 0 }}>{heading}</h2>
           {activeStatus ? (
             <span style={{ display: "flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", marginTop: 5 }}>
@@ -1301,7 +1300,7 @@ const ListingDetail = () => {
           })}
         </div>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -1911,6 +1910,7 @@ const ListingDetail = () => {
       {/* Tab content */}
       <section style={{ background: C.bg }}>
         {activeTab === "about" && renderAbout()}
+        {activeTab === "hours" && renderHours()}
         {activeTab === "contact" && renderContact()}
         {activeTab === "details" && renderDetails()}
         {activeTab === "specials" && renderSpecials()}
