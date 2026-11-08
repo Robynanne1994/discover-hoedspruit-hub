@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MapPin } from "lucide-react";
-import { formatClock12, getHoursSchedules, headlineSchedule, isAlwaysOpen, isOpenNow, opensAt, todayHours, type HoursMap } from "@/lib/openHours";
+import { listingCardHours } from "@/lib/listingCardHours";
 import { MUTED as TOKEN_MUTED, type as t } from "@/lib/type";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -16,55 +16,19 @@ const CLAY = "#C0392B";
 // category cards, so it is lifted by that much.
 const STATUS_DOT_LIFT = "translateY(-1.7px)";
 
-const to24h = (raw?: string | null) => {
-  if (!raw) return null;
-  const m = raw.trim().match(/^(\d{1,2})[:.]?(\d{2})?/);
-  if (!m) return null;
-  const h = parseInt(m[1], 10);
-  const mm = m[2] ?? "00";
-  if (Number.isNaN(h)) return null;
-  return `${String(h).padStart(2, "0")}:${mm}`;
-};
-
-const closesAt = (hours: HoursMap | null | undefined) => {
-  const v = todayHours(hours);
-  if (!v) return null;
-  const m = v.match(/[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-  return m ? to24h(m[1]) : null;
-};
-
-// The listing columns the status bar reads. A listing that keeps two sets of
-// hours — a kitchen and a bar that outlasts it — carries the extra ones in
-// `additional_hours`, and the bar being open still counts as open.
+// Cards use the first populated schedule, without its editor title.
 export type ListingHoursSource = {
   opening_hours?: unknown;
   opening_hours_label?: unknown;
   additional_hours?: unknown;
 };
 
-// The open/closed footer bar, mirroring the saved cards on the profile page.
-// Returns a bold prefix ("Open"/"Closed") plus a lighter detail ("Opens X"/"Closes X").
-// When a listing keeps more than one schedule the prefix names the one being
-// reported ("Bar Open"), so "Open" never quietly means a different counter.
+// The next opening skips closed days and uses three-letter weekdays.
 export const listingStatus = (
   listing: ListingHoursSource | null | undefined
 ): { label: string; detail?: string; tone: string } => {
-  const schedules = getHoursSchedules(listing);
-  const schedule = headlineSchedule(schedules);
-  if (!schedule) return { label: "Hours Unknown", tone: BROWN };
-  const prefix = schedules.length > 1 ? `${schedule.label} ` : "";
-  const hours = schedule.hours;
-  if (isAlwaysOpen(todayHours(hours))) return { label: `${prefix}Always Open`, tone: SAGE };
-  if (isOpenNow(hours)) {
-    const until = closesAt(hours);
-    return until
-      ? { label: `${prefix}Open`, detail: `Closes ${formatClock12(until)}`, tone: SAGE }
-      : { label: `${prefix}Open Now`, tone: SAGE };
-  }
-  const opens = to24h(opensAt(hours));
-  return opens
-    ? { label: `${prefix}Closed`, detail: `Opens ${formatClock12(opens)}`, tone: CLAY }
-    : { label: `${prefix}Closed Now`, tone: CLAY };
+  const status = listingCardHours(listing);
+  return { label: status.label, detail: status.detail, tone: status.state === "open" ? SAGE : status.state === "closed" ? CLAY : BROWN };
 };
 
 interface Props {
@@ -187,6 +151,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
           padding: "8px 12px",
           display: "flex",
           alignItems: "center",
+          flexWrap: "wrap",
           gap: 5,
           fontFamily: SANS,
           ...t.meta,
@@ -196,7 +161,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
         }}
       >
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0, transform: STATUS_DOT_LIFT }} />
-        <span>{status.label}</span>
+        <span style={{ whiteSpace: "nowrap" }}>{status.label}</span>
         {status.detail ? (
           <span style={{ fontWeight: 400 }}>· {status.detail}</span>
         ) : null}
