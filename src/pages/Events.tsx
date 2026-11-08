@@ -991,10 +991,11 @@ const Events = () => {
       <AppliedFilterBar
         ref={filterBarRef}
         chips={appliedChips}
+        clearAllMinimum={2}
         onOpen={() => setRefineOpen(true)}
         onClear={clearAllFilters}
       >
-        {!search.trim() && filtersWithEvents(FILTERS, (f) => f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents)).map((f) => {
+        {allPillActive(filtersOn, !!search.trim()) && filtersWithEvents(FILTERS, (f) => f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents)).map((f) => {
           const active = f.value === "all" ? allPillActive(filtersOn, !!search.trim()) : activeFilter === f.value;
           return <Button
             key={f.value}
