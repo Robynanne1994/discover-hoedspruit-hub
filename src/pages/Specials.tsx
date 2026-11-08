@@ -7,6 +7,9 @@ import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { AppliedFilterBar } from "@/components/AppliedFilterBar";
+import { Button } from "@/components/ui/button";
+import { pillCategories, tagKey } from "@/lib/specialTags";
+import { specialPillIcon } from "@/lib/specialPillIcons";
 import { countSpecialFacets, specialMatchesFacets, type SpecialValidity } from "@/lib/specialFacets";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
@@ -21,7 +24,7 @@ import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
 import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
-import { pillToggle } from "@/lib/filterPill";
+import { allPillActive, pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { compareSpecialDefault } from "@/lib/specialOrder";
 import { specialMatchesKind } from "@/lib/specialKind";
@@ -133,6 +136,11 @@ const Specials = () => {
     [specials, search, activeTab, filterType, validityFilter, bookingFilter, specialTypeFilter, kindFilter]);
   const drawerCategoryTabs = [ALL_TAB, ...facets.tags];
   const categoryCounts = facets.category;
+  const topCategoryCount = (category: string) =>
+    [...categoryCounts].find(([label]) => tagKey(label) === tagKey(category))?.[1] ?? 0;
+  const topCategories = pillCategories(specials ?? []).filter((category) =>
+    topCategoryCount(category) > 0 || selectedCategories.some((selected) => tagKey(selected) === tagKey(category))
+  );
   const filterCounts = { booking: facets.booking, type: facets.savings };
   const kindCounts = facets.kinds;
   const validityCounts: Record<string, number> = {
@@ -317,7 +325,27 @@ const Specials = () => {
         chips={appliedChips}
         onOpen={() => { setOpenSection(null); setShowFilters(true); }}
         onClear={clearAllFilters}
-      />
+      >
+        <Button
+          variant="ghost"
+          className={allPillActive(filtersOn, !!search.trim()) ? "applied-filter-button event-timeframe-active" : "applied-filter-button"}
+          aria-pressed={allPillActive(filtersOn, !!search.trim())}
+          onClick={clearAllFilters}
+        >All ({specials?.length ?? 0})</Button>
+        {topCategories.map((category) => {
+          const active = selectedCategories.some((selected) => tagKey(selected) === tagKey(category));
+          return <Button
+            key={category}
+            variant="ghost"
+            className={active ? "applied-filter-button event-timeframe-active" : "applied-filter-button"}
+            aria-pressed={active}
+            onClick={() => {
+              setActiveTab(active ? ALL_TAB : category);
+              setFilterType([]);
+            }}
+          >{specialPillIcon(category)}{category} ({topCategoryCount(category)})</Button>;
+        })}
+      </AppliedFilterBar>
 
       {/* Content */}
       <div style={{ padding: "20px 20px 0 20px" }}>
