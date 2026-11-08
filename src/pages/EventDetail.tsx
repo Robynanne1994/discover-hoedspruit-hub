@@ -1,4 +1,5 @@
 import { buildHostDirectory, resolveHost } from "@/lib/eventHosts";
+import { isEventHappeningNow } from "@/lib/eventLive";
 import InstagramIcon from "@/components/ui/InstagramIcon";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
@@ -473,6 +474,7 @@ const EventDetail = () => {
 
   // Past = no upcoming occurrence of any kind.
   const isPast = isEventPastUnified(e);
+  const happeningNow = isEventHappeningNow(e);
 
   // Action pills
   const actions = [
@@ -1244,7 +1246,7 @@ const EventDetail = () => {
               fontSize: 13, fontWeight: 600, letterSpacing: "0.01em",
               color: isPast ? C.muted : "#2b7f3f",
             }}>
-              {isPast ? "Event has passed" : "Upcoming"}
+              {happeningNow ? "Happening Now" : isPast ? "Event has passed" : "Upcoming"}
             </span>
             <span style={{ fontSize: 13, color: MUTED }}>· {dateDisplay}</span>
           </div>
