@@ -664,7 +664,6 @@ const CategoryPage = () => {
     filterPetFriendly ? 1 : 0,
     filterWheelchair ? 1 : 0,
     filterWifi ? 1 : 0,
-    hoursFilter !== "all" ? 1 : 0,
     filterSaved ? 1 : 0,
     filterBeenTo ? 1 : 0,
     filterMaxKm < MAX_KM ? 1 : 0,
@@ -1033,7 +1032,7 @@ const CategoryPage = () => {
     fontFamily: sans,
   };
 
-  const isSearchEmpty = (search.trim().length > 0 || activeFilterCount > 0) && filteredListings.length === 0 && totalCount > 0;
+  const isSearchEmpty = (search.trim().length > 0 || activeFilterCount > 0 || hoursFilter !== "all") && filteredListings.length === 0 && totalCount > 0;
 
   const PAGE_BG = "#E6E0CC";
   const CARD_BG = "#FFFFFF";
@@ -1227,9 +1226,9 @@ const CategoryPage = () => {
           })),
         ];
   const filtersOn = activeFilterCount > 0;
-  // Open Now is applied like any filter but is switched off from its own toggle, so it
-  // only adds to the Clear All count, never to the chip row.
-  const clearAllVisible = categoryClearAllVisible(appliedChips.length + (hoursFilter !== "all" ? 1 : 0));
+  // Open Now is a toggle, not a filter: it never counts in the Filters badge and never
+  // joins the chip row, so the badge and Clear All follow the chips alone.
+  const clearAllVisible = categoryClearAllVisible(appliedChips.length);
 
   // The header row and its pinned copy are the same bar, so they are built
   // once here and handed to both.
