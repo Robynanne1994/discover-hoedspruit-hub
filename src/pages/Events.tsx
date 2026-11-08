@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { eventImage } from "@/lib/imageFallback";
 import { RefineDrawer, RefineSection, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
+import { AppliedFilterBar } from "@/components/AppliedFilterBar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   isToday,
@@ -42,7 +43,7 @@ import { compareFeaturedEvents } from "@/lib/featuredEventOrder";
 import Seo from "@/components/Seo";
 import { MUTED, NOHEMI, tab as tabStyle, type } from "@/lib/type";
 import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
-import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
 import {
@@ -644,7 +645,7 @@ const Events = () => {
         else next.set(k, v);
       });
       return next;
-    }, { replace: true });
+    }, { replace: true, state: location.state });
   };
   const setActiveFilter = (f: FilterType) => updateParams({ f: f === "all" ? null : f });
   
@@ -769,7 +770,7 @@ const Events = () => {
     }
 
 
-    // Price filter: an event with no price populated is free.
+    // Unpriced events match Any only.
     list = list.filter((e) => eventMatchesPrice(e, priceFilter));
 
     if (durationFilter !== "all") list = list.filter((e) => eventMatchesDuration(e, durationFilter));
@@ -998,200 +999,12 @@ const Events = () => {
         </div>
       )}
 
-      {/* Filters button, inline at the head of the pill row. It opens the same
-          drawer the header button used to, and wears a count of the filters
-          currently on. The button, its divider and Clear all hold their place
-          at the left while the date pills scroll past them. */}
-      <div
+      <AppliedFilterBar
         ref={filterBarRef}
-        className="scrollbar-hide"
-        style={{
-          marginTop: 12,
-          paddingLeft: 20,
-          paddingTop: 4,
-          paddingBottom: 4,
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          position: "relative",
-          overflowX: "auto",
-          overflowY: "visible",
-          scrollbarWidth: "none",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
-          <button
-            aria-label="Filters and sort"
-            aria-haspopup="dialog"
-            onClick={() => setRefineOpen(true)}
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid rgba(26,26,26,0.08)",
-              borderRadius: 999,
-              height: PILL_HEIGHT,
-              padding: "7px 12px 7px 14px",
-              cursor: "pointer",
-              ...tabStyle(false),
-              lineHeight: 1,
-              color: "#1A1A1A",
-              whiteSpace: "nowrap",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <SlidersHorizontal
-              size={PILL_ICON_SIZE}
-              strokeWidth={1.9}
-              style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
-            />
-            Filters
-            {activeFilterCount > 0 && (
-              <span
-                aria-label={`${activeFilterCount} ${activeFilterCount === 1 ? "filter" : "filters"} applied`}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  minWidth: PILL_BADGE_SIZE,
-                  height: PILL_BADGE_SIZE,
-                  padding: "0 4px",
-                  borderRadius: 999,
-                  background: "#423324",
-                  color: "#FFFFFF",
-                  fontFamily: SANS,
-                  fontSize: 10,
-                  fontWeight: 700,
-                  lineHeight: 1,
-                  letterSpacing: 0,
-                }}
-              >
-                {/* The digit's ink is shorter than the line box it is centred
-                    in, so it rides high in the disc without this lift. */}
-                <span
-                  style={{
-                    display: "block",
-                    transform: `translateY(${PILL_BADGE_NUDGE})`,
-                  }}
-                >
-                  {activeFilterCount}
-                </span>
-              </span>
-            )}
-          </button>
-
-          {/* Hairline between the Filters button and everything else. */}
-          {!search.trim() && (
-            <span
-              aria-hidden="true"
-              style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }}
-            />
-          )}
-
-          {filtersOn && (
-            <button
-              onClick={clearAllFilters}
-              style={{
-                background: "transparent",
-                border: "1.5px solid #423324",
-                borderRadius: 999,
-                height: PILL_HEIGHT,
-                padding: "6.5px 12px",
-                cursor: "pointer",
-                ...tabStyle(false),
-                lineHeight: 1,
-                color: "#423324",
-                whiteSpace: "nowrap",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
-              <X
-                size={PILL_ICON_SIZE}
-                strokeWidth={2}
-                style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }}
-              />
-              Clear All
-            </button>
-          )}
-        </div>
-
-
-        {/* Date pills — hidden while a search term is active */}
-        {!search.trim() && (
-          <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
-            {filtersWithEvents(FILTERS, (f) => (f.value === activeFilter ? 1 : getFilterCount(f.value, pillEvents))).map((f) => {
-              // "All" stays plain once anything is narrowed, so a lit pill always
-              // names the filter that is actually doing the work.
-              const active =
-                f.value === "all"
-                  ? allPillActive(filtersOn, !!search.trim())
-                  : activeFilter === f.value;
-              const count = getFilterCount(f.value, pillEvents);
-              return (
-                <button
-                  key={f.value}
-                  onClick={() => handleFilterPill(f.value)}
-                  style={{
-                    background: active ? "#423324" : "#FFFFFF",
-                    border: `1px solid ${active ? "#423324" : "rgba(26,26,26,0.08)"}`,
-                    borderRadius: 999,
-                    height: PILL_HEIGHT,
-                    padding: "7px 14px",
-                    cursor: "pointer",
-                    ...tabStyle(active),
-                    lineHeight: 1,
-                    color: active ? "#FFFFFF" : "#1A1A1A",
-                    whiteSpace: "nowrap",
-                    flexShrink: 0,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  {f.label} ({count})
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Applied filters — one removable chip per active filter */}
-      {appliedChips.length > 0 && (
-        <div
-          className="scrollbar-hide"
-          style={{ display: "flex", gap: 8, overflowX: "auto", padding: "6px 20px 4px" }}
-        >
-          {appliedChips.map((chip) => (
-            <button
-              key={chip.key}
-              onClick={chip.onRemove}
-              aria-label={`Remove ${chip.label} filter`}
-              style={{
-                background: "transparent",
-                border: "1.5px solid #423324",
-                borderRadius: 999,
-                height: PILL_HEIGHT,
-                padding: "6.5px 12px",
-                cursor: "pointer",
-                ...tabStyle(false),
-                lineHeight: 1,
-                color: "#423324",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-              }}
-            >
-              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      )}
+        chips={appliedChips}
+        onOpen={() => setRefineOpen(true)}
+        onClear={clearAllFilters}
+      />
 
       {/* Featured Events */}
       {!search.trim() && !filtersOn && featuredEvents.length > 0 && (
@@ -1301,13 +1114,9 @@ const Events = () => {
             <p style={{ ...type.body, margin: 0 }}>
               No events match your filters.
             </p>
-            {(tagFilter || activeFilter !== "all" || search || recurrenceFilter !== "any" || timeFilter !== "any") && (
+            {(filtersOn || search) && (
               <button
-                onClick={() => {
-                  updateParams({ t: null, f: null, q: null });
-                  setRecurrenceFilter("any");
-                  setTimeFilter("any");
-                }}
+                onClick={clearAllFilters}
                 style={{
                   marginTop: 12,
                   background: "transparent",
@@ -1429,8 +1238,8 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
         >
           {(() => {
-            const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0);
-            const totalVisible = categoryEvents.length;
+            const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0 || t === tagFilter);
+            const totalVisible = tagBase.length;
             if (visibleTags.length === 0) {
               return <p style={{ ...type.meta, margin: 0 }}>No categories yet.</p>;
             }
@@ -1464,7 +1273,7 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "price" ? null : "price")}
         >
           <div>
-            {PRICE_OPTIONS.filter((o) => o.value === "any" || priceCounts[o.value] > 0).map((o) => (
+            {PRICE_OPTIONS.filter((o) => o.value === "any" || priceCounts[o.value] > 0 || priceFilter === o.value).map((o) => (
               <RefineRectOption
                 key={o.value}
                 label={`${o.label} (${priceCounts[o.value]})`}
@@ -1487,7 +1296,7 @@ const Events = () => {
           <div>
             {DURATION_OPTIONS.map((o) => {
               const n = durationCounts[o.value];
-              if (o.value !== "all" && n === 0) return null;
+              if (o.value !== "all" && n === 0 && durationFilter !== o.value) return null;
               return (
                 <RefineRectOption
                   key={o.value}
@@ -1513,14 +1322,14 @@ const Events = () => {
               active={bookingFilter === "any"}
               onClick={() => setBookingFilter("any")}
             />
-            {bookingCounts.required > 0 && (
+            {(bookingCounts.required > 0 || bookingFilter === "required") && (
               <RefineRectOption
                 label={`Booking Required (${bookingCounts.required})`}
                 active={bookingFilter === "required"}
                 onClick={() => setBookingFilter(pillToggle(bookingFilter, "required", "any"))}
               />
             )}
-            {bookingCounts["not-required"] > 0 && (
+            {(bookingCounts["not-required"] > 0 || bookingFilter === "not-required") && (
               <RefineRectOption
                 label={`Booking Not Required (${bookingCounts["not-required"]})`}
                 active={bookingFilter === "not-required"}
@@ -1538,7 +1347,7 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "recurrence" ? null : "recurrence")}
         >
           <div>
-            {RECURRENCE_OPTIONS.filter((o) => o.value === "any" || recurrenceCounts[o.value] > 0).map((o) => (
+            {RECURRENCE_OPTIONS.filter((o) => o.value === "any" || recurrenceCounts[o.value] > 0 || recurrenceFilter === o.value).map((o) => (
               <RefineRectOption key={o.value} label={`${o.label} (${recurrenceCounts[o.value]})`} active={recurrenceFilter === o.value} onClick={() => setRecurrenceFilter(pillToggle(recurrenceFilter, o.value, "any"))} />
             ))}
           </div>
@@ -1552,7 +1361,7 @@ const Events = () => {
           onToggle={() => setOpenSection(openSection === "time-of-day" ? null : "time-of-day")}
         >
           <div>
-            {TIME_OPTIONS.filter((o) => o.value === "any" || timeCounts[o.value] > 0).map((o) => (
+            {TIME_OPTIONS.filter((o) => o.value === "any" || timeCounts[o.value] > 0 || timeFilter === o.value).map((o) => (
               <RefineRectOption key={o.value} label={`${o.label} (${timeCounts[o.value]})`} active={timeFilter === o.value} onClick={() => setTimeFilter(pillToggle(timeFilter, o.value, "any"))} />
             ))}
           </div>
