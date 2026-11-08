@@ -1208,8 +1208,6 @@ const Events = () => {
           <RefineOption label="Date (Latest First)" active={effectiveSort === "date-desc"} onClick={() => setSortBy(pillToggle(effectiveSort, "date-desc", "date-asc"))} />
           <RefineOption label="Alphabetically (A-Z)" active={effectiveSort === "title-asc"} onClick={() => setSortBy(pillToggle(effectiveSort, "title-asc", "date-asc"))} />
           <RefineOption label="Alphabetically (Z-A)" active={effectiveSort === "title-desc"} onClick={() => setSortBy(pillToggle(effectiveSort, "title-desc", "date-asc"))} />
-          <RefineOption label="Duration (Shortest First)" active={effectiveSort === "duration-asc"} onClick={() => setSortBy(pillToggle(effectiveSort, "duration-asc", "date-asc"))} />
-          <RefineOption label="Duration (Longest First)" active={effectiveSort === "duration-desc"} onClick={() => setSortBy(pillToggle(effectiveSort, "duration-desc", "date-asc"))} />
         </RefineSection>
 
         <RefineSection
