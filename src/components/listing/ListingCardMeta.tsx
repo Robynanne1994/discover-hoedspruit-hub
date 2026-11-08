@@ -166,7 +166,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0, transform: STATUS_DOT_LIFT }} />
         <span style={{ whiteSpace: "nowrap", flexShrink: 0 }}>{status.label}</span>
         {status.detail ? (
-          <span title={status.detail} style={{ fontWeight: 400, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>· {status.detail}</span>
+          <span title={status.detail} style={{ fontWeight: 400, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>· {status.detail.replace(/^(Opens|Closes) /, "")}</span>
         ) : null}
       </div>
     </>
