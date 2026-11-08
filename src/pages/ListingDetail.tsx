@@ -1264,7 +1264,13 @@ const ListingDetail = () => {
                 ? "Closed"
                 : v.replace(/\s*-\s*/g, " – ");
             return (
-              <div key={day} style={{ borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
+              <div key={day} style={{
+                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                // Today's row carries a soft cream wash so it reads as the live
+                // row at a glance; the bleed to the card edges keeps the tint
+                // from looking like a floating chip.
+                ...(isToday && { background: C.ivory, margin: "0 -18px", padding: "0 18px" }),
+              }}>
                 <div style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
                   padding: "13px 0",
