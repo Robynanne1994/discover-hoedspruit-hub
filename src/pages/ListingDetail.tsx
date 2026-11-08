@@ -23,7 +23,7 @@ import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNG
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
-import { getWeekPublicHolidays, holidayHoursNote, getSADate } from "@/lib/southAfricaHolidays";
+import { getWeekPublicHolidays, getSADate } from "@/lib/southAfricaHolidays";
 import { getHoursSchedules, DEFAULT_HOURS_LABEL, formatClock12, type HoursSchedule } from "@/lib/openHours";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
