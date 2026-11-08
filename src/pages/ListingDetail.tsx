@@ -1453,7 +1453,19 @@ const ListingDetail = () => {
     </div>
   );
 
-  const renderRelatedCard =(item: { id: string; title: string; image_url?: string | null; subtitle?: string | null; badge?: string | null }, to: string) => (
+  // Small white glyph in a dark brown disc, matching the events list cards.
+  const RELATED_ROW_ICON_DISC = {
+    flexShrink: 0, width: 16, height: 16, borderRadius: 999, background: C.primary,
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+  } as const;
+
+  const renderRelatedCard =(
+    item: {
+      id: string; title: string; image_url?: string | null; badge?: string | null;
+      rows?: { icon?: "calendar" | "clock"; text: string }[];
+    },
+    to: string
+  ) => (
     <Link
       key={item.id}
       to={to}
@@ -1467,19 +1479,28 @@ const ListingDetail = () => {
       <div style={{ width: 96, flexShrink: 0, alignSelf: "stretch", background: C.ivory }}>
         {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />}
       </div>
-      <div style={{ flex: 1, minWidth: 0, padding: "12px 14px 12px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ flex: 1, minWidth: 0, padding: "12px 4px 12px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <div style={{ ...type.cardTitleM, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
           {item.title}
         </div>
-        {item.subtitle && (
-          <div style={type.meta}>{item.subtitle}</div>
-        )}
+        {(item.rows ?? []).map((row, i) => (
+          <div key={i} style={{ ...type.meta, marginTop: i === 0 ? 0 : 4, display: "flex", alignItems: "center", gap: 6 }}>
+            {row.icon === "calendar" && (
+              <span style={RELATED_ROW_ICON_DISC}><Calendar size={10} strokeWidth={2.1} color="#FFFFFF" /></span>
+            )}
+            {row.icon === "clock" && (
+              <span style={RELATED_ROW_ICON_DISC}><Clock size={10} strokeWidth={2.1} color="#FFFFFF" /></span>
+            )}
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" as const }}>{row.text}</span>
+          </div>
+        ))}
         {item.badge && (
           <div style={{ marginTop: 6, alignSelf: "flex-start", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
             {item.badge}
           </div>
         )}
       </div>
+      <ArrowUpRight size={18} strokeWidth={1.75} aria-hidden="true" style={{ flexShrink: 0, alignSelf: "center", marginRight: 16, color: C.primary }} />
     </Link>
   );
 
