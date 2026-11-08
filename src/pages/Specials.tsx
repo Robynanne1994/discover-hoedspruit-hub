@@ -326,6 +326,7 @@ const Specials = () => {
         onOpen={() => { setOpenSection(null); setShowFilters(true); }}
         onClear={clearAllFilters}
       >
+        {allPillActive(filtersOn, !!search.trim()) && <>
         <Button
           variant="ghost"
           className={allPillActive(filtersOn, !!search.trim()) ? "applied-filter-button event-timeframe-active" : "applied-filter-button"}
@@ -345,6 +346,7 @@ const Specials = () => {
             }}
           >{specialPillIcon(category)}{category} ({topCategoryCount(category)})</Button>;
         })}
+        </>}
       </AppliedFilterBar>
 
       {/* Content */}
