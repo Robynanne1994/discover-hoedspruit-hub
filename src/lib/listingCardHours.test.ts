@@ -1,8 +1,21 @@
 import { describe, expect, it } from "vitest";
-import { formatCardClock, listingCardHours } from "./listingCardHours";
+import { formatCardClock, listingCardHours, listingMatchesHours } from "./listingCardHours";
 
 const weekdays = { monday: "07:30 - 17:00", tuesday: "07:30 - 17:00", wednesday: "07:30 - 17:00", thursday: "07:30 - 17:00", friday: "07:30 - 17:00", saturday: "Closed", sunday: "Closed" };
 describe("category card hours", () => {
+  it("filters Open Now and Closed Now by the first populated schedule", () => {
+    const listing = { opening_hours: weekdays, additional_hours: [{ label: "Bar", hours: { saturday: "Always Open" } }] };
+    const saturday = new Date("2026-11-07T10:00:00");
+    expect(listingMatchesHours(listing, "open", saturday)).toBe(false);
+    expect(listingMatchesHours(listing, "closed", saturday)).toBe(true);
+    expect(listingMatchesHours(listing, "all", saturday)).toBe(true);
+    expect(listingMatchesHours(listing, "open", new Date("2026-11-09T10:00:00"))).toBe(true);
+  });
+  it("includes unknown hours only under All", () => {
+    expect(listingMatchesHours({}, "all")).toBe(true);
+    expect(listingMatchesHours({}, "open")).toBe(false);
+    expect(listingMatchesHours({}, "closed")).toBe(false);
+  });
   it("uses the first populated schedule even when only the second is open", () => {
     const result = listingCardHours({ opening_hours_label: "General", opening_hours: weekdays, additional_hours: [{ label: "Bar", hours: { saturday: "Always Open" } }] }, new Date("2026-11-07T10:00:00"));
     expect(result).toEqual({ state: "closed", label: "Closed", detail: "Opens 7:30AM Mon" });

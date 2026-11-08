@@ -3,6 +3,7 @@
 <!-- LOVABLE:BEGIN -->
 - Use AppliedFilterBar for Events and Specials to keep their applied-chip rows consistent with listing filters.
 - Keep specials faceted counts in specialFacets, reusing shared matching helpers and skipping only the section being counted.
+- Use listingCardHours for category status matching so filters and card statuses report the same schedule.
 <!-- LOVABLE:END -->
 
 - Use listingImage's homepage surface for Explore Quick Filter rows so they reuse the editor's square homepage crop and shared image fallbacks.

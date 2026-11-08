@@ -21,7 +21,9 @@ import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import { bayesianRating, RATING_FALLBACK_MEAN } from "@/lib/rating";
-import { getHoursSchedules, isAnyOpenNow, isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
+import { getHoursSchedules, isMissingHoursColumn, withHoursColumns } from "@/lib/openHours";
+import { listingMatchesHours, type ListingHoursFilter } from "@/lib/listingCardHours";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import ListingCardMeta from "@/components/listing/ListingCardMeta";
 import Seo from "@/components/Seo";
 import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
@@ -260,7 +262,7 @@ const CategoryPage = () => {
   const [filterPetFriendly, setFilterPetFriendly] = useState<boolean>(persisted?.filterPetFriendly ?? false);
   const [filterWheelchair, setFilterWheelchair] = useState<boolean>(persisted?.filterWheelchair ?? false);
   const [filterWifi, setFilterWifi] = useState<boolean>(persisted?.filterWifi ?? false);
-  const [filterOpenNow, setFilterOpenNow] = useState<boolean>(persisted?.filterOpenNow ?? false);
+  const [hoursFilter, setHoursFilter] = useState<ListingHoursFilter>(persisted?.hoursFilter ?? (persisted?.filterOpenNow ? "open" : "all"));
   const [filterSaved, setFilterSaved] = useState<boolean>(persisted?.filterSaved ?? false);
   const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
   const MAX_KM = 25; // "Anywhere"
@@ -286,7 +288,7 @@ const CategoryPage = () => {
           sortBy, search,
           filterCuisine, filterVibe, filterMeal, filterSeating,
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
-          filterOpenNow, filterSaved, filterBeenTo,
+          hoursFilter, filterSaved, filterBeenTo,
           filterMaxKm,
           filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
           filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
@@ -299,7 +301,7 @@ const CategoryPage = () => {
     sortBy, search,
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
-    filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
+    hoursFilter, filterSaved, filterBeenTo, filterMaxKm,
     filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities,
     filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility,
     filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories,
@@ -638,7 +640,7 @@ const CategoryPage = () => {
         (l.vibe || []).forEach((v: string) => bump(vibe, v));
         (l.meal || []).forEach((v: string) => bump(meal, v));
         (l.seating || []).forEach((v: string) => bump(seating, v));
-        if (isAnyOpenNow(l)) openNow += 1;
+        if (listingMatchesHours(l, "open")) openNow += 1;
       });
 
       const savedCount = savedIds
@@ -662,7 +664,7 @@ const CategoryPage = () => {
     filterPetFriendly ? 1 : 0,
     filterWheelchair ? 1 : 0,
     filterWifi ? 1 : 0,
-    filterOpenNow ? 1 : 0,
+    hoursFilter !== "all" ? 1 : 0,
     filterSaved ? 1 : 0,
     filterBeenTo ? 1 : 0,
     filterMaxKm < MAX_KM ? 1 : 0,
@@ -696,7 +698,7 @@ const CategoryPage = () => {
     setFilterPetFriendly(false);
     setFilterWheelchair(false);
     setFilterWifi(false);
-    setFilterOpenNow(false);
+    setHoursFilter("all");
     setFilterSaved(false);
     setFilterBeenTo(false);
     setFilterMaxKm(MAX_KM);
@@ -750,7 +752,7 @@ const CategoryPage = () => {
     if (filterPetFriendly && !l.pets_allowed) return false;
     if (filterWheelchair && !l.wheelchair_friendly) return false;
     if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
-    if (filterOpenNow && !isAnyOpenNow(l)) return false;
+    if (!listingMatchesHours(l, hoursFilter)) return false;
     if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
     if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
     if (skip !== "km" && filterMaxKm < MAX_KM) {
@@ -967,7 +969,7 @@ const CategoryPage = () => {
       // unrated listings drop out entirely while that sort is active.
       if (sortBy === "rating" && !hasGoogleRating(l)) return false;
       if (q) {
-        return (l.title || "").toLowerCase().includes(q);
+        return (l.title || "").toLowerCase().includes(q) && listingMatchesHours(l, hoursFilter);
       }
       return passesFilters(l);
     });
@@ -1003,7 +1005,7 @@ const CategoryPage = () => {
     }
     return pinFeatured(result);
 
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories, savedIds, beenIds, sortBy, search, categoryRatingMean]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterFoods, filterServiceType, filterKids, filterDrinks, filterAccessibility, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, hoursFilter, filterSaved, filterBeenTo, filterMaxKm, filterPropertyTypes, filterMinNights, filterGrading, filterAccomAmenities, filterShopTypes, filterPriceRanges, filterShopServices, filterProductCategories, savedIds, beenIds, sortBy, search, categoryRatingMean]);
 
   const totalCount = listings?.length ?? 0;
   // The count only appears once the listings have actually arrived — a header
@@ -1182,7 +1184,7 @@ const CategoryPage = () => {
             label: ACCESSIBILITY_OPTIONS.find((o) => o.key === k)?.label ?? k,
             onRemove: () => setFilterAccessibility(filterAccessibility.filter((x) => x !== k)),
           })),
-          ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
+          ...(hoursFilter !== "all" ? [{ label: hoursFilter === "open" ? "Open Now" : "Closed Now", onRemove: () => setHoursFilter("all") }] : []),
           ...(user && filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
           ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
           ...(filterMaxKm < MAX_KM ? [{ label: `Max ${filterMaxKm}km from town`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
@@ -1351,6 +1353,20 @@ const CategoryPage = () => {
           </div>
         )}
       </div>
+
+      <ToggleGroup
+        type="single"
+        aria-label="Opening status"
+        value={hoursFilter}
+        onValueChange={(value) => setHoursFilter(value === "open" || value === "closed" ? value : "all")}
+        className="mx-5 mt-3 grid grid-cols-3 gap-1 rounded-full bg-card p-1"
+      >
+        {([["all", "All"], ["open", "Open Now"], ["closed", "Closed Now"]] as const).map(([value, label]) => (
+          <ToggleGroupItem key={value} value={value} className="h-8 min-w-0 rounded-full px-2 text-xs font-medium text-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+            {label}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
 
       {/* Results heading once anything is narrowed: one filter names itself. */}
       {(filtersOn || search.trim()) && (
@@ -1770,8 +1786,8 @@ const CategoryPage = () => {
           <RefineToggle
             label="Open Now"
             description="Only places open right now"
-            active={filterOpenNow}
-            onClick={() => setFilterOpenNow(!filterOpenNow)}
+            active={hoursFilter === "open"}
+            onClick={() => setHoursFilter(pillToggle(hoursFilter, "open", "all"))}
           />
         </RefineSection>
 
