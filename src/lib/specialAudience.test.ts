@@ -1,7 +1,15 @@
 import { describe, it, expect } from "vitest";
-import { specialAudience, specialAudienceCsvPatch, specialAudienceToCsv } from "./specialAudience";
+import { SPECIAL_AUDIENCE_OPTIONS, specialAudience, specialAudienceCsvPatch, specialAudienceToCsv } from "./specialAudience";
 
 describe("special audiences", () => {
+  it("offers Newly Weds and round-trips the choice", () => {
+    expect(SPECIAL_AUDIENCE_OPTIONS).toContain("Newly Weds");
+    expect(specialAudience(specialAudienceToCsv(["Newly Weds"]))).toEqual(["Newly Weds"]);
+  });
+  it("offers South African Residents Only and normalises the choice", () => {
+    expect(SPECIAL_AUDIENCE_OPTIONS).toContain("South African Residents Only");
+    expect(specialAudience("south african residents only")).toEqual(["South African Residents Only"]);
+  });
   it("accepts the requested audiences and multiple choices", () => {
     expect(specialAudience("Kids|Families|Seniors|Couples")).toEqual(["Kids", "Families", "Seniors", "Couples"]);
   });

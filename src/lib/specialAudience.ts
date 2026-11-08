@@ -1,4 +1,4 @@
-export const SPECIAL_AUDIENCE_OPTIONS = ["Kids", "Families", "Seniors", "Couples"] as const;
+export const SPECIAL_AUDIENCE_OPTIONS = ["Kids", "Families", "Seniors", "Couples", "Newly Weds", "South African Residents Only"] as const;
 
 /** CSV uses pipes; arrays are shared by storage, editors and detail rows. */
 export function specialAudience(value: unknown): string[] {
