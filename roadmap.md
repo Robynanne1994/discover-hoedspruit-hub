@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Match Events and Specials filter bars to listings; verify selection, chip removal and Clear All on desktop and phone.
 
 ## Done
 - Specials: optional Who's it For audiences added to both editors, CSV and individual Details card before social link; signed-in save/reopen/export and empty hiding verified, 12 tests passed.
