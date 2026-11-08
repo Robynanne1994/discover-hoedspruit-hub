@@ -3,9 +3,10 @@ import { countSpecialFilters, specialMatchesBooking, specialMatchesType, type Sp
 import { countSpecialKinds, specialMatchesKind } from "./specialKind";
 import { isEndingSoon, isOngoingSpecial, type SpecialLike } from "./specialValue";
 import { isUpcomingSpecial } from "./specialVisibility";
+import { countSpecialAudiences, specialMatchesAudience } from "./specialAudience";
 
 export type SpecialValidity = "all" | "upcoming" | "ending-soon" | "ongoing";
-type Facet = "category" | "validity" | "booking" | "savings" | "kind";
+type Facet = "category" | "validity" | "booking" | "savings" | "kind" | "audience";
 export type SpecialFacetRow = SpecialLike & {
   title?: string | null;
   business_name?: string | null;
@@ -16,6 +17,7 @@ export type SpecialFacetRow = SpecialLike & {
   sub_tag_2?: string | null;
   booking_link?: string | null;
   special_type?: string | null;
+  whos_it_for?: string[] | null;
 };
 export type SpecialFacetState = {
   search: string;
@@ -24,6 +26,7 @@ export type SpecialFacetState = {
   booking: SpecialBookingFilter;
   savings: SpecialTypeFilter;
   kind: string;
+  audience?: string;
 };
 
 export function specialMatchesValidity(s: SpecialFacetRow, validity: SpecialValidity): boolean {
@@ -40,7 +43,8 @@ export function specialMatchesFacets(s: SpecialFacetRow, state: SpecialFacetStat
     (skip === "validity" || specialMatchesValidity(s, state.validity)) &&
     (skip === "booking" || specialMatchesBooking(s, state.booking)) &&
     (skip === "savings" || specialMatchesType(s, state.savings)) &&
-    (skip === "kind" || specialMatchesKind(s, state.kind));
+    (skip === "kind" || specialMatchesKind(s, state.kind)) &&
+    (skip === "audience" || specialMatchesAudience(s.whos_it_for, state.audience));
 }
 
 export function countSpecialFacets(specials: SpecialFacetRow[], state: SpecialFacetState) {
@@ -64,5 +68,6 @@ export function countSpecialFacets(specials: SpecialFacetRow[], state: SpecialFa
     booking: countSpecialFilters(base("booking")).booking,
     savings: countSpecialFilters(base("savings")).type,
     kinds,
+    audience: countSpecialAudiences(base("audience"), state.audience),
   };
 }

@@ -1,7 +1,20 @@
 import { describe, it, expect } from "vitest";
-import { SPECIAL_AUDIENCE_OPTIONS, specialAudience, specialAudienceCsvPatch, specialAudienceToCsv } from "./specialAudience";
+import { SPECIAL_AUDIENCE_OPTIONS, specialAudience, specialAudienceCsvPatch, specialAudienceToCsv, specialMatchesAudience, countSpecialAudiences } from "./specialAudience";
 
 describe("special audiences", () => {
+  it("matches All only when no audience is specified", () => {
+    expect(specialMatchesAudience(null, "all")).toBe(true);
+    expect(specialMatchesAudience([], "all")).toBe(true);
+    expect(specialMatchesAudience(["Kids"], "all")).toBe(false);
+    expect(specialMatchesAudience(["Kids"], "any")).toBe(true);
+  });
+  it("matches named audiences and counts each special once", () => {
+    const rows = [{ whos_it_for: ["Kids", "Kids", "Families"] }, { whos_it_for: null }];
+    expect(specialMatchesAudience(["Newly Weds"], "Newlyweds")).toBe(true);
+    expect(specialMatchesAudience(["Seniors"], "Kids")).toBe(false);
+    expect(countSpecialAudiences(rows)).toContainEqual({ key: "Kids", label: "Kids", count: 1 });
+    expect(countSpecialAudiences(rows)).toContainEqual({ key: "all", label: "All", count: 1 });
+  });
   it("offers Newlyweds and normalises legacy stored and CSV selections", () => {
     expect(SPECIAL_AUDIENCE_OPTIONS).toContain("Newlyweds");
     expect(specialAudience(["Newly Weds", "Newlyweds"])).toEqual(["Newlyweds"]);
