@@ -2036,7 +2036,7 @@ const categoryLineStyle: React.CSSProperties = {
 const SuggestEditCard = ({ onClick }: { onClick: () => void }) => (
   <div style={{
     background: C.soft,
-    border: `1px solid ${C.softBorder}`,
+    border: `1px solid rgba(112,90,61,0.28)`,
     borderRadius: 20,
     padding: "20px 22px",
   }}>
