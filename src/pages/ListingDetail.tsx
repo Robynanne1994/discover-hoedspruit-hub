@@ -1195,6 +1195,9 @@ const ListingDetail = () => {
     // ("Opens 7:30AM"), and "Today" is dropped because it is already obvious.
     const nextNote = (() => {
       if (!activeStatus) return null;
+      // A place that never shuts has no next change to name, so the line says
+      // what it is instead of when it moves.
+      if (activeStatus.state === "open" && activeStatus.alwaysOpen) return "Always Open";
       if (activeStatus.state === "open" && !activeStatus.alwaysOpen && activeStatus.closes) {
         return `Closes ${formatClock12(activeStatus.closes)}`;
       }
