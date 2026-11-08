@@ -794,9 +794,6 @@ const CategoryPage = () => {
   const cuisineCounts = countValues("cuisine", poolFor("cuisine"));
   const vibeCounts = countValues("vibe", poolFor("vibe"));
   const mealCounts = countValues("meal", poolFor("meal"));
-  // Top pill counts follow every filter already applied, like the drawer.
-  const barPool = poolFor();
-  const savedInPool = savedIds ? barPool.filter((l: any) => savedIds.has(l.id)).length : 0;
 
   // Restaurant & cafe facets, all derived from what the listings actually carry
   // so that values added later show up as filters on their own.
@@ -1141,11 +1138,6 @@ const CategoryPage = () => {
     background: "transparent", border: "1.5px solid #423324", borderRadius: 999, height: PILL_HEIGHT,
     padding: "6.5px 12px", cursor: "pointer", ...tabStyle(false), lineHeight: 1, color: "#423324",
     whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 6,
-  };
-  const handleQuickPill = (apply: () => void) => {
-    apply();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    filterBarRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
   const appliedChips: { label: string; onRemove: () => void }[] = [
           ...(activeSubId
