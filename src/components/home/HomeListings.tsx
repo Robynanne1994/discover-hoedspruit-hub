@@ -1,6 +1,5 @@
 import { type PointerEvent } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
 
@@ -69,7 +68,6 @@ const ViewAllCard = ({ href }: { href: string }) => (
       }}
     >
       <span style={{ ...type.cardTitleM, color: "#FFFFFF" }}>View All</span>
-      <ArrowUpRight size={20} strokeWidth={2} color="#FFFFFF" />
     </div>
   </Link>
 );
