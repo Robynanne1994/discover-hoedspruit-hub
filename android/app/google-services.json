@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "323517068434",
+    "project_id": "hello-hoedspruit",
+    "storage_bucket": "hello-hoedspruit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323517068434:android:3961acc326abd74623a24b",
+        "android_client_info": {
+          "package_name": "za.co.hellohoedspruit.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "323517068434-o5qs73n30ln0saesn4nl7g19iuvvp3sf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6QMm4ApciHfPeQAjR7G0YN89vTwEANDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "323517068434-0p1kr0d9209qvkgh6e4t2p5vosa5r9f1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "323517068434-aqakgdd3694m5ll4qplf2d6onccfbrt9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Hello-Hoedspruit"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
