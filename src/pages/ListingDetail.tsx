@@ -1216,8 +1216,8 @@ const ListingDetail = () => {
               <span style={{ fontSize: 15, fontWeight: 600, color: statusColor }}>{statusText}</span>
               {nextNote && (
                 <span style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: 3 }}>
-                  <Circle size={10} strokeWidth={2} color={C.heading} style={{ flexShrink: 0 }} />
-                  <span style={{ fontSize: 15, fontWeight: 600, color: C.heading }}>{nextNote}</span>
+                  <Circle size={7} strokeWidth={1} color={C.heading} fill={C.heading} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 15, fontWeight: 400, color: C.heading }}>{nextNote}</span>
                 </span>
               )}
             </span>
