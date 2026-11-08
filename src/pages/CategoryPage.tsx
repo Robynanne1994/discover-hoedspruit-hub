@@ -1316,7 +1316,7 @@ const CategoryPage = () => {
         </div>
       )}
 
-      {/* Filters button inline at the head of the pill row, matching Events and Specials. */}
+      {/* Filters button on the left; applied filters join the row as removable chips. */}
       <div
         ref={filterBarRef}
         className="scrollbar-hide"
@@ -1340,7 +1340,7 @@ const CategoryPage = () => {
               </span>
             )}
           </button>
-          <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />
+          {filtersOn && <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />}
           {filtersOn && (
             <button onClick={clearAllFilters} style={outlinePill}>
               <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
@@ -1348,73 +1348,17 @@ const CategoryPage = () => {
             </button>
           )}
         </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
-          <button onClick={() => { clearAllFilters(); }} style={barPill(allPillActive(filtersOn, !!search.trim()))}>
-            All{facetCounts ? ` (${facetCounts.total})` : ""}
-          </button>
-          <button onClick={() => handleQuickPill(() => setFilterOpenNow(!filterOpenNow))} style={barPill(filterOpenNow)}>
-            Open Now{listings ? ` (${barPool.filter((l: any) => isAnyOpenNow(l)).length})` : ""}
-          </button>
-          {user && (filterSaved || savedInPool > 0) && (
-            <button onClick={() => handleQuickPill(() => setFilterSaved(!filterSaved))} style={barPill(filterSaved)}>
-              My Saved{listings ? ` (${savedInPool})` : ""}
-            </button>
-          )}
-          {isRestaurant && ([
-            { label: "Pet-Friendly", on: filterPetFriendly, set: setFilterPetFriendly, n: barPool.filter((l: any) => l.pets_allowed === true).length },
-            { label: "Child-Friendly", on: filterChildFriendly, set: setFilterChildFriendly, n: barPool.filter((l: any) => l.good_for_kids === true || l.child_friendly === true).length },
-            { label: "Wheelchair-Friendly", on: filterWheelchair, set: setFilterWheelchair, n: barPool.filter((l: any) => l.wheelchair_friendly === true).length },
-          ].filter((p) => p.on || p.n > 0).map((p) => (
-            <button key={p.label} onClick={() => handleQuickPill(() => p.set(!p.on))} style={barPill(p.on)}>
-              {p.label}{listings ? ` (${p.n})` : ""}
-            </button>
-          )))}
-          {isAccom && ([
-            { label: "Free Breakfast", on: filterAccomAmenities.includes("breakfast_included"), toggle: () => toggleArrayFilter(filterAccomAmenities, "breakfast_included", setFilterAccomAmenities), n: barPool.filter((l: any) => l.breakfast_included === true).length },
-            { label: "Child-Friendly", on: filterAccomAmenities.includes("child_friendly"), toggle: () => toggleArrayFilter(filterAccomAmenities, "child_friendly", setFilterAccomAmenities), n: barPool.filter((l: any) => l.child_friendly === true).length },
-            { label: "5-Star", on: filterGrading.includes(5), toggle: () => setFilterGrading(filterGrading.includes(5) ? filterGrading.filter((g) => g !== 5) : [...filterGrading, 5]), n: barPool.filter((l: any) => Number(l.star_rating) === 5).length },
-          ].filter((p) => p.on || p.n > 0).map((p) => (
-            <button key={p.label} onClick={() => handleQuickPill(p.toggle)} style={barPill(p.on)}>
-              {p.label}{listings ? ` (${p.n})` : ""}
-            </button>
-          )))}
-          {(/emergency/i.test(category?.title || "")
-            ? [["Hospitals"], ["Ambulances", "Ambulance"], ["Emergency Aviation"], ["Police & Community", "Police & Community Safety"], ["Wildlife Emergencies"], ["Fire & Rescue"]]
-            : /health/i.test(category?.title || "")
-              ? [["Hospitals"], ["GPs"], ["Pharmacies"], ["Dentists"], ["Clinics"]]
-              : []
-          ).map(([name, ...aliases]) => {
-            const names = [name, ...aliases].map((x) => x.toLowerCase());
-            const opt = subOptions
-              .filter((o) =>
-                names.includes(o.label.toLowerCase()) ||
-                o.subIds.some((sid) => names.includes(((subcategories || []).find((s: any) => s.id === sid)?.title || "").toLowerCase())),
-              )
-              .sort((a, b) => subCountFor(b) - subCountFor(a))[0];
-            if (!opt) return null;
-            const on = activeSubId != null && (activeSubId === opt.key || opt.subIds.includes(activeSubId));
-            const n = subCountFor(opt);
-            if (!on && facetCounts && n === 0) return null;
-            return (
-              <button key={name} onClick={() => handleSubFilter(on ? null : opt.key)} style={barPill(on)}>
-                {name}{facetCounts ? ` (${n})` : ""}
+        {appliedChips.length > 0 && (
+          <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0, paddingRight: 20 }}>
+            {appliedChips.map((chip, i) => (
+              <button key={`${chip.label}-${i}`} onClick={chip.onRemove} aria-label={`Remove ${chip.label} filter`} style={{ ...outlinePill, flexShrink: 0 }}>
+                <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
+                {chip.label}
               </button>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
-
-      {/* Applied filters, one removable chip each */}
-      {appliedChips.length > 0 && (
-        <div className="scrollbar-hide" style={{ display: "flex", gap: 8, overflowX: "auto", padding: "6px 20px 4px" }}>
-          {appliedChips.map((chip, i) => (
-            <button key={`${chip.label}-${i}`} onClick={chip.onRemove} aria-label={`Remove ${chip.label} filter`} style={{ ...outlinePill, flexShrink: 0 }}>
-              <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Results heading once anything is narrowed: one filter names itself. */}
       {(filtersOn || search.trim()) && (
