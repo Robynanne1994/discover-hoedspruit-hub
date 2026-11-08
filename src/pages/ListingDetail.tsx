@@ -1264,7 +1264,13 @@ const ListingDetail = () => {
                 ? "Closed"
                 : v.replace(/\s*-\s*/g, " – ");
             return (
-              <div key={day} style={{ borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
+              <div key={day} style={{
+                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                // Today's row carries a soft cream wash so it reads as the live
+                // row at a glance; the bleed to the card edges keeps the tint
+                // from looking like a floating chip.
+                ...(isToday && { background: C.ivory, margin: "0 -18px", padding: "0 18px" }),
+              }}>
                 <div style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
                   padding: "13px 0",
@@ -1292,7 +1298,7 @@ const ListingDetail = () => {
                 {holiday && (
                   <div style={{
                     display: "flex", alignItems: "center", gap: 7,
-                    padding: "8px 12px", marginBottom: 12, background: C.ivory, borderRadius: 10,
+                    padding: "8px 12px", marginBottom: 12, background: isToday ? "#FFFFFF" : C.ivory, borderRadius: 10,
                     fontSize: 12, color: C.text, lineHeight: 1.4,
                   }}>
                     <CalendarDays size={13} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
