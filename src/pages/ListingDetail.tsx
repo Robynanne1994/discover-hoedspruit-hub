@@ -1147,7 +1147,8 @@ const ListingDetail = () => {
               </span>
             ))}
           </div>
-        </div>
+          </div>
+        </>
       )}
 
       {customRows.map((row) => (
@@ -1316,6 +1317,7 @@ const ListingDetail = () => {
 
   const renderContact = () => (
     <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <h2 style={{ ...headStyle, margin: 0 }}>Contact</h2>
       <div style={{ ...cardStyle, padding: "4px 20px" }}>
         {(() => {
           const phones = collectContacts(listing.phone, (listing as any).additional_phones);
@@ -1662,6 +1664,7 @@ const ListingDetail = () => {
 
     return (
       <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <h2 style={{ ...headStyle, margin: 0 }}>Location</h2>
         <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 0, overflow: "hidden" }}>
           {isSurrounds ? (
             <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
