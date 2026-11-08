@@ -33,8 +33,14 @@ describe("events time-frame headings", () => {
     expect(heading("next-year")).toBe("2027");
   });
 
-  it("spells the past window from its oldest day to yesterday", () => {
-    expect(heading("past")).toBe("4 October - 3 November 2026");
+  it("spells the past window in short months, oldest day to yesterday", () => {
+    expect(heading("past")).toBe("4 Oct - 3 Nov 2026");
+  });
+
+  it("keeps every other pill's month written out in full", () => {
+    expect(heading("today")).toBe("4 November 2026");
+    expect(heading("this-week")).toBe("2-8 November 2026");
+    expect(heading("this-month")).toBe("November 2026");
   });
 
   it("leaves a pill with no dates of its own as plain Events", () => {
@@ -52,7 +58,7 @@ describe("events time-frame headings", () => {
   });
 
   it("repeats the year for a past window that crosses it", () => {
-    expect(heading("past", new Date(2026, 0, 15))).toBe("15 December 2025 - 14 January 2026");
+    expect(heading("past", new Date(2026, 0, 15))).toBe("15 Dec 2025 - 14 Jan 2026");
   });
 });
 

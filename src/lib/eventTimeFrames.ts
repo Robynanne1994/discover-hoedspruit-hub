@@ -67,10 +67,13 @@ export function getTimeFrameRange(filter: string, today: Date = new Date()): Dat
  * 2026"); longer runs repeat the month or the year they cross ("30 October - 1
  * November 2026", "2 November 2025 - 2 November 2026").
  */
-export function formatDateRange(range: DateRange): string {
+export function formatDateRange(range: DateRange, opts: { shortMonth?: boolean } = {}): string {
   const { start, end } = range;
   const year = end.getFullYear();
   const sameYear = start.getFullYear() === year;
+  // The past-month pill spells its span in short months ("8 Oct - 7 Nov 2026");
+  // every other pill keeps the month written out in full.
+  const month = opts.shortMonth ? "MMM" : "MMMM";
 
   if (sameYear && start.getMonth() === 0 && start.getDate() === 1 && end.getMonth() === 11 && end.getDate() === 31) {
     return String(year);
@@ -78,19 +81,19 @@ export function formatDateRange(range: DateRange): string {
 
   const lastDayOfMonth = new Date(year, end.getMonth() + 1, 0).getDate();
   if (sameYear && start.getMonth() === end.getMonth() && start.getDate() === 1 && end.getDate() === lastDayOfMonth) {
-    return format(end, "MMMM yyyy");
+    return format(end, `${month} yyyy`);
   }
 
-  if (isSameDay(start, end)) return format(end, "d MMMM yyyy");
-  if (!sameYear) return `${format(start, "d MMMM yyyy")} - ${format(end, "d MMMM yyyy")}`;
+  if (isSameDay(start, end)) return format(end, `d ${month} yyyy`);
+  if (!sameYear) return `${format(start, `d ${month} yyyy`)} - ${format(end, `d ${month} yyyy`)}`;
   if (start.getMonth() !== end.getMonth()) {
-    return `${format(start, "d MMMM")} - ${format(end, "d MMMM yyyy")}`;
+    return `${format(start, `d ${month}`)} - ${format(end, `d ${month} yyyy`)}`;
   }
-  return `${format(start, "d")}-${format(end, "d MMMM yyyy")}`;
+  return `${format(start, "d")}-${format(end, `d ${month} yyyy`)}`;
 }
 
 /** The heading a lone time-frame pill wears; "Events" when it covers no dates. */
 export function timeFrameHeading(filter: string, today: Date = new Date()): string {
   const range = getTimeFrameRange(filter, today);
-  return range ? formatDateRange(range) : "Events";
+  return range ? formatDateRange(range, { shortMonth: filter === "past" }) : "Events";
 }
