@@ -630,7 +630,9 @@ const SpecialDetail = () => {
 
     return (
       <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
-        <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 0, overflow: "hidden" }}>
+        <div>
+          <h2 style={headStyle}>Location</h2>
+          <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 0, overflow: "hidden" }}>
           {isSurrounds ? (
             <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
               Hoedspruit &amp; Surrounds
@@ -660,6 +662,7 @@ const SpecialDetail = () => {
               </div>
             </>
           )}
+          </div>
         </div>
 
         {!isSurrounds && (
