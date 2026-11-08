@@ -1248,7 +1248,7 @@ const ListingDetail = () => {
             })}
           </div>
         )}
-        <div style={{ padding: "0 18px 6px" }}>
+        <div style={{ padding: `${multipleSchedules ? 0 : 6}px 18px 6px` }}>
           {DAY_LABELS.map((day, i) => {
             const v = activeHours[day.toLowerCase()] || "";
             const isAlwaysOpenValue = /always\s*open|24\s*\/?\s*7|open\s*24|24\s*hours?|24h\b/i.test(v);
@@ -1300,7 +1300,8 @@ const ListingDetail = () => {
             );
           })}
         </div>
-      </div>
+        </div>
+      </>
     );
   };
 
