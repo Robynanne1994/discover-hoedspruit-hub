@@ -1,6 +1,8 @@
 import { DAY_KEYS, formatClock12, getHoursSchedules, isAlwaysOpen, type HoursMap } from "./openHours";
 
 type HoursSource = Parameters<typeof getHoursSchedules>[0];
+export const formatCardClock = (time: string): string =>
+  formatClock12(time).replace(/:00(?=AM|PM)/, "");
 const range = (value?: string) => {
   if (!value || /closed/i.test(value)) return null;
   const match = value.match(/(\d{1,2}(?:[:.]\d{2})?)\s*[-–]\s*(\d{1,2}(?:[:.]\d{2})?)/);
@@ -22,7 +24,7 @@ function nextOpening(hours: HoursMap, now: Date, includeToday: boolean): string 
     if (!opening) continue;
     if (offset === 0 && (range(value)?.opens ?? 0) <= current) continue;
     const day = offset === 0 ? "" : ` ${key.slice(0, 3).replace(/^./, (c) => c.toUpperCase())}`;
-    return `Opens ${formatClock12(opening)}${day}`;
+    return `Opens ${formatCardClock(opening)}${day}`;
   }
 }
 
@@ -42,13 +44,13 @@ export function listingCardHours(listing: HoursSource, now = new Date()): {
   // An overnight opening belongs to yesterday, not to tonight's schedule.
   const previous = range(hours[DAY_KEYS[(today + 6) % 7]]);
   if (previous && previous.closes <= previous.opens && current <= previous.closes) {
-    return { state: "open", label: "Open", detail: `Closes ${formatClock12(previous.end)}` };
+    return { state: "open", label: "Open", detail: `Closes ${formatCardClock(previous.end)}` };
   }
   const todayRange = range(value);
   if (todayRange) {
     const closing = todayRange.closes <= todayRange.opens ? todayRange.closes + 1440 : todayRange.closes;
     if (current >= todayRange.opens && current <= closing) {
-      return { state: "open", label: "Open", detail: `Closes ${formatClock12(todayRange.end)}` };
+      return { state: "open", label: "Open", detail: `Closes ${formatCardClock(todayRange.end)}` };
     }
   }
   return { state: "closed", label: "Closed", detail: nextOpening(hours, now, true) };
