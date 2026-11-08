@@ -1289,16 +1289,16 @@ const ListingDetail = () => {
                   padding: "13px 0",
                 }}>
 
-                  <span style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                  <span style={{ display: "flex", alignItems: "baseline", gap: 6, minWidth: 0 }}>
                     <span style={{ fontSize: 15, color: isToday ? C.heading : C.muted, fontWeight: isToday ? 700 : 400 }}>
                       {day}
                     </span>
                     {isToday && (
                       <span style={{
-                        fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
+                        fontSize: 11, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase",
                         color: C.primary,
                       }}>
-                        Today
+                        (Today)
                       </span>
                     )}
                   </span>
