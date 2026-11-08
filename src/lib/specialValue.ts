@@ -51,14 +51,25 @@ export const savingValue = (s: SpecialLike): number => {
 };
 
 // Whole days between today and the deal's last valid day. Null = ongoing.
-export const daysRemaining = (s: SpecialLike): number | null => {
+//
+// Counted in Johannesburg calendar days, like every other validity rule here
+// and in specialVisibility. It used to count in the device's own days: it read
+// `new Date()` for today and pulled the end date's parts through the local
+// timezone. A date-only string parses as UTC midnight, so west of Greenwich
+// that lands on the previous day, and anywhere whose date differs from
+// Johannesburg's the countdown disagreed with the filters that placed the card
+// — a deal the Validity filter still counted as ending soon could read
+// "Ended" on its own badge.
+export const daysRemaining = (s: SpecialLike, today = specialToday()): number | null => {
   if (!s.valid_until) return null;
-  const end = new Date(s.valid_until);
-  if (isNaN(end.getTime())) return null;
-  const today = new Date();
-  const a = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  return Math.round((b.getTime() - a.getTime()) / 86400000);
+  const end = String(s.valid_until).slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(end)) return null;
+  // Both sides as UTC midnight of their calendar date, so the subtraction is
+  // whole days with no offset left in it.
+  const a = Date.parse(`${today}T00:00:00Z`);
+  const b = Date.parse(`${end}T00:00:00Z`);
+  if (isNaN(a) || isNaN(b)) return null;
+  return Math.round((b - a) / 86400000);
 };
 
 // A special dated to start in the future has not begun yet, so nothing on it
