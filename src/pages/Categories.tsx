@@ -554,10 +554,8 @@ const Categories = () => {
       (a, b) => order.indexOf(normalizeTitle(a.title)) - order.indexOf(normalizeTitle(b.title))
     );
   }, [visibleCategories]);
-  const gridCategories = useMemo(
-    () => visibleCategories.filter((c) => !featuredSet.has(normalizeTitle(c.title))),
-    [visibleCategories]
-  );
+  // Featured shortcuts repeat in All Categories rather than being excluded.
+  const gridCategories = visibleCategories;
 
   const sortedGrid = useMemo(() => {
     const arr = [...gridCategories];
