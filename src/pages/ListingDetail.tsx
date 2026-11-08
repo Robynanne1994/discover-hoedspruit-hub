@@ -12,7 +12,7 @@ import {
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint, Users, Banknote,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
-  CalendarDays,
+  CalendarDays, Circle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
@@ -24,7 +24,7 @@ import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
 import { getWeekPublicHolidays, holidayHoursNote, getSADate } from "@/lib/southAfricaHolidays";
-import { getHoursSchedules, DEFAULT_HOURS_LABEL, type HoursSchedule } from "@/lib/openHours";
+import { getHoursSchedules, DEFAULT_HOURS_LABEL, formatClock12, type HoursSchedule } from "@/lib/openHours";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts, isUsableSocialLink, isUsableWebsite, websiteHref, websiteKind } from "@/lib/contacts";
@@ -1190,14 +1190,36 @@ const ListingDetail = () => {
     const heading = multipleSchedules
       ? "Opening Hours"
       : active.label === DEFAULT_HOURS_LABEL ? "Opening Hours" : `${active.label} Hours`;
+    // The status line also names the next change: when the doors open if it is
+    // shut now, or when they close if it is open. Times follow the card rule
+    // ("Opens 7:30AM"), and "Today" is dropped because it is already obvious.
+    const nextNote = (() => {
+      if (!activeStatus) return null;
+      if (activeStatus.state === "open" && !activeStatus.alwaysOpen && activeStatus.closes) {
+        return `Closes ${formatClock12(activeStatus.closes)}`;
+      }
+      if (activeStatus.state === "closed" && activeStatus.opensAt) {
+        const day = activeStatus.opensDay && activeStatus.opensDay !== "Today"
+          ? ` ${activeStatus.opensDay}`
+          : "";
+        return `Opens ${formatClock12(activeStatus.opensAt)}${day}`;
+      }
+      return null;
+    })();
     return (
       <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
         <div>
           <h2 style={{ ...headStyle, margin: 0 }}>{heading}</h2>
           {activeStatus ? (
-            <span style={{ display: "flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", marginTop: 5 }}>
+            <span style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 7, marginTop: 5 }}>
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
               <span style={{ fontSize: 15, fontWeight: 600, color: statusColor }}>{statusText}</span>
+              {nextNote && (
+                <span style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: 3 }}>
+                  <Circle size={10} strokeWidth={2} color={C.heading} style={{ flexShrink: 0 }} />
+                  <span style={{ fontSize: 15, fontWeight: 600, color: C.heading }}>{nextNote}</span>
+                </span>
+              )}
             </span>
           ) : null}
         </div>
