@@ -1783,15 +1783,6 @@ const CategoryPage = () => {
 
 
 
-        <RefineSection>
-          <RefineToggle
-            label="Open Now"
-            description="Only places open right now"
-            active={hoursFilter === "open"}
-            onClick={() => setHoursFilter(pillToggle(hoursFilter, "open", "all"))}
-          />
-        </RefineSection>
-
         {user && (
           <RefineSection>
             <RefineToggle
