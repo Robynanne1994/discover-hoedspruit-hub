@@ -432,6 +432,7 @@ const SpecialDetail = () => {
       <div style={{ padding: "16px 20px 20px" }}>
         {desc && (
           <>
+            <h2 style={headStyle}>About</h2>
             <div style={{ ...cardStyle, padding: "18px 20px" }}>{renderListingRichText(desc)}</div>
           </>
         )}
