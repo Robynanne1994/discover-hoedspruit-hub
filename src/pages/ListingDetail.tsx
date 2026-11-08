@@ -1094,7 +1094,9 @@ const ListingDetail = () => {
   const renderAbout = () => (
     <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
       {descriptionText && (
-        <div style={{ ...cardStyle, padding: "20px 22px" }}>
+        <>
+          <h2 style={{ ...headStyle, margin: 0 }}>About</h2>
+          <div style={{ ...cardStyle, padding: "20px 22px" }}>
           <div
             ref={descRef}
             className="ld-richtext"
