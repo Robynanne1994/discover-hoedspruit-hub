@@ -287,7 +287,11 @@ const ListingDetail = () => {
     const hasE = (relatedEvents?.length ?? 0) > 0;
     const hasR = (relatedChannels?.length ?? 0) > 0;
     const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
-    const keys: TabKey[] = ["about", ...(hasHours ? ["hours" as TabKey] : []), "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasR ? ["resources" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    // "hours" is listed unconditionally: hasHours is only computed further down
+    // (after the loading early return), so it cannot be read here. A listing
+    // with no hours never offers the tab, and the render-level fallback below
+    // already drops a stale "hours" selection to the first tab with content.
+    const keys: TabKey[] = ["about", "hours", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasR ? ["resources" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
     if (!keys.includes(tab)) setTab("about");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relatedSpecials, relatedEvents, relatedChannels, listing, tab]);
