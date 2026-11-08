@@ -262,7 +262,7 @@ const CategoryPage = () => {
   const [filterPetFriendly, setFilterPetFriendly] = useState<boolean>(persisted?.filterPetFriendly ?? false);
   const [filterWheelchair, setFilterWheelchair] = useState<boolean>(persisted?.filterWheelchair ?? false);
   const [filterWifi, setFilterWifi] = useState<boolean>(persisted?.filterWifi ?? false);
-  const [hoursFilter, setHoursFilter] = useState<ListingHoursFilter>(persisted?.hoursFilter ?? (persisted?.filterOpenNow ? "open" : "all"));
+  const [hoursFilter, setHoursFilter] = useState<ListingHoursFilter>(persisted?.hoursFilter === "open" || (!persisted?.hoursFilter && persisted?.filterOpenNow) ? "open" : "all");
   const [filterSaved, setFilterSaved] = useState<boolean>(persisted?.filterSaved ?? false);
   const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
   const MAX_KM = 25; // "Anywhere"
@@ -1355,17 +1355,15 @@ const CategoryPage = () => {
       </div>
 
       <div role="group" aria-label="Opening status" className="mx-5 mt-3 flex flex-wrap items-center gap-x-6 gap-y-3">
-        {([["open", "Open Now"], ["closed", "Closed Now"]] as const).map(([value, label]) => (
-          <label key={value} className="inline-flex cursor-pointer items-center gap-2 text-xs text-foreground">
+          <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-foreground">
             <Switch
-              aria-label={label}
-              checked={hoursFilter === value}
-              onCheckedChange={(checked) => setHoursFilter(checked ? value : "all")}
+              aria-label="Open Now"
+              checked={hoursFilter === "open"}
+              onCheckedChange={(checked) => setHoursFilter(checked ? "open" : "all")}
               className="border-transparent bg-input"
             />
-            {label}
+            Open Now
           </label>
-        ))}
       </div>
 
       {/* Results heading once anything is narrowed: one filter names itself. */}
