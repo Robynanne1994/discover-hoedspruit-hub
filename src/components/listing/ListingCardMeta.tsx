@@ -50,6 +50,24 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
   const titleRef = useRef<HTMLSpanElement>(null);
   const [titleLines, setTitleLines] = useState(1);
   const status = listingStatus(listing);
+  const statusTextRef = useRef<HTMLSpanElement>(null);
+  const [statusFontSize, setStatusFontSize] = useState(12);
+
+  useEffect(() => {
+    const text = statusTextRef.current;
+    if (!text) return;
+    const measure = () => {
+      const currentSize = parseFloat(getComputedStyle(text).fontSize);
+      const available = text.clientWidth;
+      if (available <= 0 || text.scrollWidth <= 0) return;
+      const naturalWidth = text.scrollWidth / currentSize;
+      setStatusFontSize(Math.min(12, available / naturalWidth));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(text);
+    return () => observer.disconnect();
+  }, [status.label, status.detail]);
 
   useEffect(() => {
     const el = titleRef.current;
@@ -164,10 +182,10 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
         }}
       >
         <span style={{ width: 5, height: 5, borderRadius: 9999, background: status.tone, flexShrink: 0, transform: STATUS_DOT_LIFT }} />
-        <span style={{ whiteSpace: "nowrap", flexShrink: 0 }}>{status.label}</span>
-        {status.detail ? (
-          <span title={status.detail} style={{ fontWeight: 400, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>· {status.detail.replace(/^(Opens|Closes) /, "")}</span>
-        ) : null}
+        <span ref={statusTextRef} style={{ whiteSpace: "nowrap", minWidth: 0, flex: 1, fontSize: statusFontSize, overflow: "hidden" }}>
+          {status.label}
+          {status.detail ? <span style={{ fontWeight: 400 }}> · {status.detail}</span> : null}
+        </span>
       </div>
     </>
   );
