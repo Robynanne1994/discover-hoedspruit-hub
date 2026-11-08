@@ -1454,8 +1454,9 @@ const ListingDetail = () => {
   );
 
   // Small white glyph in a dark brown disc, matching the events list cards.
+  // Same dark brown disc as the listed event card's rows on the Events page.
   const RELATED_ROW_ICON_DISC = {
-    flexShrink: 0, width: 16, height: 16, borderRadius: 999, background: C.primary,
+    flexShrink: 0, width: 16, height: 16, borderRadius: 999, background: "#423324",
     display: "inline-flex", alignItems: "center", justifyContent: "center",
   } as const;
 
