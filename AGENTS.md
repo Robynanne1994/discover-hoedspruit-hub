@@ -1,5 +1,10 @@
 # Project Architecture Rules
 
+<!-- LOVABLE:BEGIN -->
+- Use AppliedFilterBar for Events and Specials to keep their applied-chip rows consistent with listing filters.
+- Keep specials faceted counts in specialFacets, reusing shared matching helpers and skipping only the section being counted.
+<!-- LOVABLE:END -->
+
 - Use listingImage's homepage surface for Explore Quick Filter rows so they reuse the editor's square homepage crop and shared image fallbacks.
 
 - Keep accommodation CSV value normalisation in a dedicated library module so imports, exports, and tests share one source of truth.
