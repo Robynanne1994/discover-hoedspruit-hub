@@ -28,7 +28,7 @@ import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
 import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
-import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
 import { NOHEMI, tab as tabStyle } from "@/lib/type";
