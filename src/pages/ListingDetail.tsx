@@ -1192,9 +1192,9 @@ const ListingDetail = () => {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: hasPriorSection ? 14 : 0 }}>
           <h2 style={{ ...headStyle, margin: 0 }}>{heading}</h2>
           {activeStatus ? (
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
-              <span style={{ fontSize: 13, fontWeight: 600, color: statusColor }}>{statusText}</span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 7, whiteSpace: "nowrap", marginRight: 0 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
+              <span style={{ fontSize: 15, fontWeight: 600, color: statusColor }}>{statusText}</span>
             </span>
           ) : null}
         </div>
