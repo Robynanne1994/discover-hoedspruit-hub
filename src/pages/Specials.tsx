@@ -672,11 +672,7 @@ const FeaturedSection = ({
   return (
     // Matches the gap between the two carousels on the events page.
     <section style={{ marginBottom: 42 }}>
-      <SectionHead
-        hairline={false}
-        label="Top Active Deals"
-        right={dealCountLabel(items.length)}
-      />
+      <SectionHead hairline={false} label="Top Active Deals" />
 
       {isCarousel ? (
         <>
