@@ -67,3 +67,17 @@ export function formatEventDateShort(e: EventDateLike): string {
 export function getEventSortDate(e: EventDateLike): Date | null {
   return getEventDates(e).start;
 }
+
+/** "18:30" -> "6:30 PM". Returns "" for blank or unparseable values. */
+export function formatEventTime(t: string | null | undefined): string {
+  if (!t) return "";
+  const m = String(t).match(/^(\d{1,2}):?(\d{0,2})/);
+  if (!m) return "";
+  const h = parseInt(m[1]);
+  const min = m[2] ? parseInt(m[2]) : 0;
+  if (isNaN(h)) return "";
+  const ampm = h >= 12 ? "PM" : "AM";
+  const dh = h === 0 ? 12 : h > 12 ? h - 12 : h;
+  if (min === 0) return `${dh}:00 ${ampm}`;
+  return `${dh}:${String(min).padStart(2, "0")} ${ampm}`;
+}
