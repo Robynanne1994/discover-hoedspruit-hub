@@ -1247,7 +1247,7 @@ const EventDetail = () => {
               fontSize: 13, fontWeight: 600, letterSpacing: "0.01em",
               color: isPast ? C.muted : "#2b7f3f",
             }}>
-              {happeningNow ? "Happening Now" : isPast ? "Event has passed" : "Upcoming"}
+              {happeningNow ? "Happening Now" : isPast ? "Event has Passed" : "Upcoming"}
             </span>
             <span style={{ fontSize: 13, color: MUTED }}>· {dateDisplay}</span>
           </div>
