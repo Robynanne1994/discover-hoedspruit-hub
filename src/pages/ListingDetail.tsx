@@ -1094,7 +1094,9 @@ const ListingDetail = () => {
   const renderAbout = () => (
     <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
       {descriptionText && (
-        <div style={{ ...cardStyle, padding: "20px 22px" }}>
+        <>
+          <h2 style={{ ...headStyle, margin: 0 }}>About</h2>
+          <div style={{ ...cardStyle, padding: "20px 22px" }}>
           <div
             ref={descRef}
             className="ld-richtext"
@@ -1122,12 +1124,14 @@ const ListingDetail = () => {
               {descExpanded ? "Read Less" : "Read More"}
             </button>
           )}
-        </div>
+          </div>
+        </>
       )}
 
       {goodToKnow.length > 0 && (
-        <div style={{ ...cardStyle, padding: "20px 22px" }}>
-          <CardHead Icon={Sparkles}>Good to know</CardHead>
+        <>
+          <h2 style={{ ...headStyle, margin: descriptionText ? "14px 0 0" : 0 }}>Good to know</h2>
+          <div style={{ ...cardStyle, padding: "20px 22px" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {goodToKnow.map((item) => (
               <span
@@ -1143,7 +1147,8 @@ const ListingDetail = () => {
               </span>
             ))}
           </div>
-        </div>
+          </div>
+        </>
       )}
 
       {customRows.map((row) => (
@@ -1312,6 +1317,7 @@ const ListingDetail = () => {
 
   const renderContact = () => (
     <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+      <h2 style={{ ...headStyle, margin: 0 }}>Contact</h2>
       <div style={{ ...cardStyle, padding: "4px 20px" }}>
         {(() => {
           const phones = collectContacts(listing.phone, (listing as any).additional_phones);
@@ -1658,6 +1664,7 @@ const ListingDetail = () => {
 
     return (
       <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <h2 style={{ ...headStyle, margin: 0 }}>Location</h2>
         <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 0, overflow: "hidden" }}>
           {isSurrounds ? (
             <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
