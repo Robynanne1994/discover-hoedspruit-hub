@@ -8,24 +8,24 @@ const heading = (filter: string, today: Date = WED_4_NOV) => timeFrameHeading(fi
 
 describe("events time-frame headings", () => {
   it("says Today's date with the year, without the word Today", () => {
-    expect(heading("today")).toBe("4 November 2026");
+    expect(heading("today")).toBe("4 Nov 2026");
   });
 
   it("spells This Week from Monday to Sunday", () => {
-    expect(heading("this-week")).toBe("2-8 November 2026");
+    expect(heading("this-week")).toBe("2-8 Nov 2026");
   });
 
   it("spells This Weekend from Friday to Sunday", () => {
-    expect(heading("this-weekend")).toBe("6-8 November 2026");
+    expect(heading("this-weekend")).toBe("6-8 Nov 2026");
   });
 
   it("keeps the weekend's own days when pressed mid-weekend", () => {
-    expect(heading("this-weekend", new Date(2026, 10, 7))).toBe("6-8 November 2026"); // Sat
-    expect(heading("this-weekend", new Date(2026, 10, 8))).toBe("6-8 November 2026"); // Sun
+    expect(heading("this-weekend", new Date(2026, 10, 7))).toBe("6-8 Nov 2026"); // Sat
+    expect(heading("this-weekend", new Date(2026, 10, 8))).toBe("6-8 Nov 2026"); // Sun
   });
 
   it("names the month and year for This Month", () => {
-    expect(heading("this-month")).toBe("November 2026");
+    expect(heading("this-month")).toBe("Nov 2026");
   });
 
   it("names the year alone for This Year and Next Year", () => {
@@ -37,10 +37,13 @@ describe("events time-frame headings", () => {
     expect(heading("past")).toBe("4 Oct - 3 Nov 2026");
   });
 
-  it("keeps every other pill's month written out in full", () => {
-    expect(heading("today")).toBe("4 November 2026");
-    expect(heading("this-week")).toBe("2-8 November 2026");
-    expect(heading("this-month")).toBe("November 2026");
+  it("shortens the month on every pill's heading", () => {
+    expect(heading("today")).toBe("4 Nov 2026");
+    expect(heading("this-week")).toBe("2-8 Nov 2026");
+    expect(heading("this-weekend")).toBe("6-8 Nov 2026");
+    expect(heading("this-month")).toBe("Nov 2026");
+    expect(heading("past")).toBe("4 Oct - 3 Nov 2026");
+    expect(heading("today").includes("November")).toBe(false);
   });
 
   it("leaves a pill with no dates of its own as plain Events", () => {
@@ -50,15 +53,21 @@ describe("events time-frame headings", () => {
   });
 
   it("repeats the month when a week crosses the end of it", () => {
-    expect(heading("this-week", new Date(2026, 10, 30))).toBe("30 November - 6 December 2026");
+    expect(heading("this-week", new Date(2026, 10, 30))).toBe("30 Nov - 6 Dec 2026");
   });
 
   it("repeats the year when a week crosses the end of it", () => {
-    expect(heading("this-week", new Date(2026, 11, 31))).toBe("28 December 2026 - 3 January 2027");
+    expect(heading("this-week", new Date(2026, 11, 31))).toBe("28 Dec 2026 - 3 Jan 2027");
   });
 
   it("repeats the year for a past window that crosses it", () => {
     expect(heading("past", new Date(2026, 0, 15))).toBe("15 Dec 2025 - 14 Jan 2026");
+  });
+
+  it("writes the month in full only when asked to", () => {
+    expect(
+      formatDateRange({ start: new Date(2026, 10, 4), end: new Date(2026, 10, 4) }, { shortMonth: false })
+    ).toBe("4 November 2026");
   });
 });
 
@@ -67,7 +76,7 @@ describe("calendarWeekend", () => {
     const { start, end } = calendarWeekend(WED_4_NOV);
     expect(start.getDay()).toBe(5); // Friday 6 Nov
     expect(end.getDay()).toBe(0); // Sunday 8 Nov
-    expect(formatDateRange({ start, end })).toBe("6-8 November 2026");
+    expect(formatDateRange({ start, end })).toBe("6-8 Nov 2026");
   });
 
   it("holds the whole of Sunday, so late events still count", () => {

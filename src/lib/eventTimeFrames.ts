@@ -1,8 +1,9 @@
 // The calendar span each Events time-frame pill stands for, and the date words
 // the events list wears when that pill is the only filter. Shared by the pill
 // row and the list heading so the dates on screen are the dates that were
-// filtered: "Today" reads "4 November 2026", "This Week" reads
-// "2-8 November 2026" (Monday to Sunday), and so on for every other pill.
+// filtered: "Today" reads "4 Nov 2026", "This Week" reads "2-8 Nov 2026"
+// (Monday to Sunday), and so on for every other pill. Every time-frame heading
+// spells its month in the three-letter shortening.
 
 import {
   addDays,
@@ -61,19 +62,19 @@ export function getTimeFrameRange(filter: string, today: Date = new Date()): Dat
 }
 
 /**
- * Date words for a span. A whole month or a whole year keeps its own name
- * ("November 2026", "2026"); a single day carries its year ("4 November 2026");
- * a run of days inside one month says only the first figure ("2-8 November
- * 2026"); longer runs repeat the month or the year they cross ("30 October - 1
- * November 2026", "2 November 2025 - 2 November 2026").
+ * Date words for a span. Months are always shortened ("Nov"). A whole month or
+ * a whole year keeps its own name ("Nov 2026", "2026"); a single day carries its
+ * year ("4 Nov 2026"); a run of days inside one month says only the first figure
+ * ("2-8 Nov 2026"); longer runs repeat the month or the year they cross
+ * ("30 Oct - 1 Nov 2026", "2 Nov 2025 - 2 Nov 2026"). Pass
+ * `{ shortMonth: false }` to write the month out in full.
  */
 export function formatDateRange(range: DateRange, opts: { shortMonth?: boolean } = {}): string {
   const { start, end } = range;
   const year = end.getFullYear();
   const sameYear = start.getFullYear() === year;
-  // The past-month pill spells its span in short months ("8 Oct - 7 Nov 2026");
-  // every other pill keeps the month written out in full.
-  const month = opts.shortMonth ? "MMM" : "MMMM";
+  // Short months everywhere ("8 Oct - 7 Nov 2026"); full months only on request.
+  const month = opts.shortMonth === false ? "MMMM" : "MMM";
 
   if (sameYear && start.getMonth() === 0 && start.getDate() === 1 && end.getMonth() === 11 && end.getDate() === 31) {
     return String(year);
@@ -95,5 +96,5 @@ export function formatDateRange(range: DateRange, opts: { shortMonth?: boolean }
 /** The heading a lone time-frame pill wears; "Events" when it covers no dates. */
 export function timeFrameHeading(filter: string, today: Date = new Date()): string {
   const range = getTimeFrameRange(filter, today);
-  return range ? formatDateRange(range, { shortMonth: filter === "past" }) : "Events";
+  return range ? formatDateRange(range) : "Events";
 }
