@@ -542,15 +542,16 @@ const SectionHead = ({
     style={{
       display: "flex",
       alignItems: "center",
+      flexWrap: "wrap",
       gap: 10,
       marginBottom: 10,
     }}
   >
-    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, minWidth: 0 }}>
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, minWidth: 0, maxWidth: "100%" }}>
       <span
         style={{
           ...type.sectionTitle,
-          whiteSpace: "nowrap",
+          overflowWrap: "anywhere",
         }}
       >
         {label}
