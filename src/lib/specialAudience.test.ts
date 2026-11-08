@@ -2,9 +2,11 @@ import { describe, it, expect } from "vitest";
 import { SPECIAL_AUDIENCE_OPTIONS, specialAudience, specialAudienceCsvPatch, specialAudienceToCsv } from "./specialAudience";
 
 describe("special audiences", () => {
-  it("offers Newly Weds and round-trips the choice", () => {
-    expect(SPECIAL_AUDIENCE_OPTIONS).toContain("Newly Weds");
-    expect(specialAudience(specialAudienceToCsv(["Newly Weds"]))).toEqual(["Newly Weds"]);
+  it("offers Newlyweds and normalises legacy stored and CSV selections", () => {
+    expect(SPECIAL_AUDIENCE_OPTIONS).toContain("Newlyweds");
+    expect(specialAudience(["Newly Weds", "Newlyweds"])).toEqual(["Newlyweds"]);
+    expect(specialAudienceToCsv(["Newly Weds"])).toBe("Newlyweds");
+    expect(specialAudienceCsvPatch({ whos_it_for: "Newly Weds" })).toEqual({ whos_it_for: ["Newlyweds"] });
   });
   it("offers South African Residents Only and normalises the choice", () => {
     expect(SPECIAL_AUDIENCE_OPTIONS).toContain("South African Residents Only");

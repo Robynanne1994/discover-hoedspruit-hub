@@ -1,4 +1,4 @@
-export const SPECIAL_AUDIENCE_OPTIONS = ["Kids", "Families", "Seniors", "Couples", "Newly Weds", "South African Residents Only"] as const;
+export const SPECIAL_AUDIENCE_OPTIONS = ["Kids", "Families", "Seniors", "Couples", "Newlyweds", "South African Residents Only"] as const;
 
 /** CSV uses pipes; arrays are shared by storage, editors and detail rows. */
 export function specialAudience(value: unknown): string[] {
@@ -8,7 +8,8 @@ export function specialAudience(value: unknown): string[] {
     if (typeof part !== "string") continue;
     const trimmed = part.trim();
     if (!trimmed) continue;
-    const label = SPECIAL_AUDIENCE_OPTIONS.find((option) => option.toLowerCase() === trimmed.toLowerCase()) ?? trimmed;
+    const normalised = /^newly\s*weds$/i.test(trimmed) ? "Newlyweds" : trimmed;
+    const label = SPECIAL_AUDIENCE_OPTIONS.find((option) => option.toLowerCase() === normalised.toLowerCase()) ?? normalised;
     if (!result.some((existing) => existing.toLowerCase() === label.toLowerCase())) result.push(label);
   }
   return result;
