@@ -281,7 +281,7 @@ const Search = () => {
             margin: "6px 2px 2px",
             ...type.eyebrow,
             textTransform: "uppercase",
-            color: MUTED,
+            color: INK,
           }}
         >
           {hasQuery ? "Results" : "Suggested"}
