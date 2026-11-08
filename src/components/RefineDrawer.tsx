@@ -2,7 +2,7 @@ import { useEffect, ReactNode } from "react";
 import {
   ChevronDown, X, ArrowUpDown, CalendarDays, Tag, Banknote, Hourglass, Ticket, Repeat, Clock, ShieldCheck,
   Percent, Sparkles, LayoutGrid, UtensilsCrossed, Music, Coffee, Armchair, Wine, Store, Baby, Accessibility,
-  Home, Moon, Star, BedDouble, ShoppingBag, Wallet, Package, MapPin, SlidersHorizontal, type LucideIcon,
+  Home, Moon, Star, BedDouble, ShoppingBag, Wallet, Package, MapPin, SlidersHorizontal, Users, type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MUTED as TOKEN_MUTED } from "@/lib/type";
@@ -284,6 +284,7 @@ const SECTION_ICONS: [RegExp, LucideIcon][] = [
   [/recurrence/i, Repeat],
   [/savings/i, Percent],
   [/special type/i, Sparkles],
+  [/who.*for/i, Users],
   [/price range/i, Wallet],
   [/price/i, Banknote],
   [/cuisine|foods/i, UtensilsCrossed],

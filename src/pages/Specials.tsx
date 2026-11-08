@@ -28,6 +28,7 @@ import { allPillActive, pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { compareSpecialDefault } from "@/lib/specialOrder";
 import { specialMatchesKind } from "@/lib/specialKind";
+import { specialAudience } from "@/lib/specialAudience";
 import { MUTED, type } from "@/lib/type";
 
 
@@ -88,10 +89,11 @@ const Specials = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState<string[]>(persisted?.filterType ?? []);
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
-  const [openSection, setOpenSection] = useState<"sort" | "category" | "validity" | "booking" | "special-type" | "special-kind" | null>(null);
+  const [openSection, setOpenSection] = useState<"sort" | "category" | "validity" | "booking" | "special-type" | "special-kind" | "audience" | null>(null);
   const [bookingFilter, setBookingFilter] = useState<SpecialBookingFilter>(persisted?.bookingFilter ?? "any");
   const [specialTypeFilter, setSpecialTypeFilter] = useState<SpecialTypeFilter>(persisted?.specialTypeFilter ?? "any");
   const [kindFilter, setKindFilter] = useState<string>(persisted?.kindFilter ?? "");
+  const [audienceFilter, setAudienceFilter] = useState<string>(persisted?.audienceFilter ?? "any");
   const [activeTab, setActiveTab] = useState<string>(persisted?.activeTab ?? ALL_TAB);
   const [validityFilter, setValidityFilter] = useState<SpecialValidity>(
     persisted?.validityFilter ?? (activeTab === UPCOMING_TAB ? "upcoming" : activeTab === ENDING_SOON_TAB ? "ending-soon" : activeTab === ONGOING_TAB ? "ongoing" : "all")
@@ -108,11 +110,11 @@ const Specials = () => {
       replace: true,
       state: {
         ...(location.state as object | null),
-        filters: { search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter, kindFilter, validityFilter },
+        filters: { search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter, kindFilter, validityFilter, audienceFilter },
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter, kindFilter, validityFilter]);
+  }, [search, filterType, sortBy, activeTab, bookingFilter, specialTypeFilter, kindFilter, validityFilter, audienceFilter]);
 
 
   const { data: specials, isLoading } = useQuery({
@@ -131,9 +133,9 @@ const Specials = () => {
   // Category and validity are independent drawer sections.
   const selectedCategories = activeTab !== ALL_TAB && !VALIDITY_TABS.has(activeTab)
     ? [activeTab, ...filterType] : filterType;
-  const facetState = { search, categories: selectedCategories, validity: validityFilter, booking: bookingFilter, savings: specialTypeFilter, kind: kindFilter };
+  const facetState = { search, categories: selectedCategories, validity: validityFilter, booking: bookingFilter, savings: specialTypeFilter, kind: kindFilter, audience: audienceFilter };
   const facets = useMemo(() => countSpecialFacets(specials ?? [], facetState),
-    [specials, search, activeTab, filterType, validityFilter, bookingFilter, specialTypeFilter, kindFilter]);
+    [specials, search, activeTab, filterType, validityFilter, bookingFilter, specialTypeFilter, kindFilter, audienceFilter]);
   const drawerCategoryTabs = [ALL_TAB, ...facets.tags];
   const categoryCounts = facets.category;
   const topCategoryCount = (category: string) =>
@@ -152,7 +154,7 @@ const Specials = () => {
   const validityTab = validityFilter === "upcoming" ? UPCOMING_TAB : validityFilter === "ending-soon" ? ENDING_SOON_TAB : validityFilter === "ongoing" ? ONGOING_TAB : ALL_TAB;
   const setValidityTab = (tab: string) => setValidityFilter(tab === UPCOMING_TAB ? "upcoming" : tab === ENDING_SOON_TAB ? "ending-soon" : tab === ONGOING_TAB ? "ongoing" : "all");
   const categorySpecials = useMemo(() => (specials ?? []).filter((s) => specialMatchesFacets(s, facetState)),
-    [specials, search, activeTab, filterType, validityFilter, bookingFilter, specialTypeFilter, kindFilter]);
+    [specials, search, activeTab, filterType, validityFilter, bookingFilter, specialTypeFilter, kindFilter, audienceFilter]);
 
   const filteredSpecials = useMemo(() => {
     const result = categorySpecials.filter((s) =>
@@ -212,6 +214,7 @@ const Specials = () => {
   if (specialTypeFilter !== "any")
     appliedChips.push({ key: "type", label: SPECIAL_TYPE_OPTIONS.find((o) => o.key === specialTypeFilter)?.label ?? String(specialTypeFilter), onRemove: () => setSpecialTypeFilter("any") });
   if (kindFilter) appliedChips.push({ key: "kind", label: kindFilter, onRemove: () => setKindFilter("") });
+  if (audienceFilter !== "any") appliedChips.push({ key: "audience", label: audienceFilter === "all" ? "All Audiences" : specialAudience([audienceFilter])[0] ?? audienceFilter, onRemove: () => setAudienceFilter("any") });
   const activeFilterCount = appliedChips.length;
   const filtersOn = activeFilterCount > 0;
   // One filter names the results; more than one reads plain "Specials".
@@ -230,6 +233,7 @@ const Specials = () => {
     setBookingFilter("any");
     setSpecialTypeFilter("any");
     setKindFilter("");
+    setAudienceFilter("any");
     setOpenSection(null);
   };
 
@@ -477,6 +481,23 @@ const Specials = () => {
             );
           })()}
 
+        </RefineSection>
+
+        <RefineSection
+          label="Who's This For?"
+          onClear={audienceFilter !== "any" ? () => setAudienceFilter("any") : undefined}
+          summary={audienceFilter === "any" ? undefined : audienceFilter === "all" ? "All" : audienceFilter}
+          open={openSection === "audience"}
+          onToggle={() => setOpenSection(openSection === "audience" ? null : "audience")}
+        >
+          {facets.audience.filter((o) => o.key === "any" || o.key === "all" || o.count > 0 || audienceFilter === o.key).map((o) => (
+            <RefineRectOption
+              key={o.key}
+              label={`${o.label} (${o.count})`}
+              active={audienceFilter === o.key}
+              onClick={() => setAudienceFilter(pillToggle(audienceFilter, o.key, "any"))}
+            />
+          ))}
         </RefineSection>
 
         <RefineSection

@@ -23,3 +23,20 @@ export function specialAudienceCsvPatch(row: Record<string, string>): { whos_it_
 }
 
 export const specialAudienceToCsv = (value: unknown): string => specialAudience(value).join("|");
+
+export function specialMatchesAudience(value: unknown, filter = "any"): boolean {
+  if (filter === "any") return true;
+  const audiences = specialAudience(value);
+  if (filter === "all") return audiences.length === 0;
+  return audiences.some((label) => label.toLowerCase() === filter.toLowerCase());
+}
+
+export function countSpecialAudiences(rows: { whos_it_for?: unknown }[], selected = "any") {
+  const labels = specialAudience([...SPECIAL_AUDIENCE_OPTIONS, ...rows.flatMap((s) => specialAudience(s.whos_it_for)),
+    ...(selected === "any" || selected === "all" ? [] : [selected])]);
+  return [
+    { key: "any", label: "Any", count: rows.length },
+    { key: "all", label: "All", count: rows.filter((s) => specialMatchesAudience(s.whos_it_for, "all")).length },
+    ...labels.map((label) => ({ key: label, label, count: rows.filter((s) => specialMatchesAudience(s.whos_it_for, label)).length })),
+  ];
+}

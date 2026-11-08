@@ -9,6 +9,16 @@ const rows = [
 const defaults: SpecialFacetState = { search: "", categories: [], validity: "all", booking: "any", savings: "any", kind: "" };
 
 describe("specials faceted filters", () => {
+  it("counts audiences against other filters and applies audiences to other facet counts", () => {
+    const audiences = rows.map((row, i) => ({ ...row, whos_it_for: i === 0 ? ["Families"] : null }));
+    const state = { ...defaults, categories: ["Food & Drink"], audience: "Families" };
+    const counts = countSpecialFacets(audiences, state);
+    expect(counts.audience).toContainEqual({ key: "all", label: "All", count: 1 });
+    expect(counts.audience).toContainEqual({ key: "Families", label: "Families", count: 1 });
+    expect(counts.booking).toEqual({ any: 1, required: 1, "not-required": 0 });
+    expect(audiences.filter((s) => specialMatchesFacets(s, state)).map((s) => s.title)).toEqual(["Family Lunch"]);
+    expect(audiences.filter((s) => specialMatchesFacets(s, { ...state, audience: "all" })).map((s) => s.title)).toEqual(["Dinner"]);
+  });
   it("counts categories against booking and savings, ignoring their own selection", () => {
     const counts = countSpecialFacets(rows, { ...defaults, categories: ["Accommodation"], booking: "required", savings: "percent_off" });
     expect(counts.category.get("Food & Drink")).toBe(1);
