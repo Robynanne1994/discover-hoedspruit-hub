@@ -1124,12 +1124,14 @@ const ListingDetail = () => {
               {descExpanded ? "Read Less" : "Read More"}
             </button>
           )}
-        </div>
+          </div>
+        </>
       )}
 
       {goodToKnow.length > 0 && (
-        <div style={{ ...cardStyle, padding: "20px 22px" }}>
-          <CardHead Icon={Sparkles}>Good to know</CardHead>
+        <>
+          <h2 style={{ ...headStyle, margin: descriptionText ? "14px 0 0" : 0 }}>Good to know</h2>
+          <div style={{ ...cardStyle, padding: "20px 22px" }}>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
             {goodToKnow.map((item) => (
               <span
