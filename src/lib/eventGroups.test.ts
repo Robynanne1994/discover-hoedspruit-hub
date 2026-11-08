@@ -81,7 +81,7 @@ describe("buildEventGroups", () => {
     expect(groups).toHaveLength(1);
     expect(groups[0]).toMatchObject({
       key: "past",
-      label: "4 October - 3 November 2026",
+      label: "4 Oct - 3 Nov 2026",
       showCount: false,
     });
     expect(groups[0].events.map((e) => e.id)).toEqual(["past-a", "past-b"]);
@@ -90,18 +90,18 @@ describe("buildEventGroups", () => {
   it("heads a lone time-frame pill with that week's dates, not its words", () => {
     const groups = buildEventGroups([dated("a", new Date(2026, 10, 4))], "this-week", true, true, TODAY);
     expect(groups).toHaveLength(1);
-    expect(groups[0]).toMatchObject({ key: "timeframe-this-week", label: "2-8 November 2026" });
+    expect(groups[0]).toMatchObject({ key: "timeframe-this-week", label: "2-8 Nov 2026" });
     expect(groups[0].events.map((e) => e.id)).toEqual(["a"]);
   });
 
   it("heads a lone Today pill with the date and year alone", () => {
     const groups = buildEventGroups([dated("a", new Date(2026, 10, 4))], "today", true, true, TODAY);
-    expect(groups[0].label).toBe("4 November 2026");
+    expect(groups[0].label).toBe("4 Nov 2026");
   });
 
   it("heads a lone Past pill with the dates its window covers", () => {
     const groups = buildEventGroups([dated("a", new Date(2026, 9, 20))], "past", true, true, TODAY);
-    expect(groups[0].label).toBe("4 October - 3 November 2026");
+    expect(groups[0].label).toBe("4 Oct - 3 Nov 2026");
   });
 
   it("falls back to Events once anything else narrows the list beside the pill", () => {
