@@ -376,7 +376,7 @@ const Specials = () => {
                 <SectionHead
                   label={listHeading}
                   right={dealCountLabel(listItems.length)}
-                  hairline={!filtersOn}
+                  hairline={false}
                 />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {listItems.map((s: any) => (

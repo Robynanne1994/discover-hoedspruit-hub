@@ -51,7 +51,7 @@
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
 - Keep the carousel poster card's date and location rows on one shared style (13px body ink, 12px lucide icons at stroke 2 in the primary dark brown) and show no time on those cards.
 - Keep the gap under the events carousels equal to the gap above the events list below; adjust the shared value, not one gap alone.
-- Keep the specials page's section headings on the events page's group-heading treatment; the featured heading has no icon or hairline, the list keeps its brown hairline, and the featured rail's gap equals the carousels'.
+- Keep the specials page's section headings on the events page's group-heading treatment; neither specials heading carries an icon or a hairline rule, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION, FEATURED_PHOTO_RATIO and the specials slide width (appLayout) so the card and its editor crop box agree.
 - Keep pill icons and the filter-count digit on the pillIcon constants; keep the listed event card's three rows on one shared set in Events.tsx (ROW_FONT_SIZE, ROW_LINE_HEIGHT, ROW_GAP, ROW_ICON_SIZE, ROW_GLYPH_SIZE).
