@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Search, SlidersHorizontal, MapPin, X, ArrowLeft, Calendar, Clock } from "lucide-react";
+import { Search, MapPin, X, ArrowLeft, Calendar, Clock } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,18 +46,6 @@ import { POSTER_CARD_CHROME } from "@/lib/cardChrome";
 import { pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { activeEventFilterCount, hasActiveEventFilters } from "@/lib/eventFilterState";
-import {
-  PILL_ICON_SIZE,
-  PILL_ICON_NUDGE,
-  PILL_BADGE_SIZE,
-  PILL_BADGE_NUDGE,
-} from "@/lib/pillIcon";
-
-// One height for every pill in the filters row — the Filters button, Clear all
-// and the date pills — so none of them can sit a hair taller than its neighbours.
-const PILL_HEIGHT = 29;
-
-
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Nohemi', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 

@@ -2,10 +2,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Clock, ArrowLeft, Store, Percent, ChevronRight } from "lucide-react";
+import { Search, X, ArrowLeft, Store, ChevronRight } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
-import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { AppliedFilterBar } from "@/components/AppliedFilterBar";
 import { countSpecialFacets, specialMatchesFacets, type SpecialValidity } from "@/lib/specialFacets";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,21 +14,18 @@ import Seo from "@/components/Seo";
 import SpecialValueBar from "@/components/specials/SpecialValueBar";
 import SpecialBadgePill from "@/components/specials/SpecialBadgePill";
 import SpecialCountdownTag from "@/components/specials/SpecialCountdownTag";
-import { tagKey, pillCategories, uniqueTags, collectSpecialTags, specialMatchesTag, countSpecialTags } from "@/lib/specialTags";
 import { SPECIAL_CARD_CHROME } from "@/lib/cardChrome";
 import { SPECIALS_CARD_GRID, SPECIALS_SLIDE_GAP, SPECIALS_SLIDE_PEEK } from "@/lib/appLayout";
-import { dealCountLabel, isEndingSoon, isOngoingSpecial, savingValue } from "@/lib/specialValue";
+import { dealCountLabel, savingValue } from "@/lib/specialValue";
 import { specialImage } from "@/lib/specialCard";
 import { FEATURED_PHOTO_FRACTION } from "@/lib/specialImageSlots";
 import { isUpcomingSpecial, isVisibleSpecial, specialToday } from "@/lib/specialVisibility";
-import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, countSpecialFilters, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
-import { allPillActive, pillToggle } from "@/lib/filterPill";
+import { SPECIAL_BOOKING_OPTIONS, SPECIAL_TYPE_OPTIONS, specialMatchesBooking, specialMatchesType, type SpecialBookingFilter, type SpecialTypeFilter } from "@/lib/specialFilters";
+import { pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { compareSpecialDefault } from "@/lib/specialOrder";
-import { countSpecialKinds, specialMatchesKind } from "@/lib/specialKind";
-import { MUTED, tab as tabStyle, type } from "@/lib/type";
-import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
-import { specialPillIcon } from "@/lib/specialPillIcons";
+import { specialMatchesKind } from "@/lib/specialKind";
+import { MUTED, type } from "@/lib/type";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -55,8 +52,6 @@ const ENDING_SOON_TAB = "__ending_soon__";
 const UPCOMING_TAB = "__upcoming__";
 const ONGOING_TAB = "__ongoing__";
 const ALL_TAB = "All Specials";
-// One height for every pill in the filters row, matching the Events page.
-const PILL_HEIGHT = 29;
 
 // The top pill row and the drawer's Validity section are one axis: picking a
 // validity lights the matching top pill, and picking one there lights it here.
@@ -70,11 +65,6 @@ const VALIDITY_OPTIONS = [
 
 type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
-
-// Category marks live in specialPillIcons so the rules are shared and testable;
-// the "All Specials" tab keeps its own percent mark.
-const tabIcon = (tab: string) =>
-  tab === ALL_TAB ? <Percent size={PILL_ICON_SIZE} strokeWidth={1.8} /> : specialPillIcon(tab);
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "default", label: "Default" },
@@ -538,48 +528,6 @@ const Specials = () => {
 /* ------------------------------------------------------------------ */
 /* Pills + section heads                                               */
 /* ------------------------------------------------------------------ */
-
-const FilterPill = ({
-  label,
-  icon,
-  active,
-  accent,
-  onClick,
-}: {
-  label: string;
-  icon?: React.ReactNode;
-  active: boolean;
-  accent?: boolean;
-  onClick: () => void;
-}) => (
-  <button
-    onClick={onClick}
-    style={{
-      background: active ? COLOR.pillActiveBg : COLOR.pillInactiveBg,
-      border: `1px solid ${active ? COLOR.pillActiveBg : accent ? "rgba(192,57,43,0.28)" : "rgba(26,26,26,0.08)"}`,
-      borderRadius: 999,
-      height: PILL_HEIGHT,
-      padding: "7px 14px",
-      cursor: "pointer",
-      fontFamily: SANS,
-      ...tabStyle(active),
-      lineHeight: 1,
-      color: active ? COLOR.pillActiveFg : accent ? COLOR.urgent : COLOR.ink,
-      whiteSpace: "nowrap",
-      flexShrink: 0,
-      display: "inline-flex",
-      alignItems: "center",
-      gap: 6,
-    }}
-  >
-    {icon ? (
-      <span style={{ display: "inline-flex", transform: `translateY(${PILL_ICON_NUDGE})` }}>
-        {icon}
-      </span>
-    ) : null}
-    {label}
-  </button>
-);
 
 const SectionHead = ({
   label,
