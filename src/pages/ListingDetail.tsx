@@ -1256,7 +1256,7 @@ const ListingDetail = () => {
                     // An unselected pill needs a visible edge to invite the tap,
                     // so it carries the brown hairline rather than the pale card
                     // hairline.
-                    border: `1px solid ${selected ? "#423324" : C.softBorder}`,
+                    border: `1px solid ${selected ? "#423324" : "rgba(112,90,61,0.28)"}`,
                     background: selected ? "#423324" : "transparent",
                     color: selected ? "#fff" : C.heading,
                     fontFamily: FONT,
