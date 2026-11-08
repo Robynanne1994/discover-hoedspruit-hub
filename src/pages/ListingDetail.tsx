@@ -41,12 +41,14 @@ import {
   type MappableRow,
   type ResolvedLocation,
 } from "@/lib/tileMap";
-import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
+import { formatEventDateRange, formatEventTime, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { collectCustomRows } from "@/lib/listingCustomFields";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 import { getSpecialBadge } from "@/lib/specialBadge";
+import { specialDateLine } from "@/lib/specialValue";
+import { specialKindOf } from "@/lib/specialKind";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon, metaIconSolid } from "@/lib/type";
