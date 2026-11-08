@@ -186,7 +186,7 @@ const ListingCardMeta = ({ title, titleStyle, titleProps, eyebrow, location, lis
         <span ref={statusTextRef} style={{ whiteSpace: "nowrap", minWidth: 0, flex: 1, fontSize: statusFontSize, overflow: "hidden" }}>
           <span>
             {status.label}
-            {status.detail ? <span style={{ fontWeight: 400 }}> · {status.detail}</span> : null}
+            {status.detail ? <span style={{ fontWeight: 400 }}> · <span style={{ color: status.detail.startsWith("Opens ") ? SAGE : status.detail.startsWith("Closes ") ? CLAY : status.tone }}>{status.detail}</span></span> : null}
           </span>
         </span>
       </div>
