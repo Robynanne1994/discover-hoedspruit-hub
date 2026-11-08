@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Specials: add optional Who's it For audiences to CSV, editors and individual Details card; verify save/export/readback.
 
 ## Done
 - Event-page editor: added shared gallery uploads with cropping, removal and events storage paths; signed-in upload/save/reopen and removal readback verified. Existing editor mobile overflow is unchanged.

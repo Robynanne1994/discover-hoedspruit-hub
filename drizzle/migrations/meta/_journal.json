@@ -92,6 +92,13 @@
       "when": 1793963815149,
       "tag": "0012_extend_gallery_import_for_events",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1794137858151,
+      "tag": "0013_specials_audience",
+      "breakpoints": true
     }
   ]
 }

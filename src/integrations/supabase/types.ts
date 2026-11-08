@@ -2265,6 +2265,7 @@ export type Database = {
           valid_from: string | null
           valid_until: string | null
           whatsapp_label: string | null
+          whos_it_for: string[] | null
         }
         Insert: {
           additional_email_labels?: string[]
@@ -2324,6 +2325,7 @@ export type Database = {
           valid_from?: string | null
           valid_until?: string | null
           whatsapp_label?: string | null
+          whos_it_for?: string[] | null
         }
         Update: {
           additional_email_labels?: string[]
@@ -2383,6 +2385,7 @@ export type Database = {
           valid_from?: string | null
           valid_until?: string | null
           whatsapp_label?: string | null
+          whos_it_for?: string[] | null
         }
         Relationships: [
           {
