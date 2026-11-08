@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { listingCardHours } from "./listingCardHours";
+import { formatCardClock, listingCardHours } from "./listingCardHours";
 
 const weekdays = { monday: "07:30 - 17:00", tuesday: "07:30 - 17:00", wednesday: "07:30 - 17:00", thursday: "07:30 - 17:00", friday: "07:30 - 17:00", saturday: "Closed", sunday: "Closed" };
 describe("category card hours", () => {
@@ -8,7 +8,7 @@ describe("category card hours", () => {
     expect(result).toEqual({ state: "closed", label: "Closed", detail: "Opens 7:30AM Mon" });
   });
   it("uses the first populated additional set if the primary is empty", () => {
-    expect(listingCardHours({ opening_hours: {}, additional_hours: [{ label: "Empty", hours: {} }, { label: "Kitchen", hours: weekdays }] }, new Date("2026-11-09T10:00:00"))).toEqual({ state: "open", label: "Open", detail: "Closes 5:00PM" });
+    expect(listingCardHours({ opening_hours: {}, additional_hours: [{ label: "Empty", hours: {} }, { label: "Kitchen", hours: weekdays }] }, new Date("2026-11-09T10:00:00"))).toEqual({ state: "open", label: "Open", detail: "Closes 5PM" });
   });
   it("skips Saturday and Sunday and abbreviates Monday", () => {
     expect(listingCardHours({ opening_hours: weekdays }, new Date("2026-11-07T10:00:00")).detail).toBe("Opens 7:30AM Mon");
@@ -23,6 +23,16 @@ describe("category card hours", () => {
     expect(listingCardHours({ opening_hours: { monday: "Always Open" } }, new Date("2026-11-09T10:00:00"))).toEqual({ state: "open", label: "Open", detail: "Always Open" });
   });
   it("reads the previous day's overnight closing time", () => {
-    expect(listingCardHours({ opening_hours: { monday: "18:00 - 02:00", tuesday: "Closed" } }, new Date("2026-11-10T01:00:00"))).toEqual({ state: "open", label: "Open", detail: "Closes 2:00AM" });
+    expect(listingCardHours({ opening_hours: { monday: "18:00 - 02:00", tuesday: "Closed" } }, new Date("2026-11-10T01:00:00"))).toEqual({ state: "open", label: "Open", detail: "Closes 2AM" });
+  });
+  it("omits zero minutes but preserves populated minutes", () => {
+    expect(formatCardClock("09:00")).toBe("9AM");
+    expect(formatCardClock("09:30")).toBe("9:30AM");
+    expect(formatCardClock("21:00")).toBe("9PM");
+    expect(formatCardClock("00:00")).toBe("12AM");
+    expect(formatCardClock("12:00")).toBe("12PM");
+  });
+  it("shortens a closed card's next whole-hour opening", () => {
+    expect(listingCardHours({ opening_hours: { monday: "09:00 - 17:00", saturday: "Closed", sunday: "Closed" } }, new Date("2026-11-07T10:00:00")).detail).toBe("Opens 9AM Mon");
   });
 });
