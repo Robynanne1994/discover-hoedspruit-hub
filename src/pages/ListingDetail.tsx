@@ -1253,20 +1253,28 @@ const ListingDetail = () => {
                     display: "inline-flex", alignItems: "center", gap: 7,
                     padding: "8px 14px",
                     borderRadius: 999,
-                    border: `1px solid ${selected ? "#423324" : C.border}`,
+                    // An unselected pill needs a visible edge to invite the tap,
+                    // so it carries the brown hairline rather than the pale card
+                    // hairline.
+                    border: `1px solid ${selected ? "#423324" : "rgba(112,90,61,0.28)"}`,
                     background: selected ? "#423324" : "transparent",
                     color: selected ? "#fff" : C.heading,
                     fontFamily: FONT,
                     fontSize: 12,
-                    fontWeight: 400,
+                    fontWeight: 500,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
                     cursor: "pointer",
                   }}
                 >
                   {sched.label}
+                  {/* The dot rides above the pill's centre: centring it on the
+                      line box leaves it under the middle of the capitals,
+                      because the line box keeps descender space below the
+                      baseline. */}
                   <span style={{
                     width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
+                    transform: "translateY(-1.5px)",
                     background: schedOpen
                       ? (selected ? "#7BC48C" : C.open)
                       : (selected ? "#E0A78F" : C.closed),
