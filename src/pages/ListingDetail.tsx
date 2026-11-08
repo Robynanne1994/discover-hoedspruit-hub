@@ -1186,23 +1186,11 @@ const ListingDetail = () => {
     const heading = multipleSchedules
       ? "Opening Hours"
       : active.label === DEFAULT_HOURS_LABEL ? "Opening Hours" : `${active.label} Hours`;
+    const hasPriorSection = !!descriptionText || goodToKnow.length > 0 || customRows.length > 0;
     return (
-      <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
-        <div
-          style={{
-            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
-            background: C.ivory, padding: "14px 18px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 9, minWidth: 0 }}>
-            <Clock size={16} strokeWidth={1.75} color={C.heading} style={{ flexShrink: 0 }} />
-            <h3 style={{
-              margin: 0, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.16em",
-              textTransform: "uppercase", color: C.heading,
-            }}>
-              {heading}
-            </h3>
-          </div>
+      <>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: hasPriorSection ? 14 : 0 }}>
+          <h2 style={{ ...headStyle, margin: 0 }}>{heading}</h2>
           {activeStatus ? (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, whiteSpace: "nowrap" }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: statusColor, flexShrink: 0 }} />
@@ -1210,6 +1198,7 @@ const ListingDetail = () => {
             </span>
           ) : null}
         </div>
+        <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
 
         {/* Two clocks under one roof: the same pill switch the Details tab
             uses, each pill carrying its own open/closed dot so the one you
