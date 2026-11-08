@@ -19,12 +19,12 @@ export default function SpecialAudienceField({ value, onChange }: { value: unkno
   };
   return (
     <fieldset className="space-y-2">
-      <legend className="text-sm font-medium">Who's it For</legend>
+      <legend><Label>Who's It For?</Label></legend>
       <div className="flex flex-wrap gap-x-5 gap-y-2">
         {choices.map((choice, index) => (
           <div key={choice} className="flex items-center gap-2">
             <Checkbox id={`${id}-${index}`} checked={selected.includes(choice)} onCheckedChange={(checked) => commit(checked === true ? [...selected, choice] : selected.filter((item) => item !== choice))} />
-            <Label htmlFor={`${id}-${index}`} className="font-normal">{choice}</Label>
+            <Label htmlFor={`${id}-${index}`} className="text-sm font-normal">{choice}</Label>
           </div>
         ))}
       </div>
