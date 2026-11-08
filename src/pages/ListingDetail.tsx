@@ -1508,12 +1508,20 @@ const ListingDetail = () => {
     <div style={{ padding: "20px" }}>
       <h2 style={headStyle}>Current Specials</h2>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {(relatedSpecials ?? []).map((s: any) =>
-          renderRelatedCard(
-            { id: s.id, title: s.title, image_url: s.image_url, badge: getSpecialBadge(s) },
+        {(relatedSpecials ?? []).map((s: any) => {
+          const validity = specialDateLine(s);
+          const kind = specialKindOf(s);
+          return renderRelatedCard(
+            {
+              id: s.id, title: s.title, image_url: s.image_url, badge: getSpecialBadge(s),
+              rows: [
+                ...(validity ? [{ text: validity }] : []),
+                ...(kind ? [{ text: kind }] : []),
+              ],
+            },
             `/specials/${s.id}`
-          )
-        )}
+          );
+        })}
       </div>
     </div>
   );
@@ -1531,8 +1539,15 @@ const ListingDetail = () => {
           })
           .map((e: any) => {
             const dateText = formatEventDateRange(e) || e.date || "";
+            const timeText = formatEventTime(e.start_time);
             return renderRelatedCard(
-              { id: e.id, title: e.title, image_url: e.image_url, subtitle: dateText },
+              {
+                id: e.id, title: e.title, image_url: e.image_url,
+                rows: [
+                  ...(dateText ? [{ icon: "calendar" as const, text: dateText }] : []),
+                  ...(timeText ? [{ icon: "clock" as const, text: timeText }] : []),
+                ],
+              },
               `/events/${e.id}`
             );
           })}
