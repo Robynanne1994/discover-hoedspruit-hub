@@ -443,7 +443,7 @@ const Specials = () => {
                 {visible.map((t) => (
                   <RefineRectOption
                     key={t}
-                    label={`${t} (${categoryCounts.get(t)})`}
+                    label={`${t} (${categoryCounts.get(t) ?? 0})`}
                     active={activeTab === t || filterType.includes(t)}
                     onClick={() => {
                       const clear = activeTab === t || filterType.includes(t);

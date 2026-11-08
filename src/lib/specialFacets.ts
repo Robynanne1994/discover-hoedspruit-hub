@@ -11,6 +11,7 @@ export type SpecialFacetRow = SpecialLike & {
   business_name?: string | null;
   description?: string | null;
   tag?: string | null;
+  tags?: string[] | null;
   sub_tag_1?: string | null;
   sub_tag_2?: string | null;
   booking_link?: string | null;
@@ -46,6 +47,8 @@ export function countSpecialFacets(specials: SpecialFacetRow[], state: SpecialFa
   const base = (skip: Facet) => specials.filter((s) => specialMatchesFacets(s, state, skip));
   const categories = base("category");
   const tags = uniqueTags([...specials.flatMap(collectSpecialTags), ...state.categories]);
+  const categoryCounts = countSpecialTags(categories, tags);
+  for (const tag of tags) if (!categoryCounts.has(tag)) categoryCounts.set(tag, 0);
   const validityBase = base("validity");
   const kinds = countSpecialKinds(base("kind"));
   if (state.kind && !kinds.options.some((o) => o.label.toLowerCase() === state.kind.toLowerCase())) {
@@ -53,7 +56,7 @@ export function countSpecialFacets(specials: SpecialFacetRow[], state: SpecialFa
   }
   return {
     tags,
-    category: countSpecialTags(categories, tags),
+    category: categoryCounts,
     categoryTotal: categories.length,
     validity: Object.fromEntries((["all", "upcoming", "ending-soon", "ongoing"] as const).map((v) =>
       [v, validityBase.filter((s) => specialMatchesValidity(s, v)).length]
