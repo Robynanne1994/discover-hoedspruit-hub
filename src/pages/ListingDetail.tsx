@@ -1258,6 +1258,11 @@ const ListingDetail = () => {
             const isClosed = !alwaysOpen && !isAlwaysOpenValue && (!v || v.toLowerCase() === "closed");
             const isToday = day === todayLabel;
             const holiday = weekHolidays[day.toLowerCase()];
+            // The list sits inside a small padding frame, so a highlighted row
+            // at either end must reach out over that frame; otherwise a white
+            // sliver of the card shows past the cream band.
+            const topPad = multipleSchedules ? 0 : 6;
+            const bottomPad = 6;
             const displayValue = alwaysOpen || isAlwaysOpenValue
               ? "Always Open"
               : isClosed
@@ -1269,7 +1274,15 @@ const ListingDetail = () => {
                 // Today's row carries a soft cream wash so it reads as the live
                 // row at a glance; the bleed to the card edges keeps the tint
                 // from looking like a floating chip.
-                ...(isToday && { background: C.ivory, margin: "0 -18px", padding: "0 18px" }),
+                ...(isToday && {
+                  background: C.ivory,
+                  margin: "0 -18px",
+                  padding: "0 18px",
+                  ...(i === 0 && topPad ? { marginTop: -topPad, paddingTop: topPad } : {}),
+                  ...(i === DAY_LABELS.length - 1 && bottomPad
+                    ? { marginBottom: -bottomPad, paddingBottom: bottomPad }
+                    : {}),
+                }),
               }}>
                 <div style={{
                   display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12,
