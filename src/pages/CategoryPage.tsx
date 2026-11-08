@@ -28,7 +28,7 @@ import { BODY_INK, type , MUTED as TOKEN_MUTED} from "@/lib/type";
 import { CATEGORY_CARD_CHROME } from "@/lib/cardChrome";
 import { CATEGORY_CARD_GRID } from "@/lib/appLayout";
 import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
-import { pillToggle } from "@/lib/filterPill";
+import { categoryClearAllVisible, pillToggle } from "@/lib/filterPill";
 import { useFilterBarReset } from "@/hooks/useFilterBarReset";
 import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
 import { NOHEMI, tab as tabStyle } from "@/lib/type";
@@ -1333,7 +1333,7 @@ const CategoryPage = () => {
             )}
           </button>
           {filtersOn && <span aria-hidden="true" style={{ width: 1, height: 20, background: "rgba(26,26,26,0.10)", flexShrink: 0 }} />}
-          {filtersOn && (
+          {categoryClearAllVisible(appliedChips.length) && (
             <button onClick={clearAllFilters} style={outlinePill}>
               <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ flexShrink: 0, transform: `translateY(${PILL_ICON_NUDGE})` }} />
               Clear All
