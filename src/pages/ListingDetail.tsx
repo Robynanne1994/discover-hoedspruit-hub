@@ -41,12 +41,14 @@ import {
   type MappableRow,
   type ResolvedLocation,
 } from "@/lib/tileMap";
-import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
+import { formatEventDateRange, formatEventTime, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { collectCustomRows } from "@/lib/listingCustomFields";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
 import { getSpecialBadge } from "@/lib/specialBadge";
+import { specialDateLine } from "@/lib/specialValue";
+import { specialKindOf } from "@/lib/specialKind";
 import Seo from "@/components/Seo";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MUTED, tab as tabStyle, type, metaRow, metaIcon, metaIconSolid } from "@/lib/type";
@@ -205,7 +207,7 @@ const ListingDetail = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("specials")
-        .select("id,title,badge_override,day_of_week,discount_type,discount_value,freebie_text,card_deal_text,image_url,valid_from,valid_until")
+        .select("id,title,badge_override,day_of_week,discount_type,discount_value,freebie_text,card_deal_text,image_url,valid_from,valid_until,special_type")
         .eq("business_id", id!)
         .eq("is_active", true);
       const today = new Date().toISOString().slice(0, 10);
@@ -1451,7 +1453,19 @@ const ListingDetail = () => {
     </div>
   );
 
-  const renderRelatedCard =(item: { id: string; title: string; image_url?: string | null; subtitle?: string | null; badge?: string | null }, to: string) => (
+  // Small white glyph in a dark brown disc, matching the events list cards.
+  const RELATED_ROW_ICON_DISC = {
+    flexShrink: 0, width: 16, height: 16, borderRadius: 999, background: C.primary,
+    display: "inline-flex", alignItems: "center", justifyContent: "center",
+  } as const;
+
+  const renderRelatedCard =(
+    item: {
+      id: string; title: string; image_url?: string | null; badge?: string | null;
+      rows?: { icon?: "calendar" | "clock"; text: string }[];
+    },
+    to: string
+  ) => (
     <Link
       key={item.id}
       to={to}
@@ -1465,19 +1479,28 @@ const ListingDetail = () => {
       <div style={{ width: 96, flexShrink: 0, alignSelf: "stretch", background: C.ivory }}>
         {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} loading="lazy" />}
       </div>
-      <div style={{ flex: 1, minWidth: 0, padding: "12px 14px 12px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ flex: 1, minWidth: 0, padding: "12px 4px 12px 0", display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <div style={{ ...type.cardTitleM, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
           {item.title}
         </div>
-        {item.subtitle && (
-          <div style={type.meta}>{item.subtitle}</div>
-        )}
+        {(item.rows ?? []).map((row, i) => (
+          <div key={i} style={{ ...type.meta, marginTop: i === 0 ? 0 : 4, display: "flex", alignItems: "center", gap: 6 }}>
+            {row.icon === "calendar" && (
+              <span style={RELATED_ROW_ICON_DISC}><Calendar size={10} strokeWidth={2.1} color="#FFFFFF" /></span>
+            )}
+            {row.icon === "clock" && (
+              <span style={RELATED_ROW_ICON_DISC}><Clock size={10} strokeWidth={2.1} color="#FFFFFF" /></span>
+            )}
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical" as const }}>{row.text}</span>
+          </div>
+        ))}
         {item.badge && (
           <div style={{ marginTop: 6, alignSelf: "flex-start", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
             {item.badge}
           </div>
         )}
       </div>
+      <ArrowUpRight size={18} strokeWidth={1.75} aria-hidden="true" style={{ flexShrink: 0, alignSelf: "center", marginRight: 16, color: C.primary }} />
     </Link>
   );
 
@@ -1485,12 +1508,20 @@ const ListingDetail = () => {
     <div style={{ padding: "20px" }}>
       <h2 style={headStyle}>Current Specials</h2>
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {(relatedSpecials ?? []).map((s: any) =>
-          renderRelatedCard(
-            { id: s.id, title: s.title, image_url: s.image_url, badge: getSpecialBadge(s) },
+        {(relatedSpecials ?? []).map((s: any) => {
+          const validity = specialDateLine(s);
+          const kind = specialKindOf(s);
+          return renderRelatedCard(
+            {
+              id: s.id, title: s.title, image_url: s.image_url, badge: getSpecialBadge(s),
+              rows: [
+                ...(validity ? [{ text: validity }] : []),
+                ...(kind ? [{ text: kind }] : []),
+              ],
+            },
             `/specials/${s.id}`
-          )
-        )}
+          );
+        })}
       </div>
     </div>
   );
@@ -1508,8 +1539,15 @@ const ListingDetail = () => {
           })
           .map((e: any) => {
             const dateText = formatEventDateRange(e) || e.date || "";
+            const timeText = formatEventTime(e.start_time);
             return renderRelatedCard(
-              { id: e.id, title: e.title, image_url: e.image_url, subtitle: dateText },
+              {
+                id: e.id, title: e.title, image_url: e.image_url,
+                rows: [
+                  ...(dateText ? [{ icon: "calendar" as const, text: dateText }] : []),
+                  ...(timeText ? [{ icon: "clock" as const, text: timeText }] : []),
+                ],
+              },
               `/events/${e.id}`
             );
           })}
