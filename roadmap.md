@@ -4,6 +4,7 @@
 (none)
 
 ## Done
+- Specials: optional Who's it For audiences added to both editors, CSV and individual Details card before social link; signed-in save/reopen/export and empty hiding verified, 12 tests passed.
 - Event-page editor: added shared gallery uploads with cropping, removal and events storage paths; signed-in upload/save/reopen and removal readback verified. Existing editor mobile overflow is unchanged.
 - Backend-only event gallery import: migration applied and import-gallery-images deployed; six regression tests passed, schema and service-only permissions checked, live missing-key rejection checked; original listing SQL wrapper unchanged. Real keyed imports were not run because the read-only tools cannot invoke service-only wrappers.
 - Local Channels: searchable Associated Business selector, exact-title CSV column after meta_2 and linked Business card on Details; signed-in selection/save/navigation, export and invalid-match protection verified; 17 tests passed.

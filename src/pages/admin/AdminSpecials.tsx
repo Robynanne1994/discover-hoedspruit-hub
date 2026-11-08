@@ -22,6 +22,7 @@ import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import { TermsEditor } from "@/components/admin/SpecialEditDialog";
 import { parseDays } from "@/lib/specialDays";
+import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 
 
 interface Special {
@@ -39,6 +40,7 @@ interface Special {
   discount_type: string | null;
   discount_value: number | null;
   special_type: string | null;
+  whos_it_for: string[] | null;
   freebie_text: string | null;
   card_deal_text: string | null;
   redemption_note: string | null;
@@ -92,6 +94,7 @@ const emptyForm: Omit<Special, "id"> = {
   discount_type: null,
   discount_value: null,
   special_type: null,
+  whos_it_for: null,
   freebie_text: null,
   card_deal_text: null,
   redemption_note: null,
@@ -251,6 +254,7 @@ const AdminSpecials = () => {
       discount_type: (s as any).discount_type ?? null,
       discount_value: (s as any).discount_value ?? null,
       special_type: (s as any).special_type ?? null,
+      whos_it_for: s.whos_it_for ?? null,
       freebie_text: (s as any).freebie_text ?? null,
       card_deal_text: (s as any).card_deal_text ?? null,
       redemption_note: (s as any).redemption_note ?? null,
@@ -418,6 +422,7 @@ const AdminSpecials = () => {
             <Label htmlFor="admin-special-type">Special Type</Label>
             <Input id="admin-special-type" value={form.special_type || ""} onChange={(e) => setForm({ ...form, special_type: e.target.value || null })} placeholder="e.g. Dinner Deal" />
           </div>
+          <SpecialAudienceField value={form.whos_it_for} onChange={(value) => setForm({ ...form, whos_it_for: value })} />
           <div>
             <Label>Freebie Text</Label>
             <Input value={form.freebie_text || ""} onChange={(e) => setForm({ ...form, freebie_text: e.target.value || null })} placeholder="e.g. Free breakfast and game drive included" />

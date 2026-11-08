@@ -22,6 +22,7 @@ import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import { parseDays } from "@/lib/specialDays";
+import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 import {
   ADMIN_EDITOR_DIALOG,
   ADMIN_FIELD_GRID_TIGHT,
@@ -100,7 +101,7 @@ const FIELDS: (keyof any)[] = [
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps", "additional_emails",
   "phone_label", "email_label", "whatsapp_label",
   "booking_link", "booking_link_label", "booking_link_type", "terms", "tag", "sub_tag_1", "sub_tag_2",
-  "social_media_link", "social_media_label",
+  "social_media_link", "social_media_label", "whos_it_for",
 ];
 
 const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1";
@@ -241,6 +242,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </div>
           </div>
           <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
+          <SpecialAudienceField value={form.whos_it_for} onChange={(value) => set("whos_it_for", value)} />
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
             <div>

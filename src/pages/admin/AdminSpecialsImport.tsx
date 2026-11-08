@@ -1,4 +1,5 @@
 import { resolveBookingLinkType } from "@/lib/bookingLink";
+import { specialAudienceCsvPatch, specialAudienceToCsv } from "@/lib/specialAudience";
 import { parseTagCell, specialTagList, tagColumns } from "@/lib/specialTags";
 import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventContacts";
 import { useState, useRef } from "react";
@@ -36,7 +37,7 @@ const EXPECTED_HEADERS = [
   "valid_from", "valid_until",
   "price", "price_label", "original_price",
   "booking_required", "booking_link_type", "booking_link", "booking_link_label", "promo_code",
-  "social_media_link", "social_media_label",
+  "whos_it_for", "social_media_link", "social_media_label",
   "contact_phone", "phone_label", "contact_whatsapp", "whatsapp_label", "contact_email", "email_label",
   "terms", "tag",
   "is_active", "is_featured",
@@ -150,6 +151,7 @@ const AdminSpecialsImport = () => {
         const days = parseDays(row.day_of_week);
 
         const payload: Record<string, any> = {
+          ...specialAudienceCsvPatch(row),
           title,
           title_override: titleOverrideValue(parseTitleOverrideCell(row.title_override) === true, title),
           badge_override: row.badge_override || null,
@@ -267,7 +269,7 @@ const AdminSpecialsImport = () => {
       "2026-01-01", "2026-06-30",
       "R450pp", "per person", "R900pp",
       "true", "link", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
-      "https://www.facebook.com/example/posts/123", "Facebook Post",
+      "Couples|Seniors", "https://www.facebook.com/example/posts/123", "Facebook Post",
       "+27 123 456 789|+27 987 654 321", "Reception|After Hours", "+27 123 456 789", "Bookings", "info@example.com", "",
       "T's & C's apply. Sit down only.", "Restaurant|Dinner|Wine pairing",
       "true", "false",
@@ -290,7 +292,7 @@ const AdminSpecialsImport = () => {
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link_type ?? "", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
-      s.social_media_link ?? "", s.social_media_label ?? "",
+      specialAudienceToCsv(s.whos_it_for), s.social_media_link ?? "", s.social_media_label ?? "",
       ...(["phone", "whatsapp", "email"] as const).flatMap((k) => {
         const c = serializeEventContactCells(s[`contact_${k}`], s[`${k}_label`], s[`additional_${k}s`], s[`additional_${k}_labels`]);
         return [c.contacts, c.labels];

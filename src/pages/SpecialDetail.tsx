@@ -1,5 +1,6 @@
 import { buildBookingHref, bookingActionLabel } from "@/lib/bookingLink";
 import { specialTagList } from "@/lib/specialTags";
+import { specialAudience } from "@/lib/specialAudience";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +11,7 @@ import FacebookIcon from "@/components/ui/FacebookIcon";
 import { format } from "date-fns";
 import {
   Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
-  ArrowUpRight, Banknote, Tag, Send, Mail, MapPin, Navigation,
+  ArrowUpRight, Banknote, Tag, Send, Mail, MapPin, Navigation, Users,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -408,6 +409,9 @@ const SpecialDetail = () => {
 
   const kind = ((special as any).special_type ?? "").trim();
   if (kind) detailRows.push({ icon: Tag, label: "Special Type", value: kind });
+
+  const audience = specialAudience(sp.whos_it_for);
+  if (audience.length) detailRows.push({ icon: Users, label: "Who's it For", value: audience.join(", ") });
 
   // The social link is always the final row in the details box, after every
   // other detail including validity.
