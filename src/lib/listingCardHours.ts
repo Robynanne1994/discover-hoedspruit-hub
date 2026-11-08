@@ -23,7 +23,7 @@ function nextOpening(hours: HoursMap, now: Date, includeToday: boolean): string 
     const opening = isAlwaysOpen(value) ? "00:00" : range(value)?.start;
     if (!opening) continue;
     if (offset === 0 && (range(value)?.opens ?? 0) <= current) continue;
-    const day = offset === 0 ? "" : ` ${key.slice(0, 3).replace(/^./, (c) => c.toUpperCase())}`;
+    const day = offset <= 1 ? "" : ` ${key.slice(0, 3).replace(/^./, (c) => c.toUpperCase())}`;
     return `Opens ${formatCardClock(opening)}${day}`;
   }
 }
