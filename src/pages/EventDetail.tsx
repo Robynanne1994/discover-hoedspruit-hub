@@ -572,6 +572,7 @@ const EventDetail = () => {
       <div style={{ padding: "16px 20px 20px" }}>
         {desc && (
           <>
+            <h2 style={{ ...headStyle, marginBottom: 14 }}>About</h2>
             <div style={{ ...cardStyle, padding: "18px 20px" }}>{renderListingRichText(desc)}</div>
           </>
         )}
@@ -1083,6 +1084,7 @@ const EventDetail = () => {
 
     return (
       <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        <h2 style={{ ...headStyle, margin: 0 }}>Location</h2>
         <div style={{ ...cardStyle, padding: isSurrounds ? "20px 22px" : 0, overflow: "hidden" }}>
           {isSurrounds ? (
             <div style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>
