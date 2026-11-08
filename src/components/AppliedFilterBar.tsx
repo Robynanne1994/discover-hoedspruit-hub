@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, type ReactNode } from "react";
 import { SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PILL_ICON_SIZE, PILL_ICON_NUDGE, PILL_BADGE_SIZE, PILL_BADGE_NUDGE } from "@/lib/pillIcon";
@@ -9,7 +9,8 @@ export const AppliedFilterBar = forwardRef<HTMLDivElement, {
   chips: Chip[];
   onOpen: () => void;
   onClear: () => void;
-}>(({ chips, onOpen, onClear }, ref) => (
+  children?: ReactNode;
+}>(({ chips, onOpen, onClear, children }, ref) => (
   <div ref={ref} className="applied-filter-bar scrollbar-hide">
     <div className="applied-filter-controls">
       <Button variant="ghost" className="applied-filter-button" aria-label="Filters and sort" aria-haspopup="dialog" onClick={onOpen}>
@@ -31,6 +32,7 @@ export const AppliedFilterBar = forwardRef<HTMLDivElement, {
         <X size={PILL_ICON_SIZE} strokeWidth={2} style={{ transform: `translateY(${PILL_ICON_NUDGE})` }} />{chip.label}
       </Button>)}
     </div>}
+    {children && <div className="applied-filter-chips">{children}</div>}
   </div>
 ));
 AppliedFilterBar.displayName = "AppliedFilterBar";
