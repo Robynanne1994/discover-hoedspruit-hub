@@ -437,3 +437,4 @@ body {
 .applied-filter-badge { display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: var(--filter-ink); color: hsl(var(--card)); font-size: 10px; font-weight: 700; }
 .applied-filter-badge > span { display: block; }
 .applied-filter-divider { width: 1px; height: 20px; background: var(--filter-divider); flex-shrink: 0; }
+.applied-filter-bar .event-timeframe-active { background: var(--filter-ink); border-color: var(--filter-ink); color: hsl(var(--card)); font-weight: 700; }
