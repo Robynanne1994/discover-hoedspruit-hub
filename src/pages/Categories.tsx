@@ -751,7 +751,7 @@ const Categories = () => {
             margin: "0 0 12px",
             ...type.eyebrow,
             textTransform: "uppercase",
-            color: TOKEN_MUTED,
+            color: type.pageTitle.color,
           }}
         >
           Quick Filters
