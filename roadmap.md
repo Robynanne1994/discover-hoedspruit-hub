@@ -4,6 +4,7 @@
 (none)
 
 ## Done
+- Events and Specials: replaced preset pills with Filters, Clear All and same-row removable chips; faceted counts and independent category/validity selections verified with 24 tests and real desktop/phone selection, removal and clearing.
 - Specials: optional Who's it For audiences added to both editors, CSV and individual Details card before social link; signed-in save/reopen/export and empty hiding verified, 12 tests passed.
 - Event-page editor: added shared gallery uploads with cropping, removal and events storage paths; signed-in upload/save/reopen and removal readback verified. Existing editor mobile overflow is unchanged.
 - Backend-only event gallery import: migration applied and import-gallery-images deployed; six regression tests passed, schema and service-only permissions checked, live missing-key rejection checked; original listing SQL wrapper unchanged. Real keyed imports were not run because the read-only tools cannot invoke service-only wrappers.

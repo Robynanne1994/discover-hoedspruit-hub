@@ -181,6 +181,10 @@ body {
     --input: 0 0% 100%;
     --ring: 27 30% 34%;
 
+    --filter-ink: #423324;
+    --filter-hairline: rgba(26,26,26,0.08);
+    --filter-divider: rgba(26,26,26,0.10);
+
     --radius: 1rem;
 
     --font-heading: "Nohemi", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -422,3 +426,14 @@ body {
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.applied-filter-bar { margin-top: 12px; padding: 4px 0 4px 20px; display: flex; align-items: center; gap: 8px; overflow-x: auto; }
+.applied-filter-controls, .applied-filter-chips { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.applied-filter-chips { padding-right: 20px; }
+.applied-filter-bar .applied-filter-button, .applied-filter-bar .applied-filter-chip { height: 29px; border-radius: 999px; gap: 6px; font-family: var(--font-body); font-size: 13px; font-weight: 500; line-height: 1; letter-spacing: 0; flex-shrink: 0; }
+.applied-filter-bar .applied-filter-button { padding: 7px 12px 7px 14px; background: hsl(var(--card)); border: 1px solid var(--filter-hairline); color: hsl(var(--foreground)); }
+.applied-filter-bar .applied-filter-chip { padding: 6.5px 12px; background: transparent; border: 1.5px solid var(--filter-ink); color: var(--filter-ink); }
+.applied-filter-bar svg { width: 12px; height: 12px; }
+.applied-filter-badge { display: inline-flex; align-items: center; justify-content: center; padding: 0 4px; border-radius: 999px; background: var(--filter-ink); color: hsl(var(--card)); font-size: 10px; font-weight: 700; }
+.applied-filter-badge > span { display: block; }
+.applied-filter-divider { width: 1px; height: 20px; background: var(--filter-divider); flex-shrink: 0; }
