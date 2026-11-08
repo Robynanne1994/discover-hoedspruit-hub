@@ -17,7 +17,12 @@ describe("category card hours", () => {
     expect(listingCardHours({ opening_hours: weekdays }, new Date("2026-11-09T06:00:00"))).toEqual({ state: "closed", label: "Closed", detail: "Opens 7:30AM" });
   });
   it("advances to the next day after closing rather than quoting today's past opening", () => {
-    expect(listingCardHours({ opening_hours: weekdays }, new Date("2026-11-09T18:00:00")).detail).toBe("Opens 7:30AM Tue");
+    expect(listingCardHours({ opening_hours: weekdays }, new Date("2026-11-09T18:00:00")).detail).toBe("Opens 7:30AM");
+  });
+  it("omits tomorrow's weekday but keeps Monday when Sunday is closed", () => {
+    const hours = { monday: "08:00 - 17:00", saturday: "Closed", sunday: "Closed" };
+    expect(listingCardHours({ opening_hours: hours }, new Date("2026-11-08T10:00:00")).detail).toBe("Opens 8AM");
+    expect(listingCardHours({ opening_hours: hours }, new Date("2026-11-07T10:00:00")).detail).toBe("Opens 8AM Mon");
   });
   it("identifies always-open cards", () => {
     expect(listingCardHours({ opening_hours: { monday: "Always Open" } }, new Date("2026-11-09T10:00:00"))).toEqual({ state: "open", label: "Open", detail: "Always Open" });
