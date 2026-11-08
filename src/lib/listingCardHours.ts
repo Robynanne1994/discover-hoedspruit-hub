@@ -1,6 +1,10 @@
 import { DAY_KEYS, formatClock12, getHoursSchedules, isAlwaysOpen, type HoursMap } from "./openHours";
 
 type HoursSource = Parameters<typeof getHoursSchedules>[0];
+export type ListingHoursFilter = "all" | "open" | "closed";
+export function listingMatchesHours(listing: HoursSource, filter: ListingHoursFilter, now = new Date()): boolean {
+  return filter === "all" || listingCardHours(listing, now).state === filter;
+}
 export const formatCardClock = (time: string): string =>
   formatClock12(time).replace(/:00(?=AM|PM)/, "");
 const range = (value?: string) => {
