@@ -17,8 +17,18 @@ describe("getSAPublicHolidays", () => {
     // 2026-03-21 (Human Rights Day) is a Saturday; 2027-03-21 is a Sunday.
     const observed = getSAPublicHolidays(2027).find((h) => h.name === "Human Rights Day (observed)");
     expect(observed).toBeTruthy();
-    expect(observed!.date.getMonth()).toBe(2);
-    expect(observed!.date.getDate()).toBe(22);
+    expect(observed?.date.getMonth()).toBe(2);
+    expect(observed?.date.getDate()).toBe(22);
+  });
+  it("calculates Good Friday and Family Day for each year", () => {
+    expect(isSAPublicHoliday(new Date(2026, 3, 3)).name).toBe("Good Friday");
+    expect(isSAPublicHoliday(new Date(2026, 3, 6)).name).toBe("Family Day");
+    expect(isSAPublicHoliday(new Date(2027, 2, 26)).name).toBe("Good Friday");
+    expect(isSAPublicHoliday(new Date(2027, 2, 29)).name).toBe("Family Day");
+  });
+  it("includes both Women's Day and its observed Monday in 2026", () => {
+    expect(isSAPublicHoliday(new Date(2026, 7, 9)).name).toBe("National Women's Day");
+    expect(isSAPublicHoliday(new Date(2026, 7, 10)).name).toBe("National Women's Day (observed)");
   });
 });
 

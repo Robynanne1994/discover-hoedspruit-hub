@@ -1342,14 +1342,10 @@ const ListingDetail = () => {
                   </span>
                 </div>
                 {holiday && (
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 7,
-                    padding: "8px 12px", marginBottom: 12, background: isToday ? "#FFFFFF" : C.ivory, borderRadius: 10,
-                    fontSize: 12, color: C.text, lineHeight: 1.4,
-                  }}>
-                    <CalendarDays size={13} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
-                    <span>{holidayHoursNote(holiday)}</span>
-                  </div>
+                  <p title={holiday.name} style={{
+                    margin: "-7px 0 12px", fontSize: 11, fontWeight: 400,
+                    color: C.muted, lineHeight: 1.4,
+                  }}>Public Holiday - Hours May Differ</p>
                 )}
               </div>
             );
