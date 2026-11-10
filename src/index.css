@@ -427,6 +427,17 @@ body {
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Editor commands stay filled without changing public outline buttons or selectors. */
+.admin-editor-dialog [data-button-variant="outline"]:not([role="combobox"]):not([aria-pressed]) {
+  background-color: var(--filter-ink);
+  border-color: var(--filter-ink);
+  color: hsl(var(--card));
+}
+.admin-editor-dialog [data-button-variant="outline"]:not([role="combobox"]):not([aria-pressed]):hover {
+  background-color: hsl(var(--primary-hover));
+  border-color: hsl(var(--primary-hover));
+}
+
 .applied-filter-bar { margin-top: 12px; padding: 4px 0 4px 20px; display: flex; align-items: center; gap: 8px; overflow-x: auto; }
 .applied-filter-controls, .applied-filter-chips { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .applied-filter-chips { padding-right: 20px; }
