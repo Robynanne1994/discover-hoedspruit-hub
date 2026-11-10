@@ -454,7 +454,7 @@ const ImageCropDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onCancel()}>
-      <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto">
+      <DialogContent className="admin-editor-dialog max-w-2xl max-h-[92vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title || "Crop & position image"}</DialogTitle>
         </DialogHeader>
@@ -539,7 +539,7 @@ const ImageCropDialog = ({
             >
               <Minimize2 className="h-3.5 w-3.5" /> Show the whole picture
             </Button>
-            <Button type="button" size="sm" variant="ghost" className="gap-1.5" onClick={reset}>
+            <Button type="button" size="sm" className="gap-1.5" onClick={reset}>
               <RotateCcw className="h-3.5 w-3.5" /> Reset
             </Button>
           </div>
