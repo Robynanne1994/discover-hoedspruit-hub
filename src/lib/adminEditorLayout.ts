@@ -10,7 +10,7 @@
 
 /** The editor dialog itself: phone-width on a phone, wide on a desktop. */
 export const ADMIN_EDITOR_DIALOG =
-  "max-w-[calc(100vw-1rem)] sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl max-h-[90vh] lg:max-h-[92vh] overflow-y-auto";
+  "admin-editor-dialog max-w-[calc(100vw-1rem)] sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl max-h-[90vh] lg:max-h-[92vh] overflow-y-auto";
 
 /** Two related fields side by side once there's room for them. */
 export const ADMIN_FIELD_GRID = "grid gap-4 lg:grid-cols-2";
