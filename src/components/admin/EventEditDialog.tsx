@@ -550,7 +550,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                   </div>
                 ))}
                 {shown < 3 && (
-                  <Button type="button" variant="outline" onClick={() => setShownLocal(shown + 1)}>+ Add Another Host</Button>
+                  <Button type="button" variant="outline" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setShownLocal(shown + 1)}>+ Add Another Host</Button>
                 )}
               </>
             );
