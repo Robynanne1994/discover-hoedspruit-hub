@@ -1,4 +1,4 @@
-import { DAY_NAMES, formatDays, parseDays, type DayName } from "@/lib/specialDays";
+import { DAY_NAMES, parseDays, type DayName } from "@/lib/specialDays";
 
 // A weekly special can run on any combination of days, so the day field is a
 // row of toggles rather than a dropdown. Both specials editors use this one, so
@@ -6,16 +6,13 @@ import { DAY_NAMES, formatDays, parseDays, type DayName } from "@/lib/specialDay
 const DayOfWeekPicker = ({
   value,
   onChange,
-  hint,
 }: {
   /** Whatever the row holds: a list, a single legacy name, or nothing. */
   value: unknown;
   /** Null when no day is selected — an empty list is not a schedule. */
   onChange: (days: string[] | null) => void;
-  hint?: string;
 }) => {
   const selected = parseDays(value);
-  const summary = formatDays(selected, "long");
 
   const toggle = (day: DayName) => {
     const next = selected.includes(day)
@@ -48,9 +45,6 @@ const DayOfWeekPicker = ({
         })}
       </div>
       <div className="flex items-center gap-3 min-h-5">
-        <p className="text-xs text-muted-foreground flex-1">
-          {summary ? "\n" : hint || "No day set"}
-        </p>
         {selected.length > 0 && (
           <button
             type="button"
