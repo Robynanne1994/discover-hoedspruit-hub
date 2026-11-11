@@ -1330,9 +1330,6 @@ const AdminListings = () => {
                 <div className="space-y-3">
                   <div>
                     <Label>Images</Label>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Anything left empty borrows one of the others.
-                    </p>
                   </div>
                   <div className={ADMIN_IMAGE_GRID}>
                     {LISTING_IMAGE_SLOTS.map((slot) => (
