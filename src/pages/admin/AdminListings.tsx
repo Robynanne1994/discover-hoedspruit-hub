@@ -1587,7 +1587,7 @@ const AdminListings = () => {
                   <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
                     {DAY_LABELS.map((day) => (
                       <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
-                        <span className="text-sm text-muted-foreground capitalize text-zinc-800">{day}</span>
+                        <span className="text-sm capitalize font-semibold text-foreground">{day}</span>
                         <Input
                           value={form.opening_hours[day] ?? ""}
                           onChange={(e) => setForm({ ...form, opening_hours: { ...form.opening_hours, [day]: e.target.value } })}
