@@ -10,10 +10,11 @@ import ImageCropDialog from "./ImageCropDialog";
 interface GalleryUploadProps {
   value: string; // newline-separated URLs
   onChange: (value: string) => void;
+  banner?: boolean;
   folder?: "gallery" | "events";
 }
 
-const GalleryUpload = ({ value, onChange, folder = "gallery" }: GalleryUploadProps) => {
+const GalleryUpload = ({ value, onChange, folder = "gallery", banner = false }: GalleryUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [queue, setQueue] = useState<string[]>([]);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
