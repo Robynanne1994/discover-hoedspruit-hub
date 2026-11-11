@@ -47,10 +47,10 @@
 - Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: unpositioned first (newest), then admin sort_position; featured specials are lifted above it.
 - Keep Featured Events carousel order in featuredEventOrder; the list below stays date-ordered.
-- Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
+- Keep the past-events window and default order in eventPastWindow.
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
-- Keep the carousel poster card's date and location rows on one shared style (13px body ink, 12px lucide icons at stroke 2 in the primary dark brown) and show no time on those cards.
-- Keep the gap under the events carousels equal to the gap above the events list below; adjust the shared value, not one gap alone.
+- Keep carousel poster card date/location rows on one shared style, with no time.
+- Keep the events carousel gaps on one shared value.
 - Keep the specials page's section headings on the events page's group-heading treatment; neither specials heading carries an icon or a hairline rule, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION, FEATURED_PHOTO_RATIO and the specials slide width (appLayout) so the card and its editor crop box agree.
