@@ -20,7 +20,7 @@ import { Link } from "react-router-dom";
 import { getSpecialBadge } from "@/lib/specialBadge";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
-import { TermsEditor } from "@/components/admin/SpecialEditDialog";
+import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDialog";
 import { parseDays } from "@/lib/specialDays";
 import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 
@@ -147,6 +147,7 @@ const AdminSpecials = () => {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<Omit<Special, "id">>(emptyForm);
   const [tab, setTab] = useState<"active" | "passed">("active");
+  const [dialogSpecial, setDialogSpecial] = useState<Special | null>(null);
 
   const todayStr = new Date().toISOString().slice(0, 10);
   const isSpecialActive = (s: Special) =>
@@ -616,7 +617,7 @@ const AdminSpecials = () => {
                       <p className="text-sm text-muted-foreground">{s.business_name} · {s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</p>
                     </div>
                     <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => startEdit(s)}><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => setDialogSpecial(s)}><Pencil className="h-4 w-4" /></Button>
                       <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this special?")) deleteMutation.mutate(s.id); }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                     </div>
                   </div>
@@ -626,6 +627,13 @@ const AdminSpecials = () => {
           </>
         );
       })()}
+      {dialogSpecial && (
+        <SpecialEditDialog
+          open={!!dialogSpecial}
+          onOpenChange={(o) => { if (!o) setDialogSpecial(null); }}
+          special={dialogSpecial}
+        />
+      )}
     </div>
   );
 };
