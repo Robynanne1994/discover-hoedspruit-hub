@@ -43,6 +43,6 @@ export default function SpecialAudienceField({ value, onChange }: { value: unkno
       </div>
         </PopoverContent>
       </Popover>
-    </fieldset>
+    </div>
   );
 }
