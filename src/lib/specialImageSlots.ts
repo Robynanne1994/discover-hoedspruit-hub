@@ -60,7 +60,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
   {
     key: "card",
     field: "image_url",
-    label: "Card cover image",
+    label: "Card Cover",
     where: "The card on the Specials list. Also the picture every other slot falls back to.",
     // Specials.tsx — DealCard image is `aspectRatio: "1 / 1"` in a two-column
     // grid inside 20px page padding with a 12px gutter.
@@ -82,7 +82,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
   {
     key: "detail",
     field: "detail_image_url",
-    label: "Individual page image",
+    label: "Individual Page",
     where: "The hero at the top of the special's own page.",
     // SpecialDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width of the shell.
     aspect: 4 / 3,
@@ -104,7 +104,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
   {
     key: "homepage",
     field: "homepage_image_url",
-    label: "Homepage feature image",
+    label: "Homepage Feature",
     where: "The Active Specials row on the home screen.",
     // HomeSpecials.tsx — the tile is a fixed 190 tall but its width follows the
     // viewport (`calc((100vw − 32px) / 1.5)`, clamped 200–280), so it is the one
@@ -148,7 +148,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
   {
     key: "saved",
     field: "saved_image_url",
-    label: "Saved card image",
+    label: "Saved Card",
     where: "The tile on a member's Saved screen.",
     // SavedCard.tsx — tile image is `aspectRatio: "4 / 3"`.
     aspect: 4 / 3,
@@ -160,7 +160,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
   {
     key: "search",
     field: "search_image_url",
-    label: "Search result image",
+    label: "Search Result",
     where: "The round thumbnail beside the special in search results.",
     // Search.tsx — ResultRow avatar is `width: 42, height: 42`, fully rounded.
     aspect: 1,
