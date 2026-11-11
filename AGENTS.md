@@ -62,4 +62,4 @@
 - Keep listing sheet contact cells in listingContactCsv so import and export agree.
 - Keep listing sheet opening-hours cells ("Label {json}", extras pipe-separated) in listingHoursCsv so import and export agree.
 
-- Use EventEditDialog for editing existing events from both the admin table and event detail page so fields, presentation and saving cannot drift between entry points.
+- Use EventEditDialog from the admin table and event page so editing stays identical.
