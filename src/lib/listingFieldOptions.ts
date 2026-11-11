@@ -99,13 +99,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
 
 
   // Additional contacts
-  additional_phones: "pipe-separated phone numbers",
-  additional_phone_labels: "pipe-separated labels (1:1 with additional_phones)",
-  additional_emails: "pipe-separated email addresses",
-  additional_email_labels: "pipe-separated labels (1:1 with additional_emails)",
-  additional_whatsapps: "pipe-separated WhatsApp numbers",
-  additional_whatsapp_labels: "pipe-separated labels (1:1 with additional_whatsapps)",
-  additional_websites: "pipe-separated URLs",
 };
 
 function formatReferenceForType(type: FieldType): string {

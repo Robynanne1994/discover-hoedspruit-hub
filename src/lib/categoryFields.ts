@@ -204,12 +204,10 @@ export const UNIVERSAL_FIELDS = [
   "location",
   "category_page_location",
   "km_from_town",
-  "phone", "phone_label", "email", "email_label",
-  "website", "whatsapp", "whatsapp_label",
-  "additional_phones", "additional_phone_labels",
-  "additional_emails", "additional_email_labels",
-  "additional_whatsapps", "additional_whatsapp_labels",
-  "additional_websites",
+  // Each contact cell holds every number/address pipe-separated, labels positional
+  // in the column after it; extras are split out on import (listingContactCsv).
+  "phone", "phone_label", "whatsapp", "whatsapp_label",
+  "email", "email_label", "website", "website_label",
   "facebook", "instagram",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
   "is_featured",
