@@ -341,7 +341,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 }}>×</Button>
               </div>
             ))}
-            <div><Button type="button" size="sm" onClick={() => {
+            <div><Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => {
               const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
               set("performances", arr);
             }}>Add</Button></div>
