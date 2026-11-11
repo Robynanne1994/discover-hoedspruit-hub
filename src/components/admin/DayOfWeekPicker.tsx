@@ -39,7 +39,7 @@ const DayOfWeekPicker = ({
               className={`h-9 px-3 rounded-full border text-sm transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground border-primary font-medium"
-                  : "bg-background text-foreground border-input hover:border-primary"
+                  : "bg-slate-50 text-foreground border-gray-950 hover:border-primary"
               }`}
             >
               {day.slice(0, 3)}
