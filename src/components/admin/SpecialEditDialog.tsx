@@ -380,14 +380,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           {/* One picture per place the special appears, each locked to that
               screen's box and drawn with the chrome it lands under. */}
           <div className="space-y-3">
-            <div>
-              <Label>Images</Label>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Each crops to the exact box that screen paints into and draws whatever the app lays
-                on top of it — the deal badge, the heart, the white title card. Anything left empty
-                falls back to the card cover image.
-              </p>
-            </div>
+            <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Images</p>
             <div className={ADMIN_IMAGE_GRID}>
               {SPECIAL_IMAGE_SLOTS.map((slot) => (
                 <ImageSlotField
