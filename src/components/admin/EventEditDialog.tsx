@@ -51,6 +51,7 @@ const hostSlot = eventImageSlot("host");
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(event);
+  const [tagSlots, setTagSlots] = useState(1);
   const [bookingLabelOpen, setBookingLabelOpen] = useState(false);
   const [socialLabelOpen, setSocialLabelOpen] = useState(false);
   const descRef = useRef<HTMLTextAreaElement>(null);
@@ -191,10 +192,35 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <Label htmlFor="event-dlg-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
             </div>
           </div>
-          <div><Label>Tag/Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} /></div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
-            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
+          <div className="grid gap-3 lg:grid-cols-2 items-start">
+          <div className="space-y-2">
+            <Label>Tags / Categories</Label>
+            {(() => {
+              const keys = ["tag", "sub_tag_1", "sub_tag_2"] as const;
+              const filled = keys.reduce((n, k, i) => ((form[k] || "").trim() ? i + 1 : n), 0);
+              const count = Math.min(3, Math.max(1, filled, tagSlots));
+              return (
+                <>
+                  {keys.slice(0, count).map((k, idx) => (
+                    <div key={k} className="flex gap-2">
+                      <Input value={form[k] || ""} onChange={(e) => set(k, e.target.value)} />
+                      {count > 1 && (
+                        <Button type="button" variant="ghost" size="sm" onClick={() => {
+                          const vals = keys.map((kk) => form[kk] || "");
+                          vals.splice(idx, 1);
+                          vals.push("");
+                          setForm((f) => ({ ...f, tag: vals[0], sub_tag_1: vals[1], sub_tag_2: vals[2] }));
+                          setTagSlots(count - 1);
+                        }}>Remove</Button>
+                      )}
+                    </div>
+                  ))}
+                  {count < 3 && (
+                    <Button type="button" variant="outline" size="sm" onClick={() => setTagSlots(count + 1)}>+ Add Tag</Button>
+                  )}
+                </>
+              );
+            })()}
           </div>
           <div className="space-y-2">
             <Label>Linked Business Listings</Label>
@@ -225,6 +251,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               const arr = [...(form.business_ids || []), ""];
               set("business_ids", arr);
             }}>+ Add Linked Listing</Button>
+          </div>
           </div>
           <div>
             <Label>Description</Label>
