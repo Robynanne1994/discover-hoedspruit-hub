@@ -507,9 +507,40 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           </div>
 
-          <div className={ADMIN_FIELD_GRID_TIGHT}>
-            <div><Label htmlFor="special-social-link">Social Media Link</Label><Input id="special-social-link" value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} placeholder="https://…" /></div>
-            <div><Label htmlFor="special-social-label">Social Media Label</Label><Input id="special-social-label" value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Facebook Post" /></div>
+          <div className="space-y-1.5">
+            <Label>Social Media</Label>
+            <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} placeholder="https://…" />
+            {socialLabelOpen || (form.social_media_label || "").trim() ? (
+              <div className="flex gap-2 items-center">
+                <Input
+                  value={form.social_media_label || ""}
+                  placeholder='Custom label (e.g. "Facebook Post")'
+                  onChange={(e) => set("social_media_label", e.target.value)}
+                  className="h-8 text-xs"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                  aria-label="Remove label"
+                  onClick={() => {
+                    set("social_media_label", "");
+                    setSocialLabelOpen(false);
+                  }}
+                >
+                  <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </Button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSocialLabelOpen(true)}
+                className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              >
+                <Tag className="h-3 w-3" /> Add custom label
+              </button>
+            )}
           </div>
 
           <div>
