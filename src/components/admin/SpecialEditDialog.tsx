@@ -466,7 +466,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               addLabel="Add WhatsApp"
             />
             <MultiContactField
-              label="Contact Email"
+              label="Email"
               type="email"
               primary={form.contact_email || ""}
               onPrimaryChange={(v) => set("contact_email", v)}
