@@ -70,7 +70,7 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     key: "homepage",
     field: "homepage_image_url",
     label: "Homepage Row",
-    where: "The tile in the home screen rows — Where to Eat, Where to Shop, and the rest.",
+    where: "The tile in the home screen rows.",
     // HomeListings.tsx — tile is `width: 138` with `aspectRatio: "1 / 1"`.
     aspect: 1,
     aspectLabel: "1:1",
