@@ -58,3 +58,4 @@
 - Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
 - Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.
 - Keep search's category matching and title-first ranking in smartSearch so the home search and Explore search agree.
+- Keep listing universal-sheet contact cells (combined pipe values, positional '-' labels, split to primary/extras) in listingContactCsv so import and export agree.
