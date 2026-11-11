@@ -434,17 +434,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </div>
           </div>
 
-          {/* Simplified price block */}
-          <div className="border rounded-md p-3 space-y-3">
-            <p className="text-sm font-medium">{"\n"}</p>
-            <div className="space-y-3 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-3">
-              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
-              <div><Label>Price Notes</Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
-              <div><Label>Original Price</Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
-            </div>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
+            <div><Label>Price Notes</Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
+            <div><Label>Original Price</Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
+            <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
           </div>
-
-          <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <ListingContactPicker
             listings={listings || []}
