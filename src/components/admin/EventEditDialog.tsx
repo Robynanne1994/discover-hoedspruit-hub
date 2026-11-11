@@ -322,18 +322,18 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               </label>
             </div>
           </div>
-          <div className="space-y-2 p-3 border rounded">
-            <Label className="text-sm font-semibold text-slate-950">Performances</Label>
-            <p className="text-xs text-muted-foreground">When set, each row becomes a separate performance. Start/End Date above are auto-filled from the first and last performance.</p>
+          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label>Performances</Label>
             {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
               <div key={idx} className="flex gap-2 items-end">
                 <div className="flex-1"><Label className="text-xs">Date</Label><Input type="date" value={p?.date || ""} onChange={(e) => {
                   const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], date: e.target.value }; set("performances", arr);
                 }} /></div>
-                <div className="w-24"><Label className="text-xs">Start</Label><Input type="time" value={p?.time || ""} onChange={(e) => {
+                <div className="w-20"><Label className="text-xs">Start</Label><Input type="time" value={p?.time || ""} onChange={(e) => {
                   const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], time: e.target.value }; set("performances", arr);
                 }} /></div>
-                <div className="w-24"><Label className="text-xs">End</Label><Input type="time" value={p?.end_time || ""} onChange={(e) => {
+                <div className="w-20"><Label className="text-xs">End</Label><Input type="time" value={p?.end_time || ""} onChange={(e) => {
                   const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], end_time: e.target.value }; set("performances", arr);
                 }} /></div>
                 <Button type="button" variant="ghost" size="sm" onClick={() => {
@@ -341,10 +341,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 }}>×</Button>
               </div>
             ))}
-            <Button type="button" variant="outline" size="sm" onClick={() => {
+            <Button type="button" size="sm" onClick={() => {
               const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
               set("performances", arr);
-            }}>+ Add performance date</Button>
+            }}>Add</Button>
+          </div>
           </div>
           <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
           <div className="grid gap-3 lg:grid-cols-2">

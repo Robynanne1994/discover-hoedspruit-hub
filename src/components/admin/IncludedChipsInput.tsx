@@ -53,7 +53,7 @@ const IncludedChipsInput = ({ value, onChange, placeholder }: Props) => {
           onBlur={commit}
           placeholder={placeholder || "e.g. Welcome drink, then press Enter"}
         />
-        <Button type="button" variant="secondary" onClick={commit} disabled={!draft.trim()}>Add</Button>
+        <Button type="button" onClick={commit} disabled={!draft.trim()}>Add</Button>
       </div>
     </div>
   );
