@@ -10,10 +10,11 @@ import ImageCropDialog from "./ImageCropDialog";
 interface GalleryUploadProps {
   value: string; // newline-separated URLs
   onChange: (value: string) => void;
+  banner?: boolean;
   folder?: "gallery" | "events";
 }
 
-const GalleryUpload = ({ value, onChange, folder = "gallery" }: GalleryUploadProps) => {
+const GalleryUpload = ({ value, onChange, folder = "gallery", banner = false }: GalleryUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [queue, setQueue] = useState<string[]>([]);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -121,7 +122,7 @@ const GalleryUpload = ({ value, onChange, folder = "gallery" }: GalleryUploadPro
 
   return (
     <div className="space-y-3">
-      <Label>Gallery Images</Label>
+      {banner ? <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Gallery Images</p> : <Label>Gallery Images</Label>}
 
       {urls.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
