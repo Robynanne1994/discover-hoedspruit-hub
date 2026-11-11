@@ -1671,7 +1671,7 @@ const AdminListings = () => {
                         <TriStateToggle label="Free WiFi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
                         <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
                         <TriStateToggle label="Smoking Section" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
-                        <TriStateToggle label="Drive-Through" value={form.drive_through} onChange={(v) => setForm({ ...form, drive_through: v })} />
+                        <TriStateToggle label="Franchise" value={form.is_franchise} onChange={(v) => setForm({ ...form, is_franchise: v })} />
                       </div>
                     </div>
 
@@ -1723,6 +1723,11 @@ const AdminListings = () => {
                       return (
                         <div key={key}>
                           <Label>{label}</Label>
+                          {key === "service_type" && (
+                            <div className="my-3">
+                              <TriStateToggle label="Drive-Through" value={form.drive_through} onChange={(v) => setForm({ ...form, drive_through: v })} />
+                            </div>
+                          )}
                           <div className="flex flex-wrap gap-2">
                             {merged.map((opt) => {
                               const selected = form[key].includes(opt);
@@ -1773,13 +1778,6 @@ const AdminListings = () => {
                       );
                     })}
 
-                    {/* Business Type Section */}
-                    <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Business Type</p>
-                      <div className="space-y-3">
-                        <TriStateToggle label="Franchise" value={form.is_franchise} onChange={(v) => setForm({ ...form, is_franchise: v })} />
-                      </div>
-                    </div>
                   </div>
                 )}
 
