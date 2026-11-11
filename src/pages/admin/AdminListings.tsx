@@ -1569,7 +1569,7 @@ const AdminListings = () => {
                       size="sm"
                       onClick={() => setForm({ ...form, additional_hours: [...form.additional_hours, emptyHoursSet()] })}
                     >
-                      <Plus className="h-4 w-4" /> Add another set of hours
+                      <Plus className="h-4 w-4" /> Add Hours
                     </Button>
                   </div>
 
