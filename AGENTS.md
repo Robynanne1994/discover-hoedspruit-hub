@@ -61,3 +61,5 @@
 - Keep search's category matching and title-first ranking in smartSearch so the home search and Explore search agree.
 - Keep listing sheet contact cells in listingContactCsv so import and export agree.
 - Keep listing sheet opening-hours cells ("Label {json}", extras pipe-separated) in listingHoursCsv so import and export agree.
+
+- Use EventEditDialog from the admin table and event page so editing stays identical.
