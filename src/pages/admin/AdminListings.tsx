@@ -1400,6 +1400,22 @@ const AdminListings = () => {
                 </div>
                 <div className="space-y-2">
                   <MultiContactField
+                    label="WhatsApp Number"
+                    type="tel"
+                    primary={form.whatsapp}
+                    onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                    primaryLabel={form.whatsapp_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
+                    extras={form.additional_whatsapps}
+                    onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                    extraLabels={form.additional_whatsapp_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
+                    placeholder="e.g. +27791234567"
+                    addLabel="Add WhatsApp"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <MultiContactField
                     label="Website"
                     type="text"
                     primary={form.website}
