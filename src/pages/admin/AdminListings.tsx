@@ -1410,6 +1410,7 @@ const AdminListings = () => {
                     />
                   </div>
                 </div>
+                <div className={ADMIN_FIELD_GRID}>
                 <div className="space-y-2">
                   <MultiContactField
                     label="WhatsApp Number"
@@ -1441,6 +1442,7 @@ const AdminListings = () => {
                     placeholder="https://..."
                     addLabel="Add website"
                   />
+                </div>
                 </div>
                 <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Socials</p>
                 <div className={ADMIN_FIELD_GRID}>
