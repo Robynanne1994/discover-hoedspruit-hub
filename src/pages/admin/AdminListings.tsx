@@ -1562,7 +1562,6 @@ const AdminListings = () => {
                 <div>
                   <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Open Hours</p>
                   <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <Label>Opening Hours</Label>
                     <Button
                       type="button"
                       variant="outline"
