@@ -1170,7 +1170,7 @@ const AdminListings = () => {
                       <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
                     </div>
                   ) : (
-                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 bg-gray-400 text-gray-950 opacity-100" onClick={() => setShowNewCat(true)}>
+                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-3 gap-1 rounded-full bg-[#423324] text-white hover:bg-[#2F2419] hover:text-white" onClick={() => setShowNewCat(true)}>
                       <Plus className="h-3.5 w-3.5" /> Add category
                     </Button>
                   )}
@@ -1220,7 +1220,7 @@ const AdminListings = () => {
                         <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSub(false); setNewSubName(""); setNewSubParent(""); }}>Cancel</Button>
                       </div>
                     ) : (
-                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 bg-gray-400 text-gray-950 opacity-100" onClick={() => setShowNewSub(true)}>
+                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-3 gap-1 rounded-full bg-[#423324] text-white hover:bg-[#2F2419] hover:text-white" onClick={() => setShowNewSub(true)}>
                         <Plus className="h-3.5 w-3.5" /> Add subcategory
                       </Button>
                     )}
@@ -1325,7 +1325,7 @@ const AdminListings = () => {
                         <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSubSub(false); setNewSubSubName(""); setNewSubSubParent(""); }}>Cancel</Button>
                       </div>
                     ) : (
-                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 bg-gray-400 text-gray-950 opacity-100" onClick={() => setShowNewSubSub(true)}>
+                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-3 gap-1 rounded-full bg-[#423324] text-white hover:bg-[#2F2419] hover:text-white" onClick={() => setShowNewSubSub(true)}>
                         <Plus className="h-3.5 w-3.5" /> Add sub-subcategory
                       </Button>
                     )}
