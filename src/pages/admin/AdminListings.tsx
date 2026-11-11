@@ -1185,7 +1185,7 @@ const AdminListings = () => {
                           if (catSubs.length === 0) return null;
                           return (
                             <div key={cat.id}>
-                              <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground mb-1">{cat.title}</p>
+                              <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#1A1A1A] mb-1">{cat.title}</p>
                               <div className={ADMIN_PICKER_LIST}>
                                 {catSubs.map((sub) => (
                                   <div key={sub.id} className="flex items-center gap-2">
