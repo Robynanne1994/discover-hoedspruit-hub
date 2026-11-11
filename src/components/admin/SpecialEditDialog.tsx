@@ -238,7 +238,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 onCheckedChange={(v) => set("is_featured", v)}
               />
               <Label htmlFor="special-dlg-featured" className="text-sm cursor-pointer font-normal">
-                Featured — pinned to the top of the specials list and homepage
+                Featured
               </Label>
             </div>
           </div>
