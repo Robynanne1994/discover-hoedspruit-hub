@@ -1452,6 +1452,8 @@ export type Database = {
           opening_hours: Json | null
           opening_hours_label: string | null
           order_online: boolean | null
+          other_socials: string[]
+          other_socials_labels: string[]
           parking_available: boolean | null
           payment_methods: string[] | null
           pets_allowed: boolean | null
@@ -1613,6 +1615,8 @@ export type Database = {
           opening_hours?: Json | null
           opening_hours_label?: string | null
           order_online?: boolean | null
+          other_socials?: string[]
+          other_socials_labels?: string[]
           parking_available?: boolean | null
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
@@ -1774,6 +1778,8 @@ export type Database = {
           opening_hours?: Json | null
           opening_hours_label?: string | null
           order_online?: boolean | null
+          other_socials?: string[]
+          other_socials_labels?: string[]
           parking_available?: boolean | null
           payment_methods?: string[] | null
           pets_allowed?: boolean | null

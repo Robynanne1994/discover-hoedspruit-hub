@@ -52,6 +52,8 @@ export const LISTING_FIELD_SPECS = {
   action_website_index: { type: "int" },
   facebook: { type: "str" },
   instagram: { type: "str" },
+  other_socials: { type: "str_array" },
+  other_socials_labels: { type: "str_array" },
 
   // ---------- Universal: maps & reviews ----------
   google_maps_link: { type: "str" },
@@ -207,7 +209,7 @@ export const UNIVERSAL_FIELDS = [
   // in the column after it; extras are split out on import (listingContactCsv).
   "phone", "phone_label", "whatsapp", "whatsapp_label",
   "email", "email_label", "website", "website_label",
-  "facebook", "instagram",
+  "facebook", "instagram", "other_socials", "other_socials_labels",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
   "is_featured",
   // Hours cells carry their own labels ("Restaurant {json}"); see listingHoursCsv.

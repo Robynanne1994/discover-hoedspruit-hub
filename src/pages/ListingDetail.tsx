@@ -1,4 +1,5 @@
 import InstagramIcon from "@/components/ui/InstagramIcon";
+import { socialIconFor } from "@/components/ui/SocialIcons";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -530,7 +531,7 @@ const ListingDetail = () => {
     return ordered.map((c) => c.title);
   })();
 
-  const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || facebookLink || instagramLink || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
+  const hasContact = !!(listing.email || listing.phone || waClean || websiteEntries.length || facebookLink || instagramLink || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length) || ((listing as any).other_socials?.length));
   const hasAbout = !!descriptionText;
   const hasLocation = !!(listing.location || mapPlace);
   // "Hoedspruit & Surrounds" is an area, not an address: no map, no copyable
@@ -1384,6 +1385,12 @@ const ListingDetail = () => {
           const websiteKinds = new Set(websiteEntries.map(({ url }) => websiteKind(url)));
           if (facebookLink && !websiteKinds.has("facebook")) rows.push({ label: "Facebook", value: "Facebook", href: websiteHref(facebookLink), Icon: FacebookIcon });
           if (instagramLink && !websiteKinds.has("instagram")) rows.push({ label: "Instagram", value: "Instagram", href: websiteHref(instagramLink), Icon: InstagramIcon });
+          (((listing as any).other_socials || []) as string[]).forEach((url, i) => {
+            if (!isUsableSocialLink(url)) return;
+            const label = ((((listing as any).other_socials_labels || []) as string[])[i] || "").trim();
+            const text = label && label !== "-" ? label : "Social";
+            rows.push({ label: "", custom: false, value: text, href: websiteHref(String(url).trim()), Icon: socialIconFor(text, String(url)) });
+          });
           return rows;
         })().map((r: any, i) => (
           <a key={`${r.label}-${i}`} href={r.href} target="_blank" rel="noopener noreferrer" style={{
