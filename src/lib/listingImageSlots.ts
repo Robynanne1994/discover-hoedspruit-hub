@@ -80,7 +80,7 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
   {
     key: "saved",
     field: "saved_image_url",
-    label: "Saved card image",
+    label: "Saved Card",
     where: "The tile on a member's Saved screen.",
     // SavedCard.tsx — tile image is `aspectRatio: "4 / 3"` in a two-column
     // grid inside 20px page padding with a 12px gutter.
