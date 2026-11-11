@@ -1387,7 +1387,7 @@ const AdminListings = () => {
                       onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
                       extraLabels={form.additional_phone_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
-                      addLabel="Add Phone"
+                      addLabel="Add"
                     />
                   </div>
                   <div className="space-y-2">
@@ -1402,7 +1402,7 @@ const AdminListings = () => {
                       onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
                       extraLabels={form.additional_email_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
-                      addLabel="Add Email"
+                      addLabel="Add"
                     />
                   </div>
                 </div>
@@ -1420,7 +1420,7 @@ const AdminListings = () => {
                     extraLabels={form.additional_whatsapp_labels}
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                     placeholder="e.g. +27791234567"
-                    addLabel="Add WhatsApp"
+                    addLabel="Add"
                   />
                 </div>
                 <div className="space-y-2">
