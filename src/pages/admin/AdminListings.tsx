@@ -1343,7 +1343,7 @@ const AdminListings = () => {
                   {/* The gallery lives with the rest of the pictures — one place
                       in the form where every upload for this listing is done. */}
                   <GalleryUpload
-                    banner
+                    hideLabel
                     value={form.gallery_images}
                     onChange={(val) => setForm({ ...form, gallery_images: val })}
                   />
