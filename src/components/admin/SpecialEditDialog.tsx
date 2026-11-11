@@ -286,11 +286,21 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Tags / Categories</Label><TagRowsEditor value={specialTagList(form)} onChange={(t) => setForm((f: any) => ({ ...f, tags: t, tag: t[0] ?? null, sub_tag_1: null, sub_tag_2: null }))} /></div>
           </div>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Card Display</p>
           <div className="grid grid-cols-2 gap-3">
-  <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
-  <div><Label>Badge Override <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
+            <div><Label>Badge Override <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
+            <div>
+              <Label>Short Card Deal Text</Label>
+              <Input value={form.card_deal_text || ""} onChange={(e) => set("card_deal_text", e.target.value)} placeholder="e.g. Free breakfast" />
+              <p className="text-xs text-muted-foreground mt-1">
+                Shown in place of the deal text on the listing, homepage and saved cards when the full wording is too long. Leave blank to use the freebie / savings text everywhere.
+              </p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-3"><div><SpecialAudienceField value={form.whos_it_for} onChange={(value) => set("whos_it_for", value)} /></div></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
+            <div><SpecialAudienceField value={form.whos_it_for} onChange={(value) => set("whos_it_for", value)} /></div>
+          </div>
 
           {/* Structured deal fields — the badge is generated from these when no override is set */}
           <div className="grid grid-cols-2 gap-3">
@@ -358,13 +368,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               {form.discount_type === "freebie" && (
                 <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
               )}
-            </div>
-            <div>
-              <Label>Short Card Deal Text</Label>
-              <Input value={form.card_deal_text || ""} onChange={(e) => set("card_deal_text", e.target.value)} placeholder="e.g. Free breakfast" />
-              <p className="text-xs text-muted-foreground mt-1">
-                Shown in place of the deal text on the listing, homepage and saved cards when the full wording is too long. Leave blank to use the freebie / savings text everywhere.
-              </p>
             </div>
             <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
           </div>
