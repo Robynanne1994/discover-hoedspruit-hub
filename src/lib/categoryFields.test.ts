@@ -54,6 +54,14 @@ describe("universal vs category CSV columns", () => {
     expect(getFieldReference("sleeps_children")).toBe("");
   });
 
+  it("retires details_display_mode from the universal sheet — it is set in the editor only", () => {
+    expect(getUniversalCSVHeaders()).not.toContain("details_display_mode");
+    expect(getUniversalDbFields()).not.toContain("details_display_mode");
+    expect(getUniversalContentFields()).not.toContain("details_display_mode");
+    expect(LISTING_FIELD_SPECS).not.toHaveProperty("details_display_mode");
+    expect(getFieldReference("details_display_mode")).toBe("");
+  });
+
   it("keeps every universal content field off the category sheets", () => {
     for (const category of [...CATEGORIES, null]) {
       const headers = getCSVHeadersForCategory(category);
