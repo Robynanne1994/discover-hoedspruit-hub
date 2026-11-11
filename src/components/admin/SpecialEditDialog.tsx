@@ -436,7 +436,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
           {/* Simplified price block */}
           <div className="border rounded-md p-3 space-y-3">
-            <p className="text-sm font-medium">Price</p>
+            <p className="text-sm font-medium">{"\n"}</p>
             <div className="space-y-3 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-3">
               <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
               <div><Label>Price Notes</Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
