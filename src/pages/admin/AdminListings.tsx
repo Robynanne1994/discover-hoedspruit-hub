@@ -1370,8 +1370,8 @@ const AdminListings = () => {
                     <Input value={form.google_place_id} onChange={(e) => setForm({ ...form, google_place_id: e.target.value })} placeholder="ChIJ... (or paste a Maps link with place_id=)" />
                     <p className="text-xs text-muted-foreground mt-1">Used only by the nightly Google ratings sync. Never shown on the front end.</p>
                   </div>
-                  <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
-                  <div><Label>Review Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
+                  <div className="grid grid-cols-2 gap-3"><div><Label>Rate</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
+                  <div><Label>Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div></div>
                 </div>
                 {isGoogleOwned(editing as any) && (
                   <p className="text-xs text-muted-foreground -mt-2">Rating and review count are synced from Google because this listing has a Place ID.</p>
@@ -1449,7 +1449,7 @@ const AdminListings = () => {
                   <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                   <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 md:w-1/2 md:pr-2">
                   <MultiContactField
                     label="Other Socials"
                     type="text"
