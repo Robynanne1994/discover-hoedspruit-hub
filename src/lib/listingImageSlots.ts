@@ -42,7 +42,7 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
   {
     key: "detail",
     field: "detail_image_url",
-    label: "Individual page image",
+    label: "Individual Page",
     where: "The hero at the top of the listing's own page.",
     // ListingDetail.tsx — hero is `aspectRatio: "4 / 3"`, full width of the shell.
     aspect: 4 / 3,
