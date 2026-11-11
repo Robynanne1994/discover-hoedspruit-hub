@@ -249,7 +249,6 @@ export const CATEGORY_MEMBERSHIP_FIELD = "categories";
 export const CATEGORY_SUBCATEGORY_FIELD = "subcategories";
 
 export const RESTAURANT_ONLY_FIELDS = [
-  "show_attributes",
   "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level",
   "meal", "vibe", "cuisine", "foods", "seating", "service_type",
   "kids_playground", "smoking_allowed",
