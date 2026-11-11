@@ -311,6 +311,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
             </div>
           </div>
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Event Notes</p>
           <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-2">
               <Label>Notes</Label>
