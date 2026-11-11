@@ -503,6 +503,7 @@ const AdminEvents = () => {
                   addLabel="Add WhatsApp"
                 />
               </div>
+              <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
               <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
               {(() => {
                 const initial = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
