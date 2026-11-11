@@ -724,13 +724,8 @@ const ListingDetail = () => {
     // Capacity: sleeps & rooms
     const capacity: { label: string; on: boolean }[] = [];
     const sleepsAdults = (l as any).sleeps;
-    const sleepsChildren = (l as any).sleeps_children;
-    if (sleepsAdults && sleepsChildren) {
-      capacity.push({ label: `Sleeps ${sleepsAdults} ${Number(sleepsAdults) === 1 ? "Adult" : "Adults"} and ${sleepsChildren} ${Number(sleepsChildren) === 1 ? "Child" : "Children"}`, on: true });
-    } else if (sleepsAdults) {
+    if (sleepsAdults) {
       capacity.push({ label: `Sleeps ${sleepsAdults} ${Number(sleepsAdults) === 1 ? "Person" : "People"}`, on: true });
-    } else if (sleepsChildren) {
-      capacity.push({ label: `Sleeps ${sleepsChildren} ${Number(sleepsChildren) === 1 ? "Child" : "Children"}`, on: true });
     }
     if ((l as any).rooms_count) capacity.push({ label: `${(l as any).rooms_count} ${Number((l as any).rooms_count) === 1 ? "Room" : "Rooms"}`, on: true });
     const minNights = (l as any).min_nights;
