@@ -479,7 +479,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               addLabel="Add email"
             />
             <MultiContactField
-              label="Contact Phone"
+              label="Phone"
               type="tel"
               primary={form.contact_phone || ""}
               onPrimaryChange={(v) => set("contact_phone", v)}
