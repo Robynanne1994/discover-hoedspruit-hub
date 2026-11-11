@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tag, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
@@ -205,13 +206,22 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                     <div key={k} className="flex gap-2">
                       <Input value={form[k] || ""} onChange={(e) => set(k, e.target.value)} />
                       {count > 1 && (
-                        <Button type="button" variant="ghost" size="sm" onClick={() => {
-                          const vals = keys.map((kk) => form[kk] || "");
-                          vals.splice(idx, 1);
-                          vals.push("");
-                          setForm((f) => ({ ...f, tag: vals[0], sub_tag_1: vals[1], sub_tag_2: vals[2] }));
-                          setTagSlots(count - 1);
-                        }}>Remove</Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Remove tag"
+                          className="h-7 w-7 shrink-0 self-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                          onClick={() => {
+                            const vals = keys.map((kk) => form[kk] || "");
+                            vals.splice(idx, 1);
+                            vals.push("");
+                            setForm((f) => ({ ...f, tag: vals[0], sub_tag_1: vals[1], sub_tag_2: vals[2] }));
+                            setTagSlots(count - 1);
+                          }}
+                        >
+                          <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        </Button>
                       )}
                     </div>
                   ))}
@@ -224,33 +234,45 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           </div>
           <div className="space-y-2">
             <Label>Linked Business Listings</Label>
-            {(Array.isArray(form.business_ids) ? form.business_ids : []).map((bid: string, idx: number) => (
-              <div key={idx} className="flex gap-2">
-                <select
-                  className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  value={bid || ""}
-                  onChange={(e) => {
+            {(Array.isArray(form.business_ids) ? form.business_ids : []).slice(0, 1).map((bid: string, idx: number) => (
+              <div key={idx} className="flex items-center gap-2">
+                <Select
+                  value={bid || "__none__"}
+                  onValueChange={(v) => {
                     const arr = [...(form.business_ids || [])];
-                    arr[idx] = e.target.value || null;
+                    arr[idx] = v === "__none__" ? null : v;
                     set("business_ids", arr.filter((x) => x !== null));
                   }}
                 >
-                  <option value="">— Select a listing —</option>
-                  {(listings || []).map((l: any) => (
-                    <option key={l.id} value={l.id}>{l.title}</option>
-                  ))}
-                </select>
-                <Button type="button" variant="ghost" size="sm" onClick={() => {
-                  const arr = [...(form.business_ids || [])];
-                  arr.splice(idx, 1);
-                  set("business_ids", arr);
-                }}>Remove</Button>
+                  <SelectTrigger className="flex-1 border-gray-950 bg-slate-50">
+                    <SelectValue placeholder="— Select a listing —" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="__none__">— Select a listing —</SelectItem>
+                    {(listings || []).map((l: any) => (
+                      <SelectItem key={l.id} value={l.id}>{l.title}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Remove linked listing"
+                  className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                  onClick={() => {
+                    const arr = [...(form.business_ids || [])];
+                    arr.splice(idx, 1);
+                    set("business_ids", arr);
+                  }}
+                >
+                  <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </Button>
               </div>
             ))}
-            <Button type="button" variant="outline" size="sm" onClick={() => {
-              const arr = [...(form.business_ids || []), ""];
-              set("business_ids", arr);
-            }}>+ Add Linked Listing</Button>
+            {(Array.isArray(form.business_ids) ? form.business_ids : []).length === 0 && (
+              <Button type="button" variant="outline" size="sm" onClick={() => set("business_ids", [""])}>+ Add Linked Listing</Button>
+            )}
           </div>
           </div>
           <div>
