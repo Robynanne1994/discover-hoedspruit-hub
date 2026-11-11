@@ -27,7 +27,7 @@ const DayOfWeekPicker = ({
 
   return (
     <div className="mt-1 space-y-2">
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-1">
         {DAY_NAMES.map((day) => {
           const active = selected.includes(day);
           return (
@@ -36,7 +36,7 @@ const DayOfWeekPicker = ({
               type="button"
               aria-pressed={active}
               onClick={() => toggle(day)}
-              className={`h-9 px-3 rounded-full border text-sm transition-colors ${
+              className={`h-7 px-2.5 rounded-full border text-xs transition-colors ${
                 active
                   ? "bg-primary text-primary-foreground border-primary font-medium"
                   : "bg-slate-50 text-foreground border-gray-950 hover:border-primary"
