@@ -1387,7 +1387,7 @@ const AdminListings = () => {
                       onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
                       extraLabels={form.additional_phone_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
-                      addLabel="Add phone"
+                      addLabel="Add Phone"
                     />
                   </div>
                   <div className="space-y-2">
