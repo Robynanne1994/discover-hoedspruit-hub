@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ChevronDown } from "lucide-react";
 
 export type HostLinkValue = { link: string; listingId: string };
 
@@ -68,8 +69,9 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
       )}
       {mode === "listing" && (
         <>
+          <div className="relative">
           <select
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            className="flex h-10 w-full appearance-none rounded-md border border-gray-950 bg-slate-50 px-3 py-2 pr-9 text-sm text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             value={value.listingId || ""}
             onChange={(e) => onChange({ link: "", listingId: e.target.value })}
           >
@@ -78,6 +80,8 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
               <option key={l.id} value={l.id}>{l.title}</option>
             ))}
           </select>
+          <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden />
+          </div>
         </>
       )}
     </div>

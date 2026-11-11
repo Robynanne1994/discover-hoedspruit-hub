@@ -516,8 +516,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                         }}>Remove</Button>
                       )}
                     </div>
+                    <div className="grid grid-cols-2 gap-3">
                     <div><Label>Name</Label><Input value={form[h.nameKey] || ""} onChange={(e) => set(h.nameKey, e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
                     <div><Label>Subtitle</Label><Input value={form[h.subKey] || ""} onChange={(e) => set(h.subKey, e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
+                    </div>
                     <HostLinkField
                       key={`${event?.id ?? "new"}-${h.n}`}
                       value={{ link: form[h.linkKey] || "", listingId: form[h.listingKey] || "" }}
