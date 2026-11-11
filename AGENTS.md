@@ -46,7 +46,7 @@
 - Keep the listing action bar's top-up rule in actionBarFill: a bar left with two tiles takes its next populated contact, email before the listing's social pages, never a link already shown.
 - Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: unpositioned first (newest), then admin sort_position; featured specials are lifted above it.
-- Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.
+- Keep Featured Events carousel order in featuredEventOrder; the list below stays date-ordered.
 - Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
 - Keep the carousel poster card's date and location rows on one shared style (13px body ink, 12px lucide icons at stroke 2 in the primary dark brown) and show no time on those cards.
@@ -58,4 +58,4 @@
 - Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
 - Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.
 - Keep search's category matching and title-first ranking in smartSearch so the home search and Explore search agree.
-- Keep listing universal-sheet contact cells (combined pipe values, positional '-' labels, split to primary/extras) in listingContactCsv so import and export agree.
+- Keep listing sheet contact cells in listingContactCsv so import and export agree.
