@@ -248,9 +248,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <div>
               <Label>Linked Business Listing</Label>
               {selectedListing ? (
-                <div className="flex items-center justify-between gap-2 rounded-md border px-3 py-2 mt-1">
-                  <span className="text-sm">{selectedListing.title}</span>
-                  <Button type="button" variant="ghost" size="sm" onClick={() => set("business_id", null)}>Clear</Button>
+                <div className="flex items-center gap-2">
+                  <Input readOnly value={selectedListing.title} />
+                  <Button type="button" variant="ghost" size="icon" aria-label="Remove linked listing"
+                    className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                    onClick={() => set("business_id", null)}>
+                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                  </Button>
                 </div>
               ) : (
                 <>
