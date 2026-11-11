@@ -297,12 +297,11 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               </p>
             </div>
           </div>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">The Special</p>
           <div className="grid grid-cols-2 gap-3">
             <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
             <div><SpecialAudienceField value={form.whos_it_for} onChange={(value) => set("whos_it_for", value)} /></div>
           </div>
-
-          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">The Special</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Deal Type</Label>
