@@ -1540,7 +1540,7 @@ const AdminListings = () => {
                       size="sm"
                       onClick={() => setCustomRowsVisible(customRowsVisible + 1)}
                     >
-                      <Plus className="h-4 w-4" /> Add custom field
+                      <Plus className="h-4 w-4" /> Add Custom Field
                     </Button>
                   )}
                 </div>
