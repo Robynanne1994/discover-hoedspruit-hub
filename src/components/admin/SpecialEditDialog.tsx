@@ -464,7 +464,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onPrimaryLabelChange={(v) => set("whatsapp_label", v)}
               extraLabels={form.additional_whatsapp_labels || []}
               onExtraLabelsChange={(v) => set("additional_whatsapp_labels", v)}
-              addLabel="Add WhatsApp"
+              addLabel="Add"
             />
             <MultiContactField
               label="Email"
@@ -477,7 +477,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onPrimaryLabelChange={(v) => set("email_label", v)}
               extraLabels={form.additional_email_labels || []}
               onExtraLabelsChange={(v) => set("additional_email_labels", v)}
-              addLabel="Add email"
+              addLabel="Add"
             />
             <MultiContactField
               label="Phone"
@@ -490,7 +490,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onPrimaryLabelChange={(v) => set("phone_label", v)}
               extraLabels={form.additional_phone_labels || []}
               onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
-              addLabel="Add phone"
+              addLabel="Add"
             />
             <div className="space-y-1.5">
               <Label>Social Media</Label>
