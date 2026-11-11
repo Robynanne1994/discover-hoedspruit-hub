@@ -1484,10 +1484,6 @@ const AdminListings = () => {
 
                 <div>
                   <Label>Good To Know</Label>
-                  <p className="text-[11px] text-muted-foreground mt-1 mb-2">
-                    Short highlights shown as ticked chips under the About tab (e.g. Self-catering, Rim-flow pool, Pet friendly).
-                    Leave empty to hide the card.
-                  </p>
                   <IncludedChipsInput
                     value={form.good_to_know}
                     onChange={(v) => setForm({ ...form, good_to_know: v })}
