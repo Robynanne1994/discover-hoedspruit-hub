@@ -1942,7 +1942,7 @@ const AdminListings = () => {
 
                     <div className={ADMIN_FIELD_GRID}>
                       <div>
-                        <Label>Sleeps (number of guests)</Label>
+                        <Label>Sleeps</Label>
                         <Input
                           type="number"
                           value={form.sleeps ?? ""}
