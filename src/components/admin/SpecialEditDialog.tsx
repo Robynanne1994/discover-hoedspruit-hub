@@ -296,10 +296,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
           <div>
             <Label>
-              Days Of The Week{" "}
-              <span className="text-xs text-muted-foreground font-normal">
-                (pick as many as the deal runs on)
-              </span>
+              Days Of The Week
             </Label>
             <DayOfWeekPicker
               value={form.day_of_week}
