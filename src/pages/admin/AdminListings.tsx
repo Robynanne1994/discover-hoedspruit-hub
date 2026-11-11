@@ -2407,9 +2407,8 @@ const AdminListings = () => {
                     }}
                   />
                 </th>
-                <th className="text-left p-3 font-semibold text-foreground w-[28%] bg-slate-400 border-slate-950 border">Title</th>
-                <th className="text-left p-3 font-semibold text-foreground w-[25%] bg-slate-400 border-slate-950 border">Categories</th>
-                <th className="text-left p-3 font-semibold text-foreground w-[18%] bg-slate-400 border-slate-950 border">Location</th>
+                <th className="text-left p-3 font-semibold text-foreground w-[40%] bg-slate-400 border-slate-950 border">Title</th>
+                <th className="text-left p-3 font-semibold text-foreground w-[31%] bg-slate-400 border-slate-950 border">Categories</th>
                 <th className="text-left p-3 font-semibold text-foreground w-[8%] bg-slate-400 border-slate-950 border">Featured</th>
                 <th className="p-3 w-[12%] border border-slate-950 bg-slate-400 text-slate-950"></th>
               </tr>
@@ -2429,7 +2428,6 @@ const AdminListings = () => {
                   </td>
                   <td className="p-3 font-medium text-foreground truncate">{l.title}</td>
                   <td className="p-3 text-muted-foreground truncate">{(l as any)._categoryNames?.join(", ") || "—"}</td>
-                  <td className="p-3 text-muted-foreground truncate">{l.location ?? "—"}</td>
                   <td className="p-3 text-muted-foreground">{l.is_featured ? "Yes" : "No"}</td>
                   <td className="p-3 flex gap-1 justify-end">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(l)}><Pencil className="h-4 w-4" /></Button>
@@ -2438,7 +2436,7 @@ const AdminListings = () => {
                 </tr>
               ))}
               {filteredListings.length === 0 && (
-                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No listings found.</td></tr>
+                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No listings found.</td></tr>
               )}
             </tbody>
           </table>
