@@ -283,7 +283,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
             </p>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Images</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Images</p>
           <div className={ADMIN_IMAGE_GRID}>
             {(["card", "poster", "detail", "homepage", "saved", "search"] as const).map((key) => {
               const slot = eventImageSlot(key);
@@ -302,7 +302,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             value={(form.gallery_images ?? []).join("\n")}
             onChange={(value) => set("gallery_images", value.split("\n").map((url) => url.trim()).filter(Boolean))}
           />
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Date &amp; Time</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Date &amp; Time</p>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
@@ -347,7 +347,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             }}>Add</Button>
           </div>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
           <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-3">
               <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
@@ -361,14 +361,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
             </div>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Event Notes</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Event Notes</p>
           <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-2">
               <Label>Notes</Label>
               <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
             </div>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
           <div className="grid gap-3 lg:grid-cols-2">
             <div>
               <Label>Booking Type</Label>
@@ -402,12 +402,12 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               )}
             </div>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Location</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Location</p>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
             <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <ListingContactPicker
             listings={listings || []}
             onApply={(c) => setForm((f) => ({ ...f, ...c }))}
@@ -489,7 +489,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               )}
             </div>
           </div>
-          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
           {(() => {
             const hostCount = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
             const [shown, setShownLocal] = [form.__hostsShown ?? hostCount, (n: number) => set("__hostsShown", n)];
