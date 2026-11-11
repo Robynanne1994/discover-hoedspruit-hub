@@ -1347,6 +1347,7 @@ const AdminListings = () => {
                     onChange={(val) => setForm({ ...form, gallery_images: val })}
                   />
                 </div>
+                <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Location &amp; Reviews</p>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                   <div><Label>Category Page Location</Label><Input value={form.category_page_location ?? ""} placeholder="Optional shorter location for category page cards" onChange={(e) => setForm({ ...form, category_page_location: e.target.value })} /></div>
