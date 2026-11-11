@@ -757,6 +757,14 @@ const AdminImport = () => {
             payloadRecord[fieldName] = titleOverrideValue(on, title);
             continue;
           }
+          // Combined contact cells: "a|b" plus positional labels, split into primary + extras.
+          const contactGroup = contactGroupForValue(fieldName);
+          if (contactGroup) {
+            const contactPayload = contactPayloadFromCells(row[contactGroup.value], row[contactGroup.label], contactGroup, isUpdate);
+            if (contactPayload) Object.assign(payloadRecord, contactPayload);
+            continue;
+          }
+          if (isContactLabelColumn(fieldName)) continue;
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
 
@@ -1351,6 +1359,14 @@ const AdminImport = () => {
         if (h === ID_FIELD || h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
         if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
+        const exportGroup = contactGroupForValue(h);
+        if (exportGroup) {
+          const cells = contactCellsForExport(lr, exportGroup);
+          fieldMap[h] = cells.contacts;
+          fieldMap[exportGroup.label] = cells.labels;
+          continue;
+        }
+        if (isContactLabelColumn(h)) continue;
         if (h === "avg_price_per_person_per_night" || h === "avg_price_per_couple_per_night") { fieldMap[h] = accommodationPriceForExport(lr[h]); continue; }
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
