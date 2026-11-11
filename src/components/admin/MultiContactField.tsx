@@ -93,14 +93,14 @@ export default function MultiContactField({
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8"
+                className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                 aria-label="Remove label"
                 onClick={() => {
                   onPrimaryLabelChange("");
                   setPrimaryLabelOpen(false);
                 }}
               >
-                <X className="h-3.5 w-3.5" />
+                <X className="h-3.5 w-3.5" strokeWidth={2.5} />
               </Button>
             </div>
           ) : (
@@ -127,10 +127,11 @@ export default function MultiContactField({
               type="button"
               variant="ghost"
               size="icon"
+              className="h-7 w-7 shrink-0 self-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
               onClick={() => removeAt(i)}
               aria-label="Remove"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" strokeWidth={2.5} />
             </Button>
           </div>
           {onExtraLabelsChange && (
@@ -146,14 +147,14 @@ export default function MultiContactField({
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8"
+                  className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                   aria-label="Remove label"
                   onClick={() => {
                     setLabelAt(i, "");
                     setExtraLabelOpen((s) => ({ ...s, [i]: false }));
                   }}
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                 </Button>
               </div>
             ) : (
