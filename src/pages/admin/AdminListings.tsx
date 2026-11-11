@@ -1241,7 +1241,7 @@ const AdminListings = () => {
                               const autoLabel = catSubTitles[0] || cat.title;
                               return (
                                 <div key={cat.id}>
-                                  <Label className="text-xs font-normal text-muted-foreground">
+                                  <Label className="text-sm font-semibold text-foreground">
                                     On the {cat.title} page
                                   </Label>
                                   <Select
