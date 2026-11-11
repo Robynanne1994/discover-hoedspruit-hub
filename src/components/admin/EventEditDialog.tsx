@@ -346,7 +346,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               onPrimaryLabelChange={(v) => set("email_label", v)}
               extraLabels={form.additional_email_labels || []}
               onExtraLabelsChange={(v) => set("additional_email_labels", v)}
-              addLabel="Add email"
+              addLabel="Add Email"
             />
             <MultiContactField
               label="Contact Phone"
@@ -359,7 +359,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               onPrimaryLabelChange={(v) => set("phone_label", v)}
               extraLabels={form.additional_phone_labels || []}
               onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
-              addLabel="Add phone"
+              addLabel="Add Phone"
             />
             <MultiContactField
               label="Contact WhatsApp"
