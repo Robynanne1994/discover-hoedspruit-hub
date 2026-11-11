@@ -310,6 +310,14 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 {DEAL_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
             </div>
+            <div>
+              <Label>Days Of The Week</Label>
+              <DayOfWeekPicker
+                value={form.day_of_week}
+                onChange={(days) => set("day_of_week", days)}
+                hint={form.deal_type === "weekly" ? "Pick the days this weekly deal runs on" : "No day set"}
+              />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -349,16 +357,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 </div>
               </div>
             )}
-          </div>
-          <div>
-            <Label>
-              Days Of The Week
-            </Label>
-            <DayOfWeekPicker
-              value={form.day_of_week}
-              onChange={(days) => set("day_of_week", days)}
-              hint={form.deal_type === "weekly" ? "Pick the days this weekly deal runs on" : "No day set"}
-            />
           </div>
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <div>
