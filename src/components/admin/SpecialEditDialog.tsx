@@ -372,8 +372,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
 
 
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Description</p>
           <div>
-            <Label>Description</Label>
             <MarkdownToolbar textareaRef={descRef} value={form.description || ""} onChange={(val) => set("description", val)} />
             <Textarea ref={descRef} rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} />
             <p className="text-[11px] text-muted-foreground mt-1">
