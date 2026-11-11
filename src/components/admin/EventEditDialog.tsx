@@ -294,16 +294,18 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div className="grid gap-3 lg:grid-cols-3">
             <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
             <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
-            <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
+            <div className="space-y-3">
+              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
+              <div className="space-y-2">
+                <Label>Price Notes</Label>
+                <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
+              </div>
+            </div>
           </div>
-          <div className="grid gap-3 lg:grid-cols-3">
+          <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-2">
               <Label>What's Included</Label>
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
-            </div>
-            <div className="space-y-2">
-              <Label>Price Notes</Label>
-              <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
             </div>
             <div className="space-y-2">
               <Label>Notes</Label>
