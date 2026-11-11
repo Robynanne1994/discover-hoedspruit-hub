@@ -37,7 +37,7 @@
 - Keep every event host on the event page in one shared card with hairline dividers, never one card per host.
 - Keep a slot's subject rulers in its own definition as rulerBandGuides, in the slot's own box px, so crop tool and thumbnail draw the same pair.
 - Measure crop guides from layout px (offsetWidth), never getBoundingClientRect, so a dialog's zoom animation cannot leave guides stuck at its scale.
-- Keep the featured deal card's deal line in an accent-wash chip with words only, no mark, plus a chevron at the panel's right edge.
+- Keep the featured deal card's deal line in a words-only accent chip with a chevron.
 - Keep admin category rows unambiguous: the drag handle moves a category, the listings count opens its listings, the labelled Order button alone reaches the per-category order page.
 - Keep listing detail-row label casing in detailLabel's formatDetailLabel: every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the whole label's first letter.
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and shown on the About tab under "Good to know", never as Details cards; a listing whose only detail was custom has no Details tab.
