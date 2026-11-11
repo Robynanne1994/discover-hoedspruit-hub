@@ -394,7 +394,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 {hosts.slice(0, shown).map((h) => (
                   <div key={h.n} className="space-y-3 p-3 border rounded">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-semibold text-slate-950">Host {h.n}</Label>
+                      <Label className="text-base font-semibold text-foreground">Host {h.n}</Label>
                       {h.n === shown && shown > 0 && (
                         <Button type="button" variant="ghost" size="sm" onClick={() => {
                           setForm((f) => ({
