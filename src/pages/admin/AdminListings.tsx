@@ -599,7 +599,6 @@ const AdminListings = () => {
         price_range: values.price_range || null,
         amenities: values.amenities,
         sleeps: values.sleeps,
-        sleeps_children: values.sleeps_children,
         min_nights: values.min_nights,
         km_from_town: values.km_from_town || null,
         avg_price_per_person_per_night: values.avg_price_per_person_per_night?.trim() || null,
@@ -897,7 +896,6 @@ const AdminListings = () => {
       price_range: (l as any).price_range ?? "",
       amenities: (l as any).amenities ?? [],
       sleeps: (l as any).sleeps ?? null,
-      sleeps_children: (l as any).sleeps_children ?? null,
       min_nights: (l as any).min_nights ?? null,
       km_from_town: (l as any).km_from_town ?? "",
       avg_price_per_person_per_night: (l as any).avg_price_per_person_per_night ?? "",
@@ -1956,16 +1954,6 @@ const AdminListings = () => {
                           value={form.sleeps ?? ""}
                           onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
                           placeholder="e.g. 4"
-                        />
-                      </div>
-
-                      <div>
-                        <Label>Sleeps (number of guests) (Children)</Label>
-                        <Input
-                          type="number"
-                          value={form.sleeps_children ?? ""}
-                          onChange={(e) => setForm({ ...form, sleeps_children: e.target.value ? parseInt(e.target.value, 10) : null })}
-                          placeholder="e.g. 2"
                         />
                       </div>
 
