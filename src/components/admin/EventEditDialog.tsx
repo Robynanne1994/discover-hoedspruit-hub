@@ -374,7 +374,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             />
           </div>
           <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
-          <div className="pt-2 border-t"><Label className="text-base font-semibold text-foreground">Hosted By</Label></div>
           {(() => {
             const hostCount = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
             const [shown, setShownLocal] = [form.__hostsShown ?? hostCount, (n: number) => set("__hostsShown", n)];
