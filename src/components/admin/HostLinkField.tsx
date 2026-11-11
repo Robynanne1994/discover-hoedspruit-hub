@@ -45,8 +45,9 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
   };
 
   return (
-    <div className="space-y-2">
-      <Label>Link</Label>
+    <div className="grid grid-cols-2 gap-3 items-end">
+      <div className="space-y-2">
+      <Label className="block">Link</Label>
       <div className="flex flex-wrap gap-2">
         {MODES.map((m) => (
           <Button
@@ -60,6 +61,8 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
           </Button>
         ))}
       </div>
+      </div>
+      <div>
       {mode === "url" && (
         <Input
           value={value.link || ""}
@@ -84,6 +87,7 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
           </div>
         </>
       )}
+      </div>
     </div>
   );
 };

@@ -322,9 +322,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               </label>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 -mt-2">
           <div className="space-y-2">
-            <Label>Performances</Label>
+            <Label className="block">Performances</Label>
             {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
               <div key={idx} className="flex gap-2 items-end">
                 <div className="flex-1"><Label className="text-xs">Date</Label><Input type="date" value={p?.date || ""} onChange={(e) => {
@@ -341,10 +341,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 }}>×</Button>
               </div>
             ))}
-            <Button type="button" size="sm" onClick={() => {
+            <div><Button type="button" size="sm" onClick={() => {
               const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
               set("performances", arr);
-            }}>Add</Button>
+            }}>Add</Button></div>
           </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
@@ -507,10 +507,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <>
                 {hosts.slice(0, shown).map((h) => (
                   <div key={h.n} className="space-y-3 p-3 border rounded">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-base font-semibold text-foreground">Host {h.n}</Label>
+                    <div className="flex items-center gap-3">
+                      <span className="inline-block rounded-md bg-primary px-3 py-1 text-lg font-bold text-primary-foreground">Host {h.n}</span>
                       {h.n === shown && shown > 0 && (
-                        <Button type="button" variant="ghost" size="sm" onClick={() => {
+                        <Button type="button" size="sm" onClick={() => {
                           setForm((f) => ({
                             ...f,
                             [h.nameKey]: "", [h.subKey]: "", [h.imgKey]: "", [h.linkKey]: "", [h.listingKey]: "",
