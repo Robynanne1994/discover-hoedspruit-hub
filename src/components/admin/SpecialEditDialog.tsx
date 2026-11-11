@@ -626,7 +626,7 @@ function TagRowsEditor({ value, onChange }: { value: string[]; onChange: (t: str
       ))}
       <Button type="button" variant="outline" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setRows([...rows, ""])}>
         <Plus className="h-3 w-3 mr-1" />
-        Add Tag
+        Add
       </Button>
     </div>
   );
