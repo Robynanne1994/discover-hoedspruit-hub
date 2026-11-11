@@ -320,7 +320,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
               </select>
-              <p className="text-xs text-muted-foreground mt-1">Decides what the Book button does on the event page.</p>
             </div>
             <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://… or name@email.com or +27 82 000 0000" /></div>
             <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
