@@ -144,13 +144,13 @@ const GalleryUpload = ({ value, onChange, folder = "gallery", banner = false, hi
                 </Button>
                 <Button
                   type="button"
-                  variant="destructive"
+                  variant="ghost"
                   size="icon"
-                  className="h-6 w-6"
+                  className="h-6 w-6 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                   onClick={() => removeUrl(i)}
                   aria-label={`Remove gallery image ${i + 1}`}
                 >
-                  <X className="h-3 w-3" />
+                  <X className="h-3 w-3" strokeWidth={2.5} />
                 </Button>
               </div>
             </div>

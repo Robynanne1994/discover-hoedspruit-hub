@@ -38,8 +38,8 @@ const IncludedChipsInput = ({ value, onChange, placeholder }: Props) => {
           {value.map((item, i) => (
             <span key={`${item}-${i}`} className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-3 py-1 text-sm">
               {item}
-              <button type="button" onClick={() => remove(i)} aria-label={`Remove ${item}`} className="ml-1 opacity-60 hover:opacity-100">
-                <X size={14} />
+              <button type="button" onClick={() => remove(i)} aria-label={`Remove ${item}`} className="ml-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover">
+                <X size={10} strokeWidth={2.5} />
               </button>
             </span>
           ))}

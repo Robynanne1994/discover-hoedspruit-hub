@@ -391,8 +391,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               {bookingLabelOpen || (form.booking_link_label || "").trim() ? (
                 <div className="flex gap-2 items-center">
                   <Input value={form.booking_link_label || ""} placeholder='Custom label (e.g. "Book on Quicket")' onChange={(e) => set("booking_link_label", e.target.value)} className="h-8 text-xs" />
-                  <Button type="button" variant="ghost" size="icon" className="h-8 w-8" aria-label="Remove label" onClick={() => { set("booking_link_label", ""); setBookingLabelOpen(false); }}>
-                    <X className="h-3.5 w-3.5" />
+                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" aria-label="Remove label" onClick={() => { set("booking_link_label", ""); setBookingLabelOpen(false); }}>
+                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                   </Button>
                 </div>
               ) : (
@@ -468,14 +468,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8"
+                    className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                     aria-label="Remove label"
                     onClick={() => {
                       set("social_media_label", "");
                       setSocialLabelOpen(false);
                     }}
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                   </Button>
                 </div>
               ) : (
