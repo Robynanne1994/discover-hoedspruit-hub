@@ -510,13 +510,22 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                     <div className="flex items-center gap-3">
                       <span className="inline-block rounded-md bg-primary px-3 py-1 text-lg font-bold text-primary-foreground">Host {h.n}</span>
                       {h.n === shown && shown > 0 && (
-                        <Button type="button" size="sm" onClick={() => {
-                          setForm((f) => ({
-                            ...f,
-                            [h.nameKey]: "", [h.subKey]: "", [h.imgKey]: "", [h.linkKey]: "", [h.listingKey]: "",
-                            __hostsShown: shown - 1,
-                          }));
-                        }}>Remove</Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`Remove host ${h.n}`}
+                          className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                          onClick={() => {
+                            setForm((f) => ({
+                              ...f,
+                              [h.nameKey]: "", [h.subKey]: "", [h.imgKey]: "", [h.linkKey]: "", [h.listingKey]: "",
+                              __hostsShown: shown - 1,
+                            }));
+                          }}
+                        >
+                          <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        </Button>
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-3">
