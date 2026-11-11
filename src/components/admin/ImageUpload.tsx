@@ -163,7 +163,7 @@ const ImageUpload = ({
                 {hasGuides && <CropGuides box={box!} guides={overlayGuides} />}
               </div>
               <p className="text-[11px] tabular-nums text-muted-foreground">
-                Life-size — {Math.round(box!.width)} × {Math.round(box!.height)}px on a {previewWidth}px screen
+                {Math.round(box!.width)} × {Math.round(box!.height)}px on a {previewWidth}px screen
               </p>
             </div>
             <div className="flex gap-2">
