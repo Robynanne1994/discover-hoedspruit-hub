@@ -2071,7 +2071,6 @@ const AdminListings = () => {
                         onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
                         placeholder="e.g. 2008"
                       />
-                      <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
                     </div>
 
                     <div className={ADMIN_TOGGLE_GRID}>
