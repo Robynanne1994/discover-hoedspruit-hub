@@ -315,7 +315,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               <DayOfWeekPicker
                 value={form.day_of_week}
                 onChange={(days) => set("day_of_week", days)}
-                hint={form.deal_type === "weekly" ? "Pick the days this weekly deal runs on" : "No day set"}
               />
             </div>
           </div>

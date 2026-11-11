@@ -374,7 +374,6 @@ const AdminSpecials = () => {
             <DayOfWeekPicker
               value={form.day_of_week}
               onChange={(days) => setForm({ ...form, day_of_week: days })}
-              hint={form.deal_type === "weekly" ? "Pick the days this weekly deal runs on" : "No day set"}
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
