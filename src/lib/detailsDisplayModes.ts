@@ -17,7 +17,7 @@ export const DISPLAY_SECTIONS: DisplaySection[] = [
   { key: "kids",            title: "Kids & Family",    group: "restaurant" },
   { key: "accessibility",   title: "Accessibility",    group: "restaurant" },
   { key: "amenities",       title: "Amenities",        group: "restaurant" },
-  { key: "accom-food",      title: "Food & drink",     group: "accommodation" },
+  { key: "accom-food",      title: "Food & Drink",     group: "accommodation" },
   { key: "accom-transport", title: "Transport",        group: "accommodation" },
   { key: "accom-wellness",  title: "Wellness",         group: "accommodation" },
   { key: "accom-rooms",     title: "Rooms",            group: "accommodation" },
