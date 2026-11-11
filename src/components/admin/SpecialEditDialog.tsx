@@ -500,7 +500,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
               </select>
-              <p className="text-xs text-muted-foreground mt-1">Decides what the Book button opens: website, email, WhatsApp or phone.</p>
+              <p className="text-xs text-muted-foreground mt-1"></p>
             </div>
             <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
             <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
