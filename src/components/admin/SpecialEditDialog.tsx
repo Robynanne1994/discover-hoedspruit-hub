@@ -439,7 +439,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <p className="text-sm font-medium">Price</p>
             <div className="space-y-3 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-3">
               <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
-              <div><Label>Price Notes <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
+              <div><Label>Price Notes <span className="text-xs text-muted-foreground font-normal">(</span></Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
               <div><Label>Original Price <span className="text-xs text-muted-foreground font-normal">(optional — strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
             </div>
           </div>
