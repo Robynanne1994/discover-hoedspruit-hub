@@ -78,7 +78,6 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
               <option key={l.id} value={l.id}>{l.title}</option>
             ))}
           </select>
-          <p className="text-xs text-muted-foreground">Opens that listing inside the app.</p>
         </>
       )}
     </div>
