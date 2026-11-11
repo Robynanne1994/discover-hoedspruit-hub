@@ -5,6 +5,10 @@
 // front-end filters and CSV imports.
 export const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Light Meals", "Desserts"];
 
+export function driveThroughSelected(value: boolean | null | undefined): boolean {
+  return value === true;
+}
+
 // Retired cuisine values, matched case- and whitespace-insensitively.
 // "Farm to Fork" appears in stored data both hyphenated and spaced.
 export const RETIRED_CUISINE = new Set(
