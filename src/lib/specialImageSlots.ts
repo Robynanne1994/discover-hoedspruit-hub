@@ -129,7 +129,7 @@ export const SPECIAL_IMAGE_SLOTS: SpecialImageSlot[] = [
   {
     key: "featured",
     field: "featured_image_url",
-    label: "Featured carousel image",
+    label: "Featured Carousel",
     where: "The Top Active Deals carousel at the top of the Specials page.",
     // Specials.tsx — FeaturedCard paints the picture as the card's left column:
     // FEATURED_PHOTO_FRACTION of the slide's width and as tall as the card. The
