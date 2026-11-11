@@ -51,7 +51,14 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   google_place_id: "back-office only, never shown in the app: the listing's Google Place ID (e.g. ChIJN1t_tDeuEmsRUsoyG83frY4), which is what the nightly sync fetches the rating and review count with. Leave blank to let the sync find it itself; fill it in for listings it can't match. A full Places URL is fine too, the ID is read out of it",
   facebook: "URL",
   instagram: "URL",
-  website: "URL",
+  phone: "pipe-separated numbers, no spaces around |",
+  phone_label: "pipe-separated labels in the same order as phone; - keeps an unlabelled slot, e.g. -|Lodge",
+  whatsapp: "pipe-separated WhatsApp numbers",
+  whatsapp_label: "pipe-separated labels in the same order as whatsapp; - keeps an unlabelled slot",
+  email: "pipe-separated email addresses",
+  email_label: "pipe-separated labels in the same order as email; - keeps an unlabelled slot",
+  website: "pipe-separated URLs",
+  website_label: "pipe-separated labels in the same order as website, e.g. Website|Booking",
   km_from_town: "numeric km from town centre, e.g. 5",
   good_to_know: `pipe-separated highlights shown as "Good to know" chips, e.g. Self-catering | Rim-flow pool | Pet friendly (leave blank to hide the card)`,
 
@@ -99,13 +106,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
 
 
   // Additional contacts
-  additional_phones: "pipe-separated phone numbers",
-  additional_phone_labels: "pipe-separated labels (1:1 with additional_phones)",
-  additional_emails: "pipe-separated email addresses",
-  additional_email_labels: "pipe-separated labels (1:1 with additional_emails)",
-  additional_whatsapps: "pipe-separated WhatsApp numbers",
-  additional_whatsapp_labels: "pipe-separated labels (1:1 with additional_whatsapps)",
-  additional_websites: "pipe-separated URLs",
 };
 
 function formatReferenceForType(type: FieldType): string {

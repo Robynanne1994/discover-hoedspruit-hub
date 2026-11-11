@@ -1373,11 +1373,11 @@ const ListingDetail = () => {
           emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
           // A Facebook or Instagram page saved in the website column reads as
           // that social page, not as a globe pointing at "facebook.com/...".
-          websiteEntries.forEach(({ url }) => {
+          websiteEntries.forEach(({ url, label }) => {
             const kind = websiteKind(url);
             const Icon = kind === "facebook" ? FacebookIcon : kind === "instagram" ? InstagramIcon : Globe;
-            // Website links always read "Website"; labels are no longer used.
-            const text = kind === "facebook" ? "Facebook" : kind === "instagram" ? "Instagram" : "Website";
+            // The saved label names the link; a blank label reads "Website".
+            const text = label || (kind === "facebook" ? "Facebook" : kind === "instagram" ? "Instagram" : "Website");
             rows.push({ label: "", custom: false, value: text, href: websiteHref(url), Icon });
           });
           // Only when the website column isn't already showing that same page.

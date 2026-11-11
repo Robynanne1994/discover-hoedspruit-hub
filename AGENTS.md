@@ -37,7 +37,7 @@
 - Keep every event host on the event page in one shared card with hairline dividers, never one card per host.
 - Keep a slot's subject rulers in its own definition as rulerBandGuides, in the slot's own box px, so crop tool and thumbnail draw the same pair.
 - Measure crop guides from layout px (offsetWidth), never getBoundingClientRect, so a dialog's zoom animation cannot leave guides stuck at its scale.
-- Keep the featured deal card's deal line in an accent-wash chip with words only, no mark, plus a chevron at the panel's right edge.
+- Keep the featured deal card's deal line in a words-only accent chip with a chevron.
 - Keep admin category rows unambiguous: the drag handle moves a category, the listings count opens its listings, the labelled Order button alone reaches the per-category order page.
 - Keep listing detail-row label casing in detailLabel's formatDetailLabel: every hyphenated part is capitalised (Mid-Range, Dine-In, Drive-Through), never only the whole label's first letter.
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and shown on the About tab under "Good to know", never as Details cards; a listing whose only detail was custom has no Details tab.
@@ -46,11 +46,11 @@
 - Keep the listing action bar's top-up rule in actionBarFill: a bar left with two tiles takes its next populated contact, email before the listing's social pages, never a link already shown.
 - Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: unpositioned first (newest), then admin sort_position; featured specials are lifted above it.
-- Keep the Featured Events carousel order in featuredEventOrder (admin featured_position first, then soonest); the events list below the carousels is strictly date-ordered and never pins featured.
-- Keep the past-events window (one month back) and its newest-first default order in eventPastWindow so the pill count, the list heading and the sort drawer agree; a sort written into the address still wins.
+- Keep Featured Events carousel order in featuredEventOrder; the list below stays date-ordered.
+- Keep the past-events window and default order in eventPastWindow.
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
-- Keep the carousel poster card's date and location rows on one shared style (13px body ink, 12px lucide icons at stroke 2 in the primary dark brown) and show no time on those cards.
-- Keep the gap under the events carousels equal to the gap above the events list below; adjust the shared value, not one gap alone.
+- Keep carousel poster card date/location rows on one shared style, with no time.
+- Keep the events carousel gaps on one shared value.
 - Keep the specials page's section headings on the events page's group-heading treatment; neither specials heading carries an icon or a hairline rule, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION, FEATURED_PHOTO_RATIO and the specials slide width (appLayout) so the card and its editor crop box agree.
@@ -58,3 +58,4 @@
 - Keep the events filters row's active-filter count and Clear all visibility in eventFilterState.
 - Clear address-backed filters in one updateParams call: separate calls each read the address as it stood at press time, so only the last survives.
 - Keep search's category matching and title-first ranking in smartSearch so the home search and Explore search agree.
+- Keep listing sheet contact cells in listingContactCsv so import and export agree.
