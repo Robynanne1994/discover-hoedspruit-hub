@@ -51,6 +51,7 @@ const hostSlot = eventImageSlot("host");
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(event);
+  const [bookingLabelOpen, setBookingLabelOpen] = useState(false);
   const [socialLabelOpen, setSocialLabelOpen] = useState(false);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
@@ -315,7 +316,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
             </div>
           </div>
-          <div className={ADMIN_FIELD_GRID_TIGHT}>
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
+          <div className="grid gap-3 lg:grid-cols-2">
             <div>
               <Label>Booking Type</Label>
               <select
@@ -328,8 +330,22 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 ))}
               </select>
             </div>
-            <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://… or name@email.com or +27 82 000 0000" /></div>
-            <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
+            <div className="space-y-1.5">
+              <Label>Booking Link / Email / Number</Label>
+              <Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://… or name@email.com or +27 82 000 0000" />
+              {bookingLabelOpen || (form.booking_link_label || "").trim() ? (
+                <div className="flex gap-2 items-center">
+                  <Input value={form.booking_link_label || ""} placeholder='Custom label (e.g. "Book on Quicket")' onChange={(e) => set("booking_link_label", e.target.value)} className="h-8 text-xs" />
+                  <Button type="button" variant="ghost" size="icon" className="h-8 w-8" aria-label="Remove label" onClick={() => { set("booking_link_label", ""); setBookingLabelOpen(false); }}>
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              ) : (
+                <button type="button" onClick={() => setBookingLabelOpen(true)} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+                  <Tag className="h-3 w-3" /> Add custom label
+                </button>
+              )}
+            </div>
           </div>
           <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Location</p>
           <div className="grid grid-cols-2 gap-3">
