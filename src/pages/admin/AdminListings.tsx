@@ -1571,11 +1571,6 @@ const AdminListings = () => {
                       <Plus className="h-4 w-4" /> Add another set of hours
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Most listings need one set. Add a second when the same place keeps two clocks — a kitchen
-                    that closes at 21:00 while the bar stays open to midnight — and name each one so the app
-                    can say which hours are which instead of picking one and misleading people.
-                  </p>
 
                   {/* A single set needs no name: the app just calls it "Opening Hours". */}
                   {form.additional_hours.length > 0 && (
