@@ -1374,7 +1374,6 @@ const AdminListings = () => {
                       }}
                       placeholder="e.g. 5"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">Numeric kilometres from Hoedspruit town centre. Used by the Distance filter on category pages.</p>
                   </div>
                 </div>
 
