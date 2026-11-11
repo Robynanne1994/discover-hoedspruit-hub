@@ -46,6 +46,14 @@ describe("universal vs category CSV columns", () => {
     expect(getFieldReference("plant_types")).toBe("");
   });
 
+  it("retires sleeps_children from Accommodation imports, exports and references", () => {
+    expect(getCSVHeadersForCategory("Accommodation")).not.toContain("sleeps_children");
+    expect(getCategorySpecificFields("Accommodation")).not.toContain("sleeps_children");
+    expect(LISTING_FIELD_SPECS).not.toHaveProperty("sleeps_children");
+    expect(getUniversalDbFields()).not.toContain("sleeps_children");
+    expect(getFieldReference("sleeps_children")).toBe("");
+  });
+
   it("keeps every universal content field off the category sheets", () => {
     for (const category of [...CATEGORIES, null]) {
       const headers = getCSVHeadersForCategory(category);
