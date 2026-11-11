@@ -4,6 +4,7 @@
 (none)
 
 ## Done
+- Universal listings CSV: details_display_mode column removed from downloads, imports and the reference row; the field stays editable in the backend editor. All 694 listings already hold {}, so no data changed; 760 tests passed.
 - Accommodation: sleeps_children removed from the editor, the listing page and both CSV sheets; the database column is left untouched. Verified on Ujabule Lodge (adults 8, children 4) reading "Sleeps 8 People" and on its editor showing only the adults field; 748 tests passed.
 - Events and Specials: replaced preset pills with Filters, Clear All and same-row removable chips; faceted counts and independent category/validity selections verified with 24 tests and real desktop/phone selection, removal and clearing.
 - Specials: optional Who's it For audiences added to both editors, CSV and individual Details card before social link; signed-in save/reopen/export and empty hiding verified, 12 tests passed.
