@@ -107,7 +107,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   additional_whatsapps: "pipe-separated WhatsApp numbers",
   additional_whatsapp_labels: "pipe-separated labels (1:1 with additional_whatsapps)",
   additional_websites: "pipe-separated URLs",
-  additional_website_labels: "pipe-separated labels (1:1 with additional_websites)",
 };
 
 function formatReferenceForType(type: FieldType): string {

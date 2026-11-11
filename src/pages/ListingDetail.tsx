@@ -1376,7 +1376,6 @@ const ListingDetail = () => {
             rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: whatsappCta, href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
           });
           emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
-          const cleanUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
           // A Facebook or Instagram page saved in the website column reads as
           // that social page, not as a globe pointing at "facebook.com/...".
           websiteEntries.forEach(({ url }) => {
