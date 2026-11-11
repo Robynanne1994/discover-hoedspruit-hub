@@ -243,8 +243,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               </Label>
             </div>
           </div>
-          <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
-          <SpecialAudienceField value={form.whos_it_for} onChange={(value) => set("whos_it_for", value)} />
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Business</p>
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
             <div>
@@ -281,6 +280,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
             </div>
           </div>
+          <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
+          <SpecialAudienceField value={form.whos_it_for} onChange={(value) => set("whos_it_for", value)} />
           <div><Label>Badge Override <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.badge_override || ""} onChange={(e) => set("badge_override", e.target.value)} placeholder="Badge override, leave blank to auto-generate" /></div>
 
           {/* Structured deal fields — the badge is generated from these when no override is set */}
