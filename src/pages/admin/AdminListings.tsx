@@ -1368,7 +1368,6 @@ const AdminListings = () => {
                   <div>
                     <Label>Google Place ID</Label>
                     <Input value={form.google_place_id} onChange={(e) => setForm({ ...form, google_place_id: e.target.value })} placeholder="ChIJ... (or paste a Maps link with place_id=)" />
-                    <p className="text-xs text-muted-foreground mt-1">Used only by the nightly Google ratings sync. Never shown on the front end.</p>
                   </div>
                   <div className="grid grid-cols-2 gap-3"><div><Label>Rate</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
                   <div><Label>Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div></div>
