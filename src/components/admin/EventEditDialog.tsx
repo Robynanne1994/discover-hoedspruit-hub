@@ -358,7 +358,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             listings={listings || []}
             onApply={(c) => setForm((f) => ({ ...f, ...c }))}
           />
-          <div className="grid gap-3 lg:grid-cols-3">
+          <div className="grid gap-3 lg:grid-cols-2">
             <MultiContactField
               label="Contact Email"
               type="email"
@@ -399,8 +399,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               placeholder="+27 ..."
               addLabel="Add WhatsApp"
             />
-          </div>
-          <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-1.5">
               <Label>Social Media Link</Label>
               <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} />
