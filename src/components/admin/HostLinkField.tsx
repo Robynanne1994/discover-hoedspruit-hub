@@ -45,7 +45,7 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
 
   return (
     <div className="space-y-2">
-      <Label>Link (optional)</Label>
+      <Label>Link</Label>
       <div className="flex flex-wrap gap-2">
         {MODES.map((m) => (
           <Button
