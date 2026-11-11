@@ -444,7 +444,6 @@ const AdminEvents = () => {
               <div className="grid gap-4 lg:grid-cols-3">
                 <div className="space-y-2">
                   <Label>What's Included</Label>
-                  <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
                   <IncludedChipsInput value={form.included} onChange={(v) => setForm({ ...form, included: v })} />
                 </div>
                 <div className="space-y-2">
