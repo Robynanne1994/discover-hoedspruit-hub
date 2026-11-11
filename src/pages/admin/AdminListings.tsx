@@ -1458,22 +1458,6 @@ const AdminListings = () => {
                   ))}
                   <Button type="button" className="self-start" onClick={() => setForm({ ...form, other_socials: [...form.other_socials, ""], other_socials_labels: [...form.other_socials_labels, ...Array(Math.max(0, form.other_socials.length - form.other_socials_labels.length)).fill(""), ""] })}>Add Social</Button>
                 </div>
-                <div className={ADMIN_FIELD_GRID}>
-                  <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
-                  <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." />{isGoogleOwned(editing as any) && <p className="text-xs text-muted-foreground mt-1">Synced from Google</p>}</div>
-                  <div>
-                    <Label>Google Place ID</Label>
-                    <Input value={form.google_place_id} onChange={(e) => setForm({ ...form, google_place_id: e.target.value })} placeholder="ChIJ... (or paste a Maps link with place_id=)" />
-                    <p className="text-xs text-muted-foreground mt-1">Used only by the nightly Google ratings sync. Never shown on the front end.</p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-                  <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
-                   <div><Label>Review Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
-                </div>
-                {isGoogleOwned(editing as any) && (
-                  <p className="text-xs text-muted-foreground -mt-2">Rating and review count are synced from Google because this listing has a Place ID.</p>
-                )}
                 <div className="border-t border-border pt-4 mt-2">
                   <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Detail Page</p>
                 </div>
