@@ -278,9 +278,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               )}
 
             </div>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Tags / Categories</Label><TagRowsEditor value={specialTagList(form)} onChange={(t) => setForm((f: any) => ({ ...f, tags: t, tag: t[0] ?? null, sub_tag_1: null, sub_tag_2: null }))} /></div>
-          </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
   <div><Label htmlFor="special-type">Special Type</Label><Input id="special-type" value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} placeholder="e.g. Dinner Deal" /></div>
