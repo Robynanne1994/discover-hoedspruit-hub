@@ -94,7 +94,7 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     key: "search",
     field: "search_image_url",
     label: "Search Result",
-    where: "The round thumbnail beside the listing in search results.",
+    where: "The thumbnail beside the search results.",
     // Search.tsx — ResultRow avatar is `width: 42, height: 42` with
     // `borderRadius: "50%"`, so anything off-square loses its edges twice over.
     aspect: 1,
