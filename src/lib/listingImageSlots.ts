@@ -57,7 +57,7 @@ export const LISTING_IMAGE_SLOTS: ListingImageSlot[] = [
     key: "card",
     field: "card_image_url",
     label: "Category Page Card",
-    where: "The card on a category page — Where to Eat, Shops, and the rest.",
+    where: "The card on a category page.",
     // CategoryPage.tsx — card image is `aspectRatio: "4 / 3"` in a two-column
     // grid inside 20px page padding with an 18px gutter.
     aspect: 4 / 3,
