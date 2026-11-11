@@ -84,7 +84,7 @@ export const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: 
           }}
           onBlur={add}
         />
-        <Button type="button" variant="secondary" size="sm" className="shrink-0" onClick={add} disabled={!draft.trim()}>
+        <Button type="button" variant="default" size="sm" className="shrink-0" onClick={add} disabled={!draft.trim()}>
           <Plus className="h-3.5 w-3.5 mr-1" /> Add
         </Button>
       </div>
