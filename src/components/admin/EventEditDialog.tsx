@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Tag, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
@@ -50,6 +51,7 @@ const hostSlot = eventImageSlot("host");
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(event);
+  const [socialLabelOpen, setSocialLabelOpen] = useState(false);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -295,7 +297,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             }}>+ Add performance date</Button>
           </div>
           <div className="grid gap-3 lg:grid-cols-2">
-            <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
             <div className="space-y-3">
               <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
               <div className="space-y-2">
@@ -330,7 +331,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://… or name@email.com or +27 82 000 0000" /></div>
             <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           </div>
-          <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Location</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
+            <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
+          </div>
           <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <ListingContactPicker
             listings={listings || []}
@@ -378,9 +383,42 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               addLabel="Add WhatsApp"
             />
           </div>
-          <div className={ADMIN_FIELD_GRID_TIGHT}>
-            <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
-            <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>
+          <div className="grid gap-3 lg:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label>Social Media Link</Label>
+              <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} />
+              {socialLabelOpen || (form.social_media_label || "").trim() ? (
+                <div className="flex gap-2 items-center">
+                  <Input
+                    value={form.social_media_label || ""}
+                    placeholder='Custom label (e.g. "Instagram")'
+                    onChange={(e) => set("social_media_label", e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    aria-label="Remove label"
+                    onClick={() => {
+                      set("social_media_label", "");
+                      setSocialLabelOpen(false);
+                    }}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setSocialLabelOpen(true)}
+                  className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                >
+                  <Tag className="h-3 w-3" /> Add custom label
+                </button>
+              )}
+            </div>
           </div>
           <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
           {(() => {
