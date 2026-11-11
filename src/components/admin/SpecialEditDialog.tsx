@@ -328,7 +328,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             </div>
             {discountTypeUsesValue(form.discount_type) && (
               <div>
-                <Label>{form.discount_type === "percent_off" ? "Percent off" : "Amount off"}</Label>
+                <Label>{form.discount_type === "percent_off" ? "Percent Off" : "Amount off"}</Label>
                 <div className="relative">
                   {form.discount_type === "amount_off" && (
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R</span>
