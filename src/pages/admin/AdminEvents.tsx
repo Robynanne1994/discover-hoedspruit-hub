@@ -354,7 +354,7 @@ const AdminEvents = () => {
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
                   <span className="text-sm font-medium">Featured event</span>
-                  <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
+                  <span className="text-xs text-muted-foreground">{"\n"}</span>
                 </label>
               </div>
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
