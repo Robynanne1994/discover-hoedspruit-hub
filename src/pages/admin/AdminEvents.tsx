@@ -448,7 +448,6 @@ const AdminEvents = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Price Notes</Label>
-                  <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines under the price (e.g. "Per person", "Includes wine"). In CSV, separate notes with the <code>|</code> symbol.</p>
                   <IncludedChipsInput value={(form as any).price_notes || []} onChange={(v) => setForm({ ...form, price_notes: v } as any)} placeholder="e.g. Per person, then press Enter" />
                 </div>
                 <div className="space-y-2">
