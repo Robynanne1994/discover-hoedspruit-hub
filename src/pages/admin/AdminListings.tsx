@@ -1458,7 +1458,7 @@ const AdminListings = () => {
                     extraLabels={form.other_socials_labels.slice(1)}
                     onExtraLabelsChange={(next) => setForm({ ...form, other_socials_labels: [form.other_socials_labels[0] || "", ...next] })}
                     placeholder="https://..."
-                    addLabel="Add social"
+                    addLabel="Add Social"
                   />
                 </div>
                 <div className="border-t border-border pt-4 mt-2">
