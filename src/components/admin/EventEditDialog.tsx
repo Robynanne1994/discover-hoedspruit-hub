@@ -231,6 +231,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
             </p>
           </div>
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Images</p>
           <div className={ADMIN_IMAGE_GRID}>
             {(["card", "poster", "detail", "homepage", "saved", "search"] as const).map((key) => {
               const slot = eventImageSlot(key);
@@ -249,6 +250,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             value={(form.gallery_images ?? []).join("\n")}
             onChange={(value) => set("gallery_images", value.split("\n").map((url) => url.trim()).filter(Boolean))}
           />
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Date &amp; Time</p>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
