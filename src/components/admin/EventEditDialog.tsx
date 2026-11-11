@@ -301,7 +301,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             </div>
           </div>
           <div className="space-y-2 p-3 border rounded">
-            <Label className="text-sm font-semibold text-slate-950">Performances <span className="text-xs text-muted-foreground font-normal">(use for same show on multiple separate dates, e.g. a musical)</span></Label>
+            <Label className="text-sm font-semibold text-slate-950">Performances</Label>
             <p className="text-xs text-muted-foreground">When set, each row becomes a separate performance. Start/End Date above are auto-filled from the first and last performance.</p>
             {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
               <div key={idx} className="flex gap-2 items-end">
