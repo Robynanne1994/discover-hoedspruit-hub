@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Tag } from "lucide-react";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { TagListEditor } from "@/components/admin/TagPresets";
@@ -112,6 +112,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
   const descRef = useRef<HTMLTextAreaElement>(null);
+  const [socialLabelOpen, setSocialLabelOpen] = useState(false);
 
   // Always-active toggle: on means no dates (ongoing). Turning it off unlocks
   // the date fields so dates can be added.
