@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, X, Tag } from "lucide-react";
+import { Plus, X, Tag, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import { TagListEditor } from "@/components/admin/TagPresets";
@@ -104,7 +104,7 @@ const FIELDS: (keyof any)[] = [
   "social_media_link", "social_media_label", "whos_it_for",
 ];
 
-const SELECT_CLS = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1";
+const SELECT_CLS = "flex h-10 w-full appearance-none rounded-md border border-gray-950 bg-slate-50 px-3 py-2 pr-9 text-sm text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 const DEAL_TYPES = ["weekly", "date_range", "monthly", "ongoing"];
 const DISCOUNT_TYPES = ["percent_off", "amount_off", "fixed_price", "buy_x_get_y", "freebie"];
 
@@ -287,10 +287,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Deal Type</Label>
-              <select className={SELECT_CLS} value={form.deal_type || ""} onChange={(e) => set("deal_type", e.target.value || null)}>
+              <div className="relative mt-1"><select className={SELECT_CLS} value={form.deal_type || ""} onChange={(e) => set("deal_type", e.target.value || null)}>
                 <option value="">None</option>
                 {DEAL_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
-              </select>
+              </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
             </div>
           </div>
           <div>
@@ -309,7 +309,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Discount Type</Label>
-              <select
+              <div className="relative mt-1"><select
                 className={SELECT_CLS}
                 value={form.discount_type || ""}
                 onChange={(e) => {
@@ -320,7 +320,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               >
                 <option value="">None</option>
                 {DISCOUNT_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
-              </select>
+              </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
               {discountTypeHint(form.discount_type) && (
                 <p className="text-xs text-muted-foreground mt-1">{discountTypeHint(form.discount_type)}</p>
               )}
@@ -493,15 +493,15 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             />
             <div>
               <Label>Booking Type</Label>
-              <select
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1"
+              <div className="relative mt-1"><select
+                className={SELECT_CLS}
                 value={resolveBookingLinkType(form.booking_link, form.booking_link_type)}
                 onChange={(e) => set("booking_link_type", e.target.value)}
               >
                 {BOOKING_LINK_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
-              </select>
+              </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
               <p className="text-xs text-muted-foreground mt-1"></p>
             </div>
             <div className="space-y-1.5">
