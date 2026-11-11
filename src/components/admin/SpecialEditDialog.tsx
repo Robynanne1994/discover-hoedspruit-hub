@@ -11,7 +11,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X, Tag, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
-import { TagListEditor } from "@/components/admin/TagPresets";
 import { specialTagList, tagColumns } from "@/lib/specialTags";
 import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
@@ -364,7 +363,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
           {/* Tag + sub-tags (same as events) */}
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
-            <div className="col-span-2"><Label>Tags</Label><TagListEditor value={specialTagList(form)} onChange={(t) => setForm((f: any) => ({ ...f, tags: t, tag: t[0] ?? null, sub_tag_1: null, sub_tag_2: null }))} /></div>
+            <div className="col-span-2"><Label>Tags / Categories</Label><TagRowsEditor value={specialTagList(form)} onChange={(t) => setForm((f: any) => ({ ...f, tags: t, tag: t[0] ?? null, sub_tag_1: null, sub_tag_2: null }))} /></div>
           </div>
 
 
@@ -603,3 +602,28 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 };
 
 export default SpecialEditDialog;
+
+function TagRowsEditor({ value, onChange }: { value: string[]; onChange: (t: string[]) => void }) {
+  const [rows, setRows] = useState<string[]>(value.length ? value : [""]);
+  const push = (next: string[]) => {
+    setRows(next);
+    onChange(next.map((t) => t.trim()).filter(Boolean));
+  };
+  return (
+    <div className="space-y-2">
+      {rows.map((t, i) => (
+        <div key={i} className="flex gap-2">
+          <Input value={t} onChange={(e) => push(rows.map((r, j) => (j === i ? e.target.value : r)))} />
+          {rows.length > 1 && (
+            <Button type="button" variant="ghost" size="icon" aria-label="Remove tag"
+              className="h-7 w-7 shrink-0 self-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+              onClick={() => push(rows.filter((_, j) => j !== i))}>
+              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+            </Button>
+          )}
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={() => setRows([...rows, ""])}>+ Add Tag</Button>
+    </div>
+  );
+}
