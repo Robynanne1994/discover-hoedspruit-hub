@@ -1,3 +1,4 @@
+import EventEditDialog from "@/components/admin/EventEditDialog";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -214,13 +215,8 @@ const AdminEvents = () => {
         hosted_by_link_3: values.hosted_by_link_3 || null,
         hosted_by_listing_id_3: values.hosted_by_listing_id_3 || null,
       };
-      if (editing) {
-        const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("events").insert(payload);
-        if (error) throw error;
-      }
+      const { error } = await supabase.from("events").insert(payload);
+      if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-events"] });
@@ -242,72 +238,17 @@ const AdminEvents = () => {
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setOpen(false); };
 
-  const openEdit = (ev: Event) => {
-    setEditing(ev);
-    setForm({
-      title: ev.title,
-      title_override: (ev as any).title_override ?? "",
-      description: ev.description ?? "",
-      date: ev.date,
-      start_date: (ev as any).start_date ?? "",
-      end_date: (ev as any).end_date ?? "",
-      location: ev.location ?? "",
-      tag: ev.tag ?? "",
-      sub_tag_1: (ev as any).sub_tag_1 ?? "",
-      sub_tag_2: (ev as any).sub_tag_2 ?? "",
-      image_url: ev.image_url ?? "",
-      detail_image_url: (ev as any).detail_image_url ?? "",
-      start_time: ev.start_time ?? "",
-      end_time: ev.end_time ?? "",
-      recurrence: ev.recurrence ?? "",
-      google_maps_link: ev.google_maps_link ?? "",
-      social_media_link: (ev as any).social_media_link ?? "",
-      social_media_label: (ev as any).social_media_label ?? "",
-      contact_email: (ev as any).contact_email ?? "",
-      contact_phone: (ev as any).contact_phone ?? "",
-      contact_whatsapp: (ev as any).contact_whatsapp ?? "",
-      additional_emails: ((ev as any).additional_emails ?? []) as string[],
-      email_label: (ev as any).email_label ?? "",
-      additional_email_labels: ((ev as any).additional_email_labels ?? []) as string[],
-      additional_phones: ((ev as any).additional_phones ?? []) as string[],
-      phone_label: (ev as any).phone_label ?? "",
-      additional_phone_labels: ((ev as any).additional_phone_labels ?? []) as string[],
-      additional_whatsapps: ((ev as any).additional_whatsapps ?? []) as string[],
-      whatsapp_label: (ev as any).whatsapp_label ?? "",
-      additional_whatsapp_labels: ((ev as any).additional_whatsapp_labels ?? []) as string[],
-      gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
-      booking_link: (ev as any).booking_link ?? "",
-      booking_link_type: (ev as any).booking_link_type ?? "",
-      price: (ev as any).price ?? "",
-      included: Array.isArray((ev as any).included) ? (ev as any).included : [],
-      notes: Array.isArray((ev as any).notes) ? (ev as any).notes : ((ev as any).notes ? [(ev as any).notes] : []),
-      price_notes: Array.isArray((ev as any).price_notes) ? (ev as any).price_notes : [],
-      business_id: (ev as any).business_id ?? "",
-      business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
-        ? (ev as any).business_ids
-        : ((ev as any).business_id ? [(ev as any).business_id] : []),
-      is_featured: !!(ev as any).is_featured,
-      hosted_by_name: (ev as any).hosted_by_name ?? "",
-      hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
-      hosted_by_image_url: (ev as any).hosted_by_image_url ?? "",
-      hosted_by_link: ev.hosted_by_link ?? "",
-      hosted_by_listing_id: (ev as any).hosted_by_listing_id ?? "",
-      hosted_by_name_2: (ev as any).hosted_by_name_2 ?? "",
-      hosted_by_subtitle_2: (ev as any).hosted_by_subtitle_2 ?? "",
-      hosted_by_image_url_2: (ev as any).hosted_by_image_url_2 ?? "",
-      hosted_by_link_2: ev.hosted_by_link_2 ?? "",
-      hosted_by_listing_id_2: (ev as any).hosted_by_listing_id_2 ?? "",
-      hosted_by_name_3: (ev as any).hosted_by_name_3 ?? "",
-      hosted_by_subtitle_3: (ev as any).hosted_by_subtitle_3 ?? "",
-      hosted_by_image_url_3: (ev as any).hosted_by_image_url_3 ?? "",
-      hosted_by_link_3: ev.hosted_by_link_3 ?? "",
-      hosted_by_listing_id_3: (ev as any).hosted_by_listing_id_3 ?? "",
-    });
-    setOpen(true);
-  };
+  const openEdit = (ev: Event) => setEditing(ev);
 
   return (
     <div>
+      {editing && (
+        <EventEditDialog
+          open={true}
+          onOpenChange={(isOpen) => { if (!isOpen) setEditing(null); }}
+          event={editing}
+        />
+      )}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Events</h1>
         <div className="flex flex-wrap gap-2">
@@ -322,7 +263,7 @@ const AdminEvents = () => {
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Event</Button>
           </DialogTrigger>
           <DialogContent className={ADMIN_EDITOR_DIALOG}>
-            <DialogHeader><DialogTitle>{editing ? "Edit Event" : "Add Event"}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Add Event</DialogTitle></DialogHeader>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
               <div>
                 <Label>Title</Label>
@@ -533,7 +474,7 @@ const AdminEvents = () => {
                           <div><Label>Name</Label><Input value={(form[nameKey] as string) || ""} onChange={(e) => setForm({ ...form, [nameKey]: e.target.value })} placeholder="e.g. Kristi & Joëlle" /></div>
                           <div><Label>Subtitle</Label><Input value={(form[subKey] as string) || ""} onChange={(e) => setForm({ ...form, [subKey]: e.target.value })} placeholder="e.g. Yoga Teachers" /></div>
                           <HostLinkField
-                            key={`${editing?.id ?? "new"}-${n}`}
+                            key={`new-${n}`}
                             value={{ link: (form[linkKey] as string) || "", listingId: (form[listingKey] as string) || "" }}
                             listings={(listings || []) as { id: string; title: string }[]}
                             onChange={(v) => setForm((f) => ({ ...f, [linkKey]: v.link, [listingKey]: v.listingId }))}
@@ -553,7 +494,7 @@ const AdminEvents = () => {
                   </>
                 );
               })()}
-              <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
+              <Button type="submit" className="w-full" disabled={upsert.isPending}>Create</Button>
             </form>
           </DialogContent>
         </Dialog>
@@ -602,7 +543,7 @@ const AdminEvents = () => {
                       <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "Yes" : "—"}</td>
                       <td className="p-3">
                         <div className="flex gap-1 justify-end">
-                          <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" aria-label={`Edit ${ev.title}`} onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
                           <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(ev.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                         </div>
                       </td>

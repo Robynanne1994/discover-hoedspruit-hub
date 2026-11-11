@@ -297,17 +297,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div className="grid gap-3 lg:grid-cols-3">
             <div className="space-y-2">
               <Label>What's Included</Label>
-              <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
             </div>
             <div className="space-y-2">
               <Label>Price Notes</Label>
-              <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line under the price. In CSV, separate notes with the <code>|</code> symbol.</p>
               <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
             </div>
             <div className="space-y-2">
               <Label>Notes</Label>
-              <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
               <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
             </div>
           </div>
@@ -377,7 +374,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               addLabel="Add WhatsApp"
             />
           </div>
-          <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
+          <div className="pt-2 border-t"><Label className="text-base font-semibold text-foreground">Hosted By</Label></div>
           {(() => {
             const hostCount = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
             const [shown, setShownLocal] = [form.__hostsShown ?? hostCount, (n: number) => set("__hostsShown", n)];
