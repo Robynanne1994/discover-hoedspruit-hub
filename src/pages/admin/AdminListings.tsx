@@ -1416,8 +1416,12 @@ const AdminListings = () => {
                     type="text"
                     primary={form.website}
                     onPrimaryChange={(v) => setForm({ ...form, website: v })}
+                    primaryLabel={form.website_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, website_label: v })}
                     extras={form.additional_websites}
                     onExtrasChange={(v) => setForm({ ...form, additional_websites: v })}
+                    extraLabels={form.additional_website_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
                     placeholder="https://..."
                     addLabel="Add website"
                   />
