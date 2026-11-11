@@ -1917,9 +1917,7 @@ const AdminListings = () => {
                       ))}
 
                       {form.has_breakfast === true && (
-                        <div className="ml-6">
-                          <TriStateToggle label="Breakfast Included" value={form.breakfast_included} onChange={(v) => setForm({ ...form, breakfast_included: v })} />
-                        </div>
+                        <TriStateToggle label="Breakfast Included" value={form.breakfast_included} onChange={(v) => setForm({ ...form, breakfast_included: v })} />
                       )}
 
                       {[
