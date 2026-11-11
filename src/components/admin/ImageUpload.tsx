@@ -167,8 +167,8 @@ const ImageUpload = ({
               </p>
             </div>
             <div className="flex gap-2">
-              <Button type="button" variant="outline" size="sm" className="gap-1.5" onClick={handleEditExisting}>
-                <Crop className="h-3.5 w-3.5" /> Crop / reposition
+              <Button type="button" variant="outline" size="sm" className="h-7 gap-1 px-2.5 text-xs" onClick={handleEditExisting}>
+                <Crop className="h-3 w-3" /> Crop / reposition
               </Button>
               <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" onClick={() => onChange("")} aria-label="Remove image" title="Remove image">
                 <X className="h-3.5 w-3.5" strokeWidth={2.5} />
