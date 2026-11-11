@@ -492,6 +492,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onExtraLabelsChange={(v) => set("additional_email_labels", v)}
               addLabel="Add email"
             />
+          </div>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
+          <div className="grid gap-3 sm:grid-cols-2 items-start">
             <div>
               <Label>Booking Type</Label>
               <div className="relative mt-1"><select
@@ -503,7 +506,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
               </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
-              <p className="text-xs text-muted-foreground mt-1"></p>
             </div>
             <div className="space-y-1.5">
               <Label>Booking Link / Email / Number</Label>
