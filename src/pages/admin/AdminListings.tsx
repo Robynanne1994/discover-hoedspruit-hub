@@ -1402,7 +1402,7 @@ const AdminListings = () => {
                       onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
                       extraLabels={form.additional_email_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
-                      addLabel="Add email"
+                      addLabel="Add Email"
                     />
                   </div>
                 </div>
