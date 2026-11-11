@@ -512,7 +512,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
 
           <div>
-            <Label>Terms <span className="text-xs text-muted-foreground font-normal">(add one per line — each appears as its own bullet)</span></Label>
+            <Label>Terms <span className="text-xs text-muted-foreground font-normal"></span></Label>
             <TermsEditor value={form.terms || ""} onChange={(v) => set("terms", v)} />
           </div>
         </div>
