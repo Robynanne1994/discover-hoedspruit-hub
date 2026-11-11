@@ -449,20 +449,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             listings={listings || []}
             onApply={(c) => setForm((f) => ({ ...f, ...c }))}
           />
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <div className={ADMIN_FIELD_GRID_TIGHT}>
-            <MultiContactField
-              label="Contact Phone"
-              type="tel"
-              primary={form.contact_phone || ""}
-              onPrimaryChange={(v) => set("contact_phone", v)}
-              extras={form.additional_phones || []}
-              onExtrasChange={(v) => set("additional_phones", v)}
-              primaryLabel={form.phone_label || ""}
-              onPrimaryLabelChange={(v) => set("phone_label", v)}
-              extraLabels={form.additional_phone_labels || []}
-              onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
-              addLabel="Add phone"
-            />
             <MultiContactField
               label="WhatsApp"
               type="tel"
@@ -489,6 +477,54 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onExtraLabelsChange={(v) => set("additional_email_labels", v)}
               addLabel="Add email"
             />
+            <MultiContactField
+              label="Contact Phone"
+              type="tel"
+              primary={form.contact_phone || ""}
+              onPrimaryChange={(v) => set("contact_phone", v)}
+              extras={form.additional_phones || []}
+              onExtrasChange={(v) => set("additional_phones", v)}
+              primaryLabel={form.phone_label || ""}
+              onPrimaryLabelChange={(v) => set("phone_label", v)}
+              extraLabels={form.additional_phone_labels || []}
+              onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
+              addLabel="Add phone"
+            />
+            <div className="space-y-1.5">
+              <Label>Social Media</Label>
+              <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} placeholder="https://…" />
+              {socialLabelOpen || (form.social_media_label || "").trim() ? (
+                <div className="flex gap-2 items-center">
+                  <Input
+                    value={form.social_media_label || ""}
+                    placeholder='Custom label (e.g. "Facebook Post")'
+                    onChange={(e) => set("social_media_label", e.target.value)}
+                    className="h-8 text-xs"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                    aria-label="Remove label"
+                    onClick={() => {
+                      set("social_media_label", "");
+                      setSocialLabelOpen(false);
+                    }}
+                  >
+                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setSocialLabelOpen(true)}
+                  className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                >
+                  <Tag className="h-3 w-3" /> Add custom label
+                </button>
+              )}
+            </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
           <div className="grid gap-3 sm:grid-cols-2 items-start">
@@ -539,42 +575,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 </button>
               )}
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <Label>Social Media</Label>
-            <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} placeholder="https://…" />
-            {socialLabelOpen || (form.social_media_label || "").trim() ? (
-              <div className="flex gap-2 items-center">
-                <Input
-                  value={form.social_media_label || ""}
-                  placeholder='Custom label (e.g. "Facebook Post")'
-                  onChange={(e) => set("social_media_label", e.target.value)}
-                  className="h-8 text-xs"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
-                  aria-label="Remove label"
-                  onClick={() => {
-                    set("social_media_label", "");
-                    setSocialLabelOpen(false);
-                  }}
-                >
-                  <X className="h-3.5 w-3.5" strokeWidth={2.5} />
-                </Button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setSocialLabelOpen(true)}
-                className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-              >
-                <Tag className="h-3 w-3" /> Add custom label
-              </button>
-            )}
           </div>
 
           <div>
