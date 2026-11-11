@@ -19,8 +19,8 @@ export default function SpecialAudienceField({ value, onChange }: { value: unkno
     setDraft("");
   };
   return (
-    <fieldset className="space-y-2">
-      <legend><Label>Who's It For?</Label></legend>
+    <div>
+      <Label>Who's It For?</Label>
       <Popover>
         <PopoverTrigger asChild>
           <button type="button" className="flex h-10 w-full items-center justify-between rounded-md border border-gray-950 bg-slate-50 px-3 text-sm text-left">
