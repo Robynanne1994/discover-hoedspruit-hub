@@ -1364,7 +1364,7 @@ const AdminListings = () => {
                     />
                   </div>
                   <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
-                  <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." />{isGoogleOwned(editing as any) && <p className="text-xs text-muted-foreground mt-1">Synced from Google</p>}</div>
+                  <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." /></div>
                   <div>
                     <Label>Google Place ID</Label>
                     <Input value={form.google_place_id} onChange={(e) => setForm({ ...form, google_place_id: e.target.value })} placeholder="ChIJ... (or paste a Maps link with place_id=)" />
@@ -1372,9 +1372,6 @@ const AdminListings = () => {
                   <div className="grid grid-cols-2 gap-3"><div><Label>Rate</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
                   <div><Label>Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div></div>
                 </div>
-                {isGoogleOwned(editing as any) && (
-                  <p className="text-xs text-muted-foreground -mt-2">Rating and review count are synced from Google because this listing has a Place ID.</p>
-                )}
 
                 <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Contacts</p>
                 <div className={ADMIN_FIELD_GRID}>
