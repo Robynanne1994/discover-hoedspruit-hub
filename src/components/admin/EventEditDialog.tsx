@@ -454,7 +454,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               addLabel="Add WhatsApp"
             />
             <div className="space-y-1.5">
-              <Label>Social Media Link</Label>
+              <Label>Social Media</Label>
               <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} />
               {socialLabelOpen || (form.social_media_label || "").trim() ? (
                 <div className="flex gap-2 items-center">
