@@ -588,11 +588,10 @@ const AdminEvents = () => {
               <table className="w-full text-sm min-w-[720px]">
                 <thead className="bg-muted">
                   <tr>
-                    <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Title</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Date</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Location</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Tag</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Featured</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[28%]">Title</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[22%]">Date</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[26%]">Tags</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[10%]">Featured</th>
                     <th className="p-3 w-[14%]"></th>
                   </tr>
                 </thead>
@@ -601,9 +600,8 @@ const AdminEvents = () => {
                     <tr key={ev.id} className="border-t border-border">
                       <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
                       <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
-                      <td className="p-3 text-muted-foreground truncate">{ev.location ?? "—"}</td>
-                      <td className="p-3 text-muted-foreground truncate">{ev.tag ?? "—"}</td>
-                      <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "★ Yes" : "—"}</td>
+                      <td className="p-3 text-muted-foreground truncate">{[ev.tag, (ev as any).sub_tag_1, (ev as any).sub_tag_2].filter(Boolean).join(", ") || "—"}</td>
+                      <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "Yes" : "—"}</td>
                       <td className="p-3">
                         <div className="flex gap-1 justify-end">
                           <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
@@ -613,7 +611,7 @@ const AdminEvents = () => {
                     </tr>
                   ))}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
+                    <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">
                       {tab === "active" ? "No active events." : "No passed events."}
                     </td></tr>
                   )}
