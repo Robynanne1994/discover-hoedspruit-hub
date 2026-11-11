@@ -1163,17 +1163,6 @@ const AdminListings = () => {
                       </div>
                     ))}
                   </div>
-                  {showNewCat ? (
-                    <div className="flex gap-2 mt-2">
-                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm border-gray-950 bg-slate-50" autoFocus />
-                      <Button type="button" size="sm" onClick={addCategory}>Save</Button>
-                      <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
-                    </div>
-                  ) : (
-                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-3 gap-1 rounded-full bg-[#423324] text-white hover:bg-[#2F2419] hover:text-white" onClick={() => setShowNewCat(true)}>
-                      <Plus className="h-3.5 w-3.5" /> Add category
-                    </Button>
-                  )}
                 </div>
                 {selectedCatIds.length > 0 && (
                   <div>
