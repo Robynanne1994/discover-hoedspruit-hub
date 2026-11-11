@@ -297,6 +297,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               set("performances", arr);
             }}>+ Add performance date</Button>
           </div>
+          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
           <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-3">
               <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
@@ -305,12 +306,12 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
               </div>
             </div>
-          </div>
-          <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-2">
               <Label>What's Included</Label>
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
             </div>
+          </div>
+          <div className="grid gap-3 lg:grid-cols-2">
             <div className="space-y-2">
               <Label>Notes</Label>
               <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
