@@ -1379,11 +1379,12 @@ const ListingDetail = () => {
           const cleanUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
           // A Facebook or Instagram page saved in the website column reads as
           // that social page, not as a globe pointing at "facebook.com/...".
-          websiteEntries.forEach(({ url, label }) => {
+          websiteEntries.forEach(({ url }) => {
             const kind = websiteKind(url);
             const Icon = kind === "facebook" ? FacebookIcon : kind === "instagram" ? InstagramIcon : Globe;
-            const fallback = kind === "facebook" ? "Facebook" : kind === "instagram" ? "Instagram" : cleanUrl(url);
-            rows.push({ label: "", custom: false, value: label || fallback, href: websiteHref(url), Icon });
+            // Website links always read "Website"; labels are no longer used.
+            const text = kind === "facebook" ? "Facebook" : kind === "instagram" ? "Instagram" : "Website";
+            rows.push({ label: "", custom: false, value: text, href: websiteHref(url), Icon });
           });
           // Only when the website column isn't already showing that same page.
           const websiteKinds = new Set(websiteEntries.map(({ url }) => websiteKind(url)));
