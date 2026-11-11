@@ -395,23 +395,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
           {/* Validity + always active */}
           <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="special-always-active"
-                checked={isAlwaysActive}
-                onCheckedChange={(v) => {
-                  const on = v === true;
-                  setIsAlwaysActive(on);
-                  if (on) {
-                    set("valid_from", null);
-                    set("valid_until", null);
-                  }
-                }}
-              />
-              <Label htmlFor="special-always-active" className="text-sm cursor-pointer font-normal">
-                Always active — ongoing until further notice
-              </Label>
-            </div>
+            <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Validity</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <Label>Valid From</Label>
@@ -431,6 +415,23 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   disabled={isAlwaysActive}
                 />
               </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="special-always-active"
+                checked={isAlwaysActive}
+                onCheckedChange={(v) => {
+                  const on = v === true;
+                  setIsAlwaysActive(on);
+                  if (on) {
+                    set("valid_from", null);
+                    set("valid_until", null);
+                  }
+                }}
+              />
+              <Label htmlFor="special-always-active" className="text-sm cursor-pointer font-normal">
+                Always active — ongoing until further notice
+              </Label>
             </div>
           </div>
 
