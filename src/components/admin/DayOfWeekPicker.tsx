@@ -49,7 +49,7 @@ const DayOfWeekPicker = ({
       </div>
       <div className="flex items-center gap-3 min-h-5">
         <p className="text-xs text-muted-foreground flex-1">
-          {summary ? `Runs every ${summary === "Every day" ? "day" : summary}` : hint || "No day set"}
+          {summary ? "\n" : hint || "No day set"}
         </p>
         {selected.length > 0 && (
           <button
