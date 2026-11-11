@@ -40,7 +40,6 @@ const FIELD_REFERENCE_OVERRIDES: Record<string, string> = {
   google_reviews_count: "integer, e.g. 128",
   opening_hours: `JSON, e.g. {"monday":"09:00 - 17:00","tuesday":"closed"}. When the listing has extra sets of hours, put this set's label first with one space, e.g. Restaurant {"monday":"10:30 - 21:00"}`,
   additional_hours: `extra sets of hours, label then one space then JSON, several separated by | with no spaces, e.g. Bar {"monday":"16:00 - 00:00"}|Lodge {"monday":"08:00 - 17:00"}. Leave blank to keep, "-" to clear`,
-  details_display_mode: `JSON object, e.g. {"meals":"chips","amenities":"default"}`,
   gallery_images: "pipe-separated image URLs",
   image_url: "single image URL",
   detail_image_url: "single image URL",

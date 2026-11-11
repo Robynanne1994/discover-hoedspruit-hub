@@ -13,7 +13,7 @@ export type FieldType =
   | "bool"            // nullable boolean ("true"/"false"/empty)
   | "bool_default_false" // boolean with non-null default (e.g. is_featured)
   | "str_array"       // pipe-separated strings
-  | "json";           // JSON-encoded object (opening_hours, details_display_mode)
+  | "json";           // JSON-encoded object (opening_hours, additional_hours)
 
 export type FieldSpec = { type: FieldType };
 
@@ -68,7 +68,6 @@ export const LISTING_FIELD_SPECS = {
   // same listing keeps — a kitchen that shuts at 21:00 and a bar that doesn't.
   opening_hours_label: { type: "str" },
   additional_hours: { type: "json" },
-  details_display_mode: { type: "json" },
   good_to_know: { type: "str_array" },
 
   // ---------- Universal: custom blocks ----------
@@ -212,7 +211,8 @@ export const UNIVERSAL_FIELDS = [
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
   "is_featured",
   // Hours cells carry their own labels ("Restaurant {json}"); see listingHoursCsv.
-  "opening_hours", "additional_hours", "details_display_mode",
+  // details_display_mode is deliberately absent: it is set in the backend editor only.
+  "opening_hours", "additional_hours",
   "custom_title_1", "custom_text_1",
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",
