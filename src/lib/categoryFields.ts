@@ -211,7 +211,8 @@ export const UNIVERSAL_FIELDS = [
   "facebook", "instagram",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
   "is_featured",
-  "opening_hours", "opening_hours_label", "additional_hours", "details_display_mode",
+  // Hours cells carry their own labels ("Restaurant {json}"); see listingHoursCsv.
+  "opening_hours", "additional_hours", "details_display_mode",
   "custom_title_1", "custom_text_1",
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",

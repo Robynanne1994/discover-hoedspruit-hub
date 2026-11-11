@@ -1,3 +1,4 @@
+import { hoursCellsForExport, hoursPayloadFromCells } from "@/lib/listingHoursCsv";
 import { contactGroupForValue, contactPayloadFromCells, contactCellsForExport, isContactLabelColumn } from "@/lib/listingContactCsv";
 import { parseEventContactCells, splitContactLabels } from "@/lib/eventContacts";
 import { useState, useRef } from "react";
@@ -766,6 +767,15 @@ const AdminImport = () => {
             continue;
           }
           if (isContactLabelColumn(fieldName)) continue;
+          // Retired column: the label now sits in front of the opening_hours JSON.
+          if (fieldName === "opening_hours_label") continue;
+          if (fieldName === "opening_hours" || fieldName === "additional_hours") {
+            if (fieldName === "additional_hours" && "opening_hours" in row) continue;
+            const hoursResult = hoursPayloadFromCells(row.opening_hours, row.additional_hours, isUpdate);
+            hoursResult.errors.forEach((e) => results.errors.push(`Row ${i + 2}: ${e}`));
+            Object.assign(payloadRecord, hoursResult.payload);
+            continue;
+          }
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
 
@@ -1368,6 +1378,7 @@ const AdminImport = () => {
           continue;
         }
         if (isContactLabelColumn(h)) continue;
+        if (h === "opening_hours" || h === "additional_hours") { fieldMap[h] = hoursCellsForExport(lr)[h]; continue; }
         if (h === "avg_price_per_person_per_night" || h === "avg_price_per_couple_per_night") { fieldMap[h] = accommodationPriceForExport(lr[h]); continue; }
         const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
         if (!spec) { fieldMap[h] = ""; continue; }
