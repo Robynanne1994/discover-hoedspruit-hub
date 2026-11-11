@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "./restaurantOptions";
+import { MEAL_OPTIONS, isRestaurantOptionAllowed, driveThroughSelected } from "./restaurantOptions";
+
+describe("Drive-Through selection", () => {
+  it("is FALSE unless selected", () => {
+    expect(driveThroughSelected(null)).toBe(false);
+    expect(driveThroughSelected(undefined)).toBe(false);
+    expect(driveThroughSelected(false)).toBe(false);
+  });
+  it("is TRUE only when selected", () => {
+    expect(driveThroughSelected(true)).toBe(true);
+  });
+});
 
 describe("Desserts meal classification", () => {
   it("offers Desserts as a meal", () => {

@@ -29,7 +29,7 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
-import { MEAL_OPTIONS, isRestaurantOptionAllowed } from "@/lib/restaurantOptions";
+import { MEAL_OPTIONS, isRestaurantOptionAllowed, driveThroughSelected } from "@/lib/restaurantOptions";
 
 import { sanitizeContactArray } from "@/lib/contacts";
 import { parseAdditionalHours } from "@/lib/openHours";
@@ -575,7 +575,7 @@ const AdminListings = () => {
         wheelchair_toilet: values.wheelchair_toilet,
         has_toilet: values.has_toilet,
         has_wifi: values.has_wifi,
-        drive_through: values.drive_through,
+        drive_through: driveThroughSelected(values.drive_through),
         has_free_wifi: values.has_free_wifi,
         has_wine_list: values.has_wine_list,
         has_cocktails: values.has_cocktails,
@@ -1724,11 +1724,6 @@ const AdminListings = () => {
                       return (
                         <div key={key}>
                           <Label>{label}</Label>
-                          {key === "service_type" && (
-                            <div className="my-3">
-                              <TriStateToggle label="Drive-Through" value={form.drive_through} onChange={(v) => setForm({ ...form, drive_through: v })} />
-                            </div>
-                          )}
                           <div className="flex flex-wrap gap-2">
                             {merged.map((opt) => {
                               const selected = form[key].includes(opt);
@@ -1743,6 +1738,16 @@ const AdminListings = () => {
                                 </button>
                               );
                             })}
+                            {key === "service_type" && (
+                              <Button
+                                type="button"
+                                aria-pressed={driveThroughSelected(form.drive_through)}
+                                onClick={() => setForm({ ...form, drive_through: !driveThroughSelected(form.drive_through) })}
+                                className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${driveThroughSelected(form.drive_through) ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:bg-background hover:border-primary/50"}`}
+                              >
+                                Drive-Through
+                              </Button>
+                            )}
                           </div>
                           <div className="flex gap-2 mt-2">
                             <Input
