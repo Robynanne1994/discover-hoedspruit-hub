@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS other_socials text[] NOT NULL DEFAULT '{}', ADD COLUMN IF NOT EXISTS other_socials_labels text[] NOT NULL DEFAULT '{}';
