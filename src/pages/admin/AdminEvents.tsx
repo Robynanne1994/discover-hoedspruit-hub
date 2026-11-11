@@ -453,7 +453,6 @@ const AdminEvents = () => {
                 </div>
                 <div className="space-y-2">
                   <Label>Notes</Label>
-                  <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
                   <IncludedChipsInput value={(form as any).notes || []} onChange={(v) => setForm({ ...form, notes: v } as any)} placeholder="e.g. Bring your own chair, then press Enter" />
                 </div>
               </div>
