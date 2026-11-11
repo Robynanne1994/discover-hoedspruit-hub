@@ -1436,7 +1436,7 @@ const AdminListings = () => {
                     extraLabels={form.additional_website_labels}
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
                     placeholder="https://..."
-                    addLabel="Add website"
+                    addLabel="Add Website"
                   />
                 </div>
                 </div>
