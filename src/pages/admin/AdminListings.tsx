@@ -1445,22 +1445,6 @@ const AdminListings = () => {
                   ))}
                   <Button type="button" className="self-start" onClick={() => setForm({ ...form, other_socials: [...form.other_socials, ""], other_socials_labels: [...form.other_socials_labels, ...Array(Math.max(0, form.other_socials.length - form.other_socials_labels.length)).fill(""), ""] })}>Add Social</Button>
                 </div>
-                <div className="space-y-2">
-                  <MultiContactField
-                    label="WhatsApp Number"
-                    type="tel"
-                    primary={form.whatsapp}
-                    onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
-                    primaryLabel={form.whatsapp_label}
-                    onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
-                    extras={form.additional_whatsapps}
-                    onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
-                    extraLabels={form.additional_whatsapp_labels}
-                    onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
-                    placeholder="e.g. +27791234567"
-                    addLabel="Add WhatsApp"
-                  />
-                </div>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                   <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." />{isGoogleOwned(editing as any) && <p className="text-xs text-muted-foreground mt-1">Synced from Google</p>}</div>
