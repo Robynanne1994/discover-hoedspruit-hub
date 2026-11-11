@@ -1449,16 +1449,21 @@ const AdminListings = () => {
                   <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                   <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label className="block">Other Socials</Label>
-                  {form.other_socials.map((url: string, i: number) => (
-                    <div key={i} className="flex gap-2">
-                      <Input className="w-36" value={form.other_socials_labels[i] || ""} placeholder="YouTube" onChange={(e) => { const v = [...form.other_socials_labels]; while (v.length <= i) v.push(""); v[i] = e.target.value; setForm({ ...form, other_socials_labels: v }); }} />
-                      <Input value={url} placeholder="https://..." onChange={(e) => { const v = [...form.other_socials]; v[i] = e.target.value; setForm({ ...form, other_socials: v }); }} />
-                      <Button type="button" onClick={() => setForm({ ...form, other_socials: form.other_socials.filter((_: string, j: number) => j !== i), other_socials_labels: form.other_socials_labels.filter((_: string, j: number) => j !== i) })}>Remove</Button>
-                    </div>
-                  ))}
-                  <Button type="button" className="self-start" onClick={() => setForm({ ...form, other_socials: [...form.other_socials, ""], other_socials_labels: [...form.other_socials_labels, ...Array(Math.max(0, form.other_socials.length - form.other_socials_labels.length)).fill(""), ""] })}>Add Social</Button>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Other Socials"
+                    type="text"
+                    primary={form.other_socials[0] || ""}
+                    onPrimaryChange={(v) => { const n = [...form.other_socials]; n[0] = v; setForm({ ...form, other_socials: n }); }}
+                    primaryLabel={form.other_socials_labels[0] || ""}
+                    onPrimaryLabelChange={(v) => { const n = [...form.other_socials_labels]; while (n.length < 1) n.push(""); n[0] = v; setForm({ ...form, other_socials_labels: n }); }}
+                    extras={form.other_socials.slice(1)}
+                    onExtrasChange={(next) => setForm({ ...form, other_socials: [form.other_socials[0] || "", ...next] })}
+                    extraLabels={form.other_socials_labels.slice(1)}
+                    onExtraLabelsChange={(next) => setForm({ ...form, other_socials_labels: [form.other_socials_labels[0] || "", ...next] })}
+                    placeholder="https://..."
+                    addLabel="Add social"
+                  />
                 </div>
                 <div className="border-t border-border pt-4 mt-2">
                   <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Detail Page</p>
