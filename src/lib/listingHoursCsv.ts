@@ -17,7 +17,8 @@ const cleanHours = (raw: unknown): Hours => {
 };
 
 const setCell = (label: string, hours: Hours) => {
-  const json = JSON.stringify(hours);
+  // Alphabetical day keys, the same order the database stores and the sheet already uses.
+  const json = JSON.stringify(Object.fromEntries(Object.entries(hours).sort(([a], [b]) => a.localeCompare(b))));
   return label.trim() ? `${label.trim()} ${json}` : json;
 };
 
