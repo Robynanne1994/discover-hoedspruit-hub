@@ -1466,7 +1466,7 @@ const AdminListings = () => {
                 </div>
 
                 <div>
-                  <Label>Long Description</Label>
+                  <Label>Description</Label>
                   <MarkdownToolbar
                     textareaRef={longDescRef}
                     value={form.long_description}
