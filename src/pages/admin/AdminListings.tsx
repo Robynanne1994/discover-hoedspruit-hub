@@ -1321,9 +1321,7 @@ const AdminListings = () => {
                   </div>
                 )}
                 <div className="space-y-3">
-                  <div>
-                    <Label>Images</Label>
-                  </div>
+                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Images</p>
                   <div className={ADMIN_IMAGE_GRID}>
                     {LISTING_IMAGE_SLOTS.map((slot) => (
                       <ImageSlotField
@@ -1345,6 +1343,7 @@ const AdminListings = () => {
                   {/* The gallery lives with the rest of the pictures — one place
                       in the form where every upload for this listing is done. */}
                   <GalleryUpload
+                    banner
                     value={form.gallery_images}
                     onChange={(val) => setForm({ ...form, gallery_images: val })}
                   />
@@ -1419,8 +1418,8 @@ const AdminListings = () => {
                   <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                   <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Other Socials</Label>
+                <div className="flex flex-col gap-2">
+                  <Label className="block">Other Socials</Label>
                   {form.other_socials.map((url: string, i: number) => (
                     <div key={i} className="flex gap-2">
                       <Input className="w-36" value={form.other_socials_labels[i] || ""} placeholder="YouTube" onChange={(e) => { const v = [...form.other_socials_labels]; while (v.length <= i) v.push(""); v[i] = e.target.value; setForm({ ...form, other_socials_labels: v }); }} />
@@ -1428,7 +1427,7 @@ const AdminListings = () => {
                       <Button type="button" onClick={() => setForm({ ...form, other_socials: form.other_socials.filter((_: string, j: number) => j !== i), other_socials_labels: form.other_socials_labels.filter((_: string, j: number) => j !== i) })}>Remove</Button>
                     </div>
                   ))}
-                  <Button type="button" onClick={() => setForm({ ...form, other_socials: [...form.other_socials, ""], other_socials_labels: [...form.other_socials_labels, ...Array(Math.max(0, form.other_socials.length - form.other_socials_labels.length)).fill(""), ""] })}>Add Social</Button>
+                  <Button type="button" className="self-start" onClick={() => setForm({ ...form, other_socials: [...form.other_socials, ""], other_socials_labels: [...form.other_socials_labels, ...Array(Math.max(0, form.other_socials.length - form.other_socials_labels.length)).fill(""), ""] })}>Add Social</Button>
                 </div>
                 <div className="space-y-2">
                   <MultiContactField

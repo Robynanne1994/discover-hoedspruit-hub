@@ -121,7 +121,7 @@ const GalleryUpload = ({ value, onChange, folder = "gallery" }: GalleryUploadPro
 
   return (
     <div className="space-y-3">
-      <Label>Gallery Images</Label>
+      {banner ? <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Gallery Images</p> : <Label>Gallery Images</Label>}
 
       {urls.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
