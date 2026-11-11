@@ -445,11 +445,12 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
 
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <ListingContactPicker
             listings={listings || []}
             onApply={(c) => setForm((f) => ({ ...f, ...c }))}
+            className="mb-3"
           />
-          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <div className={ADMIN_FIELD_GRID_TIGHT}>
             <MultiContactField
               label="WhatsApp"
