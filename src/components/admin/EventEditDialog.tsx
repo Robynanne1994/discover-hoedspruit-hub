@@ -16,7 +16,7 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
-import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
+import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
@@ -372,15 +372,16 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
-          <div className="grid gap-3 lg:grid-cols-2">
-            <div>
-              <Label>Booking Type</Label>
+          <div className="grid gap-3 lg:grid-cols-2 items-start">
+            <div className="space-y-2">
+              <Label className="block">Booking Type</Label>
               <div className="relative">
               <select
                 className="flex h-10 w-full appearance-none rounded-md border border-gray-950 bg-slate-50 px-3 py-2 pr-9 text-sm text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={resolveBookingLinkType(form.booking_link, form.booking_link_type)}
+                value={editorBookingLinkType(form.booking_link, form.booking_link_type)}
                 onChange={(e) => set("booking_link_type", e.target.value)}
               >
+                <option value=""></option>
                 {BOOKING_LINK_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
@@ -388,8 +389,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden />
               </div>
             </div>
-            <div className="space-y-1.5">
-              <Label>Booking Link / Email / Number</Label>
+            <div className="space-y-2">
+              <Label className="block">Booking Link / Email / Number</Label>
               <Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://… or name@email.com or +27 82 000 0000" />
               {bookingLabelOpen || (form.booking_link_label || "").trim() ? (
                 <div className="flex gap-2 items-center">

@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
+import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -378,7 +378,7 @@ const AdminEvents = () => {
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
                 <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
-                <div><Label>Booking Type</Label><select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={resolveBookingLinkType(form.booking_link, form.booking_link_type)} onChange={(e) => setForm({ ...form, booking_link_type: e.target.value })}>{BOOKING_LINK_TYPES.map((t) => (<option key={t.value} value={t.value}>{t.label}</option>))}</select></div>
+                <div><Label>Booking Type</Label><select className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={editorBookingLinkType(form.booking_link, form.booking_link_type)} onChange={(e) => setForm({ ...form, booking_link_type: e.target.value })}><option value=""></option>{BOOKING_LINK_TYPES.map((t) => (<option key={t.value} value={t.value}>{t.label}</option>))}</select></div>
                 <div><Label>Booking Link / Email / Number</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://… or name@email.com or +27 82 000 0000" /></div>
               </div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>

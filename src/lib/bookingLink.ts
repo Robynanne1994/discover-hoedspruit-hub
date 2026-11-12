@@ -35,6 +35,15 @@ export function resolveBookingLinkType(
   return detectBookingLinkType(raw || "");
 }
 
+/** An untouched booking editor starts blank instead of implying Website Link. */
+export function editorBookingLinkType(
+  raw: string | null | undefined,
+  stored?: string | null,
+): BookingLinkType | "" {
+  if (!(raw || "").trim() && !(stored || "").trim()) return "";
+  return resolveBookingLinkType(raw, stored);
+}
+
 /** Turns the stored booking value into an href the browser can open. */
 export function buildBookingHref(
   raw: string | null | undefined,
