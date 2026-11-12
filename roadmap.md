@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Events CSV: combine all tags in tag with pipe separators; verify imports, exports and editor readback.
 
 ## Done
 - Event editors: host link types are capitalised, Listing / Link is labelled and disabled under No Link, booking fields align, and an unset booking type starts blank. Three tests and live signed-in editor checks passed; build OK.
