@@ -310,10 +310,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label>Discount Type</Label>
-              <div className="relative mt-1"><select
+          <div className="grid grid-cols-2 gap-3 items-start">
+            <div className="space-y-2">
+              <Label className="block">Discount Type</Label>
+              <div className="relative"><select
                 className={SELECT_CLS}
                 value={form.discount_type || ""}
                 onChange={(e) => {
@@ -326,7 +326,20 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 {DISCOUNT_TYPES.map((v) => <option key={v} value={v}>{v}</option>)}
               </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
               {discountTypeHint(form.discount_type) && (
-                <p className="text-xs text-muted-foreground mt-1">{discountTypeHint(form.discount_type)}</p>
+                <p className="text-xs text-muted-foreground">{discountTypeHint(form.discount_type)}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label className="block">Redemption Note</Label>
+              <Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" />
+            </div>
+          </div>
+          <div className={ADMIN_FIELD_GRID_TIGHT}>
+            <div>
+              <Label>Freebie Text</Label>
+              <Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" />
+              {form.discount_type === "freebie" && (
+                <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
               )}
             </div>
             {discountTypeUsesValue(form.discount_type) && (
@@ -348,16 +361,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 </div>
               </div>
             )}
-          </div>
-          <div className={ADMIN_FIELD_GRID_TIGHT}>
-            <div>
-              <Label>Freebie Text</Label>
-              <Input value={form.freebie_text || ""} onChange={(e) => set("freebie_text", e.target.value)} placeholder="e.g. Free breakfast and game drive included" />
-              {form.discount_type === "freebie" && (
-                <p className="text-xs text-muted-foreground mt-1">Shown on the card in place of a price</p>
-              )}
-            </div>
-            <div><Label>Redemption Note</Label><Input value={form.redemption_note || ""} onChange={(e) => set("redemption_note", e.target.value)} placeholder="e.g. Book direct on their website" /></div>
           </div>
 
 
