@@ -1,0 +1,1 @@
+ALTER TABLE public.events ADD COLUMN IF NOT EXISTS extra_hosts jsonb NOT NULL DEFAULT '[]'::jsonb;
