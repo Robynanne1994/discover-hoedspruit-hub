@@ -1,4 +1,4 @@
-import { parseSocials, serializeSocials, type SocialPair } from "@/lib/eventSocials";
+import { parseSocials, type SocialPair } from "@/lib/eventSocials";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -462,10 +462,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               {(() => {
                 const pairs = parseSocials(form.social_media_link, form.social_media_label);
                 const write = (next: SocialPair[]) => setForm((f: any) => {
-                  const keepBlank = next.length && !next[next.length - 1].link.trim();
                   const links = next.map((p) => p.link).join("|");
                   const labels = next.some((p) => p.label.trim()) ? next.map((p) => p.label.trim() || "-").join("|") : "";
-                  return { ...f, social_media_link: keepBlank || next.some((p) => !p.link.trim()) ? links : serializeSocials(next).link, social_media_label: labels };
+                  return { ...f, social_media_link: links, social_media_label: labels };
                 });
                 return (
                   <>
