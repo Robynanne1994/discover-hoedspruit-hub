@@ -162,9 +162,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
         <div className="space-y-3 py-2">
           <div>
             <Label>Title</Label>
-            <Textarea
-              rows={2}
-              className="resize-none"
+            {/* Titles are one line, so the box is one line too. */}
+            <Input
               value={form.title || ""}
               // With "use exactly as typed" on, the override follows the title
               // field — there is no second box to keep in step.
@@ -194,7 +193,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             </div>
           </div>
           <div className="grid gap-3 lg:grid-cols-2 items-start">
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label>Tags / Categories</Label>
             {(() => {
               const keys = ["tag", "sub_tag_1", "sub_tag_2"] as const;
@@ -275,8 +274,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             )}
           </div>
           </div>
+          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Description</p>
           <div>
-            <Label>Description</Label>
             <MarkdownToolbar textareaRef={descRef} value={form.description || ""} onChange={(val) => set("description", val)} />
             <Textarea ref={descRef} rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} />
             <p className="text-[11px] text-muted-foreground mt-1">
