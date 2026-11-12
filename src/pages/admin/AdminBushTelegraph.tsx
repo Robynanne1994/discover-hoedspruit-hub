@@ -17,7 +17,6 @@ import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } fr
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
 import { channelButtonLabelFromCsv, channelButtonLabelToCsv } from "@/lib/channelButtonLabel";
-import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
@@ -32,7 +31,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "title_override", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
+const HEADERS = ["title", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
 
 type Resource = {
   id: string;
@@ -212,7 +211,6 @@ const AdminBushTelegraph = () => {
       const data: any = {
         ...rest,
         sort_order: Number(rest.sort_order) || 0,
-        title_override: use_title_override && rest.title_override?.trim() ? rest.title_override.trim() : null,
         meta: rest.meta || null,
         meta_2: rest.meta_2 || null,
         associated_business_id: rest.associated_business_id || null,
@@ -392,7 +390,6 @@ const AdminBushTelegraph = () => {
 
         const payload: any = {
           title,
-          title_override: titleOverrideValue(parseTitleOverrideCell(r.title_override) === true, title),
           platform,
           meta: r.meta || null,
           meta_2: r.meta_2 || null,
@@ -464,7 +461,7 @@ const AdminBushTelegraph = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     if (businessesLoading || businessesError) { toast.error("Business listings could not be loaded. Please try again."); return; }
     const rows = resources.map((r) => [
-      r.title, titleOverrideToCsv(r), r.platform, r.meta ?? "", r.meta_2 ?? "", channelBusinessToCsv(r.associated_business_id, businessListings), r.description ?? "", r.url ?? "",
+      r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", channelBusinessToCsv(r.associated_business_id, businessListings), r.description ?? "", r.url ?? "",
       r.resource_type ?? "link",
       channelButtonLabelToCsv(r),
       (Array.isArray(r.admins) && r.admins.length
@@ -573,7 +570,7 @@ const AdminBushTelegraph = () => {
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="p-3 font-medium">{r.title_override?.trim() || r.title}</td>
+                    <td className="p-3 font-medium">{r.title}</td>
                     <td className="p-3">{r.platform}</td>
                     <td className="p-3 text-muted-foreground">{r.resource_type}</td>
                     <td className="p-3">{r.is_featured ? "★" : ""}</td>
@@ -628,18 +625,6 @@ const AdminBushTelegraph = () => {
             </div>
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-              <div className="flex items-center gap-2">
-                <Switch
-                  id="channel-use-title-override"
-                  checked={form.use_title_override}
-                  onCheckedChange={(c) =>
-                    setForm({ ...form, use_title_override: c, title_override: c ? form.title : "" })
-                  }
-                />
-                <Label htmlFor="channel-use-title-override" className="text-sm cursor-pointer font-normal">
-                  Use the title exactly as typed (no auto-capitalisation)
-                </Label>
-              </div>
               <div className="flex items-center gap-2">
                 <Switch
                   id="channel-featured"

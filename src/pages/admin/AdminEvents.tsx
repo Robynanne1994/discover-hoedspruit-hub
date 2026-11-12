@@ -282,16 +282,6 @@ const AdminEvents = () => {
                 />
               </div>
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="event-use-title-override"
-                    checked={!!(form.title_override && form.title_override.trim())}
-                    onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title || "") : "" })}
-                  />
-                  <Label htmlFor="event-use-title-override" className="text-sm cursor-pointer font-normal">
-                    Use the title exactly as typed (no auto-capitalisation)
-                  </Label>
-                </div>
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
                   <span className="text-sm font-medium">Featured event</span>

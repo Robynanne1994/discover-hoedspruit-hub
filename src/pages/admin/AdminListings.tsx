@@ -1133,16 +1133,6 @@ const AdminListings = () => {
                 </div>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
                   <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="listing-use-title-override"
-                      checked={!!(form.title_override && form.title_override.trim())}
-                      onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title || "") : "" })}
-                    />
-                    <Label htmlFor="listing-use-title-override" className="text-sm cursor-pointer font-normal">
-                      Use the title exactly as typed (no auto-capitalisation)
-                    </Label>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <Switch id="listing-featured" checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
                     <Label htmlFor="listing-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
                   </div>
