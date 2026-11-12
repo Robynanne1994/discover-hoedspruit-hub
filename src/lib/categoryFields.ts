@@ -198,7 +198,7 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 // CATEGORY_CARD_LABEL_FIELD below and the import in AdminImport.tsx.
 // `card_primary_subcategory` is deliberately not here: it is per-category.
 export const UNIVERSAL_FIELDS = [
-  "title", "title_override", "long_description",
+  "title", "long_description",
   "good_to_know",
   // Images (image_url, detail_image_url, gallery_images) are deliberately absent:
   // they are managed in the backend editor only and never travel via CSV.
