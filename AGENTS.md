@@ -63,3 +63,4 @@
 - Keep listing sheet opening-hours cells ("Label {json}", extras pipe-separated) in listingHoursCsv so import and export agree.
 
 - Use EventEditDialog from the admin table and event page so editing stays identical.
+- Keep events sheet host cells (pipe-separated name/subtitle/link, link slot = URL or exact listing title, '-' = none) in eventHostsCsv; hosts past three live in events.extra_hosts.
