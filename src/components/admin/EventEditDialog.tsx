@@ -311,53 +311,56 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Date Text</Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
             <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><Label>Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
-            <div>
-              <Label>End Time</Label>
-              <Input type="time" disabled={isLateEndTime(form.end_time)} value={isLateEndTime(form.end_time) ? "" : (form.end_time || "")} onChange={(e) => set("end_time", e.target.value || null)} />
-              <label className="mt-2 flex items-center gap-2 text-sm">
-                <input type="checkbox" checked={isLateEndTime(form.end_time)} onChange={(e) => set("end_time", e.target.checked ? LATE_END_TIME : null)} />
-                Late
-              </label>
+          <div className="grid gap-3 lg:grid-cols-2 items-start">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2"><Label className="block">Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
+              <div className="space-y-2">
+                <Label className="block">End Time</Label>
+                <Input type="time" disabled={isLateEndTime(form.end_time)} value={isLateEndTime(form.end_time) ? "" : (form.end_time || "")} onChange={(e) => set("end_time", e.target.value || null)} />
+                <label className="mt-2 flex items-center gap-2 text-sm">
+                  <input type="checkbox" checked={isLateEndTime(form.end_time)} onChange={(e) => set("end_time", e.target.checked ? LATE_END_TIME : null)} />
+                  Late
+                </label>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label className="block">Performances</Label>
+              {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
+                <div key={idx} className="flex gap-2 items-end">
+                  <div className="flex-1"><Label className="text-xs">Date</Label><Input type="date" value={p?.date || ""} onChange={(e) => {
+                    const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], date: e.target.value }; set("performances", arr);
+                  }} /></div>
+                  <div className="w-20"><Label className="text-xs">Start</Label><Input type="time" value={p?.time || ""} onChange={(e) => {
+                    const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], time: e.target.value }; set("performances", arr);
+                  }} /></div>
+                  <div className="w-20"><Label className="text-xs">End</Label><Input type="time" value={p?.end_time || ""} onChange={(e) => {
+                    const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], end_time: e.target.value }; set("performances", arr);
+                  }} /></div>
+                  <Button type="button" variant="ghost" size="sm" onClick={() => {
+                    const arr = [...(form.performances || [])]; arr.splice(idx, 1); set("performances", arr.length ? arr : null);
+                  }}>×</Button>
+                </div>
+              ))}
+              <div><Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => {
+                const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
+                set("performances", arr);
+              }}>Add</Button></div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3 -mt-2">
-          <div className="space-y-2">
-            <Label className="block">Performances</Label>
-            {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
-              <div key={idx} className="flex gap-2 items-end">
-                <div className="flex-1"><Label className="text-xs">Date</Label><Input type="date" value={p?.date || ""} onChange={(e) => {
-                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], date: e.target.value }; set("performances", arr);
-                }} /></div>
-                <div className="w-20"><Label className="text-xs">Start</Label><Input type="time" value={p?.time || ""} onChange={(e) => {
-                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], time: e.target.value }; set("performances", arr);
-                }} /></div>
-                <div className="w-20"><Label className="text-xs">End</Label><Input type="time" value={p?.end_time || ""} onChange={(e) => {
-                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], end_time: e.target.value }; set("performances", arr);
-                }} /></div>
-                <Button type="button" variant="ghost" size="sm" onClick={() => {
-                  const arr = [...(form.performances || [])]; arr.splice(idx, 1); set("performances", arr.length ? arr : null);
-                }}>×</Button>
-              </div>
-            ))}
-            <div><Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => {
-              const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
-              set("performances", arr);
-            }}>Add</Button></div>
-          </div>
-          </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2 items-start">
             <div className="space-y-3">
-              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
               <div className="space-y-2">
-                <Label>Price Notes</Label>
+                <Label className="block">Price</Label>
+                <Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label className="block">Price Notes</Label>
                 <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>What's Included</Label>
+              <Label className="block">What's Included</Label>
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
             </div>
           </div>
