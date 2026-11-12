@@ -1,7 +1,23 @@
 import { describe, expect, it } from "vitest";
-import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "./eventTags";
+import { availableEventTags, collectEventTags, countEventTags, eventMatchesTag, eventMatchesSearch, eventTagCsvCell, eventTagCsvColumns } from "./eventTags";
 
 describe("event categories", () => {
+  it("imports all pipe-separated tags into one column without a three-tag limit", () => {
+    const columns = eventTagCsvColumns("Market|Family-friendly|Outdoor|Music");
+    expect(columns).toEqual({ tag: "Market|Family-friendly|Outdoor|Music", sub_tag_1: null, sub_tag_2: null });
+    expect(collectEventTags(columns)).toEqual(["Market", "Family-friendly", "Outdoor", "Music"]);
+    expect(eventMatchesTag(columns, "Music")).toBe(true);
+  });
+
+  it("exports existing sub-tags in the single tag cell with no separator spaces", () => {
+    expect(eventTagCsvCell({ tag: "Market", sub_tag_1: "Family-friendly", sub_tag_2: "Outdoor" })).toBe("Market|Family-friendly|Outdoor");
+  });
+
+  it("counts repeated pipe tags only once and round-trips them", () => {
+    const event = eventTagCsvColumns("Market|Family-friendly|Market");
+    expect(countEventTags([event], ["Market"]).get("Market")).toBe(1);
+    expect(eventTagCsvCell(event)).toBe("Market|Family-friendly");
+  });
   const events = [
     { title: "Market Walk", tag: "Markets", sub_tag_1: "Family", sub_tag_2: "Walking" },
     { title: "Family Day", tag: " family ", sub_tag_1: "Family", sub_tag_2: "FAMILY" },

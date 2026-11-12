@@ -1,4 +1,5 @@
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
+import { eventTagCsvCell, eventTagCsvColumns } from "@/lib/eventTags";
 import { parseHostCells, serializeHostCells, hostsToColumns } from "@/lib/eventHostsCsv";
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -23,8 +24,6 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
   "end_date",
   "location",
   "tag",
-  "sub_tag_1",
-  "sub_tag_2",
   "start_time",
   "end_time",
   "recurrence",
@@ -235,9 +234,7 @@ const AdminEventsImport = () => {
           start_date: row.start_date || null,
           end_date: row.end_date || null,
           location: row.location || null,
-          tag: row.tag || null,
-          sub_tag_1: row.sub_tag_1 || null,
-          sub_tag_2: row.sub_tag_2 || null,
+          ...eventTagCsvColumns(row.tag),
           start_time: normalizeTime(row.start_time) ?? (row.start_time || null),
           end_time: isLateEndTime(row.end_time) ? LATE_END_TIME : (normalizeTime(row.end_time) ?? (row.end_time || null)),
           recurrence: row.recurrence || null,
@@ -337,9 +334,7 @@ const AdminEventsImport = () => {
       start_date: "",
       end_date: "",
       location: "Hoedspruit Town",
-      tag: "Market",
-      sub_tag_1: "Family-friendly",
-      sub_tag_2: "Outdoor",
+      tag: "Market|Family-friendly|Outdoor",
       start_time: "08:00",
       end_time: "13:00",
       recurrence: "Weekly",
@@ -415,9 +410,7 @@ const AdminEventsImport = () => {
         start_date: e.start_date ?? "",
         end_date: e.end_date ?? "",
         location: e.location ?? "",
-        tag: e.tag ?? "",
-        sub_tag_1: e.sub_tag_1 ?? "",
-        sub_tag_2: e.sub_tag_2 ?? "",
+        tag: eventTagCsvCell(e),
         start_time: e.start_time ?? "",
         end_time: e.end_time ?? "",
         recurrence: e.recurrence ?? "",

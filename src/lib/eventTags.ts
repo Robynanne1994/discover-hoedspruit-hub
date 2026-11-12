@@ -11,10 +11,20 @@ function eventTagKey(tag: string): string {
 export function collectEventTags(event: EventTags): string[] {
   const tags = new Map<string, string>();
   for (const raw of [event.tag, event.sub_tag_1, event.sub_tag_2]) {
-    const label = raw?.trim().replace(/\s+/g, " ");
-    if (label && !tags.has(eventTagKey(label))) tags.set(eventTagKey(label), label);
+    for (const part of (raw || "").split("|")) {
+      const label = part.trim().replace(/\s+/g, " ");
+      if (label && label !== "-" && !tags.has(eventTagKey(label))) tags.set(eventTagKey(label), label);
+    }
   }
   return [...tags.values()];
+}
+
+export function eventTagCsvCell(event: EventTags): string {
+  return collectEventTags(event).join("|");
+}
+
+export function eventTagCsvColumns(tag: string | null | undefined) {
+  return { tag: eventTagCsvCell({ tag }) || null, sub_tag_1: null, sub_tag_2: null };
 }
 
 export function availableEventTags(events: EventTags[]): string[] {

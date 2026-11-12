@@ -34,7 +34,7 @@ import { isRecentPast, defaultEventSort, effectiveEventSort } from "@/lib/eventP
 import { RECURRENCE_OPTIONS, TIME_OPTIONS, countEventRecurrence, countEventTimes, eventMatchesRecurrence, eventMatchesTime, type RecurrenceFilter, type TimeFilter } from "@/lib/eventRefinements";
 import { filtersWithEvents } from "@/lib/eventFilterVisibility";
 import { PRICE_OPTIONS, countEventPrices, eventMatchesPrice, type PriceFilter } from "@/lib/eventPrice";
-import { availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
+import { collectEventTags, availableEventTags, countEventTags, eventMatchesTag, eventMatchesSearch } from "@/lib/eventTags";
 import { buildEventGroups } from "@/lib/eventGroups";
 import { calendarWeekend } from "@/lib/eventTimeFrames";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, resolveRecurrenceRule } from "@/lib/eventSchedule";
@@ -309,7 +309,7 @@ const EventCard = ({ event }: { event: any }) => {
                 textOverflow: "ellipsis",
               }}
             >
-              {event.tag}
+              {collectEventTags(event)[0]}
             </span>
           </div>
         )}

@@ -1,4 +1,5 @@
 import { parseSocials, serializeSocials, type SocialPair } from "@/lib/eventSocials";
+import { collectEventTags, eventTagCsvColumns } from "@/lib/eventTags";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -53,7 +54,7 @@ const hostSlot = eventImageSlot("host");
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(event);
-  const [tagSlots, setTagSlots] = useState(1);
+  const [tagRows, setTagRows] = useState<string[]>([""]);
   const [bookingLabelOpen, setBookingLabelOpen] = useState(false);
   const [socialLabelOpen, setSocialLabelOpen] = useState<number | false>(false);
   const descRef = useRef<HTMLTextAreaElement>(null);
@@ -65,6 +66,8 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       seeded.business_ids = seeded.business_id ? [seeded.business_id] : [];
     }
     setForm(seeded);
+    const tags = collectEventTags(seeded);
+    setTagRows(tags.length ? tags : [""]);
   }, [event, open]);
 
   const { data: listings } = useQuery({
@@ -79,6 +82,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      Object.assign(payload, eventTagCsvColumns(tagRows.join("|")));
       // uuid columns reject "": a host with no listing picked must go in as null.
       HOST_LISTING_KEYS.forEach((k) => { if (!payload[k]) payload[k] = null; });
       // A host linked to an app listing shows that listing's image — drop any stored host photo.
@@ -193,16 +197,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div className="grid gap-3 lg:grid-cols-2 items-start">
           <div className="space-y-1.5">
             <Label>Tags / Categories</Label>
-            {(() => {
-              const keys = ["tag", "sub_tag_1", "sub_tag_2"] as const;
-              const filled = keys.reduce((n, k, i) => ((form[k] || "").trim() ? i + 1 : n), 0);
-              const count = Math.min(3, Math.max(1, filled, tagSlots));
-              return (
-                <>
-                  {keys.slice(0, count).map((k, idx) => (
-                    <div key={k} className="flex gap-2">
-                      <Input value={form[k] || ""} onChange={(e) => set(k, e.target.value)} />
-                      {count > 1 && (
+                  {tagRows.map((tag, idx) => (
+                    <div key={idx} className="flex gap-2">
+                      <Input aria-label={`Tag ${idx + 1}`} value={tag} onChange={(e) => setTagRows((rows) => rows.map((value, i) => i === idx ? e.target.value : value))} />
+                      {tagRows.length > 1 && (
                         <Button
                           type="button"
                           variant="ghost"
@@ -210,11 +208,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                           aria-label="Remove tag"
                           className="h-7 w-7 shrink-0 self-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                           onClick={() => {
-                            const vals = keys.map((kk) => form[kk] || "");
-                            vals.splice(idx, 1);
-                            vals.push("");
-                            setForm((f) => ({ ...f, tag: vals[0], sub_tag_1: vals[1], sub_tag_2: vals[2] }));
-                            setTagSlots(count - 1);
+                            setTagRows((rows) => rows.filter((_, i) => i !== idx));
                           }}
                         >
                           <X className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -222,12 +216,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       )}
                     </div>
                   ))}
-                  {count < 3 && (
-                    <Button type="button" variant="outline" size="sm" onClick={() => setTagSlots(count + 1)}>+ Add Tag</Button>
-                  )}
-                </>
-              );
-            })()}
+                  <Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setTagRows((rows) => [...rows, ""])}><Plus className="h-3 w-3" /> Add</Button>
           </div>
           <div className="space-y-2">
             <Label>Linked Business Listings</Label>

@@ -1,4 +1,5 @@
 import { parseSocials } from "@/lib/eventSocials";
+import { collectEventTags } from "@/lib/eventTags";
 import { buildHostDirectory, resolveHost } from "@/lib/eventHosts";
 import { getEventLiveStatus } from "@/lib/eventLive";
 import InstagramIcon from "@/components/ui/InstagramIcon";
@@ -462,13 +463,7 @@ const EventDetail = () => {
   const notes: string[] = Array.isArray((e as any).notes)
     ? (e as any).notes.filter((s: string) => s && String(s).trim())
     : (typeof (e as any).notes === "string" && (e as any).notes.trim() ? [(e as any).notes] : []);
-  const subTag1 = e.sub_tag_1 || null;
-  const subTag2 = e.sub_tag_2 || null;
-  const allTags = [
-    { text: e.tag, type: "main" as const },
-    { text: subTag1, type: "sub" as const },
-    { text: subTag2, type: "sub" as const },
-  ].filter((t) => t.text && String(t.text).trim() !== "");
+  const allTags = collectEventTags(e).map((text, index) => ({ text, type: index === 0 ? "main" as const : "sub" as const }));
   const eyebrowText = allTags[0]?.text || null;
 
   const directionsHref = buildDirectionsHref({ mapsLink, location: e.location });
