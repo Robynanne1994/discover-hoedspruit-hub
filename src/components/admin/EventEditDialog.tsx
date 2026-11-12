@@ -348,16 +348,19 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
-          <div className="grid gap-3 lg:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2 items-start">
             <div className="space-y-3">
-              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
               <div className="space-y-2">
-                <Label>Price Notes</Label>
+                <Label className="block">Price</Label>
+                <Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label className="block">Price Notes</Label>
                 <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
               </div>
             </div>
             <div className="space-y-2">
-              <Label>What's Included</Label>
+              <Label className="block">What's Included</Label>
               <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
             </div>
           </div>
