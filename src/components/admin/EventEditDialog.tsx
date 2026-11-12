@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, Tag, X } from "lucide-react";
+import { ChevronDown, Plus, Tag, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
