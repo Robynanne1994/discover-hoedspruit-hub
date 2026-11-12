@@ -10,7 +10,7 @@ export const discountTypeHint = (type?: string | null): string | null => {
     case "fixed_price":
       return "Set the deal price in the Price field";
     case "buy_x_get_y":
-      return "Describe the deal in Badge override, e.g. Buy 2 Get 1 Free";
+      return "\n";
     // 'freebie' is hinted under the Freebie Text field instead.
 
     default:
