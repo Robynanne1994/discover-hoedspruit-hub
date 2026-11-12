@@ -46,7 +46,7 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
   return (
     <div className="grid grid-cols-2 gap-3 items-end">
       <div className="space-y-2">
-        <Label className="block">Link</Label>
+        <Label className="block">Link Type</Label>
         <div className="relative">
           <select
             className="flex h-10 w-full appearance-none rounded-md border border-gray-950 bg-slate-50 px-3 py-2 pr-9 text-sm text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
