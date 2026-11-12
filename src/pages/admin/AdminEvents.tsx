@@ -1,4 +1,5 @@
 import EventEditDialog from "@/components/admin/EventEditDialog";
+import { collectEventTags } from "@/lib/eventTags";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -529,7 +530,7 @@ const AdminEvents = () => {
                     <tr key={ev.id} className="border-t border-border">
                       <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
                       <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
-                      <td className="p-3 text-muted-foreground truncate">{[ev.tag, (ev as any).sub_tag_1, (ev as any).sub_tag_2].filter(Boolean).join(", ") || "—"}</td>
+                      <td className="p-3 text-muted-foreground truncate">{collectEventTags(ev).join(", ") || "—"}</td>
                       <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "Yes" : "—"}</td>
                       <td className="p-3">
                         <div className="flex gap-1 justify-end">
