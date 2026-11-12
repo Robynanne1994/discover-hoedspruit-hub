@@ -1,3 +1,4 @@
+import { parseSocials } from "@/lib/eventSocials";
 import { buildHostDirectory, resolveHost } from "@/lib/eventHosts";
 import { getEventLiveStatus } from "@/lib/eventLive";
 import InstagramIcon from "@/components/ui/InstagramIcon";
@@ -438,8 +439,8 @@ const EventDetail = () => {
   }
 
   const mapsLink = e.google_maps_link || null;
-  const socialLink = e.social_media_link || null;
-  const socialLabel = e.social_media_label || null;
+  const socialPairs = parseSocials(e.social_media_link, e.social_media_label).filter((p) => p.link);
+  const socialLink = socialPairs[0]?.link || null;
   const emailPairs = eventContactPairs(e.contact_email, e.email_label, e.additional_emails, e.additional_email_labels);
   const phonePairs = eventContactPairs(e.contact_phone, e.phone_label, e.additional_phones, e.additional_phone_labels);
   const whatsappPairs = eventContactPairs(e.contact_whatsapp, e.whatsapp_label, e.additional_whatsapps, e.additional_whatsapp_labels);
@@ -737,13 +738,13 @@ const EventDetail = () => {
     contactRows.push({ Icon: WhatsAppIcon, label: label || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!label, value: "Chat on WhatsApp", href: `https://wa.me/${clean}`, external: true });
   });
   emailPairs.forEach(({ value: em, label }, i) => contactRows.push({ Icon: Mail, label: label || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!label, value: em, href: `mailto:${em}`, external: true }));
-  if (socialLink) {
+  socialPairs.forEach(({ link: socialLink, label: socialLabel }) => {
     const isFb = /facebook\.com|fb\.com/i.test(socialLink);
     const isIg = /instagram\.com/i.test(socialLink);
     const SocialIcon = isFb ? FacebookIcon : isIg ? InstagramIcon : Globe;
     const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
-  }
+  });
   // Booking lives on its own tab, never inside the contact list.
   const bookingRow = booking
     ? { Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast }

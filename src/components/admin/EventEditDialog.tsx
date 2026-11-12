@@ -1,3 +1,4 @@
+import { parseSocials, serializeSocials, type SocialPair } from "@/lib/eventSocials";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -54,7 +55,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const [form, setForm] = useState<any>(event);
   const [tagSlots, setTagSlots] = useState(1);
   const [bookingLabelOpen, setBookingLabelOpen] = useState(false);
-  const [socialLabelOpen, setSocialLabelOpen] = useState(false);
+  const [socialLabelOpen, setSocialLabelOpen] = useState<number | false>(false);
   const descRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -410,7 +411,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
             <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           </div>
-          <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
+          <p className="mt-10 mb-1 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
           <ListingContactPicker
             listings={listings || []}
             onApply={(c) => setForm((f) => ({ ...f, ...c }))}
@@ -458,38 +459,46 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             />
             <div className="space-y-1.5">
               <Label>Social Media</Label>
-              <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} />
-              {socialLabelOpen || (form.social_media_label || "").trim() ? (
-                <div className="flex gap-2 items-center">
-                  <Input
-                    value={form.social_media_label || ""}
-                    placeholder='Custom label (e.g. "Instagram")'
-                    onChange={(e) => set("social_media_label", e.target.value)}
-                    className="h-8 text-xs"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
-                    aria-label="Remove label"
-                    onClick={() => {
-                      set("social_media_label", "");
-                      setSocialLabelOpen(false);
-                    }}
-                  >
-                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </Button>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setSocialLabelOpen(true)}
-                  className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-                >
-                  <Tag className="h-3 w-3" /> Add custom label
-                </button>
-              )}
+              {(() => {
+                const pairs = parseSocials(form.social_media_link, form.social_media_label);
+                const write = (next: SocialPair[]) => setForm((f: any) => {
+                  const keepBlank = next.length && !next[next.length - 1].link.trim();
+                  const links = next.map((p) => p.link).join("|");
+                  const labels = next.some((p) => p.label.trim()) ? next.map((p) => p.label.trim() || "-").join("|") : "";
+                  return { ...f, social_media_link: keepBlank || next.some((p) => !p.link.trim()) ? links : serializeSocials(next).link, social_media_label: labels };
+                });
+                return (
+                  <>
+                    {pairs.map((p, i) => (
+                      <div key={i} className="space-y-1.5">
+                        <div className="flex gap-2 items-center">
+                          <Input value={p.link} onChange={(e) => write(pairs.map((x, j) => (j === i ? { ...x, link: e.target.value } : x)))} />
+                          {pairs.length > 1 && (
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" aria-label="Remove social link" onClick={() => write(pairs.filter((_, j) => j !== i))}>
+                              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                            </Button>
+                          )}
+                        </div>
+                        {p.label || socialLabelOpen === (i as any) ? (
+                          <div className="flex gap-2 items-center">
+                            <Input value={p.label} placeholder='Custom label (e.g. "Instagram")' onChange={(e) => write(pairs.map((x, j) => (j === i ? { ...x, label: e.target.value.replace(/\|/g, "") } : x)))} className="h-8 text-xs" />
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" aria-label="Remove label" onClick={() => { write(pairs.map((x, j) => (j === i ? { ...x, label: "" } : x))); setSocialLabelOpen(false as any); }}>
+                              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                            </Button>
+                          </div>
+                        ) : (
+                          <button type="button" onClick={() => setSocialLabelOpen(i as any)} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+                            <Tag className="h-3 w-3" /> Add custom label
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => write([...pairs, { link: "", label: "" }])}>
+                      <Plus className="h-3 w-3" /> Add
+                    </Button>
+                  </>
+                );
+              })()}
             </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Hosts</p>
