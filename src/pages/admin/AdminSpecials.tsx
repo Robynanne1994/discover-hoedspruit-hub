@@ -1,4 +1,4 @@
-import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
+import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -476,9 +476,10 @@ const AdminSpecials = () => {
               <Label>Booking Type</Label>
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm mt-1"
-                value={resolveBookingLinkType(form.booking_link, form.booking_link_type)}
+                value={editorBookingLinkType(form.booking_link, form.booking_link_type)}
                 onChange={(e) => setForm({ ...form, booking_link_type: e.target.value })}
               >
+                <option value=""></option>
                 {BOOKING_LINK_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
