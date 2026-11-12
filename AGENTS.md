@@ -65,3 +65,5 @@
 - Use EventEditDialog from the admin table and event page so editing stays identical.
 - Keep events sheet host cells in eventHostsCsv; hosts past three live in events.extra_hosts.
 - Keep event social pipe parsing in eventSocials.
+
+- Titles of listings, events, specials and local channels always render exactly as typed; a database trigger keeps title_override equal to title, so editors and CSVs carry no title-override toggle or column.
