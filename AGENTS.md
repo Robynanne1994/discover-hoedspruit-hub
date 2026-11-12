@@ -66,4 +66,4 @@
 - Keep events sheet host cells in eventHostsCsv; hosts past three live in events.extra_hosts.
 - Keep event social pipe parsing in eventSocials.
 
-- Titles of listings, events, specials and local channels always render exactly as typed; a database trigger keeps title_override equal to title, so editors and CSVs carry no title-override toggle or column.
+- Titles render as typed; a DB trigger syncs title_override to title, so no toggle or CSV column.
