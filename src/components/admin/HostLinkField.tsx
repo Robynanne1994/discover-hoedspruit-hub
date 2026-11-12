@@ -8,9 +8,9 @@ export type HostLinkValue = { link: string; listingId: string };
 type Mode = "none" | "url" | "listing";
 
 const MODES: { key: Mode; label: string }[] = [
-  { key: "none", label: "No link" },
-  { key: "url", label: "Website link" },
-  { key: "listing", label: "App listing" },
+  { key: "none", label: "No Link" },
+  { key: "url", label: "Website Link" },
+  { key: "listing", label: "App Listing" },
 ];
 
 const modeOf = (v: HostLinkValue): Mode => (v.listingId ? "listing" : v.link ? "url" : "none");
