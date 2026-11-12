@@ -64,3 +64,4 @@
 
 - Use EventEditDialog from the admin table and event page so editing stays identical.
 - Keep events sheet host cells in eventHostsCsv; hosts past three live in events.extra_hosts.
+- Keep event social link pipe parsing and '-' label slots in eventSocials so the editor, CSV and event page agree.

@@ -1,4 +1,4 @@
-import { parseSocials, type SocialPair } from "@/lib/eventSocials";
+import { parseSocials, serializeSocials, type SocialPair } from "@/lib/eventSocials";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useEffect, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -90,6 +90,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       HOST_LISTING_KEYS.forEach((k) => { if (payload[k]) payload[HOST_IMG_BY_LISTING[k]] = null; });
       // Normalize business_ids -> ensure array, sync legacy single business_id to first entry
       const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
+      { const so = serializeSocials(parseSocials(form.social_media_link, form.social_media_label)); payload.social_media_link = so.link || null; payload.social_media_label = so.label || null; }
       payload.business_ids = ids;
       payload.business_id = ids[0] ?? null;
       { const pr = sanitizeContactPairs(form.additional_emails, form.additional_email_labels); payload.additional_emails = pr.values; payload.additional_email_labels = pr.labels; payload.email_label = (form.email_label || "").trim() || null; }
