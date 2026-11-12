@@ -5,7 +5,6 @@ import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventC
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
@@ -31,7 +30,7 @@ const normalizeDiscountType = (val?: string) => normalizeEnum(VALID_DISCOUNT_TYP
 const normalizeDealType = (val?: string) => normalizeEnum(VALID_DEAL_TYPES, val);
 
 const EXPECTED_HEADERS = [
-  "id", "title", "title_override", "badge_override", "deal_type", "day_of_week",
+  "id", "title", "badge_override", "deal_type", "day_of_week",
   "discount_type", "discount_value", "special_type", "freebie_text", "card_deal_text", "redemption_note", "business_name", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
   "valid_from", "valid_until",
@@ -153,7 +152,6 @@ const AdminSpecialsImport = () => {
         const payload: Record<string, any> = {
           ...specialAudienceCsvPatch(row),
           title,
-          title_override: titleOverrideValue(parseTitleOverrideCell(row.title_override) === true, title),
           badge_override: row.badge_override || null,
           deal_type: normalizeDealType(row.deal_type),
           day_of_week: days.length ? days : null,
@@ -204,8 +202,6 @@ const AdminSpecialsImport = () => {
         for (const legacy of ["card_footer_text", "savings", "social_media_link", "social_media_label"]) {
           if (parsed.headers.includes(legacy)) payload[legacy] = row[legacy] || null;
         }
-        // An older file without the column must not wipe a stored override.
-        if (!parsed.headers.includes("title_override")) delete payload.title_override;
         if (!parsed.headers.includes("special_type")) delete payload.special_type;
         const matchedListingId = listingByTitle.get((row.business_name ?? "").trim().toLowerCase());
         if (matchedListingId) payload.business_id = matchedListingId;
@@ -287,7 +283,7 @@ const AdminSpecialsImport = () => {
     if (!specials.length) { toast.error(`No ${scope} specials to export`); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
-      s.id, s.title ?? "", titleOverrideToCsv(s), s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
+      s.id, s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.special_type ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
       s.valid_from ?? "", s.valid_until ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",

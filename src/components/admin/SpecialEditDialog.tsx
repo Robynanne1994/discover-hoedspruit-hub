@@ -223,16 +223,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
               <Switch
-                id="special-dlg-use-title-override"
-                checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => set("title_override", v ? (form.title || "") : null)}
-              />
-              <Label htmlFor="special-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use the title exactly as typed (no auto-capitalisation)
-              </Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch
                 id="special-dlg-featured"
                 checked={!!form.is_featured}
                 onCheckedChange={(v) => set("is_featured", v)}

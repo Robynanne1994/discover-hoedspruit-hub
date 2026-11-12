@@ -16,7 +16,7 @@ import { getFieldReference } from "./listingFieldOptions";
 // A sample of the universal content columns: name, contacts, location, hours.
 // These are what a category upload must never be able to change.
 const UNIVERSAL_SAMPLE = [
-  "title_override", "long_description", "location", "phone", "email", "website",
+  "long_description", "location", "phone", "email", "website",
   "whatsapp", "opening_hours", "is_featured", "google_rating", "km_from_town",
   "custom_title_1", "good_to_know",
 ];

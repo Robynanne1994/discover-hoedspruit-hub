@@ -3,7 +3,6 @@ import { parseHostCells, serializeHostCells, hostsToColumns } from "@/lib/eventH
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
@@ -18,7 +17,6 @@ import { eventCsvAction, eventCsvScope, type EventCsvImportMode, type EventCsvSc
 const EXPECTED_HEADERS = stripImageCsvColumns([
   "id",
   "title",
-  "title_override",
   "description",
   "date",
   "start_date",
@@ -232,7 +230,6 @@ const AdminEventsImport = () => {
 
         const payload: Record<string, any> = {
           title,
-          title_override: titleOverrideValue(parseTitleOverrideCell(row.title_override) === true, title),
           description: row.description || null,
           date: row.date || (row.start_date && row.end_date && row.start_date !== row.end_date ? `${row.start_date} to ${row.end_date}` : (row.start_date || "")),
           start_date: row.start_date || null,
@@ -335,7 +332,6 @@ const AdminEventsImport = () => {
   const downloadTemplate = () => {
     const sample: Record<string, string> = {
       title: "Market Day",
-      title_override: "false",
       description: "Weekly market with local produce",
       date: "Every Saturday",
       start_date: "",
@@ -414,7 +410,6 @@ const AdminEventsImport = () => {
       const record: Record<string, string> = {
         id: e.id,
         title: e.title ?? "",
-        title_override: titleOverrideToCsv(e),
         description: e.description ?? "",
         date: e.date ?? "",
         start_date: e.start_date ?? "",

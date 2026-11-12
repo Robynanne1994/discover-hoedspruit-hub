@@ -65,3 +65,5 @@
 - Use EventEditDialog from the admin table and event page so editing stays identical.
 - Keep events sheet host cells in eventHostsCsv; hosts past three live in events.extra_hosts.
 - Keep event social pipe parsing in eventSocials.
+
+- Titles render as typed; a DB trigger syncs title_override to title, so no toggle or CSV column.

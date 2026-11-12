@@ -35,7 +35,6 @@ import {
   normalizeAccommodationPriceRange,
 } from "@/lib/accommodationCsv";
 import { parseAdditionalHours } from "@/lib/openHours";
-import { parseTitleOverrideCell, titleOverrideValue, titleOverrideToCsv } from "@/lib/displayTitle";
 
 
 const ALL_CATEGORIES_VALUE = "__all__";
@@ -751,14 +750,8 @@ const AdminImport = () => {
           if (fieldName === GOOGLE_PLACE_ID_FIELD) continue;   // handled above
           // Images are managed in the backend editor only: never written from CSV.
           if (isImageCsvColumn(fieldName)) continue;
-          // title_override is a true/false toggle in CSV (same switch as the
-          // editor): true stores the title verbatim, false clears the override.
-          if (fieldName === "title_override") {
-            const on = parseTitleOverrideCell(row[fieldName]);
-            if (on === null) { if (!isUpdate) payloadRecord[fieldName] = null; continue; }
-            payloadRecord[fieldName] = titleOverrideValue(on, title);
-            continue;
-          }
+          // Titles always show exactly as typed; old title_override columns are ignored.
+          if (fieldName === "title_override") continue;
           // Combined contact cells: "a|b" plus positional labels, split into primary + extras.
           const contactGroup = contactGroupForValue(fieldName);
           if (contactGroup) {
@@ -1369,7 +1362,7 @@ const AdminImport = () => {
       for (const h of headers) {
         if (h === ID_FIELD || h === CATEGORY_MEMBERSHIP_FIELD || h === CATEGORY_SUBCATEGORY_FIELD) continue;
         if (!isAllCategories && h === CATEGORY_CARD_LABEL_FIELD) continue;
-        if (h === "title_override") { fieldMap[h] = titleOverrideToCsv(lr); continue; }
+        if (h === "title_override") continue;
         const exportGroup = contactGroupForValue(h);
         if (exportGroup) {
           const cells = contactCellsForExport(lr, exportGroup);

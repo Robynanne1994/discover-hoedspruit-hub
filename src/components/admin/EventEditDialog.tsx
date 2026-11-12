@@ -190,18 +190,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <Label htmlFor="event-dlg-featured" className="cursor-pointer font-normal">Featured</Label>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="event-dlg-use-title-override"
-                checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => set("title_override", v ? (form.title || "") : "")}
-              />
-              <Label htmlFor="event-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use the title exactly as typed (no auto-capitalisation)
-              </Label>
-            </div>
-          </div>
           <div className="grid gap-3 lg:grid-cols-2 items-start">
           <div className="space-y-1.5">
             <Label>Tags / Categories</Label>

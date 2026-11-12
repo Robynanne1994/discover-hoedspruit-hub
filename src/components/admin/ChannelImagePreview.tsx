@@ -67,7 +67,7 @@ const floatBtn: React.CSSProperties = {
 };
 
 const displayTitleOf = (c: ChannelPreviewData) =>
-  (c.title_override || "").trim() || (c.title || "").trim() || "Channel title";
+  (c.title || "").trim() || "Channel title";
 
 /*
  * Only the listing card has a height in the source: 128px, fixed. The homepage

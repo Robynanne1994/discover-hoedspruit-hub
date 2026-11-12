@@ -342,16 +342,6 @@ const AdminSpecials = () => {
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
-              <Switch
-                id="special-use-title-override"
-                checked={!!(form.title_override && String(form.title_override).trim())}
-                onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title || "") : null })}
-              />
-              <Label htmlFor="special-use-title-override" className="text-sm cursor-pointer font-normal">
-                Use the title exactly as typed (no auto-capitalisation)
-              </Label>
-            </div>
-            <div className="flex items-center gap-2">
               <Switch id="special-featured" checked={!!form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
               <Label htmlFor="special-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
             </div>
