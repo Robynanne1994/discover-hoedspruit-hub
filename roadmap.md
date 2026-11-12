@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Pending
-- Event editors: capitalise host link types, add a Listing / Link field with a disabled No Link state, align booking fields, and default an unset booking type to blank.
+(none)
 
 ## Done
+- Event editors: host link types are capitalised, Listing / Link is labelled and disabled under No Link, booking fields align, and an unset booking type starts blank. Three tests and live signed-in editor checks passed; build OK.
 - Event editor: Start Time and End Time now share column 1 at quarter width, with Performances beside them in column 2; Price and What's Included label-and-box groups are aligned. Live layout assertions and screenshots passed; build OK.
 - Universal listings CSV: details_display_mode column removed from downloads, imports and the reference row; the field stays editable in the backend editor. All 694 listings already hold {}, so no data changed; 760 tests passed.
 - Accommodation: sleeps_children removed from the editor, the listing page and both CSV sheets; the database column is left untouched. Verified on Ujabule Lodge (adults 8, children 4) reading "Sleeps 8 People" and on its editor showing only the adults field; 748 tests passed.
