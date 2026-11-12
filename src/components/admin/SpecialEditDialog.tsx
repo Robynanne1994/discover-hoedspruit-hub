@@ -310,10 +310,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label>Discount Type</Label>
-              <div className="relative mt-1"><select
+          <div className="grid grid-cols-2 gap-3 items-start">
+            <div className="space-y-2">
+              <Label className="block">Discount Type</Label>
+              <div className="relative"><select
                 className={SELECT_CLS}
                 value={form.discount_type || ""}
                 onChange={(e) => {
