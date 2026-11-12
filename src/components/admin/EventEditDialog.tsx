@@ -201,10 +201,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 Use the title exactly as typed (no auto-capitalisation)
               </Label>
             </div>
-            <div className="flex items-center gap-2">
-              <Switch id="event-dlg-featured" checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
-              <Label htmlFor="event-dlg-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
-            </div>
           </div>
           <div className="grid gap-3 lg:grid-cols-2 items-start">
           <div className="space-y-1.5">
