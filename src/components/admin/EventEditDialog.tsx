@@ -308,7 +308,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div><Label>Date <span className="text-xs text-muted-foreground">(e.g. "Every Saturday")</span></Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
+            <div><Label>Date</Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
             <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
