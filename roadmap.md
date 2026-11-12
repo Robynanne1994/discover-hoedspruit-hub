@@ -4,6 +4,7 @@
 (none)
 
 ## Done
+- Events CSV: single pipe-separated tag column replaces sub_tag_1/sub_tag_2; existing tags combine on export, unlimited tags read back in editor and shared filters. 13 tests and signed-in four-tag import/readback passed; temporary event removed.
 - Event editors: host link types are capitalised, Listing / Link is labelled and disabled under No Link, booking fields align, and an unset booking type starts blank. Three tests and live signed-in editor checks passed; build OK.
 - Event editor: Start Time and End Time now share column 1 at quarter width, with Performances beside them in column 2; Price and What's Included label-and-box groups are aligned. Live layout assertions and screenshots passed; build OK.
 - Universal listings CSV: details_display_mode column removed from downloads, imports and the reference row; the field stays editable in the backend editor. All 694 listings already hold {}, so no data changed; 760 tests passed.
