@@ -4,6 +4,10 @@
 (none)
 
 ## Done
+- (2026-11-12) Specials editor: Redemption Note moved up into the Discount Type row as column 2,
+  labels and boxes level; the Percent Off / Amount off value box now sits beside Freebie Text in
+  the row below. Verified live in the signed-in editor (both labels 853.2, both boxes 889.3,
+  40px tall); build OK.
 - Specials editors: Booking Type starts blank instead of "Website Link" when nothing is set (shared editor and add-new form), and the Title box now takes three quarters of its row with a bigger Featured toggle beside it on the same line. Live signed-in checks passed (title 782px of a 1094px dialog, toggle 50x29 same row, booking select blank and still selectable/clearable); build OK.
 - Events CSV: single pipe-separated tag column replaces sub_tag_1/sub_tag_2; existing tags combine on export, unlimited tags read back in editor and shared filters. 13 tests and signed-in four-tag import/readback passed; temporary event removed.
 - Event editors: host link types are capitalised, Listing / Link is labelled and disabled under No Link, booking fields align, and an unset booking type starts blank. Three tests and live signed-in editor checks passed; build OK.
