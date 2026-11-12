@@ -1,4 +1,5 @@
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
+import { parseHostCells, serializeHostCells, hostsToColumns } from "@/lib/eventHostsCsv";
 import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,15 +51,6 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
   "hosted_by_name",
   "hosted_by_subtitle",
   "hosted_by_link",
-  "hosted_by_listing",
-  "hosted_by_name_2",
-  "hosted_by_subtitle_2",
-  "hosted_by_link_2",
-  "hosted_by_listing_2",
-  "hosted_by_name_3",
-  "hosted_by_subtitle_3",
-  "hosted_by_link_3",
-  "hosted_by_listing_3",
   "is_featured",
 ]);
 
@@ -276,18 +268,7 @@ const AdminEventsImport = () => {
           price_notes: splitPipe(row.price_notes),
           business_id: businessId,
           business_ids: businessIds,
-          hosted_by_name: row.hosted_by_name || null,
-          hosted_by_subtitle: row.hosted_by_subtitle || null,
-          hosted_by_link: row.hosted_by_link || null,
-          hosted_by_listing_id: resolveHostListing(row.hosted_by_listing, i),
-          hosted_by_name_2: row.hosted_by_name_2 || null,
-          hosted_by_subtitle_2: row.hosted_by_subtitle_2 || null,
-          hosted_by_link_2: row.hosted_by_link_2 || null,
-          hosted_by_listing_id_2: resolveHostListing(row.hosted_by_listing_2, i),
-          hosted_by_name_3: row.hosted_by_name_3 || null,
-          hosted_by_subtitle_3: row.hosted_by_subtitle_3 || null,
-          hosted_by_link_3: row.hosted_by_link_3 || null,
-          hosted_by_listing_id_3: resolveHostListing(row.hosted_by_listing_3, i),
+          ...hostsToColumns(parseHostCells(row.hosted_by_name, row.hosted_by_subtitle, row.hosted_by_link, (t) => resolveListing(t, i))),
           performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
         };
@@ -384,18 +365,9 @@ const AdminEventsImport = () => {
       notes: "Doors open 30 minutes before the show|Bring your own chair",
       price_notes: "Per person|Includes welcome drink|Minimum 4 people",
       business_names: "Some Business Name|Another Linked Listing",
-      hosted_by_name: "Kristi & Joëlle",
-      hosted_by_subtitle: "Yoga Teachers",
-      hosted_by_link: "https://example.com/kristi",
-      hosted_by_listing: "",
-      hosted_by_name_2: "Another Linked Listing",
-      hosted_by_subtitle_2: "Venue",
-      hosted_by_link_2: "",
-      hosted_by_listing_2: "Another Linked Listing",
-      hosted_by_name_3: "",
-      hosted_by_subtitle_3: "",
-      hosted_by_link_3: "",
-      hosted_by_listing_3: "",
+      hosted_by_name: "Kamogelo Tourism Centre|Michael Musgrave",
+      hosted_by_subtitle: "Local Shopping Centre|Author",
+      hosted_by_link: "Local Shopping Centre|https://sowc.alueducation.com/dr-michael-musgrave/",
       is_featured: "true",
 
     };
@@ -422,6 +394,7 @@ const AdminEventsImport = () => {
         e.hosted_by_listing_id,
         e.hosted_by_listing_id_2,
         e.hosted_by_listing_id_3,
+        ...((e.extra_hosts ?? []) as any[]).map((h) => h?.listing_id),
       ]).filter(Boolean),
     ));
     const idToTitle = new Map<string, string>();
@@ -471,18 +444,10 @@ const AdminEventsImport = () => {
         notes: (Array.isArray((e as any).notes) ? (e as any).notes : ((e as any).notes ? [(e as any).notes] : [])).join("|"),
         price_notes: (e.price_notes ?? []).join("|"),
         business_names: allNames.join("|"),
-        hosted_by_name: e.hosted_by_name ?? "",
-        hosted_by_subtitle: e.hosted_by_subtitle ?? "",
-        hosted_by_link: e.hosted_by_link ?? "",
-        hosted_by_listing: idToTitle.get(e.hosted_by_listing_id) ?? "",
-        hosted_by_name_2: e.hosted_by_name_2 ?? "",
-        hosted_by_subtitle_2: e.hosted_by_subtitle_2 ?? "",
-        hosted_by_link_2: e.hosted_by_link_2 ?? "",
-        hosted_by_listing_2: idToTitle.get(e.hosted_by_listing_id_2) ?? "",
-        hosted_by_name_3: e.hosted_by_name_3 ?? "",
-        hosted_by_subtitle_3: e.hosted_by_subtitle_3 ?? "",
-        hosted_by_link_3: e.hosted_by_link_3 ?? "",
-        hosted_by_listing_3: idToTitle.get(e.hosted_by_listing_id_3) ?? "",
+        ...serializeHostCells([
+          ...["", "_2", "_3"].map((x) => ({ name: e[`hosted_by_name${x}`], subtitle: e[`hosted_by_subtitle${x}`], link: e[`hosted_by_link${x}`], listingTitle: idToTitle.get(e[`hosted_by_listing_id${x}`]) })),
+          ...((e.extra_hosts ?? []) as any[]).map((h) => ({ name: h?.name, subtitle: h?.subtitle, link: h?.link, listingTitle: idToTitle.get(h?.listing_id) })),
+        ]),
         is_featured: e.is_featured ? "true" : "false",
       };
       return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
