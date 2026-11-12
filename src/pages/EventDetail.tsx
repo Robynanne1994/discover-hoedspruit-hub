@@ -295,6 +295,7 @@ const EventDetail = () => {
     (event as any)?.hosted_by_listing_id,
     (event as any)?.hosted_by_listing_id_2,
     (event as any)?.hosted_by_listing_id_3,
+    ...(((event as any)?.extra_hosts ?? []) as any[]).map((h) => h?.listing_id),
   ].filter(Boolean) as string[];
 
   const { data: hostListingImages } = useQuery({
@@ -568,6 +569,7 @@ const EventDetail = () => {
     if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url || (e.hosted_by_listing_id && hostListingImages?.[e.hosted_by_listing_id]) || undefined, link: (e as any).hosted_by_link, listingId: e.hosted_by_listing_id });
     if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 || (e.hosted_by_listing_id_2 && hostListingImages?.[e.hosted_by_listing_id_2]) || undefined, link: (e as any).hosted_by_link_2, listingId: e.hosted_by_listing_id_2 });
     if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 || (e.hosted_by_listing_id_3 && hostListingImages?.[e.hosted_by_listing_id_3]) || undefined, link: (e as any).hosted_by_link_3, listingId: e.hosted_by_listing_id_3 });
+    (((e as any).extra_hosts ?? []) as any[]).forEach((h) => { if (h?.name) hosts.push({ name: h.name, subtitle: h.subtitle || undefined, image: (h.listing_id && hostListingImages?.[h.listing_id]) || undefined, link: h.link || undefined, listingId: h.listing_id || undefined }); });
     const hostDirectory = buildHostDirectory(eventHostRows);
     hosts.forEach((h, i) => { hosts[i] = resolveHost(h, hostDirectory); });
 

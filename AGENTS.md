@@ -19,7 +19,7 @@
 - Keep event price matching and free/paid counts in eventPrice so the drawer counts and filtered results agree; an unpriced event counts only under Any.
 
 - Resolve specials social links through specialSocialLink so only labelled web destinations are displayed.
-- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and photo/link/subtitle fallback in eventHosts so the event page and tests share one rule.
+- Keep specials list visibility and upcoming classification in specialVisibility using Johannesburg calendar dates so filters and counts agree.- Keep event host name matching and fallbacks in eventHosts.
 - Keep detail-page tab bars on flex:1 nowrap labels inside an overflow-x auto nav so they always fill the row and only slide sideways when they cannot fit; never cap the spread at a fixed tab count.
 - Keep specials booking and discount-type matching and counts in specialFilters so the drawer counts and displayed results use identical rules.
 - Keep specials validity states (upcoming, ending soon, ongoing) in specialValue and specialVisibility so the top pill row and the drawer's Validity filter always count the same specials.
@@ -63,3 +63,4 @@
 - Keep listing sheet opening-hours cells ("Label {json}", extras pipe-separated) in listingHoursCsv so import and export agree.
 
 - Use EventEditDialog from the admin table and event page so editing stays identical.
+- Keep events sheet host cells in eventHostsCsv; hosts past three live in events.extra_hosts.
