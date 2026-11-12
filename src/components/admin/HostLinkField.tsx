@@ -45,7 +45,7 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
 
   return (
     <div className="grid grid-cols-2 gap-3 items-end">
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Label className="block">Link Type</Label>
         <div className="relative">
           <select
@@ -60,7 +60,7 @@ const HostLinkField = ({ value, listings, onChange }: Props) => {
           <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden />
         </div>
       </div>
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <Label className="block">Listing / Link</Label>
         {mode === "none" && (
           <Input value="" disabled placeholder="No Link" className="bg-muted" aria-label="Listing / Link unavailable while No Link is selected" />
