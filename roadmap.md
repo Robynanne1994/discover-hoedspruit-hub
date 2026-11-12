@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Event editors: capitalise host link types, add a Listing / Link field with a disabled No Link state, align booking fields, and default an unset booking type to blank.
 
 ## Done
 - Event editor: Start Time and End Time now share column 1 at quarter width, with Performances beside them in column 2; Price and What's Included label-and-box groups are aligned. Live layout assertions and screenshots passed; build OK.
