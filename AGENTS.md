@@ -44,7 +44,7 @@
 - Keep admin custom rows (custom_title_N plus custom_text_N) collected by listingCustomFields and shown on the About tab under "Good to know", never as Details cards; a listing whose only detail was custom has no Details tab.
 - Keep restaurant facility placement and boolean visibility in restaurantDetailFields so Summary, service, family and accessibility cards share testable rules without duplicate fields.
 - Keep the "Hoedspruit & Surrounds" area rule and maps-link resolution in locationDirections so the action bar and the Location tab on listings, events and specials all refuse directions for an area that has no address.
-- Keep the listing action bar's top-up rule in actionBarFill: a bar left with two tiles takes its next populated contact, email before the listing's social pages, never a link already shown.
+- Keep the listing action bar's two-tile top-up rule in actionBarFill.
 - Keep the quick-filter card's line rule in quickCardLines: category names take a second line unless title and location have both already used two, measured from rendered heights.
 - Keep the specials default (All) order in specialOrder: unpositioned first (newest), then admin sort_position; featured specials are lifted above it.
 - Keep Featured Events carousel order in featuredEventOrder; the list below stays date-ordered.
@@ -64,4 +64,4 @@
 
 - Use EventEditDialog from the admin table and event page so editing stays identical.
 - Keep events sheet host cells in eventHostsCsv; hosts past three live in events.extra_hosts.
-- Keep event social link pipe parsing and '-' label slots in eventSocials so the editor, CSV and event page agree.
+- Keep event social pipe parsing in eventSocials.
