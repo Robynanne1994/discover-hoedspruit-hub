@@ -24,3 +24,6 @@
 - (2026-11-12) Event editor: title is now a single-line box; Tags / Categories rows sit 6px
   apart; a brown "Description" banner heads the write-up (small duplicate label removed);
   Link Type and Listing / Link label-to-box gaps match host Name at 6px. Verified live.
+- (2026-11-12) Event editor: Title box takes three quarters of its row with the bigger
+  Featured toggle beside it in the last quarter; "Use the title exactly as typed" stays on
+  its own row below. Verified live (title 820px of a 1150px dialog, toggle 53x31, same row).

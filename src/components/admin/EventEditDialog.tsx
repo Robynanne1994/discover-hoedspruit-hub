@@ -162,21 +162,33 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       <DialogContent className={ADMIN_EDITOR_DIALOG}>
         <DialogHeader><DialogTitle>Edit Event</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
-          <div>
-            <Label>Title</Label>
-            {/* Titles are one line, so the box is one line too. */}
-            <Input
-              value={form.title || ""}
-              // With "use exactly as typed" on, the override follows the title
-              // field — there is no second box to keep in step.
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  title: e.target.value,
-                  ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
-                }))
-              }
-            />
+          {/* Title takes three columns; the Featured toggle sits beside it in the fourth. */}
+          <div className="grid grid-cols-4 gap-3 items-end">
+            <div className="col-span-3 space-y-2">
+              <Label>Title</Label>
+              {/* Titles are one line, so the box is one line too. */}
+              <Input
+                value={form.title || ""}
+                // With "use exactly as typed" on, the override follows the title
+                // field — there is no second box to keep in step.
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    title: e.target.value,
+                    ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
+                  }))
+                }
+              />
+            </div>
+            <div className="col-span-1 flex items-center gap-2 pb-2">
+              <Switch
+                id="event-dlg-featured"
+                className="h-7 w-12 origin-left scale-110"
+                checked={!!form.is_featured}
+                onCheckedChange={(v) => set("is_featured", v)}
+              />
+              <Label htmlFor="event-dlg-featured" className="cursor-pointer font-normal">Featured</Label>
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
             <div className="flex items-center gap-2">
@@ -188,10 +200,6 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               <Label htmlFor="event-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
                 Use the title exactly as typed (no auto-capitalisation)
               </Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Switch id="event-dlg-featured" checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} />
-              <Label htmlFor="event-dlg-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
             </div>
           </div>
           <div className="grid gap-3 lg:grid-cols-2 items-start">
