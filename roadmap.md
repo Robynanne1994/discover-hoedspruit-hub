@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Pending
-(none)
+- Event editor: pair quarter-width Start Time and End Time in column 1, with Performances in column 2.
+- Event editor: align the Price and What's Included label-and-box groups side by side.
 
 ## Done
 - Universal listings CSV: details_display_mode column removed from downloads, imports and the reference row; the field stays editable in the backend editor. All 694 listings already hold {}, so no data changed; 760 tests passed.
