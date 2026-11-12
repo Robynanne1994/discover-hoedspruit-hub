@@ -15,7 +15,7 @@ import { specialTagList, tagColumns } from "@/lib/specialTags";
 import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
-import { BOOKING_LINK_TYPES, resolveBookingLinkType } from "@/lib/bookingLink";
+import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
@@ -205,29 +205,31 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       <DialogContent className={ADMIN_EDITOR_DIALOG}>
         <DialogHeader><DialogTitle>Edit Special</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
-          <div>
-            <Label>Title</Label>
-            <Input
-              value={form.title || ""}
-              // With "use exactly as typed" on, the override follows the title
-              // field — there is no second box to keep in step.
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  title: e.target.value,
-                  ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
-                }))
-              }
-            />
-          </div>
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            <div className="flex items-center gap-2">
+          {/* Title takes three columns; the Featured toggle sits beside it in the fourth. */}
+          <div className="grid grid-cols-4 gap-3 items-end">
+            <div className="col-span-3 space-y-2">
+              <Label>Title</Label>
+              <Input
+                value={form.title || ""}
+                // With "use exactly as typed" on, the override follows the title
+                // field — there is no second box to keep in step.
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    title: e.target.value,
+                    ...(String(f.title_override || "").trim() ? { title_override: e.target.value } : {}),
+                  }))
+                }
+              />
+            </div>
+            <div className="col-span-1 flex items-center gap-2 pb-2">
               <Switch
                 id="special-dlg-featured"
+                className="h-7 w-12 origin-left scale-110"
                 checked={!!form.is_featured}
                 onCheckedChange={(v) => set("is_featured", v)}
               />
-              <Label htmlFor="special-dlg-featured" className="text-sm cursor-pointer font-normal">
+              <Label htmlFor="special-dlg-featured" className="cursor-pointer font-normal">
                 Featured
               </Label>
             </div>
@@ -520,12 +522,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
           <div className="grid gap-3 sm:grid-cols-2 items-start">
             <div>
-              <Label>Booking Type</Label>
+              <Label className="block">Booking Type</Label>
               <div className="relative mt-1"><select
                 className={SELECT_CLS}
-                value={resolveBookingLinkType(form.booking_link, form.booking_link_type)}
+                value={editorBookingLinkType(form.booking_link, form.booking_link_type)}
                 onChange={(e) => set("booking_link_type", e.target.value)}
               >
+                <option value=""></option>
                 {BOOKING_LINK_TYPES.map((t) => (
                   <option key={t.value} value={t.value}>{t.label}</option>
                 ))}
