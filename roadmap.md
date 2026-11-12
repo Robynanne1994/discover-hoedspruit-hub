@@ -21,3 +21,6 @@
 - (2026-11-04) Events page: active date pill's brown count badge checked on a phone screen.
 - (2026-11-04) Events page: listed event cards' date, time and location rows tightened to a
   5px gap and 12.5px text, all on shared constants; the two carousels were left alone.
+- (2026-11-12) Event editor: title is now a single-line box; Tags / Categories rows sit 6px
+  apart; a brown "Description" banner heads the write-up (small duplicate label removed);
+  Link Type and Listing / Link label-to-box gaps match host Name at 6px. Verified live.
