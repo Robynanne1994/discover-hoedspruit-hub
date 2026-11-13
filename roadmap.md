@@ -33,3 +33,6 @@
 - (2026-11-12) Event editor: Title box takes three quarters of its row with the bigger
   Featured toggle beside it in the last quarter; "Use the title exactly as typed" stays on
   its own row below. Verified live (title 820px of a 1150px dialog, toggle 53x31, same row).
+- (2026-11-13) Listing editor: Title box takes three quarters of its row with the bigger
+  Featured toggle beside it in the last quarter, matching the events and specials editors.
+  Verified live (title 823.5px of a 1152px dialog, toggle 52.8x30.8, same row, toggles on/off).
