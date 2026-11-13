@@ -1115,26 +1115,32 @@ const AdminListings = () => {
             <DialogContent className={ADMIN_EDITOR_DIALOG}>
               <DialogHeader><DialogTitle>{editing ? "Edit Listing" : "Add Listing"}</DialogTitle></DialogHeader>
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
-                <div>
-                  <Label>Title</Label>
-                  <Input
-                    value={form.title}
-                    // With "use exactly as typed" on, the override follows the
-                    // title field — there is no second box to keep in step.
-                    onChange={(e) =>
-                      setForm((f) => ({
-                        ...f,
-                        title: e.target.value,
-                        ...(f.title_override?.trim() ? { title_override: e.target.value } : {}),
-                      }))
-                    }
-                    required
-                  />
-                </div>
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-                  <div className="flex items-center gap-2">
-                    <Switch id="listing-featured" checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
-                    <Label htmlFor="listing-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+                {/* Title takes three columns; the Featured toggle sits beside it in the fourth. */}
+                <div className="grid grid-cols-4 gap-3 items-end">
+                  <div className="col-span-3 space-y-2">
+                    <Label>Title</Label>
+                    <Input
+                      value={form.title}
+                      // With "use exactly as typed" on, the override follows the
+                      // title field — there is no second box to keep in step.
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          title: e.target.value,
+                          ...(f.title_override?.trim() ? { title_override: e.target.value } : {}),
+                        }))
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="col-span-1 flex items-center gap-2 pb-2">
+                    <Switch
+                      id="listing-featured"
+                      className="h-7 w-12 origin-left scale-110"
+                      checked={form.is_featured}
+                      onCheckedChange={(v) => setForm({ ...form, is_featured: v })}
+                    />
+                    <Label htmlFor="listing-featured" className="cursor-pointer font-normal">Featured</Label>
                   </div>
                 </div>
 
