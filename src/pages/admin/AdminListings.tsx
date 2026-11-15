@@ -2070,8 +2070,8 @@ const AdminListings = () => {
                     </div>
 
                     <div className={ADMIN_TOGGLE_GRID}>
-                      <TriStateToggle label="After Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
-                      <TriStateToggle label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
+                      <TriStateToggle className="[&>label]:text-lg [&>label]:font-bold" label="After Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
+                      <TriStateToggle className="[&>label]:text-lg [&>label]:font-bold" label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
                     </div>
                     <div>
                       <Label>Specialities</Label>
