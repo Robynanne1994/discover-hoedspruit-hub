@@ -512,13 +512,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   </Button>
                 </div>
               ) : (
-                <button
+                <Button variant="link"
                   type="button"
                   onClick={() => setSocialLabelOpen(true)}
-                  className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                  className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary underline underline-offset-2 inline-flex items-center gap-1"
                 >
                   <Tag className="h-3 w-3" /> Add custom label
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -563,13 +563,13 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   </Button>
                 </div>
               ) : (
-                <button
+                <Button variant="link"
                   type="button"
                   onClick={() => setBookingLabelOpen(true)}
-                  className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                  className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary underline underline-offset-2 inline-flex items-center gap-1"
                 >
                   <Tag className="h-3 w-3" /> Add custom label
-                </button>
+                </Button>
               )}
             </div>
           </div>
