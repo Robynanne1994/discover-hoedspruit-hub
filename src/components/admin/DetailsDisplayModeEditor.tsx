@@ -50,7 +50,7 @@ export const DetailsDisplayModeEditor = ({ value, onChange, groups }: PerListing
                       aria-pressed={active}
                       onClick={() => onChange({ ...value, [s.key]: opt.value })}
                       className={cn(
-                        "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors",
+                        "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors border-0 border-l border-primary-hover first:border-l-0",
                         active ? "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" : "bg-card text-foreground hover:bg-muted hover:text-foreground",
                       )}
                     >
@@ -133,7 +133,7 @@ export const DetailsDisplayDefaultsEditor = () => {
                       aria-pressed={active}
                       onClick={() => setLocal({ ...local, [s.key]: opt.value })}
                       className={cn(
-                        "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors",
+                        "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors border-0 border-l border-primary-hover first:border-l-0",
                         active ? "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" : "bg-card text-foreground hover:bg-muted hover:text-foreground",
                       )}
                     >
