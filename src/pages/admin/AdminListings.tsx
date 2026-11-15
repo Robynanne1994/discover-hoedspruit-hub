@@ -173,6 +173,7 @@ const AdminListings = () => {
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
   const [newShopType, setNewShopType] = useState("");
+  const [showNewShopType, setShowNewShopType] = useState(false);
   const [newServiceInput, setNewServiceInput] = useState("");
   const [newEventTypeInput, setNewEventTypeInput] = useState("");
 
@@ -188,6 +189,7 @@ const AdminListings = () => {
     if (!match) setCustomShopTypes((prev) => Array.from(new Set([...prev, trimmed])));
     setForm((f) => ({ ...f, shop_type: match ?? trimmed }));
     setNewShopType("");
+    setShowNewShopType(false);
   };
 
   // Custom (admin-added) Home & Garden services, persisted in site_content
@@ -1858,16 +1860,16 @@ const AdminListings = () => {
                     </div>
                     </div>
 
-                    <div>
+                    <div className="w-full sm:w-[calc(50%-0.5rem)] space-y-1.5">
                       <Label>Shop Type</Label>
                       {(() => {
                         const dbTypes = Array.from(new Set((listings ?? []).map((l: any) => l.shop_type).filter(Boolean))) as string[];
                         const merged = Array.from(new Set([...SHOP_TYPE_OPTIONS, ...customShopTypes, ...dbTypes]));
                         return (
                           <>
-                            <Select value={form.shop_type || "__none__"} onValueChange={(v) => setForm({ ...form, shop_type: v === "__none__" ? "" : v })}>
+                            <Select value={form.shop_type || "__none__"} onValueChange={(v) => { if (!v) return; setForm((f) => ({ ...f, shop_type: v === "__none__" ? "" : v })); setShowNewShopType(false); setNewShopType(""); }}>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select shop type" />
+                                <SelectValue placeholder="Select shop type">{form.shop_type || "— None —"}</SelectValue>
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="__none__">— None —</SelectItem>
@@ -1879,7 +1881,7 @@ const AdminListings = () => {
                             {/* Typed in the form, not in a browser prompt: the
                                 new type joins the list and is selected for this
                                 listing in one go. */}
-                            <div className="flex gap-2 mt-2">
+                            {showNewShopType ? <div className="flex gap-2 mt-2">
                               <Input
                                 value={newShopType}
                                 onChange={(e) => setNewShopType(e.target.value)}
@@ -1901,13 +1903,18 @@ const AdminListings = () => {
                               >
                                 <Plus className="h-3.5 w-3.5 mr-1" /> Add
                               </Button>
-                            </div>
+                            </div> : !form.shop_type ? (
+                              <Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setShowNewShopType(true)}>
+                                <Plus className="h-3 w-3 mr-1" /> Add
+                              </Button>
+                            ) : null}
                           </>
                         );
                       })()}
                     </div>
 
 
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Products Categories</p>
                     <div>
                       <Label>Product Categories</Label>
                       <p className="text-[11px] text-muted-foreground mt-1 mb-2">Add one at a time. Shown on the listing page. Not used for filters.</p>
