@@ -30,6 +30,22 @@ const config: CapacitorConfig = {
     backgroundColor: "#E6E0CC",
   },
   plugins: {
+    // Which providers @capgo/capacitor-social-login compiles in. Its
+    // capacitor:sync:before hook reads this and rewrites the plugin's own
+    // gradle.properties, defaulting every provider to on. Facebook and Twitter
+    // are off because the app has neither login: the Facebook SDK in particular
+    // drags in the Advertising ID (com.google.android.gms.permission.AD_ID) and
+    // ad-services permissions, which Play then expects declared as ad-ID use
+    // and disclosed in Data safety. Setting it in android/gradle.properties
+    // does not stick — the hook regenerates the plugin's file on every sync.
+    SocialLogin: {
+      providers: {
+        google: true,
+        apple: true,
+        facebook: false,
+        twitter: false,
+      },
+    },
     PushNotifications: {
       // Show the notification banner while the app is in the foreground too.
       presentationOptions: ["badge", "sound", "alert"],
