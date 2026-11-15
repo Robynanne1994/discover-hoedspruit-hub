@@ -1964,18 +1964,9 @@ const AdminListings = () => {
                       ))}
                     </div>
 
-                    <div className={ADMIN_FIELD_GRID}>
-                      <div>
-                        <Label>Minimum Night Stay</Label>
-                        <Input
-                          type="number"
-                          value={form.min_nights ?? ""}
-                          onChange={(e) => setForm({ ...form, min_nights: e.target.value ? parseInt(e.target.value, 10) : null })}
-                          placeholder="e.g. 2"
-                        />
-                      </div>
-
-                      <div>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Property Details</p>
+                    <div className="grid grid-cols-4 gap-3 items-end">
+                      <div className="col-span-2">
                         <Label>Property Type</Label>
                         <Input
                           list="property-type-options"
@@ -1994,6 +1985,16 @@ const AdminListings = () => {
                             <option key={opt} value={opt} />
                           ))}
                         </datalist>
+                      </div>
+
+                      <div>
+                        <Label>Minimum Night Stay</Label>
+                        <Input
+                          type="number"
+                          value={form.min_nights ?? ""}
+                          onChange={(e) => setForm({ ...form, min_nights: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 2"
+                        />
                       </div>
 
                       <div>
@@ -2022,7 +2023,8 @@ const AdminListings = () => {
                           </SelectContent>
                         </Select>
                       </div>
-
+                    </div>
+                    <div className={ADMIN_FIELD_GRID}>
                       <div>
                         <Label>Average Price Per Couple Per Night</Label>
                         <Input
