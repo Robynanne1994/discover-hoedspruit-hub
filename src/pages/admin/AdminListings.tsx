@@ -1919,7 +1919,7 @@ const AdminListings = () => {
                     <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Products Categories</p>
                     <div>
                       <Label>Product Categories</Label>
-                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">Add one at a time. Shown on the listing page. Not used for filters.</p>
+                      <p className="text-[11px] text-muted-foreground mt-1 mb-2"></p>
                       <IncludedChipsInput
                         value={form.product_categories}
                         onChange={(v) => setForm({ ...form, product_categories: v })}
