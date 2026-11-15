@@ -18,6 +18,9 @@ export const ADMIN_FIELD_GRID = "grid gap-4 lg:grid-cols-2";
 /** Same, for the dialogs whose fields sit on a 3-unit rhythm. */
 export const ADMIN_FIELD_GRID_TIGHT = "grid gap-3 lg:grid-cols-2";
 
+/** Three related fields on one row once there's room for them. */
+export const ADMIN_FIELD_GRID_THIRDS = "grid gap-4 lg:grid-cols-3";
+
 /**
  * A scrolling checkbox picker (categories, subcategories, …). On desktop it
  * gets taller and splits into columns, so a long list is read at a glance
