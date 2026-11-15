@@ -1338,7 +1338,13 @@ const AdminListings = () => {
                   </div>
                   {/* The gallery lives with the rest of the pictures — one place
                       in the form where every upload for this listing is done. */}
+                  {/* Same treatment as the events editor's "Host 1" heading: a dark
+                      filled chip, not a plain label. */}
+                  <span className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">
+                    Gallery Images
+                  </span>
                   <GalleryUpload
+                    hideLabel
                     value={form.gallery_images}
                     onChange={(val) => setForm({ ...form, gallery_images: val })}
                   />
