@@ -12,7 +12,7 @@ import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCat
 import { toast } from "sonner";
 import { normalizeGooglePlaceId, placeIdImportUpdate } from "@/lib/googlePlaceId";
 import { isGoogleOwned } from "@/lib/googleFieldOwnership";
-import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, FileSpreadsheet, Search, X } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -113,8 +113,15 @@ const TreatmentsEditor = ({ value, onChange }: { value: string[]; onChange: (v: 
           {items.map((t, i) => (
             <div key={i} className="flex items-start gap-2">
               <Input value={t} onChange={(e) => edit(i, e.target.value)} />
-              <Button type="button" variant="ghost" size="icon" onClick={() => remove(i)} aria-label="Remove treatment">
-                <span aria-hidden>×</span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                onClick={() => remove(i)}
+                aria-label="Remove treatment"
+              >
+                <X className="h-3.5 w-3.5" strokeWidth={2.5} />
               </Button>
             </div>
           ))}
@@ -1509,13 +1516,15 @@ const AdminListings = () => {
                             <Button
                               type="button"
                               variant="ghost"
-                              size="sm"
+                              size="icon"
+                              className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                               onClick={() => {
                                 setForm({ ...form, [titleKey]: "", [textKey]: "" } as any);
                                 setCustomRowsVisible(customRowsVisible - 1);
                               }}
+                              aria-label={`Remove custom row ${n}`}
                             >
-                              Remove
+                              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                             </Button>
                           )}
                         </div>
@@ -1610,10 +1619,12 @@ const AdminListings = () => {
                         <Button
                           type="button"
                           variant="ghost"
-                          size="sm"
+                          size="icon"
+                          className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
                           onClick={() => setForm({ ...form, additional_hours: form.additional_hours.filter((_, i) => i !== idx) })}
+                          aria-label={`Remove these hours${set.label ? ` (${set.label})` : ""}`}
                         >
-                          <Trash2 className="h-4 w-4" /> Remove
+                          <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                         </Button>
                       </div>
                       <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
