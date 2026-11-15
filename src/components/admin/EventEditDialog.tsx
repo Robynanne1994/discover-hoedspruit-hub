@@ -505,7 +505,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 {hosts.slice(0, shown).map((h) => (
                   <div key={h.n} className="space-y-3 p-3 border rounded">
                     <div className="flex items-center gap-3">
-                      <span className="inline-block rounded-md bg-primary px-3 py-1 text-lg font-bold text-primary-foreground">Host {h.n}</span>
+                      <span className="inline-block rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">Host {h.n}</span>
                       {h.n === shown && shown > 0 && (
                         <Button
                           type="button"
