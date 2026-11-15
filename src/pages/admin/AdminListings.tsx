@@ -21,6 +21,7 @@ import { LISTING_IMAGE_SLOTS } from "@/lib/listingImageSlots";
 import {
   ADMIN_EDITOR_DIALOG,
   ADMIN_FIELD_GRID,
+  ADMIN_FIELD_GRID_THIRDS,
   ADMIN_IMAGE_GRID,
   ADMIN_PICKER_LIST,
   ADMIN_TOGGLE_GRID,
@@ -1918,22 +1919,22 @@ const AdminListings = () => {
 
                     <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Products Categories</p>
                     <div>
+                      <Label>Product Categories (Filters Only)</Label>
+                      <p className="text-[11px] text-muted-foreground mt-1 mb-2"></p>
+                      <TreatmentsEditor
+                        value={form.primary_product_categories}
+                        onChange={(v) => setForm({ ...form, primary_product_categories: v })}
+                        revealOnAdd
+                      />
+                    </div>
+
+                    <div>
                       <Label>Product Categories</Label>
                       <p className="text-[11px] text-muted-foreground mt-1 mb-2"></p>
                       <IncludedChipsInput
                         value={form.product_categories}
                         onChange={(v) => setForm({ ...form, product_categories: v })}
                         placeholder="Add a product category"
-                        revealOnAdd
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Product Categories (Filters Only)</Label>
-                      <p className="text-[11px] text-muted-foreground mt-1 mb-2"></p>
-                      <TreatmentsEditor
-                        value={form.primary_product_categories}
-                        onChange={(v) => setForm({ ...form, primary_product_categories: v })}
                         revealOnAdd
                       />
                     </div>
@@ -2099,17 +2100,16 @@ const AdminListings = () => {
                 {isTradesType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Trades & Services Fields</p>
-                    <div className="space-y-2 w-1/2">
-                      <Label>Year Business Started</Label>
-                      <Input
-                        type="number"
-                        value={form.business_started_year ?? ""}
-                        onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
-                        placeholder="e.g. 2008"
-                      />
-                    </div>
-
-                    <div className={ADMIN_TOGGLE_GRID}>
+                    <div className={ADMIN_FIELD_GRID_THIRDS}>
+                      <div className="space-y-2">
+                        <Label>Year Business Started</Label>
+                        <Input
+                          type="number"
+                          value={form.business_started_year ?? ""}
+                          onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 2008"
+                        />
+                      </div>
                       <TriStateToggle className="[&>label]:text-lg [&>label]:font-bold" label="After-Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
                       <TriStateToggle className="[&>label]:text-lg [&>label]:font-bold" label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
                     </div>
