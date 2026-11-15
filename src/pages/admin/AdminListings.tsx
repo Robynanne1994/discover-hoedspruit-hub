@@ -2100,16 +2100,16 @@ const AdminListings = () => {
                 {isTradesType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Trades & Services Fields</p>
-                    <div className={ADMIN_FIELD_GRID_THIRDS}>
-                      <div className="space-y-2">
-                        <Label>Year Business Started</Label>
-                        <Input
-                          type="number"
-                          value={form.business_started_year ?? ""}
-                          onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
-                          placeholder="e.g. 2008"
-                        />
-                      </div>
+                    <div className="space-y-2 w-1/2">
+                      <Label>Year Business Started</Label>
+                      <Input
+                        type="number"
+                        value={form.business_started_year ?? ""}
+                        onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 2008"
+                      />
+                    </div>
+                    <div className={ADMIN_FIELD_GRID}>
                       <TriStateToggle className="[&>label]:text-lg [&>label]:font-bold" label="After-Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
                       <TriStateToggle className="[&>label]:text-lg [&>label]:font-bold" label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
                     </div>
