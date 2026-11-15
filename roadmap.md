@@ -39,3 +39,7 @@
 - (2026-11-15) Event editor: the "Host 1 / Host 2 / Host 3" title chip fill now matches the
   contacts Add button fill (var(--filter-ink), #423324) instead of the lighter tan primary.
   Verified live (host chip rgb(66, 51, 36), Add buttons rgb(66, 51, 36)).
+- (2026-11-15) Listing editor: full-width "Description" and "Good to Know" banners added
+  above their blocks in the same style as "Custom Detail Rows"; the small duplicate labels
+  above those two fields were removed. Verified live (banners rgb(63,63,70) with rgb(24,24,27)
+  border, 20px/700, full width, sitting above the write-up box and the good-to-know input).
