@@ -1267,7 +1267,7 @@ const AdminListings = () => {
                 )}
                 {selectedSubIds.length > 0 && (
                   <div>
-                    <Label>Sub-subcategories</Label>
+                    <Label>Sub-Subcategories</Label>
                     {selectedSubIds.length > 0 && (
                       <div className="space-y-3">
                         {(subcategories ?? []).filter((s) => selectedSubIds.includes(s.id)).map((parent) => {
