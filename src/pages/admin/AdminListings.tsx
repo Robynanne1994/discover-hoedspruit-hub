@@ -1311,7 +1311,7 @@ const AdminListings = () => {
                       </div>
                     ) : (
                       <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-3 gap-1 rounded-full bg-[#423324] text-white hover:bg-[#2F2419] hover:text-white" onClick={() => setShowNewSubSub(true)}>
-                        <Plus className="h-3.5 w-3.5" /> Add sub-subcategory
+                        <Plus className="h-3.5 w-3.5" /> Add Sub-Subcategory
                       </Button>
                     )}
                   </div>
