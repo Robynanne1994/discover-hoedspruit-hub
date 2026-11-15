@@ -1867,7 +1867,7 @@ const AdminListings = () => {
                         const merged = Array.from(new Set([...SHOP_TYPE_OPTIONS, ...customShopTypes, ...dbTypes]));
                         return (
                           <>
-                            <Select value={form.shop_type || "__none__"} onValueChange={(v) => { setForm({ ...form, shop_type: v === "__none__" ? "" : v }); setShowNewShopType(false); setNewShopType(""); }}>
+                            <Select value={form.shop_type || "__none__"} onValueChange={(v) => { if (!v) return; setForm((f) => ({ ...f, shop_type: v === "__none__" ? "" : v })); setShowNewShopType(false); setNewShopType(""); }}>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select shop type">{form.shop_type || "— None —"}</SelectValue>
                               </SelectTrigger>
