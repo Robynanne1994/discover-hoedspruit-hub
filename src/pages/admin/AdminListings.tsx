@@ -1750,7 +1750,7 @@ const AdminListings = () => {
                                   key={opt}
                                   type="button"
                                   onClick={() => setForm({ ...form, [key]: selected ? form[key].filter((v) => v !== opt) : [...form[key], opt] })}
-                                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-primary hover:bg-muted hover:text-foreground"}`}
                                 >
                                   {opt}
                                 </button>
@@ -1761,7 +1761,7 @@ const AdminListings = () => {
                                 type="button"
                                 aria-pressed={driveThroughSelected(form.drive_through)}
                                 onClick={() => setForm({ ...form, drive_through: !driveThroughSelected(form.drive_through) })}
-                                className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${driveThroughSelected(form.drive_through) ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:bg-background hover:border-primary/50"}`}
+                                className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${driveThroughSelected(form.drive_through) ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-primary hover:bg-muted hover:text-foreground"}`}
                               >
                                 Drive-Through
                               </Button>
