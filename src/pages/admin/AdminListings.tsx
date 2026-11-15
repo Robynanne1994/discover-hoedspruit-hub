@@ -1827,23 +1827,35 @@ const AdminListings = () => {
                       ))}
                     </div>
 
-                    <div>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <Label>Price Range</Label>
+                      <Input
+                        value={form.price_range}
+                        onChange={(e) => setForm({ ...form, price_range: e.target.value })}
+                        placeholder="e.g. Budget, Mid-range, Premium"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
                       <Label>Payment Methods</Label>
                       <div className="flex flex-wrap gap-2">
                         {PAYMENT_METHOD_OPTIONS.map((opt) => {
                           const selected = form.payment_methods.includes(opt);
                           return (
-                            <button
+                            <Button
                               key={opt}
                               type="button"
+                              aria-pressed={selected}
                               onClick={() => setForm({ ...form, payment_methods: selected ? form.payment_methods.filter((v) => v !== opt) : [...form.payment_methods, opt] })}
-                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                              className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-primary hover:bg-muted hover:text-foreground"}`}
                             >
                               {opt}
-                            </button>
+                            </Button>
                           );
                         })}
                       </div>
+                    </div>
                     </div>
 
                     <div>
@@ -1917,14 +1929,6 @@ const AdminListings = () => {
                     </div>
 
 
-                    <div>
-                      <Label>Price Range</Label>
-                      <Input
-                        value={form.price_range}
-                        onChange={(e) => setForm({ ...form, price_range: e.target.value })}
-                        placeholder="e.g. Budget, Mid-range, Premium"
-                      />
-                    </div>
                   </div>
                 )}
 
@@ -2123,14 +2127,15 @@ const AdminListings = () => {
                           {options.map((opt) => {
                             const selected = (form[key] as string[]).includes(opt);
                             return (
-                              <button
+                              <Button
                                 key={opt}
                                 type="button"
+                                aria-pressed={selected}
                                 onClick={() => setForm({ ...form, [key]: selected ? (form[key] as string[]).filter((v) => v !== opt) : [...(form[key] as string[]), opt] })}
-                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                                className={`h-auto px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-card text-foreground border-primary hover:bg-muted hover:text-foreground"}`}
                               >
                                 {formatServiceLabel(opt)}
-                              </button>
+                              </Button>
                             );
                           })}
                         </div>
