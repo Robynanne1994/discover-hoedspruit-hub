@@ -1463,7 +1463,7 @@ const AdminListings = () => {
                 </div>
 
                 <div>
-                  <Label>Description</Label>
+                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Description</p>
                   <MarkdownToolbar
                     textareaRef={longDescRef}
                     value={form.long_description}
@@ -1483,7 +1483,7 @@ const AdminListings = () => {
                 </div>
 
                 <div>
-                  <Label>Good To Know</Label>
+                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Good to Know</p>
                   <IncludedChipsInput
                     value={form.good_to_know}
                     onChange={(v) => setForm({ ...form, good_to_know: v })}
