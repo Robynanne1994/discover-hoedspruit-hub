@@ -38,7 +38,7 @@ export const DetailsDisplayModeEditor = ({ value, onChange, groups }: PerListing
           const current = value?.[s.key] ?? "default";
           return (
             <div key={s.key} className="flex items-center justify-between gap-3">
-              <Label className="text-sm font-semibold text-foreground">{s.title}</Label>
+              <Label>{s.title}</Label>
               <div className="inline-flex shrink-0 rounded-md border border-primary bg-card overflow-hidden">
                 {MODE_OPTIONS.map((opt) => {
                   const active = current === opt.value;
