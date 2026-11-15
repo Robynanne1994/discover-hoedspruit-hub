@@ -66,3 +66,8 @@
   rgb(255,255,255) fill, rgb(26,26,26) text, rgb(113,84,61) border; hover rgb(235,233,229);
   selected rgb(113,84,61) fill with rgb(251,250,249) text. Verified live against the Drinks
   option (identical resting and hover values). Build OK.
+- (2026-11-15) Listing editor Open Hours (2+ sets): chips now read "Primary Open Hours",
+  "Secondary Open Hours", "Other Open Hours" (word "Title" dropped), and each is followed by
+  a bold "Title" label in front of the name box, lined up exactly with the weekday rows
+  underneath. Verified live: Title label left 367 = Monday 367; box left 475 / right 902 /
+  height 40 identical to the Monday box on all three sets; 14px weight 600 rgb(26,26,26).
