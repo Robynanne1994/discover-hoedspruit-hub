@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Remove editor custom-label underlines; update Shopping Shop Type and Products Categories layout.
 
 ## Done
 - Wellness Treatments now reuse the compact Good to Know chip input; custom-label links across business, event and special editors are darker, semibold and underlined. Signed-in add/remove and label-opening checks passed without saving content changes; build OK.
