@@ -774,7 +774,7 @@ const ListingDetail = () => {
       { label: "Curio / gifts", value: l.curio_or_gifts },
     ]);
     if (shop.length) sections.push({ key: "shop-amenities", title: "Amenities", iconComp: ShoppingBag, fields: shop });
-    if (l.payment_methods?.length) sections.push({ key: "shop-payment", title: "Payment", iconComp: CreditCard, fields: l.payment_methods.map((p: string) => ({ label: toTitleCase(p), on: true })) });
+    if (l.payment_methods?.length) sections.push({ key: "shop-payment", title: "Payment", iconComp: CreditCard, fields: l.payment_methods.map((p: string) => ({ label: p, on: true })) });
     // Only the displayed list shows here; the filter-only list is never rendered.
     const products = (l.product_categories ?? []).filter((p: string) => (p || "").trim() !== "");
 
