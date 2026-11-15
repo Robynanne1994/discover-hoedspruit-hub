@@ -51,3 +51,8 @@
   above their blocks in the same style as "Custom Detail Rows"; the small duplicate labels
   above those two fields were removed. Verified live (banners rgb(63,63,70) with rgb(24,24,27)
   border, 20px/700, full width, sitting above the write-up box and the good-to-know input).
+- (2026-11-15) Listing editor: every remove control is now a bare X in a brown filled circle
+  (28px, rounded-full, bg-primary) — extra opening-hours sets, custom detail rows and
+  treatment / product-category rows. No "Remove" word or trash icon left in the editor.
+  Verified live (hours set X rgb(113,84,61), 28x28, radius 9999px, no text; custom row X
+  identical; 10 treatment rows on NatureAllied all show the same control).
