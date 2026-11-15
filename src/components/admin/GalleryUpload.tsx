@@ -199,7 +199,7 @@ const GalleryUpload = ({ value, onChange, folder = "gallery", banner = false, hi
             onClick={() => setShowUrlInput(true)}
             className="gap-1.5"
           >
-            Add image URLs
+            Add Image URLs
           </Button>
         )}
       </div>
