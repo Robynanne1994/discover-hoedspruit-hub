@@ -7,8 +7,8 @@
       "namespace": "android_app",
       "package_name": "za.co.hellohoedspruit.app",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_PLAY_APP_SIGNING_SHA256",
-        "REPLACE_WITH_UPLOAD_KEY_SHA256"
+        "7D:BE:FF:F0:8D:52:B9:71:61:82:A3:C9:08:AA:8B:C3:88:E7:AC:FD:CF:4F:73:15:64:E5:84:3B:4A:EF:A9:4C",
+        "4A:10:ED:7F:A8:67:24:B9:34:D3:31:77:B9:91:BD:AF:2D:33:62:BE:DE:AA:4C:7F:A7:E8:30:FE:2F:00:3A:47"
       ]
     }
   }
