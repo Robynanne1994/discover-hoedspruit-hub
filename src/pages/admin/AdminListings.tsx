@@ -1930,9 +1930,7 @@ const AdminListings = () => {
 
                     <div>
                       <Label>Product Categories (Filters Only)</Label>
-                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">
-                        Add one at a time. These are the only values offered as Product Categories filters on the shopping page. Never shown on the front end.
-                      </p>
+                      <p className="text-[11px] text-muted-foreground mt-1 mb-2"></p>
                       <TreatmentsEditor
                         value={form.primary_product_categories}
                         onChange={(v) => setForm({ ...form, primary_product_categories: v })}
