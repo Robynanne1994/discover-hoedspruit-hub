@@ -1584,12 +1584,14 @@ const AdminListings = () => {
 
                   {/* A single set needs no name: the app just calls it "Opening Hours". */}
                   {form.additional_hours.length > 0 && (
-                    <Input
-                      className="mt-3"
-                      value={form.opening_hours_label}
-                      onChange={(e) => setForm({ ...form, opening_hours_label: e.target.value })}
-                      placeholder="Name this set of hours, e.g. Kitchen"
-                    />
+                    <div className="mt-3 w-1/2 space-y-2">
+                      <Label className="block">Open Hours Title</Label>
+                      <Input
+                        value={form.opening_hours_label}
+                        onChange={(e) => setForm({ ...form, opening_hours_label: e.target.value })}
+                        placeholder="Name this set of hours, e.g. Kitchen"
+                      />
+                    </div>
                   )}
 
                   <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
@@ -1607,30 +1609,33 @@ const AdminListings = () => {
 
                   {form.additional_hours.map((set, idx) => (
                     <div key={idx} className="border-t border-border pt-4 mt-4">
-                      <div className="flex items-center gap-2">
-                        <Input
-                          value={set.label}
-                          onChange={(e) => setForm({
-                            ...form,
-                            additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
-                          })}
-                          placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
-                          onClick={() => setForm({ ...form, additional_hours: form.additional_hours.filter((_, i) => i !== idx) })}
-                          aria-label={`Remove these hours${set.label ? ` (${set.label})` : ""}`}
-                        >
-                          <X className="h-3.5 w-3.5" strokeWidth={2.5} />
-                        </Button>
+                      <div className="w-1/2 space-y-2">
+                        <Label className="block">Open Hours Title</Label>
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={set.label}
+                            onChange={(e) => setForm({
+                              ...form,
+                              additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
+                            })}
+                            placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                            onClick={() => setForm({ ...form, additional_hours: form.additional_hours.filter((_, i) => i !== idx) })}
+                            aria-label={`Remove these hours${set.label ? ` (${set.label})` : ""}`}
+                          >
+                            <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                          </Button>
+                        </div>
                       </div>
                       <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
                         {DAY_LABELS.map((day) => (
                           <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
-                            <span className="text-sm text-muted-foreground capitalize text-zinc-800">{day}</span>
+                            <span className="text-sm capitalize font-semibold text-foreground">{day}</span>
                             <Input
                               value={set.hours[day] ?? ""}
                               onChange={(e) => setForm({

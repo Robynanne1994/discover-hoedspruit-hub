@@ -56,3 +56,7 @@
   treatment / product-category rows. No "Remove" word or trash icon left in the editor.
   Verified live (hours set X rgb(113,84,61), 28x28, radius 9999px, no text; custom row X
   identical; 10 treatment rows on NatureAllied all show the same control).
+- (2026-11-15) Listing editor Open Hours: every hours-name box is now headed "Open Hours
+  Title" and is half width (first set box 551px of a 1152px dialog; extra set box 515px plus
+  its brown X inside the same half), and the extra set's weekday names are bold like the
+  first set (all 14 spans weight 600, rgb(26,26,26)). Verified live.
