@@ -61,3 +61,8 @@
   Title" and is half width (first set box 551px of a 1152px dialog; extra set box 515px plus
   its brown X inside the same half), and the extra set's weekday names are bold like the
   first set (all 14 spans weight 600, rgb(26,26,26)). Verified live.
+- (2026-11-15) Listing editor Restaurants & Cafés pills (Meal, Vibe, Cuisine, Foods,
+  Seating, Service Type incl. Drive-Through) now match the Drinks controls: unselected
+  rgb(255,255,255) fill, rgb(26,26,26) text, rgb(113,84,61) border; hover rgb(235,233,229);
+  selected rgb(113,84,61) fill with rgb(251,250,249) text. Verified live against the Drinks
+  option (identical resting and hover values). Build OK.
