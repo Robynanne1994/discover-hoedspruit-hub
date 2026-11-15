@@ -1439,7 +1439,7 @@ const AdminListings = () => {
                     extraLabels={form.additional_website_labels}
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
                     placeholder="https://..."
-                    addLabel="Add Website"
+                    addLabel="Add"
                   />
                 </div>
                 </div>
@@ -1461,7 +1461,7 @@ const AdminListings = () => {
                     extraLabels={form.other_socials_labels.slice(1)}
                     onExtraLabelsChange={(next) => setForm({ ...form, other_socials_labels: [form.other_socials_labels[0] || "", ...next] })}
                     placeholder="https://..."
-                    addLabel="Add Social"
+                    addLabel="Add"
                   />
                 </div>
                 <div className="border-t border-border pt-4 mt-2">
