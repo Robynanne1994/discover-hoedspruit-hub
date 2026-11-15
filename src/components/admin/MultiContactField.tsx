@@ -107,7 +107,7 @@ export default function MultiContactField({
             <Button variant="link"
               type="button"
               onClick={() => setPrimaryLabelOpen(true)}
-              className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary underline underline-offset-2 inline-flex items-center gap-1"
+              className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1"
             >
               <Tag className="h-3 w-3" /> Add custom label
             </Button>
@@ -161,7 +161,7 @@ export default function MultiContactField({
               <Button variant="link"
                 type="button"
                 onClick={() => setExtraLabelOpen((s) => ({ ...s, [i]: true }))}
-                className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary underline underline-offset-2 inline-flex items-center gap-1 pl-1"
+                className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1 pl-1"
               >
                 <Tag className="h-3 w-3" /> Add custom label
               </Button>
