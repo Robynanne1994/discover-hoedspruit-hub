@@ -7,10 +7,12 @@ interface Props {
   value: string[];
   onChange: (v: string[]) => void;
   placeholder?: string;
+  revealOnAdd?: boolean;
 }
 
-const IncludedChipsInput = ({ value, onChange, placeholder }: Props) => {
+const IncludedChipsInput = ({ value, onChange, placeholder, revealOnAdd = false }: Props) => {
   const [draft, setDraft] = useState("");
+  const [draftOpen, setDraftOpen] = useState(!revealOnAdd);
 
   const commit = () => {
     const t = draft.trim();
@@ -18,6 +20,7 @@ const IncludedChipsInput = ({ value, onChange, placeholder }: Props) => {
     if (value.includes(t)) { setDraft(""); return; }
     onChange([...value, t]);
     setDraft("");
+    if (revealOnAdd) setDraftOpen(false);
   };
 
   const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -45,7 +48,7 @@ const IncludedChipsInput = ({ value, onChange, placeholder }: Props) => {
           ))}
         </div>
       )}
-      <div className="flex gap-2">
+      {draftOpen ? <div className="flex gap-2">
         <Input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -54,7 +57,7 @@ const IncludedChipsInput = ({ value, onChange, placeholder }: Props) => {
           placeholder={placeholder || "e.g. Welcome drink, then press Enter"}
         />
         <Button type="button" onClick={commit} disabled={!draft.trim()} className="h-7 px-2.5 text-xs">Add</Button>
-      </div>
+      </div> : <Button type="button" onClick={() => setDraftOpen(true)} className="h-7 px-2.5 text-xs">Add</Button>}
     </div>
   );
 };
