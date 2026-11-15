@@ -1585,13 +1585,15 @@ const AdminListings = () => {
                   {/* A single set needs no name: the app just calls it "Opening Hours". */}
                   {form.additional_hours.length > 0 && (
                     <div className="mt-3 space-y-2">
-                      <Label className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">Primary Open Hours Title</Label>
-                      <Input
-                        className="w-full lg:w-[calc(50%-16px)]"
-                        value={form.opening_hours_label}
-                        onChange={(e) => setForm({ ...form, opening_hours_label: e.target.value })}
-                        placeholder="Name this set of hours, e.g. Kitchen"
-                      />
+                      <Label className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">Primary Open Hours</Label>
+                      <div className="grid grid-cols-[100px_1fr] items-center gap-2 lg:w-[calc(50%-16px)]">
+                        <span className="text-sm font-semibold text-foreground">Title</span>
+                        <Input
+                          value={form.opening_hours_label}
+                          onChange={(e) => setForm({ ...form, opening_hours_label: e.target.value })}
+                          placeholder="Name this set of hours, e.g. Kitchen"
+                        />
+                      </div>
                     </div>
                   )}
 
@@ -1612,7 +1614,7 @@ const AdminListings = () => {
                     <div key={idx} className="border-t border-border pt-4 mt-4">
                       <div className="space-y-2">
                         <div className="flex items-center justify-between gap-2">
-                          <Label className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">{idx === 0 ? "Secondary Open Hours Title" : "Other Open Hours Title"}</Label>
+                          <Label className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">{idx === 0 ? "Secondary Open Hours" : "Other Open Hours"}</Label>
                           <Button
                             type="button"
                             variant="ghost"
@@ -1624,15 +1626,17 @@ const AdminListings = () => {
                             <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                           </Button>
                         </div>
-                        <Input
-                          className="w-full lg:w-[calc(50%-16px)]"
-                          value={set.label}
-                          onChange={(e) => setForm({
-                            ...form,
-                            additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
-                          })}
-                          placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
-                        />
+                        <div className="grid grid-cols-[100px_1fr] items-center gap-2 lg:w-[calc(50%-16px)]">
+                          <span className="text-sm font-semibold text-foreground">Title</span>
+                          <Input
+                            value={set.label}
+                            onChange={(e) => setForm({
+                              ...form,
+                              additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
+                            })}
+                            placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
+                          />
+                        </div>
                       </div>
                       <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
                         {DAY_LABELS.map((day) => (
