@@ -1340,9 +1340,11 @@ const AdminListings = () => {
                       in the form where every upload for this listing is done. */}
                   {/* Same treatment as the events editor's "Host 1" heading: a dark
                       filled chip, not a plain label. */}
-                  <span className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">
-                    Gallery Images
-                  </span>
+                  <div className="pt-5">
+                    <span className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">
+                      Gallery Images
+                    </span>
+                  </div>
                   <GalleryUpload
                     hideLabel
                     value={form.gallery_images}
@@ -1464,10 +1466,6 @@ const AdminListings = () => {
                     addLabel="Add"
                   />
                 </div>
-                <div className="border-t border-border pt-4 mt-2">
-                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Detail Page</p>
-                </div>
-
                 <div>
                   <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Description</p>
                   <MarkdownToolbar
