@@ -2333,10 +2333,10 @@ const AdminListings = () => {
                     <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Wellness & Beauty Fields</p>
                     <div>
                       <Label>Treatments</Label>
-                      <p className="text-[11px] text-muted-foreground mt-1 mb-2"></p>
-                      <TreatmentsEditor
+                      <IncludedChipsInput
                         value={form.treatments}
                         onChange={(v) => setForm({ ...form, treatments: v })}
+                        placeholder="e.g. Swedish massage"
                       />
                     </div>
                   </div>

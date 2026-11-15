@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Match wellness Treatments to Good to Know and improve custom-label control readability across business, event and special editors; verify in the running editors.
 
 ## Done
 - (2026-11-15) Restaurant Price Level, Meal, Vibe, Cuisine, Foods, Seating and Service Type headings match Amenities and Drinks. Add Hours sits right; Primary, Secondary and Other hours title chips match event hosts; title boxes align with the first time column and remove controls sit at the far right of each heading row. Signed-in desktop and phone checks passed, including adding and removing sets; build OK.
