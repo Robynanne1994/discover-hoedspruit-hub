@@ -71,3 +71,6 @@
   a bold "Title" label in front of the name box, lined up exactly with the weekday rows
   underneath. Verified live: Title label left 367 = Monday 367; box left 475 / right 902 /
   height 40 identical to the Monday box on all three sets; 14px weight 600 rgb(26,26,26).
+- (2026-11-15) Accommodation editor: Pricing groups Price Range and both average-price fields;
+  Capacity groups Sleeps and Number of Rooms on the same row. Shared tri-state and details
+  display controls now separate options with brown vertical dividers. Checked on a populated listing.
