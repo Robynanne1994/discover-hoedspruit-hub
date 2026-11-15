@@ -36,3 +36,6 @@
 - (2026-11-13) Listing editor: Title box takes three quarters of its row with the bigger
   Featured toggle beside it in the last quarter, matching the events and specials editors.
   Verified live (title 823.5px of a 1152px dialog, toggle 52.8x30.8, same row, toggles on/off).
+- (2026-11-15) Event editor: the "Host 1 / Host 2 / Host 3" title chip fill now matches the
+  contacts Add button fill (var(--filter-ink), #423324) instead of the lighter tan primary.
+  Verified live (host chip rgb(66, 51, 36), Add buttons rgb(66, 51, 36)).
