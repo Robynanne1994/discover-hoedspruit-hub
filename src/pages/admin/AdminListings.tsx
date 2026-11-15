@@ -1869,7 +1869,7 @@ const AdminListings = () => {
                           <>
                             <Select value={form.shop_type || "__none__"} onValueChange={(v) => { setForm({ ...form, shop_type: v === "__none__" ? "" : v }); setShowNewShopType(false); setNewShopType(""); }}>
                               <SelectTrigger>
-                                <SelectValue placeholder="Select shop type" />
+                                <SelectValue placeholder="Select shop type">{form.shop_type || "— None —"}</SelectValue>
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="__none__">— None —</SelectItem>

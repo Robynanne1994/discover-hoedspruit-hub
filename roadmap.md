@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Pending
-- Remove editor custom-label underlines; update Shopping Shop Type and Products Categories layout.
+(none)
 
 ## Done
+- Custom-label controls have no underline; Shopping has half-width Shop Type with click-to-open Add input and a Products Categories banner.
 - Wellness Treatments now reuse the compact Good to Know chip input; custom-label links across business, event and special editors are darker, semibold and underlined. Signed-in add/remove and label-opening checks passed without saving content changes; build OK.
 - (2026-11-15) Restaurant Price Level, Meal, Vibe, Cuisine, Foods, Seating and Service Type headings match Amenities and Drinks. Add Hours sits right; Primary, Secondary and Other hours title chips match event hosts; title boxes align with the first time column and remove controls sit at the far right of each heading row. Signed-in desktop and phone checks passed, including adding and removing sets; build OK.
 - (2026-11-15) Listings editor: the "Detail Page" banner heading is removed, and "Gallery Images"
