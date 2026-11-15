@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
@@ -18,24 +19,26 @@ export const TriStateToggle = ({ label, value, onChange, className }: TriStateTo
   const current = value === true ? true : value === false ? false : null;
   return (
     <div className={cn("flex items-center justify-between gap-3", className)}>
-      <Label className="text-sm font-semibold text-slate-950">{label}</Label>
-      <div className="inline-flex rounded-md border border-border bg-background overflow-hidden">
+      <Label className="text-sm font-semibold text-foreground">{label}</Label>
+      <div className="inline-flex shrink-0 rounded-md border border-primary bg-card overflow-hidden">
         {OPTIONS.map((opt) => {
           const active = current === opt.value;
           return (
-            <button
+            <Button
               key={String(opt.value)}
               type="button"
+                      variant="ghost"
+                      aria-pressed={active}
               onClick={() => onChange(opt.value)}
               className={cn(
-                "px-3 py-1 text-xs transition-colors",
+                "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors",
                 active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-muted"
+                  ? "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+                  : "bg-card text-foreground hover:bg-muted hover:text-foreground"
               )}
             >
               {opt.label}
-            </button>
+            </Button>
           );
         })}
       </div>

@@ -1317,7 +1317,7 @@ const AdminListings = () => {
                   </div>
                 )}
                 <div className="space-y-3">
-                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Images</p>
+                  <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Images</p>
                   <div className={ADMIN_IMAGE_GRID}>
                     {LISTING_IMAGE_SLOTS.map((slot) => (
                       <ImageSlotField
@@ -1351,7 +1351,7 @@ const AdminListings = () => {
                     onChange={(val) => setForm({ ...form, gallery_images: val })}
                   />
                 </div>
-                <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Location &amp; Reviews</p>
+                <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Location &amp; Reviews</p>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                   <div><Label>Category Page Location</Label><Input value={form.category_page_location ?? ""} placeholder="Optional shorter location for category page cards" onChange={(e) => setForm({ ...form, category_page_location: e.target.value })} /></div>
@@ -1378,7 +1378,7 @@ const AdminListings = () => {
                   <div><Label>Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} readOnly={isGoogleOwned(editing as any)} disabled={isGoogleOwned(editing as any)} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div></div>
                 </div>
 
-                <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Contacts</p>
+                <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Contacts</p>
                 <div className={ADMIN_FIELD_GRID}>
                   <div className="space-y-2">
                     <MultiContactField
@@ -1445,7 +1445,7 @@ const AdminListings = () => {
                   />
                 </div>
                 </div>
-                <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Socials</p>
+                <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Socials</p>
                 <div className={ADMIN_FIELD_GRID}>
                   <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                   <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
@@ -1467,7 +1467,7 @@ const AdminListings = () => {
                   />
                 </div>
                 <div>
-                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Description</p>
+                  <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Description</p>
                   <MarkdownToolbar
                     textareaRef={longDescRef}
                     value={form.long_description}
@@ -1487,7 +1487,7 @@ const AdminListings = () => {
                 </div>
 
                 <div>
-                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Good to Know</p>
+                  <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Good to Know</p>
                   <IncludedChipsInput
                     value={form.good_to_know}
                     onChange={(v) => setForm({ ...form, good_to_know: v })}
@@ -1496,7 +1496,7 @@ const AdminListings = () => {
                 </div>
 
                 <div className="border-t border-border pt-4 mt-2 space-y-3">
-                  <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Custom Detail Rows</p>
+                  <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Custom Detail Rows</p>
                   
                   {[1, 2, 3].slice(0, customRowsVisible).map((n) => {
                     const titleKey = `custom_title_${n}` as keyof typeof form;
@@ -1641,7 +1641,7 @@ const AdminListings = () => {
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     {/* Kids Section */}
                     <div>
-                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Kids</p>
+                      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Kids</p>
                       <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
                         <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
@@ -1653,7 +1653,7 @@ const AdminListings = () => {
 
                     {/* Accessibility Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Accessibility</p>
+                      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Accessibility</p>
                       <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
                         <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
@@ -1665,7 +1665,7 @@ const AdminListings = () => {
 
                     {/* Amenities Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Amenities</p>
+                      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Amenities</p>
                       <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
                         <TriStateToggle label="WiFi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
@@ -1679,7 +1679,7 @@ const AdminListings = () => {
 
                     {/* Drinks Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Drinks</p>
+                      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Drinks</p>
                       <div className={ADMIN_TOGGLE_GRID}>
                         <TriStateToggle label="Wine List" value={form.has_wine_list} onChange={(v) => setForm({ ...form, has_wine_list: v })} />
                         <TriStateToggle label="Cocktails" value={form.has_cocktails} onChange={(v) => setForm({ ...form, has_cocktails: v })} />
@@ -1789,7 +1789,7 @@ const AdminListings = () => {
 
                 {isShoppingType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Shopping Fields</p>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Shopping Fields</p>
 
                     <div className={ADMIN_TOGGLE_GRID}>
                       {[
@@ -1908,7 +1908,7 @@ const AdminListings = () => {
 
                 {isAccommodationType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Accommodation Fields</p>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Accommodation Fields</p>
 
                     <div className={ADMIN_TOGGLE_GRID}>
                       {[
@@ -2045,7 +2045,7 @@ const AdminListings = () => {
 
                 {isNGOType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">NGO & Volunteering Fields</p>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">NGO & Volunteering Fields</p>
                     <div className={ADMIN_FIELD_GRID}>
                       <div><Label>Cause</Label><Textarea value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} placeholder="What cause does this NGO support?" /></div>
                       <div><Label>Impact</Label><Textarea value={form.impact} onChange={(e) => setForm({ ...form, impact: e.target.value })} placeholder="What impact have they made?" /></div>
@@ -2058,8 +2058,8 @@ const AdminListings = () => {
 
                 {isTradesType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Trades & Services Fields</p>
-                    <div className="space-y-2">
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Trades & Services Fields</p>
+                    <div className="space-y-2 w-1/2">
                       <Label>Year Business Started</Label>
                       <Input
                         type="number"
@@ -2086,7 +2086,7 @@ const AdminListings = () => {
 
                 {isHomeGardenType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Home & Garden Fields</p>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Home & Garden Fields</p>
 
                     {[
                       { label: "Services Offered", options: Array.from(new Set([...SERVICES_OFFERED_OPTIONS, ...(customHGServices ?? []), ...form.services_offered])), key: "services_offered" as const },
@@ -2136,7 +2136,7 @@ const AdminListings = () => {
                     ))}
 
 
-                    <div className="space-y-2">
+                    <div className="space-y-2 w-1/2">
                       <Label>Year Business Started</Label>
                       <Input
                         type="number"
@@ -2163,7 +2163,7 @@ const AdminListings = () => {
                   const allEventTypes = Array.from(new Set([...EVENT_TYPES_OPTIONS, ...(customEventTypes ?? []), ...form.event_types]));
                   return (
                     <div className="border-t border-border pt-4 mt-2 space-y-4">
-                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Weddings & Events Fields</p>
+                      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Weddings & Events Fields</p>
                       <div>
                         <Label>Event types supported</Label>
                         <div className="flex flex-wrap gap-2 mt-1">
@@ -2211,7 +2211,7 @@ const AdminListings = () => {
 
                 {isWeddingsEventsType && isEventVenueSub && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Event Venue Fields</p>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Event Venue Fields</p>
 
                     <TriStateToggle
                       label="On-site Accommodation"
@@ -2304,7 +2304,7 @@ const AdminListings = () => {
 
                 {isWellnessBeautyType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Wellness & Beauty Fields</p>
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Wellness & Beauty Fields</p>
                     <div>
                       <Label>Treatments</Label>
                       <p className="text-[11px] text-muted-foreground mt-1 mb-2">Add one treatment at a time, then click Add. These appear on the listing's Details tab.</p>
