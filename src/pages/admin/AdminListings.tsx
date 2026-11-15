@@ -1825,7 +1825,7 @@ const AdminListings = () => {
                         { label: "Parking Available", key: "parking_available" as const },
                         { label: "Wheelchair Friendly", key: "wheelchair_friendly" as const },
                         { label: "Local Products", key: "local_products" as const },
-                        { label: "Curio / Gifts", key: "curio_or_gifts" as const },
+                        { label: "Curios / Gifts", key: "curio_or_gifts" as const },
                       ].map(({ label, key }) => (
                         <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
