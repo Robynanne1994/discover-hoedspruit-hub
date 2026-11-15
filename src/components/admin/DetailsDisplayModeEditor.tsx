@@ -29,7 +29,7 @@ export const DetailsDisplayModeEditor = ({ value, onChange, groups }: PerListing
   if (visible.length === 0) return null;
   return (
     <div className="border-t border-border pt-4 mt-2 space-y-3">
-      <p className="text-foreground mb-1 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">
+      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">
         Details Cards Display
       </p>
       <p className="text-xs text-muted-foreground">{"\n"}</p>
@@ -38,22 +38,24 @@ export const DetailsDisplayModeEditor = ({ value, onChange, groups }: PerListing
           const current = value?.[s.key] ?? "default";
           return (
             <div key={s.key} className="flex items-center justify-between gap-3">
-              <Label className="text-sm font-semibold text-slate-950">{s.title}</Label>
-              <div className="inline-flex rounded-md border border-border bg-background overflow-hidden">
+              <Label className="text-sm font-semibold text-foreground">{s.title}</Label>
+              <div className="inline-flex shrink-0 rounded-md border border-primary bg-card overflow-hidden">
                 {MODE_OPTIONS.map((opt) => {
                   const active = current === opt.value;
                   return (
-                    <button
+                    <Button
                       key={opt.value}
                       type="button"
+                      variant="ghost"
+                      aria-pressed={active}
                       onClick={() => onChange({ ...value, [s.key]: opt.value })}
                       className={cn(
-                        "px-3 py-1 text-xs transition-colors",
-                        active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted",
+                        "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors",
+                        active ? "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" : "bg-card text-foreground hover:bg-muted hover:text-foreground",
                       )}
                     >
                       {opt.label}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
@@ -106,7 +108,7 @@ export const DetailsDisplayDefaultsEditor = () => {
   return (
     <div className="rounded-lg border border-border p-4 space-y-3 bg-background">
       <div>
-        <p className="font-semibold text-slate-950">Details cards — global defaults</p>
+        <p className="font-semibold text-foreground">Details cards — global defaults</p>
         <p className="text-xs text-muted-foreground">
           Default mode for each yes/no card. Individual listings can override these.
         </p>
@@ -116,25 +118,27 @@ export const DetailsDisplayDefaultsEditor = () => {
           const current = local[s.key] ?? "all";
           return (
             <div key={s.key} className="flex items-center justify-between gap-3">
-              <Label className="text-sm text-slate-950">
+              <Label className="text-sm text-foreground">
                 <span className="text-muted-foreground capitalize text-xs mr-2">{s.group}</span>
                 {s.title}
               </Label>
-              <div className="inline-flex rounded-md border border-border bg-background overflow-hidden">
+              <div className="inline-flex shrink-0 rounded-md border border-primary bg-card overflow-hidden">
                 {GLOBAL_OPTIONS.map((opt) => {
                   const active = current === opt.value;
                   return (
-                    <button
+                    <Button
                       key={opt.value}
                       type="button"
+                      variant="ghost"
+                      aria-pressed={active}
                       onClick={() => setLocal({ ...local, [s.key]: opt.value })}
                       className={cn(
-                        "px-3 py-1 text-xs transition-colors",
-                        active ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted",
+                        "h-7 rounded-none px-3 py-1 text-xs font-medium transition-colors",
+                        active ? "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" : "bg-card text-foreground hover:bg-muted hover:text-foreground",
                       )}
                     >
                       {opt.label}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
