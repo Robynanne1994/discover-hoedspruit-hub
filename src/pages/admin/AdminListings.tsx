@@ -1823,7 +1823,7 @@ const AdminListings = () => {
                         { label: "Delivery Available", key: "delivery_available" as const },
                         { label: "Order Online", key: "order_online" as const },
                         { label: "Parking Available", key: "parking_available" as const },
-                        { label: "Wheelchair Friendly", key: "wheelchair_friendly" as const },
+                        { label: "Wheelchair-Friendly", key: "wheelchair_friendly" as const },
                         { label: "Local Products", key: "local_products" as const },
                         { label: "Curios / Gifts", key: "curio_or_gifts" as const },
                       ].map(({ label, key }) => (
