@@ -22,7 +22,7 @@ export const DISPLAY_SECTIONS: DisplaySection[] = [
   { key: "accom-wellness",  title: "Wellness",         group: "accommodation" },
   { key: "accom-rooms",     title: "Rooms",            group: "accommodation" },
   { key: "shop-amenities",  title: "Amenities",        group: "shopping" },
-  { key: "trades-service",  title: "Service info",     group: "trades" },
+  { key: "trades-service",  title: "Service Info",     group: "trades" },
 ];
 
 export const DEFAULT_DISPLAY_MODE: DisplayMode = "all";
