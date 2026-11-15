@@ -1966,16 +1966,6 @@ const AdminListings = () => {
 
                     <div className={ADMIN_FIELD_GRID}>
                       <div>
-                        <Label>Sleeps</Label>
-                        <Input
-                          type="number"
-                          value={form.sleeps ?? ""}
-                          onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
-                          placeholder="e.g. 4"
-                        />
-                      </div>
-
-                      <div>
                         <Label>Minimum Night Stay</Label>
                         <Input
                           type="number"
@@ -2006,7 +1996,6 @@ const AdminListings = () => {
                         </datalist>
                       </div>
 
-
                       <div>
                         <Label>Star Rating</Label>
                         <Input
@@ -2018,7 +2007,10 @@ const AdminListings = () => {
                           placeholder="e.g. 5"
                         />
                       </div>
+                    </div>
 
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
+                    <div className={ADMIN_FIELD_GRID}>
                       <div>
                         <Label>Price Range</Label>
                         <Select value={form.price_range} onValueChange={(v) => setForm({ ...form, price_range: v })}>
@@ -2031,8 +2023,14 @@ const AdminListings = () => {
                         </Select>
                       </div>
 
-
-
+                      <div>
+                        <Label>Average Price Per Couple Per Night</Label>
+                        <Input
+                          value={form.avg_price_per_couple_per_night}
+                          onChange={(e) => setForm({ ...form, avg_price_per_couple_per_night: e.target.value })}
+                          placeholder="e.g. R 2 400"
+                        />
+                      </div>
 
                       <div>
                         <Label>Average Price Per Person Per Night</Label>
@@ -2042,13 +2040,17 @@ const AdminListings = () => {
                           placeholder="e.g. R 1 250"
                         />
                       </div>
+                    </div>
 
+                    <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Capacity</p>
+                    <div className={ADMIN_FIELD_GRID}>
                       <div>
-                        <Label>Average Price Per Couple Per Night</Label>
+                        <Label>Sleeps</Label>
                         <Input
-                          value={form.avg_price_per_couple_per_night}
-                          onChange={(e) => setForm({ ...form, avg_price_per_couple_per_night: e.target.value })}
-                          placeholder="e.g. R 2 400"
+                          type="number"
+                          value={form.sleeps ?? ""}
+                          onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 4"
                         />
                       </div>
 
