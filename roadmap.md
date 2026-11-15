@@ -4,6 +4,11 @@
 (none)
 
 ## Done
+- (2026-11-15) Listings editor: "Gallery Images" now heads the gallery with the events editor's
+  Host-chip treatment (dark brown #423324 fill, cream bold text, rounded chip) instead of a plain
+  label. Verified live in the signed-in editor: listings chip and events "Host 1" chip report
+  identical computed styles (background rgb(66,51,36), colour rgb(251,250,249), radius 14px,
+  18px/700, padding 4px 12px, no border); build OK.
 - (2026-11-12) Specials editor: Redemption Note moved up into the Discount Type row as column 2,
   labels and boxes level; the Percent Off / Amount off value box now sits beside Freebie Text in
   the row below. Verified live in the signed-in editor (both labels 853.2, both boxes 889.3,
