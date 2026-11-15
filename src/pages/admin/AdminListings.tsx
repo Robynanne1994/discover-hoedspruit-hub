@@ -1421,7 +1421,7 @@ const AdminListings = () => {
                 <div className={ADMIN_FIELD_GRID}>
                 <div className="space-y-2">
                   <MultiContactField
-                    label="WhatsApp Number"
+                    label="WhatsApp"
                     type="tel"
                     primary={form.whatsapp}
                     onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
