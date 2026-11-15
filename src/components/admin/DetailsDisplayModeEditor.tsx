@@ -32,9 +32,7 @@ export const DetailsDisplayModeEditor = ({ value, onChange, groups }: PerListing
       <p className="text-foreground mb-1 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">
         Details Cards Display
       </p>
-      <p className="text-xs text-muted-foreground">
-        Per card, choose whether to show only the "yes" items, or both "yes" and "no" with ticks/crosses. "Default" follows the global setting.
-      </p>
+      <p className="text-xs text-muted-foreground">{"\n"}</p>
       <div className="space-y-2">
         {visible.map((s) => {
           const current = value?.[s.key] ?? "default";
