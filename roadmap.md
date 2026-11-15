@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Verify restaurant section headings and multi-set hours title/button layout in the listings editor.
 
 ## Done
 - (2026-11-15) Listings editor: the "Detail Page" banner heading is removed, and "Gallery Images"

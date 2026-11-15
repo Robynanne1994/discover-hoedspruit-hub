@@ -1571,7 +1571,7 @@ const AdminListings = () => {
                 {!isAccommodationOnly && (
                 <div>
                   <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Open Hours</p>
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center justify-end gap-3 flex-wrap">
                     <Button
                       type="button"
                       variant="outline"
@@ -1584,9 +1584,10 @@ const AdminListings = () => {
 
                   {/* A single set needs no name: the app just calls it "Opening Hours". */}
                   {form.additional_hours.length > 0 && (
-                    <div className="mt-3 w-1/2 space-y-2">
-                      <Label className="block">Open Hours Title</Label>
+                    <div className="mt-3 space-y-2">
+                      <Label className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">Primary Open Hours Title</Label>
                       <Input
+                        className="w-full lg:w-[calc(50%-16px)]"
                         value={form.opening_hours_label}
                         onChange={(e) => setForm({ ...form, opening_hours_label: e.target.value })}
                         placeholder="Name this set of hours, e.g. Kitchen"
@@ -1609,17 +1610,9 @@ const AdminListings = () => {
 
                   {form.additional_hours.map((set, idx) => (
                     <div key={idx} className="border-t border-border pt-4 mt-4">
-                      <div className="w-1/2 space-y-2">
-                        <Label className="block">Open Hours Title</Label>
-                        <div className="flex items-center gap-2">
-                          <Input
-                            value={set.label}
-                            onChange={(e) => setForm({
-                              ...form,
-                              additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
-                            })}
-                            placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
-                          />
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between gap-2">
+                          <Label className="inline-block w-fit rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">{idx === 0 ? "Secondary Open Hours Title" : "Other Open Hours Title"}</Label>
                           <Button
                             type="button"
                             variant="ghost"
@@ -1631,6 +1624,15 @@ const AdminListings = () => {
                             <X className="h-3.5 w-3.5" strokeWidth={2.5} />
                           </Button>
                         </div>
+                        <Input
+                          className="w-full lg:w-[calc(50%-16px)]"
+                          value={set.label}
+                          onChange={(e) => setForm({
+                            ...form,
+                            additional_hours: form.additional_hours.map((s2, i) => i === idx ? { ...s2, label: e.target.value } : s2),
+                          })}
+                          placeholder={`Name this set of hours, e.g. ${idx === 0 ? "Bar" : "Deli"}`}
+                        />
                       </div>
                       <div className="space-y-2 mt-2 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-2">
                         {DAY_LABELS.map((day) => (
@@ -1711,7 +1713,7 @@ const AdminListings = () => {
                     </div>
 
                     <div>
-                      <Label>Price Level</Label>
+                      <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Price Level</p>
                       <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
                         <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
                         <SelectContent>
@@ -1739,7 +1741,7 @@ const AdminListings = () => {
                       }
                       return (
                         <div key={key}>
-                          <Label>{label}</Label>
+                          <p className="mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">{label}</p>
                           <div className="flex flex-wrap gap-2">
                             {merged.map((opt) => {
                               const selected = form[key].includes(opt);
