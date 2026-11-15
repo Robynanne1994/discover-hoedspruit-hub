@@ -387,7 +387,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 </div>
               ) : (
                 <Button variant="link" type="button" onClick={() => setBookingLabelOpen(true)} className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1">
-                  <Tag className="h-3 w-3" /> Add custom label
+                  <Tag className="h-3 w-3" /> Add Custom Label
                 </Button>
               )}
             </div>
