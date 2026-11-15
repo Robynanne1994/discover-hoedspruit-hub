@@ -4,6 +4,9 @@
 (none)
 
 ## Done
+- (2026-11-15) Listings editor: the "Detail Page" banner heading is removed, and "Gallery Images"
+  now sits about 32px below the image grid above it (was 12px). Verified live in the signed-in
+  editor: Detail Page banner count 0, gap above the chip measured 32px; build OK.
 - (2026-11-15) Listings editor: "Gallery Images" now heads the gallery with the events editor's
   Host-chip treatment (dark brown #423324 fill, cream bold text, rounded chip) instead of a plain
   label. Verified live in the signed-in editor: listings chip and events "Host 1" chip report
