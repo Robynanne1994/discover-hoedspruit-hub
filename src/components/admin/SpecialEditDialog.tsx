@@ -259,7 +259,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   {filteredListings.length > 0 && (
                     <div className="mt-1 border rounded-md max-h-48 overflow-y-auto">
                       {filteredListings.map((l: any) => (
-                        <Button variant="link"
+                        <button
                           key={l.id}
                           type="button"
                           onClick={() => { set("business_id", l.id); if (!form.business_name) set("business_name", l.title); }}
@@ -512,7 +512,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                   </Button>
                 </div>
               ) : (
-                <button
+                <Button variant="link"
                   type="button"
                   onClick={() => setSocialLabelOpen(true)}
                   className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary underline underline-offset-2 inline-flex items-center gap-1"
