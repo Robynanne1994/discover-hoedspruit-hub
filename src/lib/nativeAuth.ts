@@ -124,10 +124,24 @@ async function signInWithGoogle(): Promise<NativeAuthResult> {
   const rawNonce = randomNonce();
   const hashedNonce = await sha256Hex(rawNonce);
 
+  // No `scopes` here, deliberately. Both platforms already ask for exactly
+  // what this app needs, and naming them breaks Android:
+  //
+  //   * Android adds userinfo.email, userinfo.profile and openid on every
+  //     login, then refuses outright the moment a `scopes` array is present
+  //     unless MainActivity implements the plugin's
+  //     ModifiedMainActivityForSocialLoginPlugin interface — "You CANNOT use
+  //     scopes without modifying the main activity". That interface exists to
+  //     return the consent screen's result for *extra* scopes; we ask for no
+  //     extra scopes, so there is nothing to carry and no reason to need it.
+  //   * iOS defaults to ["email", "profile", "openid"], so passing
+  //     ["email", "profile"] was quietly dropping openid.
+  //
+  // Omitting it therefore fixes Android and gives iOS one scope more than it
+  // had. We only ever read the ID token, which these cover.
   const result = await SocialLogin.login({
     provider: "google",
     options: {
-      scopes: ["email", "profile"],
       nonce: hashedNonce,
       forcePrompt: true,
     },
