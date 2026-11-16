@@ -34,19 +34,9 @@ PODS:
   - CapgoCapacitorSocialLogin (8.5.5):
     - Alamofire (~> 5.10.2)
     - Capacitor
-    - FBSDKCoreKit (~> 18.0)
-    - FBSDKLoginKit (~> 18.0)
     - GoogleSignIn (~> 9.0.0)
   - EbarooniCapacitorCalendar (6.7.2):
     - Capacitor
-  - FBAEMKit (18.1.1):
-    - FBSDKCoreKit_Basics (= 18.1.1)
-  - FBSDKCoreKit (18.1.1):
-    - FBAEMKit (= 18.1.1)
-    - FBSDKCoreKit_Basics (= 18.1.1)
-  - FBSDKCoreKit_Basics (18.1.1)
-  - FBSDKLoginKit (18.1.1):
-    - FBSDKCoreKit (= 18.1.1)
   - GoogleSignIn (9.0.0):
     - AppAuth (~> 2.0)
     - AppCheckCore (~> 11.0)
@@ -89,10 +79,6 @@ SPEC REPOS:
     - Alamofire
     - AppAuth
     - AppCheckCore
-    - FBAEMKit
-    - FBSDKCoreKit
-    - FBSDKCoreKit_Basics
-    - FBSDKLoginKit
     - GoogleSignIn
     - GoogleUtilities
     - GTMAppAuth
@@ -141,12 +127,8 @@ SPEC CHECKSUMS:
   CapacitorPushNotifications: 35abece14371c57172e8321c9ccc8b6fa35fabfe
   CapacitorShare: 77ff779e3b7c6ae9fb5461e52cf7ef805d429491
   CapacitorStatusBar: 149cde8f1328ec3aa6cbdd872a55137ae3f98b16
-  CapgoCapacitorSocialLogin: 305b18f461612347ccd19a7c7c45debd82f0ffe6
+  CapgoCapacitorSocialLogin: 126aae8a2403da95495f02ce5065cda0c5cf23f3
   EbarooniCapacitorCalendar: fe76a0820c1a8273bf2d5bda343b61a6cb1c324f
-  FBAEMKit: fbb0a50e13109400d0615e7630a0db26ec6b8206
-  FBSDKCoreKit: 0063014b3b1f7e975e70b60232b0cf8003839746
-  FBSDKCoreKit_Basics: f4a1e0f38769eb71abaf6395b85e015318fcda49
-  FBSDKLoginKit: 0e6d0df30ae0a5b33f33d9050ca10ca21e0da234
   GoogleSignIn: c7f09cfbc85a1abf69187be091997c317cc33b77
   GoogleUtilities: 4e0c2ad9fa0d0d18b5c4df8bf57b461cba35b0bb
   GTMAppAuth: 217a876b249c3c585a54fd6f73e6b58c4f5c4238
