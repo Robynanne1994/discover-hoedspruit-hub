@@ -288,8 +288,8 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
       )}
 
       {curatedIds.length > 0 && (
-        <Button variant="outline" size="sm" onClick={() => saveMutation.mutate([])}>
-          Clear all (use auto-picks)
+        <Button size="sm" onClick={() => saveMutation.mutate([])}>
+          Clear All (Use Auto-Picks)
         </Button>
       )}
     </div>
