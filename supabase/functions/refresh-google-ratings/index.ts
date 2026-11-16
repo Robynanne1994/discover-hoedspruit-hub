@@ -5,7 +5,14 @@
 // bearer token); anonymous callers are rejected.
 
 import { createClient } from "npm:@supabase/supabase-js@2";
+import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+
+// The service-role client these jobs run with. createClient is called without a
+// Database generic, so its own return type resolves to a client whose tables are
+// `never` and rejects every update payload; this is the loose client
+// createClient actually hands back.
+type Admin = SupabaseClient<any, "public", "public", any, any>;
 
 const GOOGLE_KEY = Deno.env.get("GOOGLE_PLACES_API_KEY") ?? "";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -156,7 +163,7 @@ async function authorise(req: Request): Promise<boolean> {
   return isAdmin === true;
 }
 
-async function runBackfill(admin: ReturnType<typeof createClient>, limit: number) {
+async function runBackfill(admin: Admin, limit: number) {
   const { data, error } = await admin
     .from("listings")
     .select("id, title, location, google_place_id")
@@ -205,7 +212,7 @@ async function runBackfill(admin: ReturnType<typeof createClient>, limit: number
 
       // Score every candidate, keep the strongest name match.
       let best:
-        | { id: string; name: string; confidence: number; coords: Record<string, number> }
+        | { id: string; name: string; confidence: number; coords: ReturnType<typeof coordinateUpdate> }
         | null = null;
       for (const candidate of candidates) {
         if (!candidate?.id) continue;
@@ -334,7 +341,7 @@ function parseMapsUrl(url: string): LinkHints {
   return { name, lat, lng };
 }
 
-async function runFromLinks(admin: ReturnType<typeof createClient>, limit: number) {
+async function runFromLinks(admin: Admin, limit: number) {
   const { data, error } = await admin
     .from("listings")
     .select("id, title, location, google_maps_link, google_place_id")
@@ -406,7 +413,7 @@ async function runFromLinks(admin: ReturnType<typeof createClient>, limit: numbe
       // us where and what to search for -- scoring against the link's own name
       // would score itself and wave anything through.
       let best:
-        | { id: string; name: string; confidence: number; coords: Record<string, number> }
+        | { id: string; name: string; confidence: number; coords: ReturnType<typeof coordinateUpdate> }
         | null = null;
       for (const candidate of candidates) {
         if (!candidate?.id) continue;
@@ -494,7 +501,7 @@ const NOT_AWAITING_MATCH = "google_sync_status.is.null,google_sync_status.neq.ne
  * with no rating at all gains more from a fetch than one whose rating is a few
  * days old, and a hand-entered ID otherwise waits behind the whole stale queue.
  */
-async function selectNeverFetched(admin: ReturnType<typeof createClient>, limit: number) {
+async function selectNeverFetched(admin: Admin, limit: number) {
   if (limit <= 0) return [] as Listing[];
   const { data, error } = await admin
     .from("listings")
@@ -517,7 +524,7 @@ async function selectNeverFetched(admin: ReturnType<typeof createClient>, limit:
 // doesn't get re-fetched every night.
 const SELF_HEAL_DAYS = 7;
 
-async function selectMissingRating(admin: ReturnType<typeof createClient>, limit: number) {
+async function selectMissingRating(admin: Admin, limit: number) {
   if (limit <= 0) return [] as Listing[];
   const cutoff = new Date(Date.now() - SELF_HEAL_DAYS * 86400000).toISOString();
   const { data, error } = await admin
@@ -535,7 +542,7 @@ async function selectMissingRating(admin: ReturnType<typeof createClient>, limit
 }
 
 async function selectDue(
-  admin: ReturnType<typeof createClient>,
+  admin: Admin,
   priority: "high" | "normal",
   staleDays: number,
   limit: number,
@@ -555,7 +562,7 @@ async function selectDue(
   return (data ?? []) as Listing[];
 }
 
-async function runRefresh(admin: ReturnType<typeof createClient>, limit: number) {
+async function runRefresh(admin: Admin, limit: number) {
   const fresh = await selectNeverFetched(admin, limit);
   const healing = await selectMissingRating(admin, limit - fresh.length);
   const used = fresh.length + healing.length;
