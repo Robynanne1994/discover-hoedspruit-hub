@@ -298,10 +298,16 @@ async function importPkcs8(pem: string, algo: any): Promise<CryptoKey> {
   // those left a stray character in the base64 and atob() threw "Failed to
   // decode base64: invalid character". Strip the armour by pattern, turn
   // escaped newlines into nothing, and keep only base64 characters.
-  const body = pem
-    .replace(/\\[nr]/g, "")
-    .replace(/-----(BEGIN|END)[A-Z ]*-----/g, "")
-    .replace(/[^A-Za-z0-9+/=]/g, "");
+  // Normalise first: NFKC folds full-width/compatibility characters a rich-text
+  // copy can introduce back to plain ASCII, and zero-width/BOM characters go.
+  const norm = pem.normalize("NFKC").replace(/[​-‍﻿ ]/g, " ");
+  // Cut the key out between the markers by position, not by one regex over
+  // the whole string, then keep only base64 characters.
+  const begin = norm.search(/-+\s*BEGIN[^-]*-+/);
+  const beginEnd = begin >= 0 ? begin + (norm.slice(begin).match(/-+\s*BEGIN[^-]*-+/)![0].length) : 0;
+  const end = norm.search(/-+\s*END[^-]*-+/);
+  const inner = norm.slice(beginEnd, end > beginEnd ? end : norm.length);
+  const body = inner.replace(/\\[nr]/g, "").replace(/[^A-Za-z0-9+/=]/g, "");
 
   // Candidates, best first. When a "\n" lost its backslash on the way into the
   // dashboard, every line break became a literal "n": one before the key, one
@@ -331,10 +337,14 @@ async function importPkcs8(pem: string, algo: any): Promise<CryptoKey> {
   }
   // Safe to report: the length and whether it opens like a key header, which
   // is identical for every P-256 key. Never any of the key itself.
+  const count = (re: RegExp) => (pem.match(re) || []).length;
   throw new Error(
     `expected valid PKCS#8 data (secret has ${pem.length} chars, ${body.length} base64 chars after cleanup, ` +
-      `PEM header ${/BEGIN PRIVATE KEY/.test(pem) ? "present" : "missing"}, ` +
-      `starts like a .p8 key: ${body.startsWith("MIG") ? "yes" : "no"}; a .p8 key is 200 base64 chars)`,
+      `PEM header ${/BEGIN PRIVATE KEY/.test(pem) ? "present" : "missing"}, markers at ${begin}/${end}, ` +
+      `starts like a .p8 key: ${body.startsWith("MIG") ? "yes" : "no"}; char classes: ` +
+      `lower ${count(/[a-z]/g)}, upper ${count(/[A-Z]/g)}, digit ${count(/[0-9]/g)}, ` +
+      `newline ${count(/\n/g)}, space ${count(/ /g)}, backslash ${count(/\\/g)}, dash ${count(/-/g)}, ` +
+      `non-ascii ${count(/[^\x00-\x7F]/g)}; a .p8 key is 200 base64 chars)`,
   );
 }
 
