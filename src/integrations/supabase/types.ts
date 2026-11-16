@@ -38,6 +38,27 @@ export type Database = {
         }
         Relationships: []
       }
+      apns_token_cache: {
+        Row: {
+          id: number
+          issued_at: string
+          key_id: string
+          token: string
+        }
+        Insert: {
+          id?: number
+          issued_at: string
+          key_id: string
+          token: string
+        }
+        Update: {
+          id?: number
+          issued_at?: string
+          key_id?: string
+          token?: string
+        }
+        Relationships: []
+      }
       app_update_broadcasts: {
         Row: {
           body: string | null
@@ -2676,6 +2697,10 @@ export type Database = {
         }[]
       }
       block_cooldown_days: { Args: never; Returns: number }
+      claim_apns_token: {
+        Args: { _candidate: string; _key_id: string; _max_age_seconds?: number }
+        Returns: string
+      }
       claim_business_owner_role: { Args: never; Returns: undefined }
       clear_expired_suspensions: { Args: never; Returns: number }
       delete_email: {
