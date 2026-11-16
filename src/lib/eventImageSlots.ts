@@ -147,7 +147,7 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     key: "host",
     field: "hosted_by_image_url",
     label: "Host Photo",
-    where: "The Hosted by row on the event page.",
+    where: "",
     // EventDetail.tsx — host avatar is `width: 48, height: 48` with
     // `borderRadius: 999`, so anything off-square loses its edges to the circle.
     aspect: 1,
@@ -156,7 +156,7 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     guides: fixedGuides([
       circleMaskGuide("The host photo is round — everything outside the circle is trimmed off."),
     ]),
-    fallback: "Nothing — the row shows the host's initial in a circle.",
+    fallback: "",
   },
 ];
 
