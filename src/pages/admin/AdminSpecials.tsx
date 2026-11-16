@@ -587,31 +587,42 @@ const AdminSpecials = () => {
 
             {isLoading ? (
               <p className="text-muted-foreground">Loading…</p>
-            ) : filtered.length === 0 ? (
-              <p className="text-muted-foreground">
-                {tab === "active" ? "No active specials." : "No passed specials."}
-              </p>
             ) : (
-              <div className="space-y-3 max-w-3xl">
-                {filtered.map((s) => (
-                  <div key={s.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
-                    {s.image_url && (
-                      <img src={s.image_url} alt={s.title} className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />
+              <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+                <table className="w-full text-sm min-w-[820px]">
+                  <thead className="bg-muted">
+                    <tr>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[27%]">Title</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[20%]">Business</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[18%]">Deal</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[15%]">Validity</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[9%]">Featured</th>
+                      <th className="p-3 w-[11%]"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((s) => (
+                      <tr key={s.id} className="border-t border-border">
+                        <td className="p-3 font-medium text-foreground truncate">{s.title}</td>
+                        <td className="p-3 text-muted-foreground truncate">{s.business_name || "—"}</td>
+                        <td className="p-3 text-muted-foreground truncate">{getSpecialBadge(s as any)}</td>
+                        <td className="p-3 text-muted-foreground truncate">{s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</td>
+                        <td className="p-3 text-muted-foreground">{s.is_featured ? "Yes" : "—"}</td>
+                        <td className="p-3">
+                          <div className="flex gap-1 justify-end">
+                            <Button variant="ghost" size="icon" aria-label={`Edit ${s.title}`} onClick={() => setDialogSpecial(s)}><Pencil className="h-4 w-4" /></Button>
+                            <Button variant="ghost" size="icon" aria-label={`Delete ${s.title}`} onClick={() => { if (confirm("Delete this special?")) deleteMutation.mutate(s.id); }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {filtered.length === 0 && (
+                      <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
+                        {tab === "active" ? "No active specials." : "No passed specials."}
+                      </td></tr>
                     )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-slate-950 truncate">{s.title}</span>
-                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold text-slate-950">{getSpecialBadge(s as any)}</span>
-                        {!isSpecialActive(s) && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">Passed</span>}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{s.business_name} · {s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</p>
-                    </div>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="icon" onClick={() => setDialogSpecial(s)}><Pencil className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this special?")) deleteMutation.mutate(s.id); }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                    </div>
-                  </div>
-                ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </>
