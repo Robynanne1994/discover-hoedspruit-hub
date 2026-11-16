@@ -1012,7 +1012,9 @@ const EventDetail = () => {
       {galleryImages.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No photos yet.</p>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+        <div>
+          {sectionHeading("Gallery")}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
           {galleryImages.map((url, i) => (
             <button key={i} type="button"
               onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
@@ -1022,6 +1024,7 @@ const EventDetail = () => {
               <img src={url} alt={`${event.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
             </button>
           ))}
+          </div>
         </div>
       )}
     </div>
