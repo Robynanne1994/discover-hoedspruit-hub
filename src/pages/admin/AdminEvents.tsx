@@ -1,4 +1,5 @@
 import EventEditDialog from "@/components/admin/EventEditDialog";
+import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import { collectEventTags } from "@/lib/eventTags";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { useState, useRef } from "react";
@@ -531,7 +532,7 @@ const AdminEvents = () => {
                       <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
                       <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
                       <td className="p-3 text-muted-foreground truncate">{collectEventTags(ev).join(", ") || "—"}</td>
-                      <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "Yes" : "—"}</td>
+                      <td className="p-3"><FeaturedToggle table="events" id={ev.id} title={ev.title} featured={!!ev.is_featured} /></td>
                       <td className="p-3">
                         <div className="flex gap-1 justify-end">
                           <Button variant="ghost" size="icon" aria-label={`Edit ${ev.title}`} onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>

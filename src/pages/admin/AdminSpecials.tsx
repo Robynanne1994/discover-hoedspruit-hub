@@ -21,6 +21,7 @@ import { getSpecialBadge } from "@/lib/specialBadge";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDialog";
+import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import { parseDays } from "@/lib/specialDays";
 import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 
@@ -607,7 +608,7 @@ const AdminSpecials = () => {
                         <td className="p-3 text-muted-foreground truncate">{s.business_name || "—"}</td>
                         <td className="p-3 text-muted-foreground truncate">{getSpecialBadge(s as any)}</td>
                         <td className="p-3 text-muted-foreground truncate">{s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</td>
-                        <td className="p-3 text-muted-foreground">{s.is_featured ? "Yes" : "—"}</td>
+                        <td className="p-3"><FeaturedToggle table="specials" id={s.id} title={s.title} featured={s.is_featured} /></td>
                         <td className="p-3">
                           <div className="flex gap-1 justify-end">
                             <Button variant="ghost" size="icon" aria-label={`Edit ${s.title}`} onClick={() => setDialogSpecial(s)}><Pencil className="h-4 w-4" /></Button>
