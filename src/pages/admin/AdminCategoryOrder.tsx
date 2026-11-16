@@ -157,10 +157,7 @@ const AdminCategoryOrder = () => {
         </Button>
         <h1 className="text-xl font-[550]">Order listings — {category?.title ?? ""}</h1>
       </div>
-      <p className="text-sm text-muted-foreground mb-4">
-        Drag listings into the order you want them to appear on the category page (default sort).
-        Featured listings still appear at the top of their group. Clear the custom order to fall back to the default arrangement.
-      </p>
+      <p className="text-sm text-muted-foreground mb-4"></p>
       <div className="flex gap-2 mb-4">
         <Button onClick={save} disabled={saving || isLoading} className="gap-1"><Save className="h-4 w-4" /> Save Order</Button>
         <Button onClick={reset} disabled={saving || isLoading} className="gap-1"><RotateCcw className="h-4 w-4" /> Clear Custom Order</Button>
