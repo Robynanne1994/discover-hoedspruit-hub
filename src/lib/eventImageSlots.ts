@@ -138,7 +138,7 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // Search.tsx — ResultRow avatar is `width: 42, height: 42` with
     // `borderRadius: "50%"`, so anything off-square loses its edges twice over.
     aspect: 1,
-    aspectLabel: "1:1",
+    aspectLabel: "",
     box: fixedBox(42, 42),
     guides: fixedGuides([searchCircleGuide()]),
     fallback: "Falls back to the card cover image.",
@@ -151,7 +151,7 @@ export const EVENT_IMAGE_SLOTS: EventImageSlot[] = [
     // EventDetail.tsx — host avatar is `width: 48, height: 48` with
     // `borderRadius: 999`, so anything off-square loses its edges to the circle.
     aspect: 1,
-    aspectLabel: "1:1",
+    aspectLabel: "",
     box: fixedBox(48, 48),
     guides: fixedGuides([
       circleMaskGuide("The host photo is round — everything outside the circle is trimmed off."),
