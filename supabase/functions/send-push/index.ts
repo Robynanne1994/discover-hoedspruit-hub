@@ -292,10 +292,16 @@ async function makeApnsJwt(p8: string, keyId: string, teamId: string): Promise<s
 // Shared crypto / encoding helpers
 // ---------------------------------------------------------------------------
 async function importPkcs8(pem: string, algo: any): Promise<CryptoKey> {
+  // Secrets pasted into a dashboard arrive in all sorts of shapes: wrapped in
+  // quotes, with literal "\n" text instead of line breaks, with "\r", or with
+  // the newlines stripped so the BEGIN/END lines run into the key. Any of
+  // those left a stray character in the base64 and atob() threw "Failed to
+  // decode base64: invalid character". Strip the armour by pattern, turn
+  // escaped newlines into nothing, and keep only base64 characters.
   const body = pem
-    .replace(/-----BEGIN PRIVATE KEY-----/, "")
-    .replace(/-----END PRIVATE KEY-----/, "")
-    .replace(/\s+/g, "");
+    .replace(/\\[nr]/g, "")
+    .replace(/-----(BEGIN|END)[A-Z ]*-----/g, "")
+    .replace(/[^A-Za-z0-9+/=]/g, "");
   const der = Uint8Array.from(atob(body), (c) => c.charCodeAt(0));
   return crypto.subtle.importKey("pkcs8", der, algo, false, ["sign"]);
 }
