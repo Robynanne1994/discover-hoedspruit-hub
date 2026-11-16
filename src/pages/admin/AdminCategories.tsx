@@ -821,12 +821,14 @@ const AdminCategories = () => {
         <p className="text-muted-foreground">Loading...</p>
       ) : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <div className="grid grid-cols-[32px_1fr_120px_90px_210px] gap-3 px-3 py-3 bg-muted text-[15px] font-bold text-foreground">
-            <div></div>
-            <div>Title</div>
-            <div>Type</div>
-            <div>Listings</div>
-            <div className="text-right">Actions</div>
+          <div className="bg-muted">
+            <div className="grid grid-cols-[32px_1fr_120px_90px_210px] gap-3 px-3 py-3 text-[15px] font-bold text-foreground">
+              <div></div>
+              <div>Title</div>
+              <div>Type</div>
+              <div>Listings</div>
+              <div className="text-right">Actions</div>
+            </div>
           </div>
 
           <DndContext
