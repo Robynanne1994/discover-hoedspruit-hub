@@ -639,9 +639,7 @@ const AdminCategories = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <div>
           <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Categories</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Drag the handle to move a category. Tap the listings count to see what is inside, or Order to set the order listings appear in.
-          </p>
+          <p className="text-sm text-muted-foreground mt-1"></p>
         </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
