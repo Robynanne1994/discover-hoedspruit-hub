@@ -138,7 +138,7 @@ const AdminEventHosts = () => {
             </div>
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={setForm.bind(null, null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => setForm(null)}>Cancel</Button>
             <Button onClick={save} disabled={saving}>{saving ? "Saving" : "Save Host"}</Button>
           </DialogFooter>
         </DialogContent>
