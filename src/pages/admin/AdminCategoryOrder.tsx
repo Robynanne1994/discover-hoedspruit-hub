@@ -162,8 +162,8 @@ const AdminCategoryOrder = () => {
         Featured listings still appear at the top of their group. Clear the custom order to fall back to the default arrangement.
       </p>
       <div className="flex gap-2 mb-4">
-        <Button onClick={save} disabled={saving || isLoading} className="gap-1"><Save className="h-4 w-4" /> Save order</Button>
-        <Button onClick={reset} disabled={saving || isLoading} variant="outline" className="gap-1"><RotateCcw className="h-4 w-4" /> Clear custom order</Button>
+        <Button onClick={save} disabled={saving || isLoading} className="gap-1"><Save className="h-4 w-4" /> Save Order</Button>
+        <Button onClick={reset} disabled={saving || isLoading} variant="outline" className="gap-1"><RotateCcw className="h-4 w-4" /> Clear Custom Order</Button>
       </div>
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading…</p>
