@@ -34,7 +34,6 @@ import AdminEventHosts from "./pages/admin/AdminEventHosts.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
 import AdminSearchSuggested from "./pages/admin/AdminSearchSuggested.tsx";
 import AdminAppStore from "./pages/admin/AdminAppStore.tsx";
-import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import AdminSpecialsOrder from "./pages/admin/AdminSpecialsOrder.tsx";
@@ -313,7 +312,6 @@ const App = () => (
                 <Route path="categories/:id/order" element={<AdminCategoryOrder />} />
 
                 <Route path="listings" element={<AdminListings />} />
-                <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
                 <Route path="events" element={<AdminEvents />} />
                 <Route path="events/import" element={<AdminEventsImport />} />
                 <Route path="events/featured-order" element={<AdminFeaturedEventsOrder />} />
