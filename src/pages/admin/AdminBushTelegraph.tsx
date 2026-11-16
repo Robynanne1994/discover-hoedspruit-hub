@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import ChannelOrderDialog from "@/components/admin/ChannelOrderDialog";
+import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ChannelBusinessSelect from "@/components/admin/ChannelBusinessSelect";
 import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } from "@/lib/channelBusiness";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
@@ -573,7 +574,7 @@ const AdminBushTelegraph = () => {
                     <td className="p-3 font-medium">{r.title}</td>
                     <td className="p-3">{r.platform}</td>
                     <td className="p-3 text-muted-foreground">{r.resource_type}</td>
-                    <td className="p-3">{r.is_featured ? "★" : ""}</td>
+                    <td className="p-3"><FeaturedToggle table="bush_telegraph_resources" id={r.id} title={r.title} featured={r.is_featured} /></td>
                     <td className="p-3 text-right">
                       <Button variant="ghost" size="icon" onClick={() => startEdit(r)}><Pencil className="h-4 w-4" /></Button>
                       <Button

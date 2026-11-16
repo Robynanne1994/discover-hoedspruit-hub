@@ -26,6 +26,7 @@ import {
   ADMIN_TOGGLE_GRID,
 } from "@/lib/adminEditorLayout";
 import GalleryUpload from "@/components/admin/GalleryUpload";
+import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
@@ -2468,7 +2469,7 @@ const AdminListings = () => {
                   </td>
                   <td className="p-3 font-medium text-foreground truncate">{l.title}</td>
                   <td className="p-3 text-muted-foreground truncate">{(l as any)._categoryNames?.join(", ") || "—"}</td>
-                  <td className="p-3 text-muted-foreground">{l.is_featured ? "Yes" : "No"}</td>
+                  <td className="p-3"><FeaturedToggle table="listings" id={l.id} title={l.title} featured={!!l.is_featured} /></td>
                   <td className="p-3 flex gap-1 justify-end">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(l)}><Pencil className="h-4 w-4" /></Button>
                     <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); qc.invalidateQueries({ queryKey: ["admin-used-subcategory-ids"] }); qc.invalidateQueries({ queryKey: ["admin-used-sub-subcategory-ids"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
