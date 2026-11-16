@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getEventLiveStatus, isEventHappeningNow } from "./eventLive";
+import { getEventLiveStatus, isEventHappeningNow, isEventPassedForAdmin } from "./eventLive";
 
 describe("live event status", () => {
   it("marks Ballyhoo happening from 2PM until 6PM and passed at 6:33PM on 8 November", () => {

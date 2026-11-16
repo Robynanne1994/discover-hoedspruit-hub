@@ -48,3 +48,14 @@ export function getEventLiveStatus(event: EventScheduleLike, now = new Date()): 
 export function isEventHappeningNow(event: EventScheduleLike, now = new Date()): boolean {
   return getEventLiveStatus(event, now) === "happening";
 }
+
+/**
+ * Admin tab rule: an event belongs in "Passed" once its live status is past.
+ * This is the same rule the public cards use for "Event has Passed", so an
+ * event whose date has gone can never sit in the Active tab. Recurrence text
+ * of "None" is not a recurrence, and an event with no dates at all stays
+ * Active because there is nothing to have passed.
+ */
+export function isEventPassedForAdmin(event: EventScheduleLike, now = new Date()): boolean {
+  return getEventLiveStatus(event, now) === "past";
+}
