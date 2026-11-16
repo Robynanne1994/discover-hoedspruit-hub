@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getEventLiveStatus, isEventHappeningNow } from "./eventLive";
+import { getEventLiveStatus, isEventHappeningNow, isEventPassedForAdmin } from "./eventLive";
 
 describe("live event status", () => {
   it("marks Ballyhoo happening from 2PM until 6PM and passed at 6:33PM on 8 November", () => {
@@ -35,5 +35,31 @@ describe("live event status", () => {
   it("keeps overnight events live after midnight and Late through the event day", () => {
     expect(isEventHappeningNow({ start_date: "2026-11-07", start_time: "22:00", end_time: "02:00" }, new Date("2026-11-07T23:00:00Z"))).toBe(true);
     expect(isEventHappeningNow({ start_date: "2026-11-08", start_time: "17:00", end_time: "Late" }, new Date("2026-11-08T20:00:00Z"))).toBe(true);
+  });
+});
+
+describe("admin Events tabs", () => {
+  const now = new Date("2026-11-16T06:36:00Z"); // 08:36 in Johannesburg, 16 Nov 2026
+
+  it("puts an event whose date has passed in Passed even when recurrence says None", () => {
+    expect(isEventPassedForAdmin({ start_date: "2026-11-07", end_date: "2026-11-07", start_time: "07:30", recurrence: "None" }, now)).toBe(true);
+    expect(isEventPassedForAdmin({ start_date: "2026-11-12", end_date: "2026-11-12", recurrence: "None" }, now)).toBe(true);
+  });
+  it("moves an event to Passed only once its end time has gone", () => {
+    expect(isEventPassedForAdmin({ start_date: "2026-11-16", end_date: "2026-11-16", start_time: "07:00", end_time: "09:00" }, now)).toBe(false);
+    expect(isEventPassedForAdmin({ start_date: "2026-11-15", end_date: "2026-11-16", start_time: "07:00", end_time: "06:00" }, now)).toBe(true);
+  });
+  it("keeps a run that still covers today in Active", () => {
+    expect(isEventPassedForAdmin({ start_date: "2026-11-12", end_date: "2026-11-17" }, now)).toBe(false);
+    expect(isEventPassedForAdmin({ start_date: "2026-12-19", end_date: "2026-12-19", start_time: "10:00", end_time: "12:00" }, now)).toBe(false);
+  });
+  it("puts a performance series in Passed only after its final show", () => {
+    const e = { performances: [{ date: "2026-11-15", time: "20:00" }, { date: "2026-11-16", time: "20:00" }] };
+    expect(isEventPassedForAdmin(e, now)).toBe(false);
+    expect(isEventPassedForAdmin(e, new Date("2026-11-16T23:00:00Z"))).toBe(true);
+  });
+  it("keeps recurring events with no dates in Active because nothing has passed", () => {
+    expect(isEventPassedForAdmin({ recurrence: "Weekly", start_time: "07:00" }, now)).toBe(false);
+    expect(isEventPassedForAdmin({}, now)).toBe(false);
   });
 });

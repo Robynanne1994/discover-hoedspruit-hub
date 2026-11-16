@@ -2,6 +2,7 @@ import EventEditDialog from "@/components/admin/EventEditDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import { collectEventTags } from "@/lib/eventTags";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
+import { isEventPassedForAdmin } from "@/lib/eventLive";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -132,13 +133,9 @@ const AdminEvents = () => {
   const [form, setForm] = useState(emptyForm);
   const [tab, setTab] = useState<"active" | "passed">("active");
 
-  const isEventActive = (ev: any) => {
-    if (ev?.recurrence && String(ev.recurrence).trim() !== "") return true;
-    const end = ev?.end_date || ev?.start_date;
-    if (!end) return true;
-    const todayStr = new Date().toISOString().slice(0, 10);
-    return String(end) >= todayStr;
-  };
+  // An event whose date has gone belongs in Passed, using the same rule the
+  // public cards use for "Event has Passed".
+  const isEventActive = (ev: any) => !isEventPassedForAdmin(ev);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["admin-events"],

@@ -81,3 +81,8 @@
   /admin/listings/bulk-edit page and its route), and the row/header selection checkboxes are
   gone. Table now starts at Title with 4 columns. Verified signed in: 0 checkboxes, 0 Bulk
   Edit buttons, headers Title/Categories/Featured/actions, old bulk-edit URL renders 404.
+- (2026-11-16) Events admin tabs: past events now sit in "Passed", not "Active". The table's
+  own date check (which treated recurrence "None" as a recurrence and ignored end times) is
+  replaced by isEventPassedForAdmin in src/lib/eventLive.ts, the same rule the public cards use
+  for "Event has Passed". Verified signed in: Active (37) / Passed (140), and Morning Start Yoga
+  Flow and Goodbye Game Ranger Talk now appear under Passed. Five new tests in eventLive.test.ts.
