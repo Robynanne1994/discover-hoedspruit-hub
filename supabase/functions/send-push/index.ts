@@ -28,10 +28,26 @@ Deno.serve(async (req) => {
 
   try {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const auth = req.headers.get("Authorization") || "";
-    if (auth !== `Bearer ${serviceKey}`) return json({ error: "Unauthorized" }, 401);
-
     const supabase = createClient(Deno.env.get("SUPABASE_URL")!, serviceKey);
+
+    // Two ways in. The service-role bearer (manual calls), or the x-push-secret
+    // header the DB trigger sends: a random value generated inside the database
+    // and kept in Vault as push_webhook_secret, checked here through a
+    // service-role-only RPC. The trigger used to send a copy of the
+    // service-role key from Vault instead, and when the project's keys were
+    // rotated that copy went stale and every push came back 401 with no phone
+    // ever buzzing. The shared secret never has to be copied by hand, so a key
+    // rotation can no longer break delivery.
+    const auth = req.headers.get("Authorization") || "";
+    let authorised = auth === `Bearer ${serviceKey}`;
+    if (!authorised) {
+      const secret = req.headers.get("x-push-secret");
+      if (secret) {
+        const { data } = await supabase.rpc("verify_push_webhook_secret" as any, { _secret: secret } as any);
+        authorised = data === true;
+      }
+    }
+    if (!authorised) return json({ error: "Unauthorized" }, 401);
 
     const payload = await req.json().catch(() => ({} as any));
     // Support both the trigger payload and a Supabase Database Webhook payload.
