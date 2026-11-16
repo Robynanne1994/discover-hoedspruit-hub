@@ -77,8 +77,8 @@ describe("ShareProvider", () => {
 
     const sheet = await screen.findByRole("dialog", { name: "Share" });
     expect(sheet).toBeInTheDocument();
-    // Copy link plus the "share via" targets, exactly like a native sheet.
-    expect(screen.getByRole("button", { name: "Copy link" })).toBeInTheDocument();
+    // Copy Link plus the "share via" targets, exactly like a native sheet.
+    expect(screen.getByRole("button", { name: "Copy Link" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Share via WhatsApp" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Share via Email" })).toBeInTheDocument();
     // The sheet shows the title, not the raw link — the link itself is covered
@@ -106,7 +106,7 @@ describe("ShareProvider", () => {
 
     renderTrigger();
     fireEvent.click(screen.getByRole("button", { name: "Share this" }));
-    fireEvent.click(await screen.findByRole("button", { name: "Copy link" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Copy Link" }));
 
     expect(writeText).toHaveBeenCalledWith("https://hellohoedspruit.co.za/listing/1");
     await waitFor(() => expect(screen.queryByRole("dialog", { name: "Share" })).toBeNull());
