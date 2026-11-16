@@ -69,7 +69,7 @@ const AdminEventHosts = () => {
         <p className="text-muted-foreground">Loading...</p>
       ) : (
         <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm min-w-[720px]">
+          <table className="w-full table-fixed text-sm min-w-[720px]">
             <thead className="bg-muted">
               <tr>
                 <th className="text-left p-3 text-[15px] font-bold text-foreground w-[8%]">Photo</th>
