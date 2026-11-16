@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
       errors.push(...r.errors);
     }
     if (iosTokens.length) {
-      const r = await sendApns(iosTokens, title, body, data);
+      const r = await sendApns(supabase, iosTokens, title, body, data);
       sent += r.sent;
       stale.push(...r.stale);
       errors.push(...r.errors);
@@ -205,7 +205,46 @@ async function getGoogleAccessToken(sa: any): Promise<string> {
 // ---------------------------------------------------------------------------
 // Apple Push Notification service (iOS)
 // ---------------------------------------------------------------------------
+// APNs provider tokens must be REUSED. Apple allows a new one roughly once
+// every 20 minutes and answers 429 TooManyProviderTokenUpdates beyond that.
+// Each notification is its own function call, and a broadcast (a special going
+// out to every follower) is dozens of calls at once — signing a fresh token in
+// each made Apple refuse most of them: 14 of 21 in a burst test.
+//
+// So one token is shared by every call through apns_token_cache, via
+// claim_apns_token(): each call offers a freshly signed candidate, and the
+// database keeps the stored token unless it is older than 40 minutes or was
+// signed by a different key, returning whichever token won. Concurrent cold
+// starts therefore all end up sending with the same token. A per-instance copy
+// skips the database round trip while it is still young.
+const APNS_TOKEN_MAX_AGE_S = 40 * 60;
+let apnsTokenMemo: { token: string; keyId: string; at: number } | null = null;
+
+async function sharedApnsJwt(
+  supabase: any,
+  p8: string,
+  keyId: string,
+  teamId: string,
+  force = false,
+): Promise<string> {
+  const now = Date.now();
+  if (!force && apnsTokenMemo && apnsTokenMemo.keyId === keyId && now - apnsTokenMemo.at < 30 * 60 * 1000) {
+    return apnsTokenMemo.token;
+  }
+  const candidate = await makeApnsJwt(p8, keyId, teamId);
+  const { data, error } = await supabase.rpc("claim_apns_token" as any, {
+    _candidate: candidate,
+    _key_id: keyId,
+    _max_age_seconds: force ? 0 : APNS_TOKEN_MAX_AGE_S,
+  } as any);
+  // If the cache is unavailable, the candidate still works for this call.
+  const token = !error && typeof data === "string" && data ? data : candidate;
+  apnsTokenMemo = { token, keyId, at: now };
+  return token;
+}
+
 async function sendApns(
+  supabase: any,
   tokens: string[],
   title: string,
   body: string,
@@ -222,7 +261,7 @@ async function sendApns(
 
   let jwt: string;
   try {
-    jwt = await makeApnsJwt(p8, keyId, teamId);
+    jwt = await sharedApnsJwt(supabase, p8, keyId, teamId);
   } catch (e: any) {
     return { sent: 0, stale: [], errors: [`APNs auth failed: ${e?.message ?? e}`] };
   }
@@ -256,9 +295,22 @@ async function sendApns(
   // as BadDeviceToken — so try the other host before calling a token stale.
   const altHost = host.includes("sandbox") ? "api.push.apple.com" : "api.sandbox.push.apple.com";
 
+  let refreshed = false;
   for (const token of tokens) {
     let res = await post(host, token);
     let t = res.ok ? "" : await res.text();
+    // The shared token aged out or was signed by a replaced key: mint a new
+    // one once (force) and retry with it.
+    if (!res.ok && res.status === 403 && /ExpiredProviderToken|InvalidProviderToken/i.test(t) && !refreshed) {
+      refreshed = true;
+      try {
+        jwt = await sharedApnsJwt(supabase, p8, keyId, teamId, true);
+        res = await post(host, token);
+        t = res.ok ? "" : await res.text();
+      } catch {
+        /* report the original failure below */
+      }
+    }
     if (!res.ok && res.status === 400 && /BadDeviceToken/i.test(t)) {
       res = await post(altHost, token);
       t = res.ok ? "" : await res.text();
