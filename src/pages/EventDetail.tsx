@@ -1024,6 +1024,7 @@ const EventDetail = () => {
               <img src={url} alt={`${event.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
             </button>
           ))}
+          </div>
         </div>
       )}
     </div>
