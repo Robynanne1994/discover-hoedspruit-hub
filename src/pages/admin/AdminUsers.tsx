@@ -147,7 +147,7 @@ const AdminUsers = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-[550] text-slate-950">Users</h1>
-          <p className="text-sm text-muted-foreground mb-6 text-slate-950">
+          <p className="text-sm text-muted-foreground mb-6">
             All registered users {data ? `(${data.length})` : ""}
           </p>
         </div>
@@ -168,15 +168,15 @@ const AdminUsers = () => {
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-lg overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left">
+          <table className="w-full text-sm min-w-[720px]">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-4 py-3 font-medium text-muted-foreground">User</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Email</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Joined</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground hidden lg:table-cell">Last sign in</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[34%]">User</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground hidden md:table-cell w-[26%]">Email</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground hidden lg:table-cell w-[20%]">Joined</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground hidden lg:table-cell w-[20%]">Last sign in</th>
               </tr>
             </thead>
             <tbody>
