@@ -36,10 +36,10 @@ describe("universal vs category CSV columns", () => {
   it("retires plant_types from Home & Garden imports, exports and references", () => {
     expect(getCSVHeadersForCategory("Home & Garden")).toEqual([
       "title", "card_primary_subcategory", "subcategories",
-      "services_offered", "business_started_year", "specialities",
+      "services_offered", "business_started_year",
     ]);
     expect(getCategorySpecificFields("Home & Garden")).toEqual([
-      "services_offered", "business_started_year", "specialities",
+      "services_offered", "business_started_year",
     ]);
     expect(LISTING_FIELD_SPECS).not.toHaveProperty("plant_types");
     expect(getUniversalDbFields()).not.toContain("plant_types");

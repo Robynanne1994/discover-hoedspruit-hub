@@ -823,12 +823,6 @@ const ListingDetail = () => {
     if (tenureLabel) {
       sections.push({ key: "hg-tenure", title: "In business", iconComp: Calendar, fields: [{ label: tenureLabel, on: true }] });
     }
-    if (l.specialities && l.specialities.trim()) {
-      const items = l.specialities.split(",").map((s: string) => s.trim()).filter(Boolean);
-      if (items.length) {
-        sections.push({ key: "hg-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
-      }
-    }
   }
 
   if (isListingWeddingsEvents) {
