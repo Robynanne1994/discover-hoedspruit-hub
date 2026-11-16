@@ -64,10 +64,7 @@ const AdminEventHosts = () => {
         <h1 className="text-2xl font-bold">Event Hosts</h1>
         <Button onClick={() => setForm({ ...empty })}><Plus className="h-4 w-4 mr-1" /> Add Host</Button>
       </div>
-      <p className="text-sm text-muted-foreground mb-6">
-        For hosts that aren't listings. When an event's host name matches a name here exactly (capitals and extra spaces are ignored),
-        the event shows this photo and link automatically. A photo or link added on the event itself still wins.
-      </p>
+      <p className="text-sm text-muted-foreground mb-6"></p>
 
       {isLoading ? (
         <p className="text-sm text-muted-foreground">Loading</p>
