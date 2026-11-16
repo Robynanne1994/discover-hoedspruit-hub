@@ -60,36 +60,60 @@ const AdminEventHosts = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold">Event Hosts</h1>
-        <Button onClick={() => setForm({ ...empty })}><Plus className="h-4 w-4 mr-1" /> Add Host</Button>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Event Hosts</h1>
+        <Button className="gap-2" onClick={() => setForm({ ...empty })}><Plus className="h-4 w-4" /> Add Host</Button>
       </div>
-      <p className="text-sm text-muted-foreground mb-6"></p>
 
       {isLoading ? (
-        <p className="text-sm text-muted-foreground">Loading</p>
-      ) : hosts.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No hosts yet.</p>
+        <p className="text-muted-foreground">Loading...</p>
       ) : (
-        <div className="space-y-2">
-          {hosts.map((h) => (
-            <div key={h.id} className="flex items-center gap-3 bg-card border rounded-xl p-3">
-              {h.image_url ? (
-                <img src={h.image_url} alt="" className="h-12 w-12 rounded-full object-cover" />
-              ) : (
-                <div className="h-12 w-12 rounded-full bg-muted" />
+        <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full table-fixed text-sm min-w-[720px]">
+            <thead className="bg-muted">
+              <tr>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[8%]">Photo</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[28%]">Host Name</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[22%]">Subtitle</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[32%]">Link</th>
+                <th className="p-3 w-[10%]"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {hosts.map((h) => (
+                <tr key={h.id} className="border-t border-border">
+                  <td className="p-3">
+                    {h.image_url ? (
+                      <img src={h.image_url} alt="" className="h-10 w-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="h-10 w-10 rounded-full bg-muted" />
+                    )}
+                  </td>
+                  <td className="p-3 font-medium text-foreground truncate">{h.name}</td>
+                  <td className="p-3 text-muted-foreground truncate">{h.subtitle || "—"}</td>
+                  <td className="p-3 text-muted-foreground truncate">{h.link || "—"}</td>
+                  <td className="p-3">
+                    <div className="flex gap-1 justify-end">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Edit ${h.name}`}
+                        onClick={() => setForm({ id: h.id, name: h.name, subtitle: h.subtitle || "", image_url: h.image_url || "", link: h.link || "" })}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" aria-label={`Delete ${h.name}`} onClick={() => remove(h)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {hosts.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No hosts yet.</td></tr>
               )}
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{h.name}</p>
-                {h.subtitle && <p className="text-xs text-muted-foreground truncate">{h.subtitle}</p>}
-                <p className="text-xs text-muted-foreground truncate">{h.link || "No link"}</p>
-              </div>
-              <Button variant="ghost" size="icon" onClick={() => setForm({ id: h.id, name: h.name, subtitle: h.subtitle || "", image_url: h.image_url || "", link: h.link || "" })}>
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={() => remove(h)}><Trash2 className="h-4 w-4" /></Button>
-            </div>
-          ))}
+            </tbody>
+          </table>
         </div>
       )}
 
