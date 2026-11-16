@@ -247,7 +247,7 @@ const ShareSheet = ({ open, content, onClose }: ShareSheetProps) => {
           }}
         >
           {copied ? <Check size={17} strokeWidth={2} /> : <Link2 size={17} strokeWidth={1.8} />}
-          {copied ? "Link copied" : "Copy link"}
+          {copied ? "Link copied" : "Copy Link"}
         </button>
 
         <button
