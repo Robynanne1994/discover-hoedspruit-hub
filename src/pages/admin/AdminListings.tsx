@@ -1117,7 +1117,7 @@ const AdminListings = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950">Listings</h1>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" className="gap-2 bg-gray-400 text-slate-50 opacity-100 border-slate-950" onClick={() => navigate("/admin/import")}>
+          <Button className="gap-2" onClick={() => navigate("/admin/import")}>
             <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Import/Export CSV</span><span className="sm:hidden">CSV</span>
           </Button>
           <Dialog open={open} onOpenChange={(v) => { if (!v) { const ret = returnTo; resetForm(); if (ret) { setReturnTo(null); navigate(ret, { replace: true }); } } setOpen(v); }}>
@@ -2436,7 +2436,7 @@ const AdminListings = () => {
           <table className="w-full text-sm min-w-[640px]">
             <thead className="bg-muted">
               <tr>
-                <th className="p-3 w-[40px] bg-slate-400 text-slate-950 border-slate-950 border">
+                <th className="p-3 w-[40px]">
                   <Checkbox
                     checked={filteredListings.length > 0 && filteredListings.every((l) => selectedIds.has(l.id))}
                     onCheckedChange={(v) => {
@@ -2448,10 +2448,10 @@ const AdminListings = () => {
                     }}
                   />
                 </th>
-                <th className="text-left p-3 font-semibold text-foreground w-[40%] bg-slate-400 border-slate-950 border">Title</th>
-                <th className="text-left p-3 font-semibold text-foreground w-[31%] bg-slate-400 border-slate-950 border">Categories</th>
-                <th className="text-left p-3 font-semibold text-foreground w-[8%] bg-slate-400 border-slate-950 border">Featured</th>
-                <th className="p-3 w-[12%] border border-slate-950 bg-slate-400 text-slate-950"></th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[40%]">Title</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[31%]">Categories</th>
+                <th className="text-left p-3 text-[15px] font-bold text-foreground w-[8%]">Featured</th>
+                <th className="p-3 w-[12%]"></th>
               </tr>
             </thead>
             <tbody>
