@@ -35,8 +35,8 @@ const CATEGORIES = [
 describe("universal vs category CSV columns", () => {
   it("retires plant_types from Home & Garden imports, exports and references", () => {
     expect(getCSVHeadersForCategory("Home & Garden")).toEqual([
-      "title", "card_primary_subcategory", "services_offered",
-      "business_started_year", "specialities", "subcategories",
+      "title", "card_primary_subcategory", "subcategories",
+      "services_offered", "business_started_year", "specialities",
     ]);
     expect(getCategorySpecificFields("Home & Garden")).toEqual([
       "services_offered", "business_started_year", "specialities",

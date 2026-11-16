@@ -355,9 +355,6 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) push(HOME_GARDEN_ONLY_FIELDS);
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
-  // Subcategories only, and only this category's own — the listing's category
-  // set is the universal sheet's answer to give.
-  out.push(CATEGORY_SUBCATEGORY_FIELD);
   return out;
 }
 
