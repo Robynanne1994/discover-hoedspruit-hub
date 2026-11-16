@@ -2832,6 +2832,10 @@ export type Database = {
           username: string
         }[]
       }
+      verify_push_webhook_secret: {
+        Args: { _secret: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "business_owner"
