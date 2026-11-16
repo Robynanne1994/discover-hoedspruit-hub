@@ -169,7 +169,6 @@ const AdminUsers = () => {
       )}
 
       <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
-        <div className="overflow-x-auto">
           <table className="w-full text-sm min-w-[720px]">
             <thead className="bg-muted">
               <tr>
@@ -221,7 +220,6 @@ const AdminUsers = () => {
               ))}
             </tbody>
           </table>
-        </div>
       </div>
 
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
