@@ -302,8 +302,40 @@ async function importPkcs8(pem: string, algo: any): Promise<CryptoKey> {
     .replace(/\\[nr]/g, "")
     .replace(/-----(BEGIN|END)[A-Z ]*-----/g, "")
     .replace(/[^A-Za-z0-9+/=]/g, "");
-  const der = Uint8Array.from(atob(body), (c) => c.charCodeAt(0));
-  return crypto.subtle.importKey("pkcs8", der, algo, false, ["sign"]);
+
+  // Candidates, best first. When a "\n" lost its backslash on the way into the
+  // dashboard, every line break became a literal "n": one before the key, one
+  // after each 64-character line. Those are valid base64 letters, so they
+  // survive the cleanup above and corrupt the key ("expected valid PKCS#8
+  // data"). Undo that by dropping an "n" found exactly at those positions.
+  const candidates = [body];
+  const lostBackslash = body.replace(/^n/, "").replace(/n$/, "");
+  let repaired = "";
+  for (let i = 0; i < lostBackslash.length; ) {
+    repaired += lostBackslash.slice(i, i + 64);
+    i += 64;
+    if (lostBackslash[i] === "n") i++;
+  }
+  if (repaired !== body) candidates.push(repaired);
+  // Anything stuck in front of the key: an EC PKCS#8 key always starts "MIG".
+  const at = body.indexOf("MIG");
+  if (at > 0) candidates.push(body.slice(at));
+
+  for (const c of candidates) {
+    try {
+      const der = Uint8Array.from(atob(c), (ch) => ch.charCodeAt(0));
+      return await crypto.subtle.importKey("pkcs8", der, algo, false, ["sign"]);
+    } catch {
+      /* try the next candidate */
+    }
+  }
+  // Safe to report: the length and whether it opens like a key header, which
+  // is identical for every P-256 key. Never any of the key itself.
+  throw new Error(
+    `expected valid PKCS#8 data (secret has ${pem.length} chars, ${body.length} base64 chars after cleanup, ` +
+      `PEM header ${/BEGIN PRIVATE KEY/.test(pem) ? "present" : "missing"}, ` +
+      `starts like a .p8 key: ${body.startsWith("MIG") ? "yes" : "no"}; a .p8 key is 200 base64 chars)`,
+  );
 }
 
 function b64urlJson(obj: unknown): string {
