@@ -222,8 +222,8 @@ async function sendApns(
   const stale: string[] = [];
   const errors: string[] = [];
 
-  for (const token of tokens) {
-    const res = await fetch(`https://${host}/3/device/${token}`, {
+  const post = (h: string, token: string) =>
+    fetch(`https://${h}/3/device/${token}`, {
       method: "POST",
       headers: {
         authorization: `bearer ${jwt}`,
@@ -234,10 +234,23 @@ async function sendApns(
       body: payload,
     });
 
+  // The other APNs environment. App Store / TestFlight builds get production
+  // tokens; builds installed straight from Xcode get sandbox tokens. Both end
+  // up in push_devices, and a token sent to the wrong environment comes back
+  // as BadDeviceToken — so try the other host before calling a token stale.
+  const altHost = host.includes("sandbox") ? "api.push.apple.com" : "api.sandbox.push.apple.com";
+
+  for (const token of tokens) {
+    let res = await post(host, token);
+    let t = res.ok ? "" : await res.text();
+    if (!res.ok && res.status === 400 && /BadDeviceToken/i.test(t)) {
+      res = await post(altHost, token);
+      t = res.ok ? "" : await res.text();
+    }
+
     if (res.ok) {
       sent++;
     } else {
-      const t = await res.text();
       if (res.status === 410 || /BadDeviceToken|Unregistered/i.test(t)) {
         stale.push(token);
       } else {
