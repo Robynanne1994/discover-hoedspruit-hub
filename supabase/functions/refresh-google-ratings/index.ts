@@ -9,9 +9,9 @@ import type { SupabaseClient } from "npm:@supabase/supabase-js@2";
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 
 // The service-role client these jobs run with. createClient is called without a
-// Database generic, so `Admin` resolves to a client
-// whose tables are `never` and rejects every update payload; this is the loose
-// client createClient actually hands back.
+// Database generic, so its own return type resolves to a client whose tables are
+// `never` and rejects every update payload; this is the loose client
+// createClient actually hands back.
 type Admin = SupabaseClient<any, "public", "public", any, any>;
 
 const GOOGLE_KEY = Deno.env.get("GOOGLE_PLACES_API_KEY") ?? "";
