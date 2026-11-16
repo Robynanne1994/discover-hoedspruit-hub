@@ -344,7 +344,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
     }
   };
   // `title` is how a row finds its listing, so it travels on every CSV.
-  push(["title", CATEGORY_CARD_LABEL_FIELD]);
+  // The two per-category junction columns sit together at the front: the card
+  // label, then this category's subcategories.
+  push(["title", CATEGORY_CARD_LABEL_FIELD, CATEGORY_SUBCATEGORY_FIELD]);
   if (categoryTitle && isRestaurantCategory(categoryTitle)) push(RESTAURANT_ONLY_FIELDS);
   if (categoryTitle && isShoppingCategory(categoryTitle)) push(SHOPPING_ONLY_FIELDS);
   if (categoryTitle && isAccommodationCategory(categoryTitle)) push(ACCOMMODATION_ONLY_FIELDS);
@@ -353,9 +355,6 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) push(HOME_GARDEN_ONLY_FIELDS);
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
-  // Subcategories only, and only this category's own — the listing's category
-  // set is the universal sheet's answer to give.
-  out.push(CATEGORY_SUBCATEGORY_FIELD);
   return out;
 }
 

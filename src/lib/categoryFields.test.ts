@@ -35,8 +35,8 @@ const CATEGORIES = [
 describe("universal vs category CSV columns", () => {
   it("retires plant_types from Home & Garden imports, exports and references", () => {
     expect(getCSVHeadersForCategory("Home & Garden")).toEqual([
-      "title", "card_primary_subcategory", "services_offered",
-      "business_started_year", "specialities", "subcategories",
+      "title", "card_primary_subcategory", "subcategories",
+      "services_offered", "business_started_year", "specialities",
     ]);
     expect(getCategorySpecificFields("Home & Garden")).toEqual([
       "services_offered", "business_started_year", "specialities",
@@ -154,6 +154,18 @@ describe("categories vs subcategories as CSV columns", () => {
       expect(getCSVHeadersForCategory(category)).toContain(CATEGORY_SUBCATEGORY_FIELD);
     }
     expect(getUniversalCSVHeaders()).not.toContain(CATEGORY_SUBCATEGORY_FIELD);
+  });
+
+  it("sits the subcategories column straight after the card label column", () => {
+    // Robyn's spreadsheet order: the two per-category junction columns belong
+    // together, so subcategories follows card_primary_subcategory on every
+    // category sheet rather than trailing the category's own fields.
+    for (const category of [...CATEGORIES, null]) {
+      const headers = getCSVHeadersForCategory(category);
+      const labelIndex = headers.indexOf(CATEGORY_CARD_LABEL_FIELD);
+      expect(headers[labelIndex + 1], `${category} CSV`)
+        .toBe(CATEGORY_SUBCATEGORY_FIELD);
+    }
   });
 
   it("keeps both junction columns out of the DB field list", () => {
