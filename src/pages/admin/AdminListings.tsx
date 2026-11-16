@@ -2172,15 +2172,6 @@ const AdminListings = () => {
                       />
                     </div>
 
-
-                    <div>
-                      <Label>Specialities</Label>
-                      <Textarea
-                        value={form.specialities}
-                        onChange={(e) => setForm({ ...form, specialities: e.target.value })}
-                        placeholder="e.g. Permaculture design, indigenous plants, water-wise landscaping"
-                      />
-                    </div>
                   </div>
                 )}
 

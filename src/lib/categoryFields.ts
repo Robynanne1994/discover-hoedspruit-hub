@@ -293,7 +293,7 @@ export const TRADES_ONLY_FIELDS = [
 
 export const HOME_GARDEN_ONLY_FIELDS = [
   "services_offered",
-  "business_started_year", "specialities",
+  "business_started_year",
 ] as const;
 
 export const WEDDINGS_EVENTS_ONLY_FIELDS = [
