@@ -209,7 +209,7 @@ const AdminSearchSuggested = () => {
 
         {curatedIds.length > 0 && (
           <Button variant="outline" size="sm" onClick={() => saveMutation.mutate([])}>
-            Clear all (use default)
+            Clear All (Use Default)
           </Button>
         )}
       </div>
