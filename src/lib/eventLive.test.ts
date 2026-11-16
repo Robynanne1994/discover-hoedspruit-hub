@@ -45,7 +45,7 @@ describe("admin Events tabs", () => {
     expect(isEventPassedForAdmin({ start_date: "2026-11-07", end_date: "2026-11-07", start_time: "07:30", recurrence: "None" }, now)).toBe(true);
     expect(isEventPassedForAdmin({ start_date: "2026-11-12", end_date: "2026-11-12", recurrence: "None" }, now)).toBe(true);
   });
-  it("puts an event that finished earlier today in Passed", () => {
+  it("moves an event to Passed only once its end time has gone", () => {
     expect(isEventPassedForAdmin({ start_date: "2026-11-16", end_date: "2026-11-16", start_time: "07:00", end_time: "09:00" }, now)).toBe(false);
     expect(isEventPassedForAdmin({ start_date: "2026-11-15", end_date: "2026-11-16", start_time: "07:00", end_time: "06:00" }, now)).toBe(true);
   });
@@ -56,7 +56,7 @@ describe("admin Events tabs", () => {
   it("puts a performance series in Passed only after its final show", () => {
     const e = { performances: [{ date: "2026-11-15", time: "20:00" }, { date: "2026-11-16", time: "20:00" }] };
     expect(isEventPassedForAdmin(e, now)).toBe(false);
-    expect(isEventPassedForAdmin(e, new Date("2026-11-16T19:00:00Z"))).toBe(true);
+    expect(isEventPassedForAdmin(e, new Date("2026-11-16T23:00:00Z"))).toBe(true);
   });
   it("keeps recurring events with no dates in Active because nothing has passed", () => {
     expect(isEventPassedForAdmin({ recurrence: "Weekly", start_time: "07:00" }, now)).toBe(false);
