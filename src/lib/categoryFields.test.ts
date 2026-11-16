@@ -156,6 +156,18 @@ describe("categories vs subcategories as CSV columns", () => {
     expect(getUniversalCSVHeaders()).not.toContain(CATEGORY_SUBCATEGORY_FIELD);
   });
 
+  it("sits the subcategories column straight after the card label column", () => {
+    // Robyn's spreadsheet order: the two per-category junction columns belong
+    // together, so subcategories follows card_primary_subcategory on every
+    // category sheet rather than trailing the category's own fields.
+    for (const category of [...CATEGORIES, null]) {
+      const headers = getCSVHeadersForCategory(category);
+      const labelIndex = headers.indexOf(CATEGORY_CARD_LABEL_FIELD);
+      expect(headers[labelIndex + 1], `${category} CSV`)
+        .toBe(CATEGORY_SUBCATEGORY_FIELD);
+    }
+  });
+
   it("keeps both junction columns out of the DB field list", () => {
     // They are junction tables, not columns on `listings`: writing either into a
     // listings payload would fail the upsert.
