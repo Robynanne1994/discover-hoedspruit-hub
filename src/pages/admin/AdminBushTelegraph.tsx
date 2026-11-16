@@ -483,13 +483,13 @@ const AdminBushTelegraph = () => {
           <p className="text-sm text-muted-foreground mb-6 text-slate-950">Manage off-app resources, groups and feeds.</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={() => setOrderOpen(true)} disabled={isLoading} className="gap-2">
+          <Button size="sm" onClick={() => setOrderOpen(true)} disabled={isLoading} className="gap-2">
             <ArrowUpDown className="h-4 w-4" /> Order
           </Button>
-          <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
+          <Button size="sm" onClick={downloadExport} className="gap-2">
             <FileSpreadsheet className="h-4 w-4" /> Export
           </Button>
-          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
+          <Button size="sm" onClick={downloadTemplate} className="gap-2">
             <FileSpreadsheet className="h-4 w-4" /> Template
           </Button>
           <Button size="sm" onClick={startAdd} className="gap-2">
