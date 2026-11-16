@@ -77,3 +77,7 @@
 - (2026-11-15) Accommodation editor: Pricing groups Price Range and both average-price fields;
   Capacity groups Sleeps and Number of Rooms on the same row. Shared tri-state and details
   display controls now separate options with brown vertical dividers. Checked on a populated listing.
+- (2026-11-16) Listings admin table: bulk edit removed entirely (button, action bar, the
+  /admin/listings/bulk-edit page and its route), and the row/header selection checkboxes are
+  gone. Table now starts at Title with 4 columns. Verified signed in: 0 checkboxes, 0 Bulk
+  Edit buttons, headers Title/Categories/Featured/actions, old bulk-edit URL renders 404.

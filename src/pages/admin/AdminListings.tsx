@@ -162,7 +162,6 @@ const AdminListings = () => {
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
   const [selectedSubSubIds, setSelectedSubSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customRowsVisible, setCustomRowsVisible] = useState(0);
   const longDescRef = useRef<HTMLTextAreaElement>(null);
   const [newCatName, setNewCatName] = useState("");
@@ -770,20 +769,6 @@ const AdminListings = () => {
         setReturnTo(null);
         navigate(ret, { replace: true });
       }
-    },
-    onError: (e) => toast.error(e.message),
-  });
-
-  const bulkDelete = useMutation({
-    mutationFn: async () => {
-      const ids = Array.from(selectedIds);
-      const { error } = await supabase.from("listings").delete().in("id", ids);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-listings"] });
-      toast.success(`${selectedIds.size} listing(s) deleted`);
-      setSelectedIds(new Set());
     },
     onError: (e) => toast.error(e.message),
   });
@@ -2416,38 +2401,11 @@ const AdminListings = () => {
         />
       </div>
 
-      {/* Bulk action bar */}
-      {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-          <span className="text-sm font-medium text-foreground">{selectedIds.size} selected</span>
-          <Button size="sm" variant="outline" className="opacity-100 bg-gray-400 text-slate-50 border-slate-950" onClick={() => navigate(`/admin/listings/bulk-edit?ids=${Array.from(selectedIds).join(",")}`)}>
-            <Pencil className="h-3.5 w-3.5 mr-1.5" /> Bulk Edit
-          </Button>
-          <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { if (confirm(`Delete ${selectedIds.size} listing(s)?`)) bulkDelete.mutate(); }}>
-            <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Delete
-          </Button>
-          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
-        </div>
-                )}
-
-
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
         <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
           <table className="w-full text-sm min-w-[640px]">
             <thead className="bg-muted">
               <tr>
-                <th className="p-3 w-[40px]">
-                  <Checkbox
-                    checked={filteredListings.length > 0 && filteredListings.every((l) => selectedIds.has(l.id))}
-                    onCheckedChange={(v) => {
-                      if (v) {
-                        setSelectedIds(new Set(filteredListings.map((l) => l.id)));
-                      } else {
-                        setSelectedIds(new Set());
-                      }
-                    }}
-                  />
-                </th>
                 <th className="text-left p-3 text-[15px] font-bold text-foreground w-[40%]">Title</th>
                 <th className="text-left p-3 text-[15px] font-bold text-foreground w-[31%]">Categories</th>
                 <th className="text-left p-3 text-[15px] font-bold text-foreground w-[8%]">Featured</th>
@@ -2456,17 +2414,7 @@ const AdminListings = () => {
             </thead>
             <tbody>
               {filteredListings.map((l) => (
-                <tr key={l.id} className={`border-t border-border ${selectedIds.has(l.id) ? "bg-primary/5" : ""}`}>
-                  <td className="p-3">
-                    <Checkbox
-                      checked={selectedIds.has(l.id)}
-                      onCheckedChange={(v) => {
-                        const next = new Set(selectedIds);
-                        if (v) next.add(l.id); else next.delete(l.id);
-                        setSelectedIds(next);
-                      }}
-                    />
-                  </td>
+                <tr key={l.id} className="border-t border-border">
                   <td className="p-3 font-medium text-foreground truncate">{l.title}</td>
                   <td className="p-3 text-muted-foreground truncate">{(l as any)._categoryNames?.join(", ") || "—"}</td>
                   <td className="p-3"><FeaturedToggle table="listings" id={l.id} title={l.title} featured={!!l.is_featured} /></td>
@@ -2477,7 +2425,7 @@ const AdminListings = () => {
                 </tr>
               ))}
               {filteredListings.length === 0 && (
-                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No listings found.</td></tr>
+                <tr><td colSpan={4} className="p-8 text-center text-muted-foreground">No listings found.</td></tr>
               )}
             </tbody>
           </table>
