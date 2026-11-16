@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Add immediately saved Featured toggles to the Events, Specials, Local Channels and Listings admin tables, preserving each page's edit and ordering behaviour.
 
 ## Done
 - Custom-label controls have no underline; Shopping has half-width Shop Type with click-to-open Add input and a Products Categories banner.
