@@ -146,7 +146,7 @@ const AdminUsers = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-[550] text-slate-950">Users</h1>
+          <h1 className="text-2xl font-[550] text-foreground">Users</h1>
           <p className="text-sm text-muted-foreground mb-6">
             All registered users {data ? `(${data.length})` : ""}
           </p>
@@ -192,7 +192,7 @@ const AdminUsers = () => {
                   onClick={() => openUser(u)}
                   className="border-t border-border cursor-pointer hover:bg-muted/40 transition-colors"
                 >
-                  <td className="px-4 py-3">
+                  <td className="p-3">
                     <div className="flex items-center gap-3 min-w-0">
                       {u.profile?.avatar_url ? (
                         <img src={u.profile.avatar_url} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
@@ -202,21 +202,21 @@ const AdminUsers = () => {
                         </div>
                       )}
                       <div className="min-w-0">
-                        <div className="font-medium truncate text-slate-950">
+                        <div className="font-medium truncate text-foreground">
                           {u.profile?.display_name || u.profile?.username || "—"}
                         </div>
                         <div className="text-xs text-muted-foreground md:hidden truncate">{u.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell truncate max-w-[260px]">
+                  <td className="p-3 hidden md:table-cell truncate max-w-[260px]">
                     {u.email || "—"}
                     {!u.email_confirmed_at && (
                       <Badge variant="outline" className="ml-2 text-xs">Unconfirmed</Badge>
                     )}
                   </td>
-                  <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{fmt(u.created_at)}</td>
-                  <td className="px-4 py-3 hidden lg:table-cell text-muted-foreground">{fmt(u.last_sign_in_at)}</td>
+                  <td className="p-3 hidden lg:table-cell text-muted-foreground">{fmt(u.created_at)}</td>
+                  <td className="p-3 hidden lg:table-cell text-muted-foreground">{fmt(u.last_sign_in_at)}</td>
                 </tr>
               ))}
             </tbody>
@@ -240,7 +240,7 @@ const AdminUsers = () => {
                   </div>
                 )}
                 <div>
-                  <div className="text-base font-semibold text-slate-950">
+                  <div className="text-base font-semibold text-foreground">
                     {selected.profile?.display_name || selected.profile?.username || "Unnamed"}
                   </div>
                   {selected.profile?.username && (
@@ -277,7 +277,7 @@ const AdminUsers = () => {
               <Row label="Last sign in">{fmt(selected.last_sign_in_at)}</Row>
 
               <div className="pt-3 mt-3 border-t border-border">
-                <div className="text-xs uppercase tracking-wide font-semibold text-slate-950 mb-2">
+                <div className="text-xs uppercase tracking-wide font-semibold text-foreground mb-2">
                   Activity
                 </div>
                 <Row label="Followers">{selected.followers_count}</Row>
@@ -292,7 +292,7 @@ const AdminUsers = () => {
               </div>
 
               <div className="pt-3 mt-3 border-t border-border">
-                <div className="text-xs uppercase tracking-wide font-semibold text-slate-950 mb-2">
+                <div className="text-xs uppercase tracking-wide font-semibold text-foreground mb-2">
                   Admin note
                 </div>
                 <Textarea
