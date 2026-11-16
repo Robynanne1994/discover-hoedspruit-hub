@@ -44,7 +44,7 @@ const AdminAppStore = () => {
     <div className="space-y-6 max-w-xl">
       <div>
         <h1 className="text-2xl font-bold">App Store</h1>
-        <p className="text-sm text-muted-foreground mt-1">Manage the links used across the app.</p>
+        <p className="text-sm text-muted-foreground mt-1">{"\n"}</p>
       </div>
       <section className="rounded-2xl border bg-card p-5 space-y-4">
         <div>
