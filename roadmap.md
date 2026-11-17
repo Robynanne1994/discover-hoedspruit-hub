@@ -102,3 +102,8 @@
 - (2026-11-17) Reports admin table: new first "Type" column (Listings / Events / Specials /
   External) taken out of the report names; report names now start with a capital and carry no
   dash; Description wraps instead of truncating and is narrower (32%), Status narrower (14%).
+- (2026-11-17) Homepage admin editor: every card's title row is now a full-width header strip on
+  the warm primary-tint fill (rounded top corners, hairline below) so it reads apart from the
+  white body, and the section-title pencil is a solid dark-brown circle with a white icon.
+  Verified signed in: all five cards measured band rgb(246,241,234) against a white body,
+  spanning the card edges, with the edit button at rgb(66,51,36).
