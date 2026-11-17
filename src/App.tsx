@@ -38,6 +38,7 @@ import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import AdminSpecialsOrder from "./pages/admin/AdminSpecialsOrder.tsx";
 import AdminBushTelegraph from "./pages/admin/AdminBushTelegraph.tsx";
+import AdminLocalChannelsImport from "./pages/admin/AdminLocalChannelsImport.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
