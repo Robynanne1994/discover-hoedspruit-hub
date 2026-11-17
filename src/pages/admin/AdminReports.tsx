@@ -317,7 +317,7 @@ const AdminReports = () => {
               const s = { ...IDLE, ...states[r.id] };
               return (
                 <tr key={r.id} className="border-t border-border">
-                  <td className="p-3 text-sm font-bold text-muted-foreground">{r.group}</td>
+                  <td className="p-3 text-sm font-bold text-foreground">{r.group}</td>
                   <td className="p-3 font-normal text-foreground max-w-0">
                     <span className="block truncate" title={r.title}>{r.title}</span>
                   </td>
