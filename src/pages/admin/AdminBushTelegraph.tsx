@@ -313,7 +313,7 @@ const AdminBushTelegraph = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-[550] text-slate-950">Local Channels</h1>
-          <p className="text-sm text-muted-foreground mb-6 text-slate-950">Manage off-app resources, groups and feeds.</p>
+          <p className="text-sm text-muted-foreground mb-6 text-slate-950">{"\n"}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button size="sm" onClick={() => setOrderOpen(true)} disabled={isLoading} className="gap-2">
