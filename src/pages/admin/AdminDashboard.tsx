@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { activeSpecialCount, upcomingEventCount } from "@/lib/adminCounts";
+import type { EventScheduleLike } from "@/lib/eventSchedule";
+import type { SpecialVisibilityFields } from "@/lib/specialVisibility";
 import {
   FolderOpen,
   List,
