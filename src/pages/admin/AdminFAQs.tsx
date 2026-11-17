@@ -423,18 +423,17 @@ const AdminFAQs = () => {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-medium text-slate-950">{title}</h2>
             <div className="flex gap-2">
-              <Button size="sm" variant="outline" onClick={() => addNewInSection(title)}>
+              <Button size="sm" onClick={() => addNewInSection(title)}>
                 <Plus className="h-3.5 w-3.5 mr-1" /> Question
               </Button>
               <Button
                 size="sm"
-                variant="outline"
                 onClick={() => setRenameOpen({ from: title, to: title })}
               >
                 <Pencil className="h-3.5 w-3.5 mr-1" /> Rename
               </Button>
-              <Button size="sm" variant="outline" onClick={() => deleteSection(title)}>
-                <Trash2 className="h-3.5 w-3.5 mr-1 text-destructive" /> Delete
+              <Button size="sm" variant="destructive" onClick={() => deleteSection(title)}>
+                <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete
               </Button>
             </div>
           </div>
