@@ -113,7 +113,7 @@ const SectionTitleEditor = ({ sectionKey, defaultLabel }: { sectionKey: string; 
   return (
     <div className="flex items-center gap-2">
       <h3 className="font-bold text-lg text-foreground">{displayTitle}</h3>
-      <Button size="icon" onClick={startEditing} className="h-8 w-8 shrink-0" aria-label={`Edit ${defaultLabel} Title`} title="Edit Section Title">
+      <Button size="icon" onClick={startEditing} className="h-8 w-8 shrink-0 bg-[var(--filter-ink)] text-primary-foreground border-transparent hover:bg-primary-hover" aria-label={`Edit ${defaultLabel} Title`} title="Edit Section Title">
         <Pencil className="h-3.5 w-3.5" />
       </Button>
     </div>
@@ -231,7 +231,7 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
 
   return (
     <section aria-label={label} className="bg-card text-card-foreground border border-border rounded-xl p-4 sm:p-6 space-y-5 shadow-sm">
-      <div className="border-b border-border pb-4">
+      <div className="-mx-4 sm:-mx-6 -mt-4 sm:-mt-6 px-4 sm:px-6 pt-4 sm:pt-6 pb-4 rounded-t-xl bg-primary-tint border-b border-border">
         <SectionTitleEditor sectionKey={sectionKey} defaultLabel={label} />
       </div>
 

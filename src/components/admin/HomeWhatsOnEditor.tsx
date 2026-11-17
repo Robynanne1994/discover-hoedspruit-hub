@@ -100,7 +100,7 @@ const HomeWhatsOnEditor = () => {
 
   return (
     <section aria-label="What's On" className="bg-card text-card-foreground border border-border rounded-xl p-4 sm:p-6 space-y-5 shadow-sm">
-      <div className="border-b border-border pb-4">
+      <div className="-mx-4 sm:-mx-6 -mt-4 sm:-mt-6 px-4 sm:px-6 pt-4 sm:pt-6 pb-4 rounded-t-xl bg-primary-tint border-b border-border">
         <h3 className="font-bold text-lg text-foreground">What's On (Featured Events)</h3>
       </div>
 
