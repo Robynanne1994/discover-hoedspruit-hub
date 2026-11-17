@@ -1,3 +1,4 @@
+import { splitNotificationTags } from "@/lib/notificationTags";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Bell, Store, CalendarDays, Tag } from "lucide-react";
@@ -25,18 +26,16 @@ const AdminNotifications = () => {
       const [cats, events, specials] = await Promise.all([
         supabase.from("categories").select("title").order("sort_order"),
         supabase.from("events").select("tag"),
-        supabase.from("specials").select("tag"),
+        supabase.from("specials").select("tag,tags"),
       ]);
       setCategories((cats.data ?? []).map((c: any) => c.title).filter(Boolean));
       setEventTags(
-        Array.from(
-          new Set((events.data ?? []).map((e: any) => e.tag).filter(Boolean) as string[]),
-        ).sort(),
+        splitNotificationTags((events.data ?? []).map((e: any) => e.tag)),
       );
       setSpecialTags(
-        Array.from(
-          new Set((specials.data ?? []).map((s: any) => s.tag).filter(Boolean) as string[]),
-        ).sort(),
+        splitNotificationTags(
+          (specials.data ?? []).flatMap((s: any) => [s.tag, ...((s.tags as string[] | null) ?? [])]),
+        ),
       );
       setLoading(false);
     };
