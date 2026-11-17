@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { X, Search, GripVertical, Pencil, Check } from "lucide-react";
+import { X, Search, Plus, Pencil, Check } from "lucide-react";
 
 import HomeWhatsOnEditor from "@/components/admin/HomeWhatsOnEditor";
 
@@ -92,18 +92,18 @@ const SectionTitleEditor = ({ sectionKey, defaultLabel }: { sectionKey: string; 
 
   if (isEditing) {
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 min-w-0">
         <Input
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
-          className="text-lg font-bold h-9 w-64"
+          className="text-base font-semibold h-10 w-full sm:w-64 min-w-0 bg-card"
           onKeyDown={(e) => e.key === "Enter" && saveTitle()}
           autoFocus
         />
-        <Button size="icon" variant="ghost" onClick={saveTitle} disabled={saveMutation.isPending}>
+        <Button size="icon" onClick={saveTitle} disabled={saveMutation.isPending} aria-label="Save Section Title" title="Save Section Title">
           <Check className="h-4 w-4" />
         </Button>
-        <Button size="icon" variant="ghost" onClick={() => setIsEditing(false)}>
+        <Button size="icon" onClick={() => setIsEditing(false)} aria-label="Cancel Title Edit" title="Cancel Title Edit">
           <X className="h-4 w-4" />
         </Button>
       </div>
@@ -112,8 +112,8 @@ const SectionTitleEditor = ({ sectionKey, defaultLabel }: { sectionKey: string; 
 
   return (
     <div className="flex items-center gap-2">
-      <h3 className="font-bold text-lg">{displayTitle}</h3>
-      <Button size="icon" variant="ghost" onClick={startEditing} className="h-7 w-7">
+      <h3 className="font-bold text-lg text-foreground">{displayTitle}</h3>
+      <Button size="icon" onClick={startEditing} className="h-8 w-8 shrink-0" aria-label={`Edit ${defaultLabel} Title`} title="Edit Section Title">
         <Pencil className="h-3.5 w-3.5" />
       </Button>
     </div>
@@ -230,25 +230,26 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
   const availableResults = searchResults.filter((l) => !curatedIds.includes(l.id));
 
   return (
-    <div className="border border-border rounded-lg p-4 space-y-4 border-slate-950">
-      <SectionTitleEditor sectionKey={sectionKey} defaultLabel={label} />
+    <section aria-label={label} className="bg-card text-card-foreground border border-border rounded-xl p-4 sm:p-6 space-y-5 shadow-sm">
+      <div className="border-b border-border pb-4">
+        <SectionTitleEditor sectionKey={sectionKey} defaultLabel={label} />
+      </div>
 
       <div>
-        <p className="text-sm text-muted-foreground mb-2">
+        <p className="text-sm font-medium text-foreground mb-3 leading-6">
           Selected ({curatedIds.length}/8) — {curatedIds.length === 0 ? "showing auto-picks" : "showing curated picks"}
         </p>
-        <div className="space-y-2">
+        <div className="divide-y divide-border">
           {curatedListings.map((listing) => (
-            <div key={listing.id} className="flex items-center gap-3 bg-muted rounded-lg p-2">
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            <div key={listing.id} className="flex items-center gap-3 py-3">
               {listing.image_url && (
-                <img src={listing.image_url} alt="" className="w-10 h-10 rounded object-cover" />
+                <img src={listing.image_url} alt="" className="w-12 h-12 shrink-0 rounded-lg object-cover" />
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate text-slate-950">{listing.title}</p>
-                <p className="text-xs text-muted-foreground truncate">{listing.location}</p>
+                <p className="text-sm font-semibold text-foreground break-words">{listing.title}</p>
+                <p className="text-sm text-muted-foreground break-words">{listing.location}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => removeListing(listing.id)}>
+              <Button size="icon" className="h-7 w-7 shrink-0 bg-primary text-primary-foreground hover:bg-primary-hover" onClick={() => removeListing(listing.id)} disabled={saveMutation.isPending} aria-label={`Remove ${listing.title}`} title={`Remove ${listing.title}`}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -262,37 +263,42 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search listings to add..."
+              aria-label={`Search ${label} Listings`}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 h-12 bg-card border-primary/30 focus-visible:ring-primary"
             />
           </div>
-          <div className="max-h-48 overflow-y-auto space-y-1">
+          <div className="max-h-64 overflow-y-auto divide-y divide-border">
             {availableResults.map((listing) => (
-              <button
+              <Button
                 key={listing.id}
                 onClick={() => addListing(listing.id)}
-                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-muted transition-colors"
+                variant="ghost"
+                disabled={saveMutation.isPending}
+                aria-label={`Add ${listing.title}`}
+                className="flex items-center justify-start gap-3 w-full h-auto min-h-16 text-left p-3 rounded-none whitespace-normal text-foreground hover:bg-surface-inset hover:text-foreground"
               >
                 {listing.image_url && (
-                  <img src={listing.image_url} alt="" className="w-8 h-8 rounded object-cover" />
+                  <img src={listing.image_url} alt="" className="w-12 h-12 shrink-0 rounded-lg object-cover" />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{listing.title}</p>
-                  <p className="text-xs text-muted-foreground truncate">{listing.location}</p>
+                  <p className="text-sm font-semibold break-words">{listing.title}</p>
+                  <p className="text-sm font-normal text-muted-foreground break-words">{listing.location}</p>
                 </div>
-              </button>
+                <Plus className="h-4 w-4 text-primary shrink-0" />
+              </Button>
             ))}
           </div>
         </div>
       )}
 
       {curatedIds.length > 0 && (
-        <Button size="sm" onClick={() => saveMutation.mutate([])}>
+        <Button size="sm" disabled={saveMutation.isPending} onClick={() => saveMutation.mutate([])}>
           Clear All (Use Auto-Picks)
         </Button>
       )}
-    </div>
+    </section>
   );
 };
 
@@ -300,8 +306,7 @@ const AdminHomepage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-[550] text-slate-950">Homepage Sections</h1>
-        <p className="text-sm text-muted-foreground mb-6 text-slate-950">Choose which up to 8 listings appear in each homepage section. Leave empty to auto-pick.</p>
+        <h1 className="text-2xl font-semibold text-foreground">Homepage Sections</h1>
       </div>
       <HomeWhatsOnEditor />
       {SECTIONS.map((section) => (

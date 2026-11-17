@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { X, Search, GripVertical } from "lucide-react";
+import { X, Search, Plus } from "lucide-react";
 
 const SECTION_KEY = "homepage-whats-on";
 const MAX = 6;
@@ -99,28 +99,24 @@ const HomeWhatsOnEditor = () => {
   const available = searchResults.filter((e) => !curatedIds.includes(e.id));
 
   return (
-    <div className="border border-border rounded-lg p-4 space-y-4 border-slate-950">
-      <div>
-        <h3 className="font-bold text-lg">What's On (Featured Events)</h3>
-        <p className="text-xs text-muted-foreground">
-          Pick which events appear in the homepage "What's on" section. Leave empty to auto-show upcoming events.
-        </p>
+    <section aria-label="What's On" className="bg-card text-card-foreground border border-border rounded-xl p-4 sm:p-6 space-y-5 shadow-sm">
+      <div className="border-b border-border pb-4">
+        <h3 className="font-bold text-lg text-foreground">What's On (Featured Events)</h3>
       </div>
 
       <div>
-        <p className="text-sm text-muted-foreground mb-2 text-slate-950">
+        <p className="text-sm font-medium text-foreground mb-3 leading-6">
           Selected ({curatedIds.length}/{MAX}) — {curatedIds.length === 0 ? "showing upcoming events" : "showing curated picks"}
         </p>
-        <div className="space-y-2">
+        <div className="divide-y divide-border">
           {curatedEvents.map((ev) => (
-            <div key={ev.id} className="flex items-center gap-3 bg-muted rounded-lg p-2">
-              <GripVertical className="h-4 w-4 text-muted-foreground" />
-              {ev.image_url && <img src={ev.image_url} alt="" className="w-10 h-10 rounded object-cover" />}
+            <div key={ev.id} className="flex items-center gap-3 py-3">
+              {ev.image_url && <img src={ev.image_url} alt="" className="w-12 h-12 shrink-0 rounded-lg object-cover" />}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate text-slate-950">{ev.title}</p>
-                <p className="text-xs text-muted-foreground truncate">{ev.date}{ev.location ? ` · ${ev.location}` : ""}</p>
+                <p className="text-sm font-semibold text-foreground break-words">{ev.title}</p>
+                <p className="text-sm text-muted-foreground break-words">{ev.date}{ev.location ? ` · ${ev.location}` : ""}</p>
               </div>
-              <Button size="icon" variant="ghost" onClick={() => remove(ev.id)}>
+              <Button size="icon" className="h-7 w-7 shrink-0 bg-primary text-primary-foreground hover:bg-primary-hover" onClick={() => remove(ev.id)} disabled={saveMutation.isPending} aria-label={`Remove ${ev.title}`} title={`Remove ${ev.title}`}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -134,35 +130,40 @@ const HomeWhatsOnEditor = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search events to add..."
+              aria-label="Search What's On Events"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 h-12 bg-card border-primary/30 focus-visible:ring-primary"
             />
           </div>
-          <div className="max-h-64 overflow-y-auto space-y-1">
+          <div className="max-h-64 overflow-y-auto divide-y divide-border">
             {available.map((ev) => (
-              <button
+              <Button
                 key={ev.id}
                 onClick={() => add(ev.id)}
-                className="flex items-center gap-3 w-full text-left p-2 rounded-lg hover:bg-muted transition-colors"
+                variant="ghost"
+                disabled={saveMutation.isPending}
+                aria-label={`Add ${ev.title}`}
+                className="flex items-center justify-start gap-3 w-full h-auto min-h-16 text-left p-3 rounded-none whitespace-normal text-foreground hover:bg-surface-inset hover:text-foreground"
               >
-                {ev.image_url && <img src={ev.image_url} alt="" className="w-8 h-8 rounded object-cover" />}
+                {ev.image_url && <img src={ev.image_url} alt="" className="w-12 h-12 shrink-0 rounded-lg object-cover" />}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm truncate">{ev.title}</p>
-                  <p className="text-xs text-muted-foreground truncate">{ev.date}{ev.location ? ` · ${ev.location}` : ""}</p>
+                  <p className="text-sm font-semibold break-words">{ev.title}</p>
+                  <p className="text-sm font-normal text-muted-foreground break-words">{ev.date}{ev.location ? ` · ${ev.location}` : ""}</p>
                 </div>
-              </button>
+                <Plus className="h-4 w-4 text-primary shrink-0" />
+              </Button>
             ))}
           </div>
         </div>
       )}
 
       {curatedIds.length > 0 && (
-        <Button variant="outline" size="sm" onClick={() => saveMutation.mutate([])}>
-          Clear all (use upcoming events)
+        <Button size="sm" disabled={saveMutation.isPending} onClick={() => saveMutation.mutate([])}>
+          Clear All (Use Upcoming Events)
         </Button>
       )}
-    </div>
+    </section>
   );
 };
 
