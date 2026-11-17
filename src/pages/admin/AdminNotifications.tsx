@@ -112,7 +112,7 @@ const AdminNotifications = () => {
           />
           <Section
             icon={Tag}
-            title="Special tags"
+            title="Special Tags"
             description="Used for New Specials notifications. These are the live tags on your specials."
             items={specialTags}
             emptyLabel="No special tags yet."
