@@ -65,7 +65,7 @@ const navItems: (NavItem | NavGroup)[] = [
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 
-const allNavItems = navItems.flatMap((item) =>
+const allNavItems: NavItem[] = navItems.flatMap((item): NavItem[] =>
   "children" in item ? item.children : [item],
 );
 
