@@ -74,7 +74,6 @@ export const adminNavEntries: NavEntry[] = [
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "App Updates & Notifications", path: "/admin/app-updates", icon: Megaphone },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
-  { label: "FAQs", path: "/admin/faqs", icon: HelpCircle },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 

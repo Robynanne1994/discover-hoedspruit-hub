@@ -69,12 +69,21 @@ describe("admin sidebar navigation", () => {
     expect(topLevel).not.toContain("FAQs");
   });
 
-  it("resolves nested event URLs to their section title", () => {
+  it("resolves nested URLs to their section titles", () => {
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/events")?.label,
     ).toBe("Events");
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/events/past")?.label,
     ).toBe("Past Events");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/specials")?.label,
+    ).toBe("Specials");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/specials/past")?.label,
+    ).toBe("Past Specials");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/faqs")?.label,
+    ).toBe("FAQs");
   });
 });

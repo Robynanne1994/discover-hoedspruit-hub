@@ -595,7 +595,7 @@ const AdminSpecials = () => {
                       : "bg-card text-foreground border-border hover:border-primary"
                   }`}
                 >
-                  {t === "active" ? "Active" : "Passed"} ({t === "active" ? activeCount : passedCount})
+                  {t === "active" ? "Active Specials" : "Past Specials"} ({t === "active" ? activeCount : passedCount})
                 </button>
               ))}
             </div>
