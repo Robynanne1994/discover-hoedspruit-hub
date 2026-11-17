@@ -1,5 +1,6 @@
 import EventEditDialog from "@/components/admin/EventEditDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
+import ActiveToggle from "@/components/admin/ActiveToggle";
 import { collectEventTags } from "@/lib/eventTags";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { isEventPassedForAdmin } from "@/lib/eventLive";
@@ -10,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Upload, X, Image as ImageIcon } from "lucide-react";
@@ -31,7 +33,7 @@ const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimon
 
 // All three host photos land in the same 48px circle, so they share one slot.
 const hostSlot = eventImageSlot("host");
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], email_label: "", phone_label: "", whatsapp_label: "", additional_email_labels: [] as string[], additional_phone_labels: [] as string[], additional_whatsapp_labels: [] as string[], gallery_images: "", booking_link: "", booking_link_type: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], email_label: "", phone_label: "", whatsapp_label: "", additional_email_labels: [] as string[], additional_phone_labels: [] as string[], additional_whatsapp_labels: [] as string[], gallery_images: "", booking_link: "", booking_link_type: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, is_active: true, auto_activate_on_image: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_link: "", hosted_by_listing_id: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_link_2: "", hosted_by_listing_id_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "", hosted_by_link_3: "", hosted_by_listing_id_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -198,6 +200,8 @@ const AdminEvents = () => {
         business_id: ((values as any).business_ids?.[0]) || values.business_id || null,
         business_ids: Array.isArray((values as any).business_ids) ? (values as any).business_ids.filter(Boolean) : [],
         is_featured: !!values.is_featured,
+        is_active: values.is_active !== false,
+        auto_activate_on_image: !!values.auto_activate_on_image,
         hosted_by_name: values.hosted_by_name || null,
         hosted_by_subtitle: values.hosted_by_subtitle || null,
         hosted_by_image_url: values.hosted_by_image_url || null,
@@ -284,8 +288,11 @@ const AdminEvents = () => {
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
                   <span className="text-sm font-medium">Featured event</span>
-                  <span className="text-xs text-muted-foreground">{"\n"}</span>
                 </label>
+                <div className="flex items-center gap-2">
+                  <Switch id="new-event-active" checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v, auto_activate_on_image: false })} />
+                  <Label htmlFor="new-event-active" className="cursor-pointer font-normal">Active</Label>
+                </div>
               </div>
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
               <div className="grid grid-cols-2 gap-4">

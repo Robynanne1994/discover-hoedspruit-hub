@@ -40,7 +40,7 @@ const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "poster_image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "search_image_url", "recurrence", "performances", "price", "included", "price_notes", "notes", "booking_link", "booking_link_label", "booking_link_type",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
-  "business_id", "business_ids", "is_featured", "gallery_images",
+  "business_id", "business_ids", "is_featured", "is_active", "auto_activate_on_image", "gallery_images",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link", "hosted_by_listing_id",
   "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2", "hosted_by_link_2", "hosted_by_listing_id_2",
   "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3", "hosted_by_link_3", "hosted_by_listing_id_3",
@@ -184,14 +184,25 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 }
               />
             </div>
-            <div className="col-span-1 flex items-center gap-2 pb-2">
-              <Switch
-                id="event-dlg-featured"
-                className="h-7 w-12 origin-left scale-110"
-                checked={!!form.is_featured}
-                onCheckedChange={(v) => set("is_featured", v)}
-              />
-              <Label htmlFor="event-dlg-featured" className="cursor-pointer font-normal">Featured</Label>
+            <div className="col-span-1 flex flex-wrap items-center gap-x-4 gap-y-2 pb-2">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="event-dlg-featured"
+                  className="h-7 w-12 origin-left scale-110"
+                  checked={!!form.is_featured}
+                  onCheckedChange={(v) => set("is_featured", v)}
+                />
+                <Label htmlFor="event-dlg-featured" className="cursor-pointer font-normal">Featured</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="event-dlg-active"
+                  className="h-7 w-12 origin-left scale-110"
+                  checked={!!form.is_active}
+                  onCheckedChange={(v) => setForm((f) => ({ ...f, is_active: v, auto_activate_on_image: false }))}
+                />
+                <Label htmlFor="event-dlg-active" className="cursor-pointer font-normal">Active</Label>
+              </div>
             </div>
           </div>
           <div className="grid gap-3 lg:grid-cols-2 items-start">

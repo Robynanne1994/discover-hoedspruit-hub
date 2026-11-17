@@ -95,7 +95,7 @@ const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "search_image_url", "badge_override",
   "deal_type", "day_of_week", "discount_type", "discount_value", "special_type", "freebie_text", "card_deal_text", "redemption_note",
-  "valid_from", "valid_until", "card_footer_text", "is_active", "is_featured",
+  "valid_from", "valid_until", "card_footer_text", "is_active", "auto_activate_on_image", "is_featured",
   "price", "price_label", "original_price", "savings",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps", "additional_emails",
   "phone_label", "email_label", "whatsapp_label",
@@ -142,7 +142,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       payload.day_of_week = days.length ? days : null;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
+      // Expiry still retires a deal, but saving can never reactivate a deliberate FALSE.
+      payload.is_active = form.is_active !== false && !(form.valid_until && new Date(form.valid_until) < today);
       const { error } = await supabase.from("specials").update(payload).eq("id", special.id);
       if (error) throw error;
     },
@@ -222,16 +223,25 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 }
               />
             </div>
-            <div className="col-span-1 flex items-center gap-2 pb-2">
-              <Switch
-                id="special-dlg-featured"
-                className="h-7 w-12 origin-left scale-110"
-                checked={!!form.is_featured}
-                onCheckedChange={(v) => set("is_featured", v)}
-              />
-              <Label htmlFor="special-dlg-featured" className="cursor-pointer font-normal">
-                Featured
-              </Label>
+            <div className="col-span-1 flex flex-wrap items-center gap-x-4 gap-y-2 pb-2">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="special-dlg-featured"
+                  className="h-7 w-12 origin-left scale-110"
+                  checked={!!form.is_featured}
+                  onCheckedChange={(v) => set("is_featured", v)}
+                />
+                <Label htmlFor="special-dlg-featured" className="cursor-pointer font-normal">Featured</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="special-dlg-active"
+                  className="h-7 w-12 origin-left scale-110"
+                  checked={!!form.is_active}
+                  onCheckedChange={(v) => setForm((f) => ({ ...f, is_active: v, auto_activate_on_image: false }))}
+                />
+                <Label htmlFor="special-dlg-active" className="cursor-pointer font-normal">Active</Label>
+              </div>
             </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Business</p>
