@@ -209,6 +209,7 @@ const BushTelegraph = () => {
       const { data, error } = await supabase
         .from("bush_telegraph_resources")
         .select("*")
+        .eq("is_active", true)
         // Featured channels head up their platform section, then the admin's
         // own sort order fills in behind them.
         .order("is_featured", { ascending: false })

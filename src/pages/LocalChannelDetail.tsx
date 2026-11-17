@@ -115,6 +115,7 @@ const LocalChannelDetail = () => {
       const { data, error } = await supabase
         .from("bush_telegraph_resources")
         .select("*")
+        .eq("is_active", true)
         .eq("slug", slug!)
         .maybeSingle();
       if (error) throw error;
@@ -129,7 +130,7 @@ const LocalChannelDetail = () => {
     queryFn: async () => {
       const id = resource?.associated_business_id;
       if (!id) return null;
-      const { data, error } = await supabase.from("listings").select("id, title, title_override").eq("id", id).maybeSingle();
+      const { data, error } = await supabase.from("listings").select("id, title, title_override").eq("is_active", true).eq("id", id).maybeSingle();
       if (error) throw error;
       return data;
     },

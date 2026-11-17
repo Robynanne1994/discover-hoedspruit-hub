@@ -296,7 +296,7 @@ const Categories = () => {
           await supabase.from("listing_categories").select("listing_id, category_id").range(from, to)
         ),
         fetchAllRange<{ id: string; category_id: string | null }>(async (from, to) =>
-          await supabase.from("listings").select("id, category_id").range(from, to)
+          await supabase.from("listings").select("id, category_id").eq("is_active", true).range(from, to)
         ),
       ]);
 
@@ -355,7 +355,7 @@ const Categories = () => {
         const rows: any[] = [];
         for (let i = 0; i < savedListArray.length; i += CHUNK) {
           const chunk = savedListArray.slice(i, i + CHUNK);
-          const { data, error } = await supabase.from("listings").select(cols).in("id", chunk);
+          const { data, error } = await supabase.from("listings").select(cols).eq("is_active", true).in("id", chunk);
           if (error) throw error;
           rows.push(...(data || []));
         }
@@ -370,6 +370,7 @@ const Categories = () => {
         const { data, error } = await supabase
           .from("listings")
           .select(cols)
+          .eq("is_active", true)
           .order("is_featured", { ascending: false })
           .range(from, from + PAGE - 1);
         if (error) throw error;
@@ -488,6 +489,7 @@ const Categories = () => {
       const titleQ = supabase
         .from("listings")
         .select("id, title, title_override, image_url, location, category_id, is_featured")
+        .eq("is_active", true)
         .filter("title", "imatch", titleSearchRegex(escaped) || ".")
         .limit(20);
 
@@ -495,6 +497,7 @@ const Categories = () => {
         ? supabase
             .from("listings")
             .select("id, title, title_override, image_url, location, category_id, is_featured")
+            .eq("is_active", true)
             .in("category_id", matchingCategoryIds)
             .limit(50)
         : null;
@@ -519,6 +522,7 @@ const Categories = () => {
         const { data: extra } = await supabase
           .from("listings")
           .select("id, title, title_override, image_url, location, category_id, is_featured")
+          .eq("is_active", true)
           .in("id", missingIds);
         (extra || []).forEach((l) => map.set(l.id, l));
       }

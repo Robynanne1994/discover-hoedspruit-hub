@@ -142,7 +142,7 @@ const ListingDetail = () => {
   const { data: listing, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["listing-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("listings").select("*").eq("id", id!).maybeSingle();
+      const { data, error } = await supabase.from("listings").select("*").eq("is_active", true).eq("id", id!).maybeSingle();
       if (error) throw error;
       return data ? sanitizeDashes(data) : null;
     },
@@ -223,6 +223,7 @@ const ListingDetail = () => {
       const { data } = await supabase
         .from("events")
         .select("id,title,date,start_date,end_date,start_time,image_url,location")
+        .eq("is_active", true)
         .eq("business_id", id!);
       const today = new Date().toISOString().slice(0, 10);
       return (data ?? []).filter((e: any) => {
@@ -241,6 +242,7 @@ const ListingDetail = () => {
       const { data, error } = await supabase
         .from("bush_telegraph_resources")
         .select("*")
+        .eq("is_active", true)
         .eq("associated_business_id", id);
       if (error) throw error;
       return (data ?? []).sort(compareChannels);
