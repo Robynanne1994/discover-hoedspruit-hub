@@ -99,9 +99,6 @@ const AdminAppStore = () => {
         </span>
         <div className="min-w-0">
           <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">App Store</h1>
-          <p className="text-sm text-muted-foreground mt-1 leading-6">
-            Links users are sent to when they tap Rate Us in My Account.
-          </p>
         </div>
       </div>
 
