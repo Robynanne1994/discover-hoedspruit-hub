@@ -752,6 +752,12 @@ const AdminImport = () => {
           if (isImageCsvColumn(fieldName)) continue;
           // Titles always show exactly as typed; old title_override columns are ignored.
           if (fieldName === "title_override") continue;
+          // Blank Active cells preserve state; explicit TRUE/FALSE is deliberate
+          // and must not be overridden by the first-image draft automation.
+          if (fieldName === "is_active") {
+            Object.assign(payloadRecord, activeCsvPatch(row[fieldName]));
+            continue;
+          }
           // Combined contact cells: "a|b" plus positional labels, split into primary + extras.
           const contactGroup = contactGroupForValue(fieldName);
           if (contactGroup) {

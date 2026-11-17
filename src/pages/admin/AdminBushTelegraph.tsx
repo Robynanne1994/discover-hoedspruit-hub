@@ -558,16 +558,17 @@ const AdminBushTelegraph = () => {
           <div className="p-8 text-center text-muted-foreground">No resources yet. Add your first one.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full table-fixed text-sm min-w-[900px]">
               <thead className="bg-muted">
                 <tr>
-                  <th className="p-3 text-left"><ArrowUpDown className="h-3 w-3 inline mr-1" />Order</th>
-                  <th className="p-3 text-left">Image</th>
-                  <th className="p-3 text-left">Title</th>
-                  <th className="p-3 text-left">Platform</th>
-                  <th className="p-3 text-left">Type</th>
-                  <th className="p-3 text-left">Featured</th>
-                  <th className="p-3 text-right">Actions</th>
+                  <th className="p-3 text-left w-[8%]"><ArrowUpDown className="h-3 w-3 inline mr-1" />Order</th>
+                  <th className="p-3 text-left w-[8%]">Image</th>
+                  <th className="p-3 text-left w-[24%]">Title</th>
+                  <th className="p-3 text-left w-[14%]">Platform</th>
+                  <th className="p-3 text-left w-[12%]">Type</th>
+                  <th className="p-3 text-left w-[10%]">Featured</th>
+                  <th className="p-3 text-left w-[10%]">Active</th>
+                  <th className="p-3 text-right w-[14%]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -581,10 +582,11 @@ const AdminBushTelegraph = () => {
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="p-3 font-medium">{r.title}</td>
-                    <td className="p-3">{r.platform}</td>
-                    <td className="p-3 text-muted-foreground">{r.resource_type}</td>
+                    <td className="p-3 font-medium truncate" title={r.title}>{r.title}</td>
+                    <td className="p-3 truncate">{r.platform}</td>
+                    <td className="p-3 text-muted-foreground truncate">{r.resource_type}</td>
                     <td className="p-3"><FeaturedToggle table="bush_telegraph_resources" id={r.id} title={r.title} featured={r.is_featured} /></td>
+                    <td className="p-3"><ActiveToggle table="bush_telegraph_resources" id={r.id} title={r.title} active={r.is_active !== false} /></td>
                     <td className="p-3 text-right">
                       <Button variant="ghost" size="icon" onClick={() => startEdit(r)}><Pencil className="h-4 w-4" /></Button>
                       <Button

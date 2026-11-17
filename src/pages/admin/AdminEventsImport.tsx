@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { stripImageCsvColumns, omitImageKeys } from "@/lib/csvImageColumns";
 import { parseEventContactCells, serializeEventContactCells } from "@/lib/eventContacts";
 import { eventCsvAction, eventCsvScope, type EventCsvImportMode, type EventCsvScope } from "@/lib/eventCsvScope";
+import { activeCsvPatch } from "@/lib/contentActive";
 
 // Image columns are deliberately excluded, exactly as in the listings import /
 // export: pictures are cropped and set in the admin editor only, so a CSV can
@@ -49,6 +50,7 @@ const EXPECTED_HEADERS = stripImageCsvColumns([
   "hosted_by_subtitle",
   "hosted_by_link",
   "is_featured",
+  "is_active",
 ]);
 
 
@@ -265,6 +267,7 @@ const AdminEventsImport = () => {
           ...hostsToColumns(parseHostCells(row.hosted_by_name, row.hosted_by_subtitle, row.hosted_by_link, (t) => resolveListing(t, i))),
           performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
+          ...activeCsvPatch(row.is_active),
         };
         omitImageKeys(payload);
 
@@ -360,6 +363,7 @@ const AdminEventsImport = () => {
       hosted_by_subtitle: "Local Shopping Centre|Author",
       hosted_by_link: "Local Shopping Centre|https://sowc.alueducation.com/dr-michael-musgrave/",
       is_featured: "true",
+      is_active: "false",
 
     };
     const csv =
@@ -437,6 +441,7 @@ const AdminEventsImport = () => {
           ...((e.extra_hosts ?? []) as any[]).map((h) => ({ name: h?.name, subtitle: h?.subtitle, link: h?.link, listingTitle: idToTitle.get(h?.listing_id) })),
         ]),
         is_featured: e.is_featured ? "true" : "false",
+        is_active: e.is_active !== false ? "true" : "false",
       };
       return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
     });

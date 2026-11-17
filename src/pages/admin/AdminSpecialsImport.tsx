@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { daysToCsv, parseDays } from "@/lib/specialDays";
 import { formatSpecialPriceCell } from "@/lib/specialPrice";
 import { specialCsvAction, specialCsvScope, type SpecialCsvImportMode, type SpecialCsvScope } from "@/lib/specialCsvScope";
+import { activeCsvPatch } from "@/lib/contentActive";
 
 const stripTrailingZeros = (val: string | null | undefined) => {
   if (!val) return val ?? null;
@@ -192,7 +193,7 @@ const AdminSpecialsImport = () => {
           })(),
           terms: row.terms ? row.terms.split("|").map((s: string) => s.trim()).filter(Boolean).join("\n") || null : null,
           ...tagColumns(parseTagCell(row.tag, row.sub_tag_1, row.sub_tag_2)),
-          is_active: row.is_active ? (row.is_active.toLowerCase() !== "false" && row.is_active !== "0") : true,
+          ...activeCsvPatch(row.is_active),
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
         };
 
@@ -207,7 +208,7 @@ const AdminSpecialsImport = () => {
         if (matchedListingId) payload.business_id = matchedListingId;
 
         const action = specialCsvAction(importMode, {
-          is_active: payload.is_active,
+          is_active: payload.is_active ?? match?.is_active ?? true,
           valid_from: payload.valid_from,
           valid_until: payload.valid_until,
         }, match, now);
