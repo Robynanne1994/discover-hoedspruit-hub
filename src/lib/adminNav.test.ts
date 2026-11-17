@@ -37,15 +37,31 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
-  it("nests App Store and FAQs under App Content", () => {
+  it("nests Homepage, Search Suggestions, App Store and FAQs under App Content", () => {
     const appContent = groupByLabel("App Content");
     expect(appContent?.children.map((child) => child.label)).toEqual([
+      "Homepage",
+      "Search Suggestions",
       "App Store",
       "FAQs",
     ]);
     expect(appContent?.children.map((child) => child.path)).toEqual([
+      "/admin/homepage",
+      "/admin/search-suggested",
       "/admin/app-store",
       "/admin/faqs",
+    ]);
+  });
+
+  it("nests Notifications and App Updates under App Updates & Notifications", () => {
+    const updates = groupByLabel("App Updates & Notifications");
+    expect(updates?.children.map((child) => child.label)).toEqual([
+      "Notifications",
+      "App Updates",
+    ]);
+    expect(updates?.children.map((child) => child.path)).toEqual([
+      "/admin/notifications",
+      "/admin/app-updates",
     ]);
   });
 
@@ -67,6 +83,10 @@ describe("admin sidebar navigation", () => {
     expect(topLevel).not.toContain("Specials");
     expect(topLevel).not.toContain("App Store");
     expect(topLevel).not.toContain("FAQs");
+    expect(topLevel).not.toContain("Homepage");
+    expect(topLevel).not.toContain("Search Suggestions");
+    expect(topLevel).not.toContain("Notifications");
+    expect(topLevel).not.toContain("App Updates");
   });
 
   it("resolves nested URLs to their section titles", () => {
@@ -85,5 +105,11 @@ describe("admin sidebar navigation", () => {
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/faqs")?.label,
     ).toBe("FAQs");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/homepage")?.label,
+    ).toBe("Homepage");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/app-updates")?.label,
+    ).toBe("App Updates");
   });
 });
