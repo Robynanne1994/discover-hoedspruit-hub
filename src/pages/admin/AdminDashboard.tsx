@@ -96,7 +96,7 @@ const AdminDashboard = () => {
     { label: "Reported Users", count: userReports.data, to: "/admin/user-reports", icon: Flag, hint: "Unread reports" },
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },
-    { label: "Events", count: events.data, to: "/admin/events", icon: Calendar },
+    { label: "Events", count: events.data, to: "/admin/events", icon: Calendar, hint: "Upcoming only" },
     { label: "Active Specials", count: specials.data, to: "/admin/specials", icon: Tag },
     
     { label: "Resources", count: resources.data, to: "/admin/local-channels", icon: Radio },
