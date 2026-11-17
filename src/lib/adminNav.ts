@@ -5,6 +5,7 @@ import {
   Flag,
   FolderOpen,
   HelpCircle,
+  History,
   Home,
   LayoutDashboard,
   List,
@@ -63,8 +64,9 @@ const appContentNavItems: NavItem[] = [
 ];
 
 const notificationNavItems: NavItem[] = [
-  { label: "Notifications", path: "/admin/notifications", icon: Bell },
-  { label: "App Updates", path: "/admin/app-updates", icon: Megaphone },
+  { label: "Send App Update", path: "/admin/app-updates", icon: Megaphone },
+  { label: "Past App Updates", path: "/admin/app-updates/past", icon: History },
+  { label: "Notification Settings", path: "/admin/notifications", icon: Bell },
 ];
 
 export const adminNavEntries: NavEntry[] = [

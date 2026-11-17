@@ -31,7 +31,7 @@ type Broadcast = {
 const TITLE_MAX = 120;
 const BODY_MAX = 500;
 
-const AdminAppUpdates = () => {
+const AdminAppUpdates = ({ view = "send" }: { view?: "send" | "past" }) => {
   const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -90,7 +90,7 @@ const AdminAppUpdates = () => {
           <Megaphone className="h-5 w-5 text-primary" />
         </span>
         <div className="min-w-0">
-          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">App Updates</h1>
+          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">{view === "send" ? "Send App Update" : "Past App Updates"}</h1>
           <p className="text-sm text-muted-foreground mt-1 leading-6">
             Send an announcement to <strong className="font-semibold text-foreground">every</strong>{" "}
             app user. It always appears in their Notifications tab (with the unread red dot). Users
@@ -102,7 +102,7 @@ const AdminAppUpdates = () => {
       </div>
 
       {/* Composer */}
-      <section className="bg-card text-card-foreground border border-border rounded-xl shadow-sm">
+      {view === "send" && (<section className="bg-card text-card-foreground border border-border rounded-xl shadow-sm">
         <div className="px-5 py-4 rounded-t-xl bg-primary-tint border-b border-border">
           <h2 className="font-heading text-lg font-bold text-foreground">Send Update</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -184,10 +184,10 @@ const AdminAppUpdates = () => {
             </Button>
           </div>
         </div>
-      </section>
+      </section>)}
 
       {/* History */}
-      <section className="space-y-3">
+      {view === "past" && (<section className="space-y-3">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-heading text-lg font-bold text-foreground">Previous Broadcasts</h2>
           {!history.isLoading && broadcasts.length > 0 && (
@@ -255,7 +255,7 @@ const AdminAppUpdates = () => {
             ))}
           </div>
         )}
-      </section>
+      </section>)}
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>

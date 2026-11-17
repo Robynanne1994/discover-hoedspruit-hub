@@ -53,15 +53,17 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
-  it("nests Notifications and App Updates under Updates & Notifications", () => {
+  it("nests Send, Past App Updates and Notification Settings under Updates & Notifications", () => {
     const updates = groupByLabel("Updates & Notifications");
     expect(updates?.children.map((child) => child.label)).toEqual([
-      "Notifications",
-      "App Updates",
+      "Send App Update",
+      "Past App Updates",
+      "Notification Settings",
     ]);
     expect(updates?.children.map((child) => child.path)).toEqual([
-      "/admin/notifications",
       "/admin/app-updates",
+      "/admin/app-updates/past",
+      "/admin/notifications",
     ]);
   });
 
@@ -110,6 +112,6 @@ describe("admin sidebar navigation", () => {
     ).toBe("Homepage");
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/app-updates")?.label,
-    ).toBe("App Updates");
+    ).toBe("Send App Update");
   });
 });
