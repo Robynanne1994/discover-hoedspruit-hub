@@ -1,7 +1,7 @@
 # Roadmap
 
 ## Pending
-(none)
+- Improve Reported Users and Moderated Users page presentation and usability, preserving existing moderation actions.
 
 ## Done
 - (2026-11-17) Admin sidebar: the App Updates group is now a collapsible "Updates & Notifications" (Notifications, App Updates) and Homepage plus Search Suggestions moved under App Content. The group label fits on one line on desktop and phone. Seven navigation checks and signed-in desktop/mobile flows passed; build OK.
