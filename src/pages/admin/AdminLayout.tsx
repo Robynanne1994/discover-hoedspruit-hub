@@ -161,10 +161,10 @@ const AdminLayout = () => {
   const goBack = () => navigate(backPath);
   const parentTitle =
     depth > 2
-      ? navItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
+      ? allNavItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
       : undefined;
   const currentTitle =
-    navItems.find((i) => i.path === location.pathname)?.label ??
+    allNavItems.find((i) => i.path === location.pathname)?.label ??
     parentTitle ??
     "Admin";
 
