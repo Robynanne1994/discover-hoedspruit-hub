@@ -1,13 +1,10 @@
 # Roadmap
 
 ## Pending
-- Add Active/draft status to events, local channels and listings, retaining specials' existing status; existing records stay active.
-- Auto-activate a draft when its first image is added, preserve deliberate inactive states, and gate all public queries and new-item notifications on Active.
-- Add Active toggles to all four editors and admin tables with the requested column layouts.
-- Add scoped CSV Active columns for events, local channels and listings; preserve explicit FALSE values.
-- Run focused rule tests, backend checks and signed-in end-to-end verification.
+(none)
 
 ## Done
+- (2026-11-17) Events, Local Channels, Specials and Listings now have Active switches in their editors and admin tables. Existing records stayed active; new image-free records are drafts, first-image activation works, deliberate FALSE stays false, public queries and new/update/reminder notifications are active-gated, and the requested CSV columns and table layouts are live. Verified real downloads, signed-in draft/create/toggle/delete, isolated first-image rules, desktop/phone layouts and 782 passing tests; temporary data and notifications are absent.
 - (2026-11-16) Events, Specials, Local Channels and Listings admin tables now save Featured directly from a per-row switch. One real row per table was toggled, refreshed and restored successfully; build OK.
 - Custom-label controls have no underline; Shopping has half-width Shop Type with click-to-open Add input and a Products Categories banner.
 - Wellness Treatments now reuse the compact Good to Know chip input; custom-label links across business, event and special editors are darker, semibold and underlined. Signed-in add/remove and label-opening checks passed without saving content changes; build OK.
