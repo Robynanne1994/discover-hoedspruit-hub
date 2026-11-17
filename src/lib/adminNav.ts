@@ -63,7 +63,7 @@ const appContentNavItems: NavItem[] = [
 export const adminNavEntries: NavEntry[] = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
   { label: "Homepage", path: "/admin/homepage", icon: Home },
-  { label: "Search Suggested", path: "/admin/search-suggested", icon: SearchIcon },
+  { label: "Search Suggestions", path: "/admin/search-suggested", icon: SearchIcon },
   { label: "App Content", icon: FolderOpen, children: appContentNavItems },
   { label: "Users", icon: Users, children: userNavItems },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
