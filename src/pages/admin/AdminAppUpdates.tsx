@@ -104,7 +104,7 @@ const AdminAppUpdates = () => {
       {/* Composer */}
       <section className="bg-card text-card-foreground border border-border rounded-xl shadow-sm">
         <div className="px-5 py-4 rounded-t-xl bg-primary-tint border-b border-border">
-          <h2 className="font-heading text-lg font-bold text-foreground">Create Update</h2>
+          <h2 className="font-heading text-lg font-bold text-foreground">Send Update</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
             Goes out as soon as you press send.
           </p>
