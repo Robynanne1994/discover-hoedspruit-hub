@@ -118,3 +118,10 @@
   question text, centred empty state, and the page heading on the shared heading treatment.
   Verified signed in on desktop and phone: five sections, band rgb(246,241,234) on white cards,
   headings 20px/700, buttons wrap inside the strip on phone.
+- (2026-11-17) Search Suggestions admin page: rebuilt into two cards (Suggested Listings, Add Listings)
+  on the shared admin treatment with tinted header strips, a dark-brown "N of 15" badge, white row tiles
+  with hairline borders, a search box with a clear button and result count, dashed empty and full states,
+  and an auto-save footer. Ordering is now drag-and-drop (dnd-kit, keyboard operable) instead of tiny
+  up/down arrows. Curated or addable listings that are not active show a "Not live" chip plus a warning
+  that users will not see them. Verified signed in: 10 rows, add then remove round trip 10 to 11 to 10,
+  29 results for "ca", row fill rgb(255,255,255), no phone overflow.
