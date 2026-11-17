@@ -134,9 +134,10 @@ describe("placeIdChangeKind", () => {
 });
 
 describe("google_place_id as a CSV column", () => {
-  it("is the very last column of the universal CSV", () => {
+  it("sits immediately before is_active on the universal CSV", () => {
     const headers = getUniversalCSVHeaders();
-    expect(headers[headers.length - 1]).toBe(GOOGLE_PLACE_ID_FIELD);
+    expect(headers[headers.length - 2]).toBe(GOOGLE_PLACE_ID_FIELD);
+    expect(headers[headers.length - 1]).toBe("is_active");
     expect(headers.filter((h) => h === GOOGLE_PLACE_ID_FIELD)).toHaveLength(1);
   });
 
