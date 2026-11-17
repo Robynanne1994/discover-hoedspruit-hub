@@ -3,10 +3,13 @@ import { isUpcomingSpecial, isVisibleSpecial, specialToday } from './specialVisi
 
 const today = '2026-10-27';
 describe('specials visibility', () => {
-  it('shows future-starting specials even when active is false', () => {
+  it('keeps future-starting specials hidden while active is false', () => {
     const special = { is_active: false, valid_from: '2026-11-01', valid_until: '2026-11-30' };
     expect(isUpcomingSpecial(special, today)).toBe(true);
-    expect(isVisibleSpecial(special, today)).toBe(true);
+    expect(isVisibleSpecial(special, today)).toBe(false);
+  });
+  it('shows future-starting specials when active is true', () => {
+    expect(isVisibleSpecial({ is_active: true, valid_from: '2026-11-01', valid_until: '2026-11-30' }, today)).toBe(true);
   });
   it('does not treat a future end date alone as upcoming', () => {
     expect(isVisibleSpecial({ is_active: false, valid_until: '2026-11-30' }, today)).toBe(false);

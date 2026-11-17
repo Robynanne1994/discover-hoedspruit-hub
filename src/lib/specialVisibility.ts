@@ -18,6 +18,11 @@ export function isUpcomingSpecial(special: SpecialDates, today = specialToday())
 }
 
 export function isVisibleSpecial(special: SpecialVisibilityFields, today = specialToday()): boolean {
-  return isUpcomingSpecial(special, today) ||
-    (special.is_active && (!special.valid_until || special.valid_until >= today));
+  // Active is an administrative visibility switch, not merely a date flag.
+  // Future-dated specials stay hidden too while deliberately inactive.
+  return special.is_active && (
+    isUpcomingSpecial(special, today) ||
+    !special.valid_until ||
+    special.valid_until >= today
+  );
 }
