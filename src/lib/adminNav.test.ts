@@ -37,15 +37,31 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
-  it("nests App Store and FAQs under App Content", () => {
+  it("nests Homepage, Search Suggestions, App Store and FAQs under App Content", () => {
     const appContent = groupByLabel("App Content");
     expect(appContent?.children.map((child) => child.label)).toEqual([
+      "Homepage",
+      "Search Suggestions",
       "App Store",
       "FAQs",
     ]);
     expect(appContent?.children.map((child) => child.path)).toEqual([
+      "/admin/homepage",
+      "/admin/search-suggested",
       "/admin/app-store",
       "/admin/faqs",
+    ]);
+  });
+
+  it("nests Notifications and App Updates under App Updates & Notifications", () => {
+    const updates = groupByLabel("App Updates & Notifications");
+    expect(updates?.children.map((child) => child.label)).toEqual([
+      "Notifications",
+      "App Updates",
+    ]);
+    expect(updates?.children.map((child) => child.path)).toEqual([
+      "/admin/notifications",
+      "/admin/app-updates",
     ]);
   });
 
