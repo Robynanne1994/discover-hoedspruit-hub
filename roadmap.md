@@ -99,3 +99,6 @@
   header and every row; the drag handle stays fixed at 32px and Title, Listings and Actions now
   split the rest of the width evenly (measured 289px each). The Quick/Featured switch is still in
   the category editor dialog.
+- (2026-11-17) Reports admin table: new first "Type" column (Listings / Events / Specials /
+  External) taken out of the report names; report names now start with a capital and carry no
+  dash; Description wraps instead of truncating and is narrower (32%), Status narrower (14%).
