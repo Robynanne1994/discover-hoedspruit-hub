@@ -200,7 +200,6 @@ const AdminSearchSuggested = () => {
                         key={listing.id}
                         listing={listing}
                         index={idx}
-                        last={idx === curatedListings.length - 1}
                         onRemove={() => remove(listing.id)}
                       />
                     ))}
@@ -264,7 +263,7 @@ const AdminSearchSuggested = () => {
               <div className="relative mb-3">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search listings by name&hellip;"
+                  placeholder="Search listings by name…"
                   aria-label="Search listings to add"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -310,7 +309,7 @@ const AdminSearchSuggested = () => {
                 {available.length === 0 && (
                   <p className="text-xs text-muted-foreground p-3 text-center">
                     {searching
-                      ? "Searching&hellip;"
+                      ? "Searching…"
                       : search.trim()
                         ? "No matching listings."
                         : "Type a business name to find a listing."}
@@ -345,12 +344,10 @@ const Thumb = ({ listing, size }: { listing: Listing; size: number }) =>
 const SortableRow = ({
   listing,
   index,
-  last,
   onRemove,
 }: {
   listing: Listing;
   index: number;
-  last: boolean;
   onRemove: () => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -392,9 +389,7 @@ const SortableRow = ({
         type="button"
         onClick={onRemove}
         aria-label={`Remove ${listing.title}`}
-        className={`shrink-0 grid h-7 w-7 place-items-center rounded-full bg-[var(--filter-ink)] text-primary-foreground hover:bg-primary-hover ${
-          last ? "" : ""
-        }`}
+        className="shrink-0 grid h-7 w-7 place-items-center rounded-full bg-[var(--filter-ink)] text-primary-foreground hover:bg-primary-hover"
       >
         <X className="h-3.5 w-3.5" />
       </button>
