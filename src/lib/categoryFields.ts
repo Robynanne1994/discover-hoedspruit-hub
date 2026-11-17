@@ -360,8 +360,7 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
 }
 
 // Headers for the "All Categories (Universal)" CSV: universals plus the
-// listing's category set, with the Place ID last so every export ends on the
-// same column.
+// listing's category set, then Place ID and Active in their requested slots.
 //
 // This sheet is the source of truth for every field on it. Nothing here appears
 // on a category CSV, so the two uploads can never disagree about a listing.
