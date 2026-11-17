@@ -105,7 +105,7 @@ const AdminNotifications = () => {
           />
           <Section
             icon={CalendarDays}
-            title="Event tags"
+            title="Event Tags"
             description="Used for New Events notifications. These are the live tags on your events."
             items={eventTags}
             emptyLabel="No event tags yet."
