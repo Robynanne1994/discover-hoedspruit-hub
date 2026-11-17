@@ -50,11 +50,21 @@ const eventNavItems: NavItem[] = [
   { label: "Event Hosts", path: "/admin/event-hosts", icon: Users },
 ];
 
+const specialNavItems: NavItem[] = [
+  { label: "Active Specials", path: "/admin/specials/active", icon: Tag },
+  { label: "Past Specials", path: "/admin/specials/past", icon: Tag },
+];
+
+const appContentNavItems: NavItem[] = [
+  { label: "App Store", path: "/admin/app-store", icon: Star },
+  { label: "FAQs", path: "/admin/faqs", icon: HelpCircle },
+];
+
 export const adminNavEntries: NavEntry[] = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
   { label: "Homepage", path: "/admin/homepage", icon: Home },
   { label: "Search Suggested", path: "/admin/search-suggested", icon: SearchIcon },
-  { label: "App Store", path: "/admin/app-store", icon: Star },
+  { label: "App Content", icon: FolderOpen, children: appContentNavItems },
   { label: "Users", icon: Users, children: userNavItems },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },

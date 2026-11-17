@@ -25,6 +25,30 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
+  it("nests Active Specials and Past Specials under Specials", () => {
+    const specials = groupByLabel("Specials");
+    expect(specials?.children.map((child) => child.label)).toEqual([
+      "Active Specials",
+      "Past Specials",
+    ]);
+    expect(specials?.children.map((child) => child.path)).toEqual([
+      "/admin/specials/active",
+      "/admin/specials/past",
+    ]);
+  });
+
+  it("nests App Store and FAQs under App Content", () => {
+    const appContent = groupByLabel("App Content");
+    expect(appContent?.children.map((child) => child.label)).toEqual([
+      "App Store",
+      "FAQs",
+    ]);
+    expect(appContent?.children.map((child) => child.path)).toEqual([
+      "/admin/app-store",
+      "/admin/faqs",
+    ]);
+  });
+
   it("keeps Users as a group with App, Reported and Moderated users", () => {
     const users = groupByLabel("Users");
     expect(users?.children.map((child) => child.label)).toEqual([

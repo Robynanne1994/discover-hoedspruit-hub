@@ -16,7 +16,7 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactPairs } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDialog";
