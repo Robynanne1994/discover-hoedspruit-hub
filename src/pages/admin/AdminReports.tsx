@@ -259,75 +259,34 @@ const REPORTS: ReportDef[] = [
 
 // ---------- Page ----------
 
-const ReportRow = ({ report }: { report: ReportDef }) => {
-  const [running, setRunning] = useState(false);
-  const [progress, setProgress] = useState<{ done: number; total: number; label?: string } | null>(null);
-  const [lastCount, setLastCount] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+type ReportState = {
+  running: boolean;
+  progress: { done: number; total: number; label?: string } | null;
+  lastCount: number | null;
+  error: string | null;
+};
 
-  const handleRun = async () => {
-    setRunning(true);
-    setError(null);
-    setProgress(null);
-    setLastCount(null);
+const IDLE: ReportState = { running: false, progress: null, lastCount: null, error: null };
+
+const AdminReports = () => {
+  const [states, setStates] = useState<Record<string, ReportState>>({});
+
+  const patch = (id: string, next: Partial<ReportState>) =>
+    setStates((prev) => ({ ...prev, [id]: { ...IDLE, ...prev[id], ...next } }));
+
+  const handleRun = async (report: ReportDef) => {
+    patch(report.id, { running: true, progress: null, lastCount: null, error: null });
     try {
-      const result = await report.run(setProgress);
-      setLastCount(result.rows.length);
+      const result = await report.run((p) => patch(report.id, { progress: p }));
+      patch(report.id, { lastCount: result.rows.length });
       downloadCsv(result.filename, result.rows, result.columns);
     } catch (e: any) {
-      setError(e?.message ?? "Failed to generate report");
+      patch(report.id, { error: e?.message ?? "Failed to generate report" });
     } finally {
-      setRunning(false);
-      setProgress(null);
+      patch(report.id, { running: false, progress: null });
     }
   };
 
-  return (
-    <tr className="border-t border-border">
-      <td className="p-3 font-medium text-foreground max-w-0">
-        <span className="block truncate" title={report.title}>{report.title}</span>
-      </td>
-      <td className="p-3 text-muted-foreground max-w-0">
-        <span className="block truncate" title={report.description}>{report.description}</span>
-      </td>
-      <td className="p-3 text-muted-foreground">
-        {error ? (
-          <span className="block text-xs text-destructive">{error}</span>
-        ) : progress ? (
-          <span className="block text-xs">
-            {progress.label ?? "Working"}… {progress.done}/{progress.total}
-            <span className="block h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
-              <span
-                className="block h-full bg-primary transition-all"
-                style={{ width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%` }}
-              />
-            </span>
-          </span>
-        ) : lastCount !== null ? (
-          <span className="block text-xs">
-            {lastCount} {lastCount === 1 ? "row" : "rows"} exported.
-          </span>
-        ) : (
-          <span className="block text-xs">—</span>
-        )}
-      </td>
-      <td className="p-3">
-        <div className="flex justify-end">
-          <button
-            onClick={handleRun}
-            disabled={running}
-            className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-primary text-primary-foreground text-sm font-medium whitespace-nowrap disabled:opacity-60"
-          >
-            {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            {running ? "Generating…" : "Download CSV"}
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
-};
-
-const AdminReports = () => {
   return (
     <div>
       <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">Reports</h1>
@@ -343,9 +302,52 @@ const AdminReports = () => {
             </tr>
           </thead>
           <tbody>
-            {REPORTS.map((r) => (
-              <ReportRow key={r.id} report={r} />
-            ))}
+            {REPORTS.map((r) => {
+              const s = { ...IDLE, ...states[r.id] };
+              return (
+                <tr key={r.id} className="border-t border-border">
+                  <td className="p-3 font-medium text-foreground max-w-0">
+                    <span className="block truncate" title={r.title}>{r.title}</span>
+                  </td>
+                  <td className="p-3 text-muted-foreground max-w-0">
+                    <span className="block truncate" title={r.description}>{r.description}</span>
+                  </td>
+                  <td className="p-3 text-muted-foreground">
+                    {s.error ? (
+                      <span className="block text-xs text-destructive">{s.error}</span>
+                    ) : s.progress ? (
+                      <span className="block text-xs">
+                        {s.progress.label ?? "Working"}… {s.progress.done}/{s.progress.total}
+                        <span className="block h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
+                          <span
+                            className="block h-full bg-primary transition-all"
+                            style={{ width: `${s.progress.total ? (s.progress.done / s.progress.total) * 100 : 0}%` }}
+                          />
+                        </span>
+                      </span>
+                    ) : s.lastCount !== null ? (
+                      <span className="block text-xs">
+                        {s.lastCount} {s.lastCount === 1 ? "row" : "rows"} exported.
+                      </span>
+                    ) : (
+                      <span className="block text-xs">—</span>
+                    )}
+                  </td>
+                  <td className="p-3">
+                    <div className="flex justify-end">
+                      <button
+                        onClick={() => handleRun(r)}
+                        disabled={s.running}
+                        className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-primary text-primary-foreground text-sm font-medium whitespace-nowrap disabled:opacity-60"
+                      >
+                        {s.running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                        {s.running ? "Generating…" : "Download CSV"}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
