@@ -27,6 +27,7 @@ const HomeLocalChannels = () => {
       const { data } = await supabase
         .from("bush_telegraph_resources")
         .select(`id, slug, title, title_override, platform, meta, meta_2, url, is_featured, sort_order, resource_type, ${CHANNEL_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         .order("is_featured", { ascending: false })
         .order("sort_order", { ascending: true })
         .limit(4);

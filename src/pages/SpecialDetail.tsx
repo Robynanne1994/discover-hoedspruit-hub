@@ -125,7 +125,7 @@ const SpecialDetail = () => {
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("specials").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("specials").select("*").eq("is_active", true).eq("id", id!).single();
       if (error) throw error;
       return data;
     },
@@ -148,6 +148,7 @@ const SpecialDetail = () => {
       const { data, error } = await supabase
         .from("listings")
         .select("id,title,location,google_maps_link,latitude,longitude,km_from_town,phone,whatsapp,email")
+        .eq("is_active", true)
         .eq("id", (special as any).business_id)
         .maybeSingle();
       if (error) throw error;

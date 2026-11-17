@@ -83,7 +83,7 @@ export const fetchNotificationOptions = async (
   }
 
   if (source === "event_tag") {
-    const { data } = await supabase.from("events").select("tag");
+    const { data } = await supabase.from("events").select("tag").eq("is_active", true);
     const tags = Array.from(
       new Set((data ?? []).map((e: any) => e.tag).filter(Boolean) as string[]),
     ).sort((a, b) => a.localeCompare(b));
@@ -91,7 +91,7 @@ export const fetchNotificationOptions = async (
   }
 
   // special_tag
-  const { data } = await supabase.from("specials").select("tag");
+  const { data } = await supabase.from("specials").select("tag").eq("is_active", true);
   const tags = Array.from(
     new Set((data ?? []).map((s: any) => s.tag).filter(Boolean) as string[]),
   ).sort((a, b) => a.localeCompare(b));

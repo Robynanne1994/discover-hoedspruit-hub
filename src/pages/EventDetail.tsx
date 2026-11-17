@@ -278,7 +278,7 @@ const EventDetail = () => {
   const { data: event, isLoading } = useQuery({
     queryKey: ["event-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("events").select("*").eq("id", id!).single();
+      const { data, error } = await supabase.from("events").select("*").eq("is_active", true).eq("id", id!).single();
       if (error) throw error;
       return data;
     },
@@ -306,6 +306,7 @@ const EventDetail = () => {
       const { data } = await supabase
         .from("listings")
         .select(`id, ${LISTING_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         .in("id", hostListingIds);
       const map: Record<string, string> = {};
       (data ?? []).forEach((l: any) => {

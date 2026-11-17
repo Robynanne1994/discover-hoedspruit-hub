@@ -34,6 +34,7 @@ Deno.serve(async (req) => {
     const { data: events, error: evErr } = await supabase
       .from("events")
       .select("id, title")
+      .eq("is_active", true)
       .eq("start_date", dateStr);
     if (evErr) { errors.push(`events ${off.days}d: ${evErr.message}`); continue; }
     if (!events?.length) continue;

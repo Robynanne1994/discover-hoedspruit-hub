@@ -42,6 +42,7 @@ const HomeWhatsOn = () => {
       const { data: featuredRows } = await supabase
         .from("events")
         .select(COLUMNS)
+        .eq("is_active", true)
         .eq("is_featured", true)
         .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
         .order("start_date", { ascending: true, nullsFirst: false })
@@ -59,6 +60,7 @@ const HomeWhatsOn = () => {
         const { data } = await supabase
           .from("events")
           .select(COLUMNS)
+          .eq("is_active", true)
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         const curated = stillOn(
@@ -72,6 +74,7 @@ const HomeWhatsOn = () => {
       const { data } = await supabase
         .from("events")
         .select(COLUMNS)
+        .eq("is_active", true)
         .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
