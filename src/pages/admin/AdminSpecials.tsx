@@ -633,7 +633,7 @@ const AdminSpecials = () => {
                     ))}
                     {filtered.length === 0 && (
                       <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
-                        {tab === "active" ? "No active specials." : "No passed specials."}
+                        {tab === "active" ? "No active specials." : "No past specials."}
                       </td></tr>
                     )}
                   </tbody>
