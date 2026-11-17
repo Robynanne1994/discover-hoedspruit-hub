@@ -56,64 +56,99 @@ const AdminNotifications = () => {
     items: string[];
     emptyLabel: string;
   }) => (
-    <div className="bg-card rounded-lg p-5 space-y-3">
-      <div className="flex items-center gap-2">
-        <Icon className="h-5 w-5 text-slate-700" />
-        <h2 className="text-lg font-medium text-slate-950">{title}</h2>
-        <span className="text-xs opacity-60">({items.length})</span>
+    <section className="bg-card text-card-foreground border border-border rounded-xl shadow-sm">
+      <div className="flex items-center gap-3 px-5 py-4 rounded-t-xl bg-primary-tint border-b border-border">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-card border border-border">
+          <Icon className="h-[18px] w-[18px] text-primary" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-heading text-lg font-bold text-foreground leading-tight">{title}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+        </div>
+        <span className="shrink-0 rounded-full bg-[var(--filter-ink)] px-2.5 py-0.5 text-xs font-semibold text-primary-foreground tabular-nums">
+          {items.length}
+        </span>
       </div>
-      <p className="text-sm opacity-80">{description}</p>
-      <div className="flex flex-wrap gap-1.5 pt-1">
+      <div className="p-5">
         {items.length === 0 ? (
-          <span className="text-xs opacity-60">{emptyLabel}</span>
+          <p className="text-sm text-muted-foreground">{emptyLabel}</p>
         ) : (
-          items.map((label) => (
-            <span
-              key={label}
-              className="inline-flex items-center px-2.5 py-1 rounded-full bg-primary/15 text-xs text-slate-800"
-            >
-              {label}
-            </span>
-          ))
+          <div className="flex flex-wrap gap-2">
+            {items.map((label) => (
+              <span
+                key={label}
+                className="inline-flex items-center h-8 px-3 rounded-full border border-border bg-card text-sm text-foreground"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
         )}
       </div>
-    </div>
+    </section>
   );
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
-        <h1 className="text-2xl font-[550] text-slate-950">Notifications</h1>
-        <p className="text-sm opacity-80 mt-1">
-          Notifications now run automatically off your live content. There's nothing to assign here —
-          when you add or edit a listing, event or special, every user who has the matching
-          notification switched on (and the matching category or tag selected) is notified. Below is
-          what users can currently subscribe to.
-        </p>
+      <div className="flex items-start gap-3">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary-tint border border-border">
+          <Bell className="h-5 w-5 text-primary" />
+        </span>
+        <div className="min-w-0">
+          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">
+            Notification Settings
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1 leading-6">
+            Notifications run automatically off your live content. When you add or edit a listing,
+            event or special, every user with the matching notification switched on is notified.
+          </p>
+        </div>
       </div>
 
+      <div className="grid gap-3 sm:grid-cols-3">
+        {[
+          { icon: Store, label: "Listings", text: "New listings and listing updates, matched on category." },
+          { icon: CalendarDays, label: "Events", text: "New events, matched on the event's tags." },
+          { icon: Tag, label: "Specials", text: "New specials, matched on the special's tags." },
+        ].map(({ icon: I, label, text }) => (
+          <div key={label} className="bg-card border border-border rounded-xl p-4 shadow-sm">
+            <div className="flex items-center gap-2">
+              <I className="h-4 w-4 text-primary" />
+              <p className="font-semibold text-foreground text-sm">{label}</p>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-5">{text}</p>
+          </div>
+        ))}
+      </div>
+
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+        What Users Can Subscribe To
+      </p>
+
       {loading ? (
-        <div className="text-sm">Loading…</div>
+        <div className="bg-card border border-border rounded-xl p-6 text-sm text-muted-foreground shadow-sm">
+          Loading…
+        </div>
       ) : (
         <div className="space-y-4">
           <Section
             icon={Store}
             title="Listing Categories"
-            description="Used for New Listings and Listing Updates notifications."
+            description="Used for New Listings and Listing Updates."
             items={categories}
             emptyLabel="No categories yet."
           />
           <Section
             icon={CalendarDays}
             title="Event Tags"
-            description="Used for New Events notifications. These are the live tags on your events."
+            description="Used for New Events. These are the live tags on your events."
             items={eventTags}
             emptyLabel="No event tags yet."
           />
           <Section
             icon={Tag}
             title="Special Tags"
-            description="Used for New Specials notifications. These are the live tags on your specials."
+            description="Used for New Specials. These are the live tags on your specials."
             items={specialTags}
             emptyLabel="No special tags yet."
           />

@@ -328,7 +328,8 @@ const App = () => (
                 <Route path="local-channels" element={<AdminBushTelegraph />} />
                 <Route path="local-channels/import" element={<AdminLocalChannelsImport />} />
                 <Route path="notifications" element={<AdminNotifications />} />
-                <Route path="app-updates" element={<AdminAppUpdates />} />
+                <Route path="app-updates" element={<AdminAppUpdates view="send" />} />
+                <Route path="app-updates/past" element={<AdminAppUpdates view="past" />} />
                 <Route path="import" element={<AdminImport />} />
                 
                 <Route path="users" element={<AdminUsers />} />
