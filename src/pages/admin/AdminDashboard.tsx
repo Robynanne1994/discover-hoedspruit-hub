@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { activeSpecialCount, upcomingEventCount } from "@/lib/adminCounts";
+import type { EventScheduleLike } from "@/lib/eventSchedule";
+import type { SpecialVisibilityFields } from "@/lib/specialVisibility";
 import {
   FolderOpen,
   List,
@@ -28,18 +31,28 @@ const useCount = (key: string, table: CountableTable) =>
 const AdminDashboard = () => {
   const cats = useCount("cats", "categories");
   const lists = useCount("lists", "listings");
-  const events = useCount("events", "events");
+  // Only what is still to come: the same live rule the Upcoming Events tab and
+  // the public cards use, so a past event never lifts the number.
+  const events = useQuery({
+    queryKey: ["admin-count-events-upcoming"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events")
+        .select("date, start_date, end_date, start_time, end_time, recurrence, performances");
+      if (error) throw error;
+      return upcomingEventCount((data ?? []) as EventScheduleLike[]);
+    },
+  });
+  // Only deals that are switched on and not yet expired — the Active Specials
+  // tab's own set.
   const specials = useQuery({
     queryKey: ["admin-count-specials-active"],
     queryFn: async () => {
-      const today = new Date().toISOString().slice(0, 10);
-      const { count, error } = await supabase
+      const { data, error } = await supabase
         .from("specials")
-        .select("*", { count: "exact", head: true })
-        .eq("is_active", true)
-        .or(`valid_until.is.null,valid_until.gte.${today}`);
+        .select("is_active, valid_until, valid_from");
       if (error) throw error;
-      return count ?? 0;
+      return activeSpecialCount((data ?? []) as SpecialVisibilityFields[]);
     },
   });
   
@@ -83,7 +96,7 @@ const AdminDashboard = () => {
     { label: "Reported Users", count: userReports.data, to: "/admin/user-reports", icon: Flag, hint: "Unread reports" },
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },
-    { label: "Events", count: events.data, to: "/admin/events", icon: Calendar },
+    { label: "Events", count: events.data, to: "/admin/events", icon: Calendar, hint: "Upcoming only" },
     { label: "Active Specials", count: specials.data, to: "/admin/specials", icon: Tag },
     
     { label: "Resources", count: resources.data, to: "/admin/local-channels", icon: Radio },

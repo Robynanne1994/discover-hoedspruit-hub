@@ -23,6 +23,7 @@ import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDi
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ActiveToggle from "@/components/admin/ActiveToggle";
 import { parseDays } from "@/lib/specialDays";
+import { isActiveSpecial, specialToday } from "@/lib/specialVisibility";
 import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 
 
@@ -159,9 +160,8 @@ const AdminSpecials = () => {
     navigate(next === "passed" ? "/admin/specials/past" : "/admin/specials/active");
   const [dialogSpecial, setDialogSpecial] = useState<Special | null>(null);
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const isSpecialActive = (s: Special) =>
-    s.is_active && (!s.valid_until || s.valid_until >= todayStr);
+  const todayStr = specialToday();
+  const isSpecialActive = (s: Special) => isActiveSpecial(s, todayStr);
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["admin-specials"],
