@@ -1,7 +1,8 @@
 # Roadmap
 
 ## Pending
-(none)
+- Group Specials into Active Specials and Past Specials menu destinations, with the page tabs following the menu.
+- Group App Store and FAQs under a new App Content menu section.
 
 ## Done
 - (2026-11-17) Universal listings CSV: is_featured moved out of the middle of the sheet to sit immediately before is_active, so the sheet ends google_place_id, is_featured, is_active. Template, export and import all read the new order; category sheets still carry neither column. Verified on real downloads (705 rows, 10 featured) and 782 passing tests.
