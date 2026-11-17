@@ -820,10 +820,9 @@ const AdminCategories = () => {
       ) : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="bg-muted">
-            <div className="grid grid-cols-[32px_1fr_120px_90px_210px] gap-3 px-3 py-3 text-[15px] font-bold text-foreground">
+            <div className="grid grid-cols-[32px_1fr_1fr_1fr] gap-3 px-3 py-3 text-[15px] font-bold text-foreground">
               <div></div>
               <div>Title</div>
-              <div>Type</div>
               <div>Listings</div>
               <div className="text-right">Actions</div>
             </div>
@@ -1011,7 +1010,7 @@ const SortableCategoryRow = ({
   };
   return (
     <div ref={setNodeRef} style={style} className="border-t border-border">
-      <div className="grid grid-cols-[32px_1fr_120px_90px_210px] gap-3 items-center px-3 py-2.5">
+      <div className="grid grid-cols-[32px_1fr_1fr_1fr] gap-3 items-center px-3 py-2.5">
         <button
           {...attributes}
           {...listeners}
@@ -1025,7 +1024,6 @@ const SortableCategoryRow = ({
           {cat.title}
           <span className="text-muted-foreground font-normal text-sm ml-1">({subsCount})</span>
         </button>
-        <div className="text-sm text-muted-foreground">{cat.is_quick_category ? "Quick" : "Featured"}</div>
         <button
           type="button"
           onClick={onViewListings}
