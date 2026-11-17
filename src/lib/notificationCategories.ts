@@ -1,3 +1,4 @@
+import { splitNotificationTags } from "./notificationTags";
 // Notification filter catalogues.
 //
 // These are no longer hand-maintained lists — they are the app's REAL data:
@@ -84,16 +85,14 @@ export const fetchNotificationOptions = async (
 
   if (source === "event_tag") {
     const { data } = await supabase.from("events").select("tag").eq("is_active", true);
-    const tags = Array.from(
-      new Set((data ?? []).map((e: any) => e.tag).filter(Boolean) as string[]),
-    ).sort((a, b) => a.localeCompare(b));
+    const tags = splitNotificationTags((data ?? []).map((e: any) => e.tag));
     return tags.map((t) => ({ id: t, label: t }));
   }
 
   // special_tag
-  const { data } = await supabase.from("specials").select("tag").eq("is_active", true);
-  const tags = Array.from(
-    new Set((data ?? []).map((s: any) => s.tag).filter(Boolean) as string[]),
-  ).sort((a, b) => a.localeCompare(b));
+  const { data } = await supabase.from("specials").select("tag,tags").eq("is_active", true);
+  const tags = splitNotificationTags(
+    (data ?? []).flatMap((s: any) => [s.tag, ...((s.tags as string[] | null) ?? [])]),
+  );
   return tags.map((t) => ({ id: t, label: t }));
 };
