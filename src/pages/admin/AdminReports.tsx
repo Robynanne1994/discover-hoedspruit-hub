@@ -323,9 +323,7 @@ const AdminReports = () => {
   return (
     <div>
       <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">Reports</h1>
-      <p className="text-sm text-muted-foreground mb-6 text-slate-950">
-        Generate CSV reports on demand. Files download immediately and open in Google Sheets, Numbers or Excel.
-      </p>
+      <p className="text-sm text-muted-foreground mb-6 text-slate-950">{"\n"}</p>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
         {REPORTS.map((r) => (
           <ReportCard key={r.id} report={r} />
