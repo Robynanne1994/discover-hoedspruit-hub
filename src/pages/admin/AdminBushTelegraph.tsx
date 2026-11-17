@@ -31,8 +31,6 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured", "is_active"];
-
 type Resource = {
   id: string;
   title: string;
