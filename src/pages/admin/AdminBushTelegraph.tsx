@@ -646,6 +646,14 @@ const AdminBushTelegraph = () => {
                 />
                 <Label htmlFor="channel-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
               </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="channel-active"
+                  checked={form.is_active}
+                  onCheckedChange={(c) => setForm({ ...form, is_active: c, auto_activate_on_image: false })}
+                />
+                <Label htmlFor="channel-active" className="text-sm cursor-pointer font-normal">Active</Label>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
