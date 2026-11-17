@@ -142,7 +142,7 @@ const AdminAppUpdates = () => {
           </div>
           <Button disabled={!canSend} onClick={() => setConfirmOpen(true)}>
             <Send className="h-4 w-4" />
-            {send.isPending ? "Sending…" : "Send to all users"}
+            {send.isPending ? "Sending…" : "Send to All Users"}
           </Button>
         </div>
       </div>
