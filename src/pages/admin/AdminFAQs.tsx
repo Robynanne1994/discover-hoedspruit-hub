@@ -406,7 +406,7 @@ const AdminFAQs = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-[550] text-slate-950">FAQs</h1>
+          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">FAQs</h1>
           <p className="text-sm text-muted-foreground mb-6 text-slate-950">{"\n"}</p>
         </div>
         <Button onClick={addNewSection}>
@@ -416,10 +416,18 @@ const AdminFAQs = () => {
 
       {loading && <div className="text-sm text-muted-foreground">Loading…</div>}
 
-      {sections.map(({ title, items }) => (
-        <div key={title} className="bg-card border rounded-lg p-4 space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-lg font-medium text-slate-950">{title}</h2>
+      {sections.map(({ title, items }) => {
+        const hiddenCount = items.filter((i) => !i.is_visible).length;
+        return (
+        <div key={title} className="bg-card text-card-foreground border border-border rounded-xl shadow-sm p-4 space-y-3">
+          <div className="-mx-4 -mt-4 px-4 pt-4 pb-3 rounded-t-xl bg-primary-tint border-b border-border flex flex-wrap items-center justify-between gap-2">
+            <div className="min-w-0">
+              <h2 className="font-heading text-xl font-bold text-foreground break-words">{title}</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {items.length} question{items.length === 1 ? "" : "s"}
+                {hiddenCount > 0 ? ` · ${hiddenCount} hidden` : ""}
+              </p>
+            </div>
             <div className="flex gap-2">
               <Button size="sm" onClick={() => addNewInSection(title)}>
                 <Plus className="h-3.5 w-3.5 mr-1" /> Question
@@ -458,7 +466,7 @@ const AdminFAQs = () => {
                   </button>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-foreground">{r.question}</div>
+                  <div className="font-semibold text-[15px] text-foreground">{r.question}</div>
                   <div
                     className="text-xs text-muted-foreground mt-1 line-clamp-2 [&_a]:underline"
                     dangerouslySetInnerHTML={{ __html: r.answer }}
@@ -483,11 +491,14 @@ const AdminFAQs = () => {
               </div>
             ))}
             {items.length === 0 && (
-              <div className="text-sm text-muted-foreground py-3">No questions yet.</div>
+              <div className="text-sm text-muted-foreground py-6 text-center">
+                No questions in this section yet.
+              </div>
             )}
           </div>
         </div>
-      ))}
+        );
+      })}
 
       {/* Edit / create dialog */}
       <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
