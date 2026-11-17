@@ -77,7 +77,7 @@ export const adminNavEntries: NavEntry[] = [
   { label: "Specials", path: "/admin/specials", icon: Tag, children: specialNavItems },
   { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
   {
-    label: "App Updates & Notifications",
+    label: "Updates & Notifications",
     icon: Megaphone,
     children: notificationNavItems,
   },

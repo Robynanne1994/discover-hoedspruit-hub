@@ -53,8 +53,8 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
-  it("nests Notifications and App Updates under App Updates & Notifications", () => {
-    const updates = groupByLabel("App Updates & Notifications");
+  it("nests Notifications and App Updates under Updates & Notifications", () => {
+    const updates = groupByLabel("Updates & Notifications");
     expect(updates?.children.map((child) => child.label)).toEqual([
       "Notifications",
       "App Updates",

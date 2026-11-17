@@ -77,14 +77,14 @@ const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
               onClick={() =>
                 setOpenGroups((prev) => ({ ...prev, [entry.label]: !open }))
               }
-              className={`flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex w-full items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 active
                   ? "text-foreground bg-muted"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
               <entry.icon className="h-4 w-4 shrink-0" />
-              <span>{entry.label}</span>
+              <span className="whitespace-nowrap">{entry.label}</span>
               <ChevronDown
                 className={`ml-auto h-4 w-4 transition-transform ${
                   open ? "" : "-rotate-90"
