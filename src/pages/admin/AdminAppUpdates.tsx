@@ -191,7 +191,7 @@ const AdminAppUpdates = ({ view = "send" }: { view?: "send" | "past" }) => {
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="font-heading text-lg font-bold text-foreground">Previous Broadcasts</h2>
           {!history.isLoading && broadcasts.length > 0 && (
-            <span className="text-xs text-muted-foreground tabular-nums">
+            <span className="text-base font-bold text-foreground tabular-nums">
               {broadcasts.length} sent
             </span>
           )}
