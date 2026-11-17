@@ -18,8 +18,9 @@ describe("content Active CSV cells", () => {
     expect(activeCsvPatch("0")).toEqual({ is_active: false, auto_activate_on_image: false });
   });
 
-  it("places listing is_active immediately after google_place_id", () => {
+  it("places listing is_active last, with is_featured just before it", () => {
     const headers = getUniversalCSVHeaders();
-    expect(headers[headers.indexOf("google_place_id") + 1]).toBe("is_active");
+    expect(headers[headers.indexOf("google_place_id") + 1]).toBe("is_featured");
+    expect(headers[headers.indexOf("is_featured") + 1]).toBe("is_active");
   });
 });

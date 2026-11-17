@@ -4,6 +4,7 @@
 (none)
 
 ## Done
+- (2026-11-17) Universal listings CSV: is_featured moved out of the middle of the sheet to sit immediately before is_active, so the sheet ends google_place_id, is_featured, is_active. Template, export and import all read the new order; category sheets still carry neither column. Verified on real downloads (705 rows, 10 featured) and 782 passing tests.
 - (2026-11-17) Events, Local Channels, Specials and Listings now have Active switches in their editors and admin tables. Existing records stayed active; new image-free records are drafts, first-image activation works, deliberate FALSE stays false, public queries and new/update/reminder notifications are active-gated, and the requested CSV columns and table layouts are live. Verified real downloads, signed-in draft/create/toggle/delete, isolated first-image rules, desktop/phone layouts and 782 passing tests; temporary data and notifications are absent.
 - (2026-11-16) Events, Specials, Local Channels and Listings admin tables now save Featured directly from a per-row switch. One real row per table was toggled, refreshed and restored successfully; build OK.
 - Custom-label controls have no underline; Shopping has half-width Shop Type with click-to-open Add input and a Products Categories banner.

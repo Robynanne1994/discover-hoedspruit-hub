@@ -212,7 +212,6 @@ export const UNIVERSAL_FIELDS = [
   "email", "email_label", "website", "website_label",
   "facebook", "instagram", "other_socials", "other_socials_labels",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
-  "is_featured",
   // Hours cells carry their own labels ("Restaurant {json}"); see listingHoursCsv.
   // details_display_mode is deliberately absent: it is set in the backend editor only.
   "opening_hours", "additional_hours",
@@ -360,12 +359,13 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
 }
 
 // Headers for the "All Categories (Universal)" CSV: universals plus the
-// listing's category set, then Place ID and Active in their requested slots.
+// listing's category set, then Place ID, Featured and Active in their requested
+// slots — is_featured sits immediately before is_active.
 //
 // This sheet is the source of truth for every field on it. Nothing here appears
 // on a category CSV, so the two uploads can never disagree about a listing.
 export function getUniversalCSVHeaders(): string[] {
-  return [...UNIVERSAL_FIELDS, CATEGORY_MEMBERSHIP_FIELD, GOOGLE_PLACE_ID_FIELD, "is_active"];
+  return [...UNIVERSAL_FIELDS, CATEGORY_MEMBERSHIP_FIELD, GOOGLE_PLACE_ID_FIELD, "is_featured", "is_active"];
 }
 
 
@@ -390,7 +390,7 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 // google_place_id rides along here because the universal sheet is the one place
 // it can be filled in.
 export function getUniversalDbFields(): string[] {
-  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD, "is_active"];
+  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD, "is_featured", "is_active"];
 }
 
 // The universal columns a category upload refuses to write, so that the
@@ -404,6 +404,7 @@ export function getUniversalContentFields(): string[] {
     ...UNIVERSAL_FIELDS.filter((f) => f !== "title"),
     CATEGORY_MEMBERSHIP_FIELD,
     GOOGLE_PLACE_ID_FIELD,
+    "is_featured",
     "is_active",
   ];
 }
