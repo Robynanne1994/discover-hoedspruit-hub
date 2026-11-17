@@ -90,3 +90,8 @@
   replaced by isEventPassedForAdmin in src/lib/eventLive.ts, the same rule the public cards use
   for "Event has Passed". Verified signed in: Active (37) / Passed (140), and Morning Start Yoga
   Flow and Goodbye Game Ranger Talk now appear under Passed. Five new tests in eventLive.test.ts.
+- (2026-11-17) Reports admin page: the report cards are now one table in the same style as the
+  listings/events tables (Report, Description, Status, action column; brown Download CSV button per
+  row). Progress, exported-row counts and errors live in the Status cell. Verified signed in: 9 rows,
+  and two reports downloaded real files (listings-missing-descriptions.csv 0 rows,
+  external-images.csv 3 rows) with the Status cell reading the same counts.
