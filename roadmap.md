@@ -1,9 +1,10 @@
 # Roadmap
 
 ## Pending
-- Improve Reported Users and Moderated Users page presentation and usability, preserving existing moderation actions.
+(none)
 
 ## Done
+- Reported Users and Moderated Users: branded headings, searchable status views, refresh controls, clearer report details and desktop moderation rows. Signed-in real pages are empty; search/filter and desktop/mobile checks passed, with populated layouts and action dialogs checked using preview-only samples. No moderation actions were submitted.
 - (2026-11-17) Admin sidebar: the App Updates group is now a collapsible "Updates & Notifications" (Notifications, App Updates) and Homepage plus Search Suggestions moved under App Content. The group label fits on one line on desktop and phone. Seven navigation checks and signed-in desktop/mobile flows passed; build OK.
 - (2026-11-17) Admin navigation now groups Active Specials and Past Specials under Specials, with the page tabs following those URLs, and groups App Store and FAQs under App Content. Six navigation checks and signed-in desktop/mobile browser flows passed; build OK.
 - (2026-11-17) Universal listings CSV: is_featured moved out of the middle of the sheet to sit immediately before is_active, so the sheet ends google_place_id, is_featured, is_active. Template, export and import all read the new order; category sheets still carry neither column. Verified on real downloads (705 rows, 10 featured) and 782 passing tests.
