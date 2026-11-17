@@ -207,8 +207,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
         <DialogHeader><DialogTitle>Edit Special</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
           {/* Title takes three columns; the Featured toggle sits beside it in the fourth. */}
-          <div className="grid grid-cols-4 gap-3 items-end">
-            <div className="col-span-3 space-y-2">
+          <div className="grid grid-cols-1 gap-3 items-end sm:grid-cols-4">
+            <div className="space-y-2 sm:col-span-3">
               <Label>Title</Label>
               <Input
                 value={form.title || ""}
@@ -223,7 +223,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 }
               />
             </div>
-            <div className="col-span-1 flex flex-wrap items-center gap-x-4 gap-y-2 pb-2">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 pb-2 sm:col-span-1">
               <div className="flex items-center gap-2">
                 <Switch
                   id="special-dlg-featured"
