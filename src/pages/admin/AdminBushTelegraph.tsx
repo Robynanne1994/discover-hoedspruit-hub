@@ -94,46 +94,8 @@ const emptyForm = {
   cta_label: "",
 };
 
-function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  const t = text.replace(/^\uFEFF/, "");
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let val = "";
-  let inQ = false;
-  for (let i = 0; i < t.length; i++) {
-    const c = t[i];
-    const n = t[i + 1];
-    if (c === '"') {
-      if (inQ && n === '"') { val += '"'; i++; } else inQ = !inQ;
-      continue;
-    }
-    if (c === "," && !inQ) { row.push(val.trim()); val = ""; continue; }
-    if ((c === "\n" || c === "\r") && !inQ) {
-      if (c === "\r" && n === "\n") i++;
-      row.push(val.trim());
-      if (row.some((v) => v.length)) rows.push(row);
-      row = []; val = ""; continue;
-    }
-    val += c;
-  }
-  row.push(val.trim());
-  if (row.some((v) => v.length)) rows.push(row);
-  if (!rows.length) return { headers: [], rows: [] };
-  const headers = rows[0].map((h) => h.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
-  const data = rows.slice(1).map((vs) => {
-    const o: Record<string, string> = {};
-    headers.forEach((h, i) => (o[h] = vs[i] ?? ""));
-    return o;
-  });
-  return { headers, rows: data };
-}
-
-const escapeCSV = (v: string) =>
-  v.includes(",") || v.includes('"') || v.includes("\n") ? `"${v.replace(/"/g, '""')}"` : v;
-
 const AdminBushTelegraph = () => {
   const qc = useQueryClient();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [returnTo, setReturnTo] = useState<string | null>(null);
@@ -143,9 +105,6 @@ const AdminBushTelegraph = () => {
   const [orderOpen, setOrderOpen] = useState(false);
   const [newPlatformOpen, setNewPlatformOpen] = useState(false);
   const [newPlatformName, setNewPlatformName] = useState("");
-  const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
-  const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
 
   const { data: businessListings = [], isLoading: businessesLoading, isError: businessesError } = useQuery({
     queryKey: ["channel-business-listings"],
@@ -492,12 +451,12 @@ const AdminBushTelegraph = () => {
           <Button size="sm" onClick={() => setOrderOpen(true)} disabled={isLoading} className="gap-2">
             <ArrowUpDown className="h-4 w-4" /> Order
           </Button>
-          <Button size="sm" onClick={downloadExport} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Export
-          </Button>
-          <Button size="sm" onClick={downloadTemplate} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Template
-          </Button>
+          <Link to="/admin/local-channels/import">
+            <Button size="sm" className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              <span className="hidden sm:inline">Import/Export CSV</span><span className="sm:hidden">CSV</span>
+            </Button>
+          </Link>
           <Button size="sm" onClick={startAdd} className="gap-2">
             <Plus className="h-4 w-4" /> Add Resource
           </Button>
