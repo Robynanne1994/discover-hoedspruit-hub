@@ -35,6 +35,7 @@ import {
   normalizeAccommodationPriceRange,
 } from "@/lib/accommodationCsv";
 import { parseAdditionalHours } from "@/lib/openHours";
+import { activeCsvPatch } from "@/lib/contentActive";
 
 
 const ALL_CATEGORIES_VALUE = "__all__";
