@@ -160,9 +160,8 @@ const AdminSpecials = () => {
     navigate(next === "passed" ? "/admin/specials/past" : "/admin/specials/active");
   const [dialogSpecial, setDialogSpecial] = useState<Special | null>(null);
 
-  const todayStr = new Date().toISOString().slice(0, 10);
-  const isSpecialActive = (s: Special) =>
-    s.is_active && (!s.valid_until || s.valid_until >= todayStr);
+  const todayStr = specialToday();
+  const isSpecialActive = (s: Special) => isActiveSpecial(s, todayStr);
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["admin-specials"],
