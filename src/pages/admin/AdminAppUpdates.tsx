@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Megaphone, Send, Bell, Smartphone, Users } from "lucide-react";
+import { Megaphone, Send, Bell, Smartphone, Users, Inbox } from "lucide-react";
 
 type Broadcast = {
   id: string;
@@ -27,6 +27,9 @@ type Broadcast = {
   pushed_count: number;
   created_at: string;
 };
+
+const TITLE_MAX = 120;
+const BODY_MAX = 500;
 
 const AdminAppUpdates = () => {
   const queryClient = useQueryClient();
@@ -77,108 +80,168 @@ const AdminAppUpdates = () => {
   });
 
   const canSend = title.trim().length > 0 && !send.isPending;
+  const broadcasts = history.data ?? [];
 
   return (
     <div className="space-y-6 max-w-3xl">
-      <div>
-        <div className="flex items-center gap-2">
-          <Megaphone className="h-6 w-6 text-primary" />
-          <h1 className="text-2xl font-[550] text-slate-950">App Updates</h1>
+      {/* Page header */}
+      <div className="flex items-start gap-3">
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary-tint border border-border">
+          <Megaphone className="h-5 w-5 text-primary" />
+        </span>
+        <div className="min-w-0">
+          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">App Updates</h1>
+          <p className="text-sm text-muted-foreground mt-1 leading-6">
+            Send an announcement to <strong className="font-semibold text-foreground">every</strong>{" "}
+            app user. It always appears in their Notifications tab (with the unread red dot). Users
+            who have <strong className="font-semibold text-foreground">App Updates &amp; News</strong>{" "}
+            switched on also get it pushed to their phone; those who&apos;ve turned it off still see
+            it in-app, just without the push.
+          </p>
         </div>
-        <p className="text-sm opacity-80 mt-1">
-          Send an announcement to <strong>every</strong> app user. It always appears in their
-          Notifications tab (with the unread red dot). Users who have{" "}
-          <strong>App Updates &amp; News</strong> switched on also get it pushed to their phone;
-          those who&apos;ve turned it off still see it in-app, just without the push.
-        </p>
       </div>
 
       {/* Composer */}
-      <div className="bg-card rounded-lg p-5 space-y-4">
-        <div className="space-y-1.5">
-          <Label htmlFor="app-update-title">Title</Label>
-          <Input
-            id="app-update-title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="e.g. New: Save your favourite events"
-            maxLength={120}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="app-update-body">Message</Label>
-          <Textarea
-            id="app-update-body"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            placeholder="Tell users what's new. Keep it short and friendly."
-            rows={4}
-            maxLength={500}
-          />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label htmlFor="app-update-link">Link (Optional)</Label>
-          <Input
-            id="app-update-link"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-            placeholder="e.g. /events  or  /listing/123"
-          />
-          <p className="text-xs text-muted-foreground">
-            Where the notification takes the user when tapped. Use an in-app path like{" "}
-            <code>/events</code>. Leave blank for a plain announcement.
+      <section className="bg-card text-card-foreground border border-border rounded-xl shadow-sm">
+        <div className="px-5 py-4 rounded-t-xl bg-primary-tint border-b border-border">
+          <h2 className="font-heading text-lg font-bold text-foreground">Compose Update</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Goes out as soon as you press send.
           </p>
         </div>
 
-        <div className="flex items-center justify-between pt-1">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Bell className="h-3.5 w-3.5" />
-            Goes to all users in-app
-            <span className="opacity-40">·</span>
-            <Smartphone className="h-3.5 w-3.5" />
-            Pushed to opted-in phones
+        <div className="p-5 space-y-4">
+          <div className="space-y-1.5">
+            <div className="flex items-baseline justify-between gap-2">
+              <Label htmlFor="app-update-title">Title</Label>
+              <span
+                className={`text-xs tabular-nums ${
+                  title.length >= TITLE_MAX ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {title.length}/{TITLE_MAX}
+              </span>
+            </div>
+            <Input
+              id="app-update-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. New: Save your favourite events"
+              maxLength={TITLE_MAX}
+              className="h-12 rounded-xl bg-card border-border"
+            />
           </div>
-          <Button disabled={!canSend} onClick={() => setConfirmOpen(true)}>
-            <Send className="h-4 w-4" />
-            {send.isPending ? "Sending…" : "Send to All Users"}
-          </Button>
+
+          <div className="space-y-1.5">
+            <div className="flex items-baseline justify-between gap-2">
+              <Label htmlFor="app-update-body">Message</Label>
+              <span
+                className={`text-xs tabular-nums ${
+                  body.length >= BODY_MAX ? "text-destructive" : "text-muted-foreground"
+                }`}
+              >
+                {body.length}/{BODY_MAX}
+              </span>
+            </div>
+            <Textarea
+              id="app-update-body"
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Tell users what's new. Keep it short and friendly."
+              rows={4}
+              maxLength={BODY_MAX}
+              className="rounded-xl bg-card border-border"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="app-update-link">Link (Optional)</Label>
+            <Input
+              id="app-update-link"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              placeholder="e.g. /events  or  /listing/123"
+              className="h-12 rounded-xl bg-card border-border"
+            />
+            <p className="text-xs text-muted-foreground leading-5">
+              Where the notification takes the user when tapped. Use an in-app path like{" "}
+              <code className="rounded bg-primary-tint px-1.5 py-0.5 text-foreground">/events</code>.
+              Leave blank for a plain announcement.
+            </p>
+          </div>
+
+          <div className="border-t border-border pt-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+              <Bell className="h-3.5 w-3.5" />
+              Goes to all users in-app
+              <span className="opacity-40">·</span>
+              <Smartphone className="h-3.5 w-3.5" />
+              Pushed to opted-in phones
+            </div>
+            <Button disabled={!canSend} onClick={() => setConfirmOpen(true)}>
+              <Send className="h-4 w-4" />
+              {send.isPending ? "Sending…" : "Send to All Users"}
+            </Button>
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* History */}
-      <div className="space-y-3">
-        <h2 className="text-lg font-medium text-slate-950">Recent Broadcasts</h2>
+      <section className="space-y-3">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="font-heading text-lg font-bold text-foreground">Recent Broadcasts</h2>
+          {!history.isLoading && broadcasts.length > 0 && (
+            <span className="text-xs text-muted-foreground tabular-nums">
+              {broadcasts.length} sent
+            </span>
+          )}
+        </div>
+
         {history.isLoading ? (
-          <div className="text-sm">Loading…</div>
-        ) : (history.data ?? []).length === 0 ? (
-          <div className="bg-card rounded-lg p-5 text-sm opacity-70">
-            No app updates sent yet.
+          <div className="bg-card border border-border rounded-xl p-6 text-sm text-muted-foreground shadow-sm">
+            Loading…
+          </div>
+        ) : broadcasts.length === 0 ? (
+          <div className="bg-card border border-border rounded-xl p-8 text-center shadow-sm">
+            <Inbox className="h-6 w-6 text-muted-foreground mx-auto" />
+            <p className="text-sm font-semibold text-foreground mt-2">No app updates sent yet.</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Your first announcement will appear here.
+            </p>
           </div>
         ) : (
           <div className="space-y-3">
-            {(history.data ?? []).map((b) => (
-              <div key={b.id} className="bg-card rounded-lg p-4 space-y-2">
+            {broadcasts.map((b) => (
+              <article
+                key={b.id}
+                className="bg-card text-card-foreground border border-border rounded-xl p-4 space-y-2 shadow-sm"
+              >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-semibold text-slate-950 truncate">{b.title}</p>
-                    {b.body && <p className="text-sm opacity-80 mt-0.5">{b.body}</p>}
+                    <p className="font-semibold text-foreground break-words">{b.title}</p>
+                    {b.body && (
+                      <p className="text-sm text-muted-foreground mt-1 leading-6 break-words">
+                        {b.body}
+                      </p>
+                    )}
                     {b.link && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Links to <code>{b.link}</code>
+                      <p className="text-xs text-muted-foreground mt-1.5">
+                        Links to{" "}
+                        <code className="rounded bg-primary-tint px-1.5 py-0.5 text-foreground">
+                          {b.link}
+                        </code>
                       </p>
                     )}
                   </div>
-                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                  <time className="text-xs text-muted-foreground whitespace-nowrap">
                     {new Date(b.created_at).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
                     })}
-                  </span>
+                  </time>
                 </div>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
+                <div className="border-t border-border pt-2 flex items-center gap-4 text-xs text-muted-foreground">
                   <span className="inline-flex items-center gap-1">
                     <Users className="h-3.5 w-3.5" />
                     {b.recipient_count} in-app
@@ -188,11 +251,11 @@ const AdminAppUpdates = () => {
                     {b.pushed_count} pushed
                   </span>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}
-      </div>
+      </section>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
