@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -15,14 +15,11 @@ import ChannelOrderDialog from "@/components/admin/ChannelOrderDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ActiveToggle from "@/components/admin/ActiveToggle";
 import ChannelBusinessSelect from "@/components/admin/ChannelBusinessSelect";
-import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } from "@/lib/channelBusiness";
+import { type ChannelBusiness } from "@/lib/channelBusiness";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
-import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
-import { channelButtonLabelFromCsv, channelButtonLabelToCsv } from "@/lib/channelButtonLabel";
-import { activeCsvPatch } from "@/lib/contentActive";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
+import { Plus, Pencil, Trash2, FileSpreadsheet, ArrowUpDown, X } from "lucide-react";
 
 type AdminEntry = { name: string };
 type YearsMode = "years" | "since";
@@ -33,8 +30,6 @@ const RESOURCE_TYPES = [
   { value: "image", label: "Image" },
   { value: "internal", label: "Internal page" },
 ] as const;
-
-const HEADERS = ["title", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured", "is_active"];
 
 type Resource = {
   id: string;
@@ -99,46 +94,8 @@ const emptyForm = {
   cta_label: "",
 };
 
-function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  const t = text.replace(/^\uFEFF/, "");
-  const rows: string[][] = [];
-  let row: string[] = [];
-  let val = "";
-  let inQ = false;
-  for (let i = 0; i < t.length; i++) {
-    const c = t[i];
-    const n = t[i + 1];
-    if (c === '"') {
-      if (inQ && n === '"') { val += '"'; i++; } else inQ = !inQ;
-      continue;
-    }
-    if (c === "," && !inQ) { row.push(val.trim()); val = ""; continue; }
-    if ((c === "\n" || c === "\r") && !inQ) {
-      if (c === "\r" && n === "\n") i++;
-      row.push(val.trim());
-      if (row.some((v) => v.length)) rows.push(row);
-      row = []; val = ""; continue;
-    }
-    val += c;
-  }
-  row.push(val.trim());
-  if (row.some((v) => v.length)) rows.push(row);
-  if (!rows.length) return { headers: [], rows: [] };
-  const headers = rows[0].map((h) => h.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
-  const data = rows.slice(1).map((vs) => {
-    const o: Record<string, string> = {};
-    headers.forEach((h, i) => (o[h] = vs[i] ?? ""));
-    return o;
-  });
-  return { headers, rows: data };
-}
-
-const escapeCSV = (v: string) =>
-  v.includes(",") || v.includes('"') || v.includes("\n") ? `"${v.replace(/"/g, '""')}"` : v;
-
 const AdminBushTelegraph = () => {
   const qc = useQueryClient();
-  const fileRef = useRef<HTMLInputElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [returnTo, setReturnTo] = useState<string | null>(null);
@@ -148,9 +105,6 @@ const AdminBushTelegraph = () => {
   const [orderOpen, setOrderOpen] = useState(false);
   const [newPlatformOpen, setNewPlatformOpen] = useState(false);
   const [newPlatformName, setNewPlatformName] = useState("");
-  const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
-  const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
 
   const { data: businessListings = [], isLoading: businessesLoading, isError: businessesError } = useQuery({
     queryKey: ["channel-business-listings"],
@@ -354,138 +308,6 @@ const AdminBushTelegraph = () => {
   };
 
 
-  // CSV
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setFileName(file.name);
-    setImportResult(null);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = parseCSV(ev.target?.result as string);
-      if (!result.rows.length) { toast.error("CSV is empty"); return; }
-      if (!result.headers.includes("title")) { toast.error("CSV must have a 'title' column"); return; }
-      setParsed(result);
-    };
-    reader.readAsText(file);
-  };
-
-  const importMutation = useMutation({
-    mutationFn: async () => {
-      if (!parsed) throw new Error("No data");
-      if (businessesLoading || businessesError) throw new Error("Business listings could not be loaded. Please try again before importing.");
-      const businessesByRow = parsed.rows.map((row, i) => {
-        if (row.associated_business === undefined) return {};
-        try { return { associated_business_id: resolveChannelBusiness(row.associated_business, businessListings) }; }
-        catch (error) { throw new Error(`Row ${i + 2}: ${error instanceof Error ? error.message : "Invalid associated business"}`); }
-      });
-      const importNow = new Date();
-      const yearsByRow = parsed.rows.map((row, i) => {
-        try { return channelCsvYears(row, importNow); }
-        catch (error) { throw new Error(`Row ${i + 2}: ${error instanceof Error ? error.message : "Invalid year started"}`); }
-      });
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
-      const { data: existing } = await supabase.from("bush_telegraph_resources").select("id, title");
-      const existingMap = new Map((existing ?? []).map((e: any) => [e.title.toLowerCase(), e.id]));
-      const csvTitles = new Set<string>();
-
-      for (let i = 0; i < parsed.rows.length; i++) {
-        const r = parsed.rows[i];
-        const title = r.title?.trim();
-        if (!title) { results.errors.push(`Row ${i + 2}: Missing title`); continue; }
-        csvTitles.add(title.toLowerCase());
-
-        const platform = r.platform?.trim() || "Facebook";
-
-        const payload: any = {
-          title,
-          platform,
-          meta: r.meta || null,
-          meta_2: r.meta_2 || null,
-          ...businessesByRow[i],
-          description: r.description || null,
-          url: r.url?.trim() || "",
-          resource_type: r.resource_type?.trim() || "link",
-          ...channelButtonLabelFromCsv(r),
-          // Images are backend-only: CSV never sets or clears them.
-          admin_name: r.admin_name?.trim() || null,
-          admins: (r.admin_name || "")
-            .split("|")
-            .map((n) => n.trim())
-            .filter(Boolean)
-            .map((name) => ({ name })),
-          ...yearsByRow[i],
-          post_frequency: r.post_frequency?.trim() || null,
-          tag_1: r.tag_1?.trim() || null,
-          tag_2: r.tag_2?.trim() || null,
-          is_featured: r.is_featured?.toLowerCase() === "true" || r.is_featured === "1",
-          ...activeCsvPatch(r.is_active),
-        };
-
-        const id = existingMap.get(title.toLowerCase());
-        if (id) {
-          const { error } = await supabase.from("bush_telegraph_resources").update(payload).eq("id", id);
-          if (error) results.errors.push(`Row ${i + 2}: ${error.message}`);
-          else results.updated++;
-        } else {
-          const { error } = await supabase.from("bush_telegraph_resources").insert(payload);
-          if (error) results.errors.push(`Row ${i + 2}: ${error.message}`);
-          else results.created++;
-        }
-      }
-
-      for (const [title, id] of existingMap) {
-        if (!csvTitles.has(title)) {
-          const { error } = await supabase.from("bush_telegraph_resources").delete().eq("id", id);
-          if (error) results.errors.push(`Delete failed for "${title}": ${error.message}`);
-          else results.deleted++;
-        }
-      }
-
-      return results;
-    },
-    onSuccess: (r) => {
-      setImportResult(r);
-      qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] });
-      qc.invalidateQueries({ queryKey: ["bush-telegraph"] });
-      toast.success(`Import complete: ${r.created} created, ${r.updated} updated, ${r.deleted} deleted`);
-      qc.invalidateQueries({ queryKey: ["local-channel"] });
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  const downloadCSV = (content: string, filename: string) => {
-    const blob = new Blob([content], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const downloadTemplate = () => {
-    const csv = HEADERS.join(",") + "\n";
-    downloadCSV(csv, "local_channels_template.csv");
-  };
-
-  const downloadExport = () => {
-    if (!resources.length) { toast.error("No resources to export"); return; }
-    if (businessesLoading || businessesError) { toast.error("Business listings could not be loaded. Please try again."); return; }
-    const rows = resources.map((r) => [
-      r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", channelBusinessToCsv(r.associated_business_id, businessListings), r.description ?? "", r.url ?? "",
-      r.resource_type ?? "link",
-      channelButtonLabelToCsv(r),
-      (Array.isArray(r.admins) && r.admins.length
-        ? r.admins.map((a: any) => (a?.name || "").trim()).filter(Boolean).join("|")
-        : (r.admin_name ?? "")),
-      String(channelYearStarted(r) ?? ""), r.post_frequency ?? "",
-      r.tag_1 ?? "", r.tag_2 ?? "",
-      r.is_featured ? "true" : "false",
-      r.is_active !== false ? "true" : "false",
-    ].map(escapeCSV).join(","));
-    downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
-    toast.success(`Exported ${resources.length} resources`);
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -497,57 +319,16 @@ const AdminBushTelegraph = () => {
           <Button size="sm" onClick={() => setOrderOpen(true)} disabled={isLoading} className="gap-2">
             <ArrowUpDown className="h-4 w-4" /> Order
           </Button>
-          <Button size="sm" onClick={downloadExport} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Export
-          </Button>
-          <Button size="sm" onClick={downloadTemplate} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Template
-          </Button>
+          <Link to="/admin/local-channels/import">
+            <Button size="sm" className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" />
+              <span className="hidden sm:inline">Import/Export CSV</span><span className="sm:hidden">CSV</span>
+            </Button>
+          </Link>
           <Button size="sm" onClick={startAdd} className="gap-2">
             <Plus className="h-4 w-4" /> Add Resource
           </Button>
         </div>
-      </div>
-
-      {/* CSV Import */}
-      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4">
-        <h2 className="font-medium text-slate-950">CSV Import / Export</h2>
-        <div
-          className="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
-          onClick={() => fileRef.current?.click()}
-        >
-          <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
-          <p className="font-medium">{fileName || "Click to upload CSV"}</p>
-          <p className="text-xs text-muted-foreground mt-1">Columns: {HEADERS.join(", ")}</p>
-          <p className="text-xs text-muted-foreground mt-1">Matched by title (case-insensitive). Missing rows will be deleted.</p>
-          <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
-        </div>
-
-        {parsed && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground"><strong className="text-foreground">{parsed.rows.length}</strong> rows ready.</p>
-              <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending}>
-                {importMutation.isPending ? "Importing..." : "Import All"}
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {importResult && (
-          <div className="space-y-2">
-            <div className="flex flex-wrap gap-4 text-sm">
-              <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-600" /><strong>{importResult.created}</strong> created</span>
-              <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-blue-600" /><strong>{importResult.updated}</strong> updated</span>
-              <span className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-destructive" /><strong>{importResult.deleted}</strong> deleted</span>
-            </div>
-            {importResult.errors.length > 0 && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-3 space-y-1">
-                {importResult.errors.map((err, i) => <p key={i} className="text-xs text-destructive">{err}</p>)}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Resources list */}
