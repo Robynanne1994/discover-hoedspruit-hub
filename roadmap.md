@@ -95,3 +95,7 @@
   row). Progress, exported-row counts and errors live in the Status cell. Verified signed in: 9 rows,
   and two reports downloaded real files (listings-missing-descriptions.csv 0 rows,
   external-images.csv 3 rows) with the Status cell reading the same counts.
+- (2026-11-17) Categories admin table: the "Type" column (Quick/Featured) is removed from the
+  header and every row; the drag handle stays fixed at 32px and Title, Listings and Actions now
+  split the rest of the width evenly (measured 289px each). The Quick/Featured switch is still in
+  the category editor dialog.
