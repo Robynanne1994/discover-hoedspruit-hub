@@ -113,3 +113,8 @@
   the sent count. Verified signed in: headings at weight 700 (30px page, 18px sections), send
   button disabled until a title is typed, counter tracked 18/120 then back to 0/120, and no
   broadcast was sent during the check.
+- (2026-11-17) FAQs admin page: section headers made prominent. Each section card has a warm sand
+  header strip with a bold 20px heading, a "N questions" count plus hidden count, bolder 15px
+  question text, centred empty state, and the page heading on the shared heading treatment.
+  Verified signed in on desktop and phone: five sections, band rgb(246,241,234) on white cards,
+  headings 20px/700, buttons wrap inside the strip on phone.
