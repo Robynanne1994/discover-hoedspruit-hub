@@ -149,7 +149,14 @@ const AdminSpecials = () => {
   const [editing, setEditing] = useState<Special | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<Omit<Special, "id">>(emptyForm);
-  const [tab, setTab] = useState<"active" | "passed">("active");
+  // The sidebar's Active / Past links own the tab, so the page follows the URL.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tab: "active" | "passed" = location.pathname.endsWith("/past")
+    ? "passed"
+    : "active";
+  const setTab = (next: "active" | "passed") =>
+    navigate(next === "passed" ? "/admin/specials/past" : "/admin/specials/active");
   const [dialogSpecial, setDialogSpecial] = useState<Special | null>(null);
 
   const todayStr = new Date().toISOString().slice(0, 10);

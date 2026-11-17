@@ -58,12 +58,15 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
-  it("never shows Event Hosts as a top-level row", () => {
+  it("never shows grouped destinations as top-level rows", () => {
     const topLevel = adminNavEntries
       .filter((entry) => !isNavGroup(entry))
       .map((entry) => entry.label);
     expect(topLevel).not.toContain("Event Hosts");
     expect(topLevel).not.toContain("Events");
+    expect(topLevel).not.toContain("Specials");
+    expect(topLevel).not.toContain("App Store");
+    expect(topLevel).not.toContain("FAQs");
   });
 
   it("resolves nested event URLs to their section title", () => {

@@ -69,7 +69,7 @@ export const adminNavEntries: NavEntry[] = [
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },
   { label: "Events", path: "/admin/events", icon: Calendar, children: eventNavItems },
-  { label: "Specials", path: "/admin/specials", icon: Tag },
+  { label: "Specials", path: "/admin/specials", icon: Tag, children: specialNavItems },
   { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "App Updates & Notifications", path: "/admin/app-updates", icon: Megaphone },
