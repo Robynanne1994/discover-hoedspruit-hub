@@ -120,6 +120,13 @@
       "when": 1794486900497,
       "tag": "0016_titles_always_exact",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1794906383516,
+      "tag": "0017_add_content_active_status_and_drafts",
+      "breakpoints": true
     }
   ]
 }
