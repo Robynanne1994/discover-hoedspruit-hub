@@ -15,14 +15,11 @@ import ChannelOrderDialog from "@/components/admin/ChannelOrderDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ActiveToggle from "@/components/admin/ActiveToggle";
 import ChannelBusinessSelect from "@/components/admin/ChannelBusinessSelect";
-import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } from "@/lib/channelBusiness";
+import { type ChannelBusiness } from "@/lib/channelBusiness";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
-import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
-import { channelButtonLabelFromCsv, channelButtonLabelToCsv } from "@/lib/channelButtonLabel";
-import { activeCsvPatch } from "@/lib/contentActive";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
+import { Plus, Pencil, Trash2, FileSpreadsheet, ArrowUpDown, X } from "lucide-react";
 
 type AdminEntry = { name: string };
 type YearsMode = "years" | "since";
