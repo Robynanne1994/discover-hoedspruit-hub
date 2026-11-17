@@ -25,6 +25,30 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
+  it("nests Active Specials and Past Specials under Specials", () => {
+    const specials = groupByLabel("Specials");
+    expect(specials?.children.map((child) => child.label)).toEqual([
+      "Active Specials",
+      "Past Specials",
+    ]);
+    expect(specials?.children.map((child) => child.path)).toEqual([
+      "/admin/specials/active",
+      "/admin/specials/past",
+    ]);
+  });
+
+  it("nests App Store and FAQs under App Content", () => {
+    const appContent = groupByLabel("App Content");
+    expect(appContent?.children.map((child) => child.label)).toEqual([
+      "App Store",
+      "FAQs",
+    ]);
+    expect(appContent?.children.map((child) => child.path)).toEqual([
+      "/admin/app-store",
+      "/admin/faqs",
+    ]);
+  });
+
   it("keeps Users as a group with App, Reported and Moderated users", () => {
     const users = groupByLabel("Users");
     expect(users?.children.map((child) => child.label)).toEqual([
@@ -34,20 +58,32 @@ describe("admin sidebar navigation", () => {
     ]);
   });
 
-  it("never shows Event Hosts as a top-level row", () => {
+  it("never shows grouped destinations as top-level rows", () => {
     const topLevel = adminNavEntries
       .filter((entry) => !isNavGroup(entry))
       .map((entry) => entry.label);
     expect(topLevel).not.toContain("Event Hosts");
     expect(topLevel).not.toContain("Events");
+    expect(topLevel).not.toContain("Specials");
+    expect(topLevel).not.toContain("App Store");
+    expect(topLevel).not.toContain("FAQs");
   });
 
-  it("resolves nested event URLs to their section title", () => {
+  it("resolves nested URLs to their section titles", () => {
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/events")?.label,
     ).toBe("Events");
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/events/past")?.label,
     ).toBe("Past Events");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/specials")?.label,
+    ).toBe("Specials");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/specials/past")?.label,
+    ).toBe("Past Specials");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/faqs")?.label,
+    ).toBe("FAQs");
   });
 });

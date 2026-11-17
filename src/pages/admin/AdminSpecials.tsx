@@ -16,7 +16,7 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactPairs } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDialog";
@@ -149,7 +149,14 @@ const AdminSpecials = () => {
   const [editing, setEditing] = useState<Special | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<Omit<Special, "id">>(emptyForm);
-  const [tab, setTab] = useState<"active" | "passed">("active");
+  // The sidebar's Active / Past links own the tab, so the page follows the URL.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tab: "active" | "passed" = location.pathname.endsWith("/past")
+    ? "passed"
+    : "active";
+  const setTab = (next: "active" | "passed") =>
+    navigate(next === "passed" ? "/admin/specials/past" : "/admin/specials/active");
   const [dialogSpecial, setDialogSpecial] = useState<Special | null>(null);
 
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -588,7 +595,7 @@ const AdminSpecials = () => {
                       : "bg-card text-foreground border-border hover:border-primary"
                   }`}
                 >
-                  {t === "active" ? "Active" : "Passed"} ({t === "active" ? activeCount : passedCount})
+                  {t === "active" ? "Active Specials" : "Past Specials"} ({t === "active" ? activeCount : passedCount})
                 </button>
               ))}
             </div>
@@ -626,7 +633,7 @@ const AdminSpecials = () => {
                     ))}
                     {filtered.length === 0 && (
                       <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
-                        {tab === "active" ? "No active specials." : "No passed specials."}
+                        {tab === "active" ? "No active specials." : "No past specials."}
                       </td></tr>
                     )}
                   </tbody>
