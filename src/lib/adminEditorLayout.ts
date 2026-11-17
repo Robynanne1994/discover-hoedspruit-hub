@@ -13,13 +13,13 @@ export const ADMIN_EDITOR_DIALOG =
   "admin-editor-dialog grid-cols-[minmax(0,1fr)] max-w-[calc(100vw-1rem)] sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-6xl max-h-[90vh] lg:max-h-[92vh] overflow-y-auto";
 
 /** Two related fields side by side once there's room for them. */
-export const ADMIN_FIELD_GRID = "grid gap-4 lg:grid-cols-2";
+export const ADMIN_FIELD_GRID = "grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2";
 
 /** Same, for the dialogs whose fields sit on a 3-unit rhythm. */
-export const ADMIN_FIELD_GRID_TIGHT = "grid gap-3 lg:grid-cols-2";
+export const ADMIN_FIELD_GRID_TIGHT = "grid grid-cols-[minmax(0,1fr)] gap-3 lg:grid-cols-2";
 
 /** Three related fields on one row once there's room for them. */
-export const ADMIN_FIELD_GRID_THIRDS = "grid gap-4 lg:grid-cols-3";
+export const ADMIN_FIELD_GRID_THIRDS = "grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-3";
 
 /**
  * A scrolling checkbox picker (categories, subcategories, …). On desktop it
@@ -38,4 +38,4 @@ export const ADMIN_TOGGLE_GRID =
   "space-y-3 lg:space-y-0 lg:grid lg:grid-cols-2 xl:grid-cols-3 lg:gap-x-8 lg:gap-y-3";
 
 /** The image slots for a record: one column on a phone, a row of cards wide. */
-export const ADMIN_IMAGE_GRID = "grid gap-4 lg:grid-cols-2 xl:grid-cols-3";
+export const ADMIN_IMAGE_GRID = "grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-2 xl:grid-cols-3";
