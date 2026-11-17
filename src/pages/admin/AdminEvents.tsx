@@ -520,23 +520,25 @@ const AdminEvents = () => {
               ))}
             </div>
             <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
-              <table className="w-full text-sm min-w-[720px]">
+              <table className="w-full table-fixed text-sm min-w-[820px]">
                 <thead className="bg-muted">
                   <tr>
-                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[28%]">Title</th>
-                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[22%]">Date</th>
-                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[26%]">Tags</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[20%]">Title</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[20%]">Date</th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[22%]">Tags</th>
                     <th className="text-left p-3 text-[15px] font-bold text-foreground w-[10%]">Featured</th>
-                    <th className="p-3 w-[14%]"></th>
+                    <th className="text-left p-3 text-[15px] font-bold text-foreground w-[10%]">Active</th>
+                    <th className="p-3 w-[18%]"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((ev) => (
                     <tr key={ev.id} className="border-t border-border">
-                      <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
+                      <td className="p-3 font-medium text-foreground max-w-0"><span className="block truncate" title={ev.title}>{ev.title}</span></td>
                       <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
                       <td className="p-3 text-muted-foreground truncate">{collectEventTags(ev).join(", ") || "—"}</td>
                       <td className="p-3"><FeaturedToggle table="events" id={ev.id} title={ev.title} featured={!!ev.is_featured} /></td>
+                      <td className="p-3"><ActiveToggle table="events" id={ev.id} title={ev.title} active={ev.is_active !== false} /></td>
                       <td className="p-3">
                         <div className="flex gap-1 justify-end">
                           <Button variant="ghost" size="icon" aria-label={`Edit ${ev.title}`} onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
@@ -546,7 +548,7 @@ const AdminEvents = () => {
                     </tr>
                   ))}
                   {filtered.length === 0 && (
-                    <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">
+                    <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
                       {tab === "active" ? "No active events." : "No passed events."}
                     </td></tr>
                   )}

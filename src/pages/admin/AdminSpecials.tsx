@@ -17,11 +17,11 @@ import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactPairs } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
-import { getSpecialBadge } from "@/lib/specialBadge";
 import { discountTypeHint, discountTypeUsesValue } from "@/lib/discountFields";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
 import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
+import ActiveToggle from "@/components/admin/ActiveToggle";
 import { parseDays } from "@/lib/specialDays";
 import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 
@@ -48,6 +48,7 @@ interface Special {
   valid_until: string | null;
   valid_from: string | null;
   is_active: boolean;
+  auto_activate_on_image: boolean;
   is_featured: boolean;
   price: string | null;
   price_label: string | null;
@@ -102,6 +103,7 @@ const emptyForm: Omit<Special, "id"> = {
   valid_until: null,
   valid_from: null,
   is_active: true,
+  auto_activate_on_image: false,
   is_featured: false,
   price: null,
   price_label: null,
@@ -185,7 +187,7 @@ const AdminSpecials = () => {
       const wa = sanitizeContactPairs(form.additional_whatsapps, form.additional_whatsapp_labels);
       const cleaned = {
         ...form,
-        is_active: !isExpired,
+        is_active: form.is_active !== false && !isExpired,
         day_of_week: days.length ? days : null,
         additional_emails: em.values,
         additional_email_labels: em.labels,
@@ -263,6 +265,7 @@ const AdminSpecials = () => {
       valid_until: s.valid_until,
       valid_from: s.valid_from,
       is_active: s.is_active,
+      auto_activate_on_image: s.auto_activate_on_image ?? false,
       is_featured: !!(s as any).is_featured,
       price: s.price,
       price_label: s.price_label ?? null,
@@ -345,6 +348,10 @@ const AdminSpecials = () => {
             <div className="flex items-center gap-2">
               <Switch id="special-featured" checked={!!form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
               <Label htmlFor="special-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch id="special-active" checked={!!form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v, auto_activate_on_image: false })} />
+              <Label htmlFor="special-active" className="text-sm cursor-pointer font-normal">Active</Label>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">
@@ -590,15 +597,15 @@ const AdminSpecials = () => {
               <p className="text-muted-foreground">Loading…</p>
             ) : (
               <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
-                <table className="w-full text-sm min-w-[820px]">
+                <table className="w-full table-fixed text-sm min-w-[820px]">
                   <thead className="bg-muted">
                     <tr>
-                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[27%]">Title</th>
-                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[20%]">Business</th>
-                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[18%]">Deal</th>
-                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[15%]">Validity</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[29%]">Title</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[23%]">Business</th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[18%]">Validity</th>
                       <th className="text-left p-3 text-[15px] font-bold text-foreground w-[9%]">Featured</th>
-                      <th className="p-3 w-[11%]"></th>
+                      <th className="text-left p-3 text-[15px] font-bold text-foreground w-[9%]">Active</th>
+                      <th className="p-3 w-[12%]"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -606,9 +613,9 @@ const AdminSpecials = () => {
                       <tr key={s.id} className="border-t border-border">
                         <td className="p-3 font-medium text-foreground truncate">{s.title}</td>
                         <td className="p-3 text-muted-foreground truncate">{s.business_name || "—"}</td>
-                        <td className="p-3 text-muted-foreground truncate">{getSpecialBadge(s as any)}</td>
                         <td className="p-3 text-muted-foreground truncate">{s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</td>
                         <td className="p-3"><FeaturedToggle table="specials" id={s.id} title={s.title} featured={s.is_featured} /></td>
+                        <td className="p-3"><ActiveToggle table="specials" id={s.id} title={s.title} active={s.is_active} /></td>
                         <td className="p-3">
                           <div className="flex gap-1 justify-end">
                             <Button variant="ghost" size="icon" aria-label={`Edit ${s.title}`} onClick={() => setDialogSpecial(s)}><Pencil className="h-4 w-4" /></Button>
