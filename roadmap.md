@@ -1,10 +1,10 @@
 # Roadmap
 
 ## Pending
-- Group Specials into Active Specials and Past Specials menu destinations, with the page tabs following the menu.
-- Group App Store and FAQs under a new App Content menu section.
+(none)
 
 ## Done
+- (2026-11-17) Admin navigation now groups Active Specials and Past Specials under Specials, with the page tabs following those URLs, and groups App Store and FAQs under App Content. Six navigation checks and signed-in desktop/mobile browser flows passed; build OK.
 - (2026-11-17) Universal listings CSV: is_featured moved out of the middle of the sheet to sit immediately before is_active, so the sheet ends google_place_id, is_featured, is_active. Template, export and import all read the new order; category sheets still carry neither column. Verified on real downloads (705 rows, 10 featured) and 782 passing tests.
 - (2026-11-17) Events, Local Channels, Specials and Listings now have Active switches in their editors and admin tables. Existing records stayed active; new image-free records are drafts, first-image activation works, deliberate FALSE stays false, public queries and new/update/reminder notifications are active-gated, and the requested CSV columns and table layouts are live. Verified real downloads, signed-in draft/create/toggle/delete, isolated first-image rules, desktop/phone layouts and 782 passing tests; temporary data and notifications are absent.
 - (2026-11-16) Events, Specials, Local Channels and Listings admin tables now save Featured directly from a per-row switch. One real row per table was toggled, refreshed and restored successfully; build OK.
