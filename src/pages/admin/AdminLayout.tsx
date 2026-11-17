@@ -37,6 +37,8 @@ type NavItem = {
 type NavGroup = {
   label: string;
   icon: typeof LayoutDashboard;
+  /** Section page a nested URL belongs to, used for mobile header titles. */
+  path?: string;
   children: NavItem[];
 };
 
@@ -44,6 +46,12 @@ const userNavItems: NavItem[] = [
   { label: "App Users", path: "/admin/users", icon: Users },
   { label: "Reported Users", path: "/admin/user-reports", icon: Flag },
   { label: "Moderated Users", path: "/admin/moderated-users", icon: ShieldAlert },
+];
+
+const eventNavItems: NavItem[] = [
+  { label: "Upcoming Events", path: "/admin/events/upcoming", icon: Calendar },
+  { label: "Past Events", path: "/admin/events/past", icon: Calendar },
+  { label: "Event Hosts", path: "/admin/event-hosts", icon: Users },
 ];
 
 const navItems: (NavItem | NavGroup)[] = [
@@ -54,8 +62,7 @@ const navItems: (NavItem | NavGroup)[] = [
   { label: "Users", icon: Users, children: userNavItems },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },
-  { label: "Events", path: "/admin/events", icon: Calendar },
-  { label: "Event Hosts", path: "/admin/event-hosts", icon: Users },
+  { label: "Events", path: "/admin/events", icon: Calendar, children: eventNavItems },
   { label: "Specials", path: "/admin/specials", icon: Tag },
   { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
@@ -65,21 +72,47 @@ const navItems: (NavItem | NavGroup)[] = [
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 
+const isGroup = (item: NavItem | NavGroup): item is NavGroup =>
+  "children" in item;
+
+const navGroups = navItems.filter(isGroup);
+
 const allNavItems: NavItem[] = navItems.flatMap((item): NavItem[] =>
-  "children" in item ? item.children : [item],
+  isGroup(item)
+    ? [
+        ...(item.path ? [{ label: item.label, path: item.path, icon: item.icon }] : []),
+        ...item.children,
+      ]
+    : [item],
 );
+
+const groupActive = (group: NavGroup, pathname: string) =>
+  (group.path ? pathname === group.path : false) ||
+  group.children.some((child) => pathname === child.path);
 
 const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
   const location = useLocation();
-  const usersMenuId = useId();
-  const usersSectionActive = userNavItems.some(
-    (item) => location.pathname === item.path,
+  const navId = useId();
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(
+      navGroups.map((group) => [group.label, groupActive(group, location.pathname)]),
+    ),
   );
-  const [usersOpen, setUsersOpen] = useState(usersSectionActive);
 
+  // Landing on a nested page keeps its section open; collapsing stays manual.
   useEffect(() => {
-    if (usersSectionActive) setUsersOpen(true);
-  }, [usersSectionActive]);
+    setOpenGroups((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      for (const group of navGroups) {
+        if (groupActive(group, location.pathname) && !next[group.label]) {
+          next[group.label] = true;
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [location.pathname]);
 
   const renderLink = (item: NavItem) => {
     const active = location.pathname === item.path;
@@ -102,18 +135,24 @@ const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
 
   return (
     <nav className="flex-1 space-y-1">
-      {navItems.map((item) => {
-        if (!("children" in item)) return renderLink(item);
+      {navItems.map((item, index) => {
+        if (!isGroup(item)) return renderLink(item);
+
+        const open = !!openGroups[item.label];
+        const active = groupActive(item, location.pathname);
+        const menuId = `${navId}-group-${index}`;
 
         return (
           <div key={item.label} className="space-y-1">
             <button
               type="button"
-              aria-expanded={usersOpen}
-              aria-controls={usersMenuId}
-              onClick={() => setUsersOpen((open) => !open)}
+              aria-expanded={open}
+              aria-controls={menuId}
+              onClick={() =>
+                setOpenGroups((prev) => ({ ...prev, [item.label]: !open }))
+              }
               className={`flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                usersSectionActive
+                active
                   ? "text-foreground bg-muted"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
@@ -122,15 +161,12 @@ const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
               <span>{item.label}</span>
               <ChevronDown
                 className={`ml-auto h-4 w-4 transition-transform ${
-                  usersOpen ? "" : "-rotate-90"
+                  open ? "" : "-rotate-90"
                 }`}
               />
             </button>
-            {usersOpen && (
-              <div
-                id={usersMenuId}
-                className="ml-5 space-y-1 border-l border-border pl-3"
-              >
+            {open && (
+              <div id={menuId} className="ml-5 space-y-1 border-l border-border pl-3">
                 {item.children.map(renderLink)}
               </div>
             )}
