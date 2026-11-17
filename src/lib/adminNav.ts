@@ -56,14 +56,19 @@ const specialNavItems: NavItem[] = [
 ];
 
 const appContentNavItems: NavItem[] = [
+  { label: "Homepage", path: "/admin/homepage", icon: Home },
+  { label: "Search Suggestions", path: "/admin/search-suggested", icon: SearchIcon },
   { label: "App Store", path: "/admin/app-store", icon: Star },
   { label: "FAQs", path: "/admin/faqs", icon: HelpCircle },
 ];
 
+const notificationNavItems: NavItem[] = [
+  { label: "Notifications", path: "/admin/notifications", icon: Bell },
+  { label: "App Updates", path: "/admin/app-updates", icon: Megaphone },
+];
+
 export const adminNavEntries: NavEntry[] = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
-  { label: "Homepage", path: "/admin/homepage", icon: Home },
-  { label: "Search Suggestions", path: "/admin/search-suggested", icon: SearchIcon },
   { label: "App Content", icon: FolderOpen, children: appContentNavItems },
   { label: "Users", icon: Users, children: userNavItems },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
@@ -71,8 +76,11 @@ export const adminNavEntries: NavEntry[] = [
   { label: "Events", path: "/admin/events", icon: Calendar, children: eventNavItems },
   { label: "Specials", path: "/admin/specials", icon: Tag, children: specialNavItems },
   { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
-  { label: "Notifications", path: "/admin/notifications", icon: Bell },
-  { label: "App Updates & Notifications", path: "/admin/app-updates", icon: Megaphone },
+  {
+    label: "App Updates & Notifications",
+    icon: Megaphone,
+    children: notificationNavItems,
+  },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
