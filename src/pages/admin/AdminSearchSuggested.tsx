@@ -362,7 +362,7 @@ const SortableRow = ({
     <div
       ref={setNodeRef}
       style={style}
-      className="flex items-center gap-3 rounded-xl border border-border bg-background px-3 py-2.5"
+      className="flex items-center gap-3 rounded-xl border border-border bg-card px-3 py-2.5"
     >
       <button
         {...attributes}
