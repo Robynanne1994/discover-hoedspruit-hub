@@ -1,7 +1,11 @@
 # Roadmap
 
 ## Pending
-(none)
+- Add Active/draft status to events, local channels and listings, retaining specials' existing status; existing records stay active.
+- Auto-activate a draft when its first image is added, preserve deliberate inactive states, and gate all public queries and new-item notifications on Active.
+- Add Active toggles to all four editors and admin tables with the requested column layouts.
+- Add scoped CSV Active columns for events, local channels and listings; preserve explicit FALSE values.
+- Run focused rule tests, backend checks and signed-in end-to-end verification.
 
 ## Done
 - (2026-11-16) Events, Specials, Local Channels and Listings admin tables now save Featured directly from a per-row switch. One real row per table was toggled, refreshed and restored successfully; build OK.
