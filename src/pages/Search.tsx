@@ -550,10 +550,12 @@ const ListingsResults = ({ query }: { query: string }) => {
             supabase
               .from("listings")
               .select(SEARCH_COLUMNS)
+              .eq("is_active", true)
               .in("id", ids),
             supabase
               .from("listings")
               .select(SEARCH_COLUMNS)
+              .eq("is_active", true)
               .eq("is_featured", true)
               .order("created_at", { ascending: false })
               .limit(SUGGESTED_LIMIT),
@@ -567,6 +569,7 @@ const ListingsResults = ({ query }: { query: string }) => {
       let q = supabase
         .from("listings")
         .select(SEARCH_COLUMNS)
+        .eq("is_active", true)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(term ? 50 : SUGGESTED_LIMIT);
@@ -579,7 +582,7 @@ const ListingsResults = ({ query }: { query: string }) => {
       const catIds = (cats || []).filter((c: any) => categoryMatchesTerm(term, c.title)).map((c: any) => c.id);
       if (!catIds.length) return data || [];
       const [direct, junc] = await Promise.all([
-        supabase.from("listings").select(SEARCH_COLUMNS).in("category_id", catIds)
+        supabase.from("listings").select(SEARCH_COLUMNS).eq("is_active", true).in("category_id", catIds)
           .order("is_featured", { ascending: false }).order("title").limit(100),
         supabase.from("listing_categories").select("listing_id").in("category_id", catIds).limit(300),
       ]);
@@ -587,7 +590,7 @@ const ListingsResults = ({ query }: { query: string }) => {
       const have = new Set(byCat.map((l) => l.id));
       const extraIds = (junc.data || []).map((r: any) => r.listing_id).filter((id: string) => id && !have.has(id));
       if (extraIds.length) {
-        const { data: extra } = await supabase.from("listings").select(SEARCH_COLUMNS).in("id", extraIds);
+        const { data: extra } = await supabase.from("listings").select(SEARCH_COLUMNS).eq("is_active", true).in("id", extraIds);
         byCat = byCat.concat(extra || []);
       }
       return rankSmartResults((data || []) as any[], byCat);
@@ -624,6 +627,7 @@ const EventsResults = ({ query }: { query: string }) => {
       let q = supabase
         .from("events")
         .select(`id, title, title_override, location, date, start_date, end_date, is_featured, ${EVENT_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         .or(`start_date.is.null,start_date.gte.${today}`)
         // Featured events pin to the top, then the soonest first
         .order("is_featured", { ascending: false })
@@ -708,6 +712,7 @@ const ChannelsResults = ({ query }: { query: string }) => {
       let q = supabase
         .from("bush_telegraph_resources")
         .select(`id, title, title_override, slug, url, platform, meta, is_featured, sort_order, ${CHANNEL_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         // Same order as the Local Channels page: featured first, then the
         // admin's own arrangement.
         .order("is_featured", { ascending: false })

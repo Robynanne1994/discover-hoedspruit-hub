@@ -13,11 +13,13 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import ImageSlotField from "@/components/admin/ImageSlotField";
 import ChannelOrderDialog from "@/components/admin/ChannelOrderDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
+import ActiveToggle from "@/components/admin/ActiveToggle";
 import ChannelBusinessSelect from "@/components/admin/ChannelBusinessSelect";
 import { channelBusinessToCsv, resolveChannelBusiness, type ChannelBusiness } from "@/lib/channelBusiness";
 import { CHANNEL_IMAGE_SLOTS } from "@/lib/channelImageSlots";
 import { channelCsvYears, channelYearStarted } from "@/lib/channelYears";
 import { channelButtonLabelFromCsv, channelButtonLabelToCsv } from "@/lib/channelButtonLabel";
+import { activeCsvPatch } from "@/lib/contentActive";
 import { ADMIN_EDITOR_DIALOG, ADMIN_IMAGE_GRID } from "@/lib/adminEditorLayout";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
@@ -32,7 +34,7 @@ const RESOURCE_TYPES = [
   { value: "internal", label: "Internal page" },
 ] as const;
 
-const HEADERS = ["title", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured"];
+const HEADERS = ["title", "platform", "meta", "meta_2", "associated_business", "description", "url", "resource_type", "button_label", "admin_name", "year_started", "post_frequency", "tag_1", "tag_2", "is_featured", "is_active"];
 
 type Resource = {
   id: string;
@@ -59,6 +61,8 @@ type Resource = {
   tag_1: string | null;
   tag_2: string | null;
   is_featured: boolean;
+  is_active: boolean;
+  auto_activate_on_image: boolean;
   sort_order: number;
   slug: string | null;
   cta_label: string | null;
@@ -89,6 +93,8 @@ const emptyForm = {
   tag_1: "",
   tag_2: "",
   is_featured: false,
+  is_active: true,
+  auto_activate_on_image: false,
   sort_order: 0,
   cta_label: "",
 };
@@ -305,6 +311,8 @@ const AdminBushTelegraph = () => {
       tag_1: r.tag_1 ?? "",
       tag_2: r.tag_2 ?? "",
       is_featured: r.is_featured,
+      is_active: r.is_active !== false,
+      auto_activate_on_image: r.auto_activate_on_image ?? false,
       sort_order: r.sort_order,
       cta_label: r.cta_label ?? "",
     });
@@ -411,6 +419,7 @@ const AdminBushTelegraph = () => {
           tag_1: r.tag_1?.trim() || null,
           tag_2: r.tag_2?.trim() || null,
           is_featured: r.is_featured?.toLowerCase() === "true" || r.is_featured === "1",
+          ...activeCsvPatch(r.is_active),
         };
 
         const id = existingMap.get(title.toLowerCase());
@@ -471,6 +480,7 @@ const AdminBushTelegraph = () => {
       String(channelYearStarted(r) ?? ""), r.post_frequency ?? "",
       r.tag_1 ?? "", r.tag_2 ?? "",
       r.is_featured ? "true" : "false",
+      r.is_active !== false ? "true" : "false",
     ].map(escapeCSV).join(","));
     downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
     toast.success(`Exported ${resources.length} resources`);
@@ -548,16 +558,17 @@ const AdminBushTelegraph = () => {
           <div className="p-8 text-center text-muted-foreground">No resources yet. Add your first one.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full table-fixed text-sm min-w-[900px]">
               <thead className="bg-muted">
                 <tr>
-                  <th className="p-3 text-left"><ArrowUpDown className="h-3 w-3 inline mr-1" />Order</th>
-                  <th className="p-3 text-left">Image</th>
-                  <th className="p-3 text-left">Title</th>
-                  <th className="p-3 text-left">Platform</th>
-                  <th className="p-3 text-left">Type</th>
-                  <th className="p-3 text-left">Featured</th>
-                  <th className="p-3 text-right">Actions</th>
+                  <th className="p-3 text-left w-[8%]"><ArrowUpDown className="h-3 w-3 inline mr-1" />Order</th>
+                  <th className="p-3 text-left w-[8%]">Image</th>
+                  <th className="p-3 text-left w-[24%]">Title</th>
+                  <th className="p-3 text-left w-[14%]">Platform</th>
+                  <th className="p-3 text-left w-[12%]">Type</th>
+                  <th className="p-3 text-left w-[10%]">Featured</th>
+                  <th className="p-3 text-left w-[10%]">Active</th>
+                  <th className="p-3 text-right w-[14%]">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -571,10 +582,11 @@ const AdminBushTelegraph = () => {
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="p-3 font-medium">{r.title}</td>
-                    <td className="p-3">{r.platform}</td>
-                    <td className="p-3 text-muted-foreground">{r.resource_type}</td>
+                    <td className="p-3 font-medium truncate" title={r.title}>{r.title}</td>
+                    <td className="p-3 truncate">{r.platform}</td>
+                    <td className="p-3 text-muted-foreground truncate">{r.resource_type}</td>
                     <td className="p-3"><FeaturedToggle table="bush_telegraph_resources" id={r.id} title={r.title} featured={r.is_featured} /></td>
+                    <td className="p-3"><ActiveToggle table="bush_telegraph_resources" id={r.id} title={r.title} active={r.is_active !== false} /></td>
                     <td className="p-3 text-right">
                       <Button variant="ghost" size="icon" onClick={() => startEdit(r)}><Pencil className="h-4 w-4" /></Button>
                       <Button
@@ -633,6 +645,14 @@ const AdminBushTelegraph = () => {
                   onCheckedChange={(c) => setForm({ ...form, is_featured: c })}
                 />
                 <Label htmlFor="channel-featured" className="text-sm cursor-pointer font-normal">Featured</Label>
+              </div>
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="channel-active"
+                  checked={form.is_active}
+                  onCheckedChange={(c) => setForm({ ...form, is_active: c, auto_activate_on_image: false })}
+                />
+                <Label htmlFor="channel-active" className="text-sm cursor-pointer font-normal">Active</Label>
               </div>
             </div>
 

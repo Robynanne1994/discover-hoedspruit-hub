@@ -26,6 +26,7 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
         supabase
           .from("listings")
           .select("id, title, location, category_id")
+          .eq("is_active", true)
           .ilike("title", term)
           .limit(6),
         supabase
@@ -36,6 +37,7 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
         supabase
           .from("events")
           .select("id, title, date, location")
+          .eq("is_active", true)
           .ilike("title", term)
           .limit(4),
       ]);

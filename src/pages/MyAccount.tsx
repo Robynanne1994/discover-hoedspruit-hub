@@ -186,10 +186,10 @@ const MyAccount = () => {
 
       const [listingsRes, eventsRes] = await Promise.all([
         listingIds.length > 0
-          ? supabase.from("listings").select("id, title, image_url").in("id", listingIds)
+          ? supabase.from("listings").select("id, title, image_url").eq("is_active", true).in("id", listingIds)
           : { data: [] },
         eventIds.length > 0
-          ? supabase.from("events").select("id, title, image_url").in("id", eventIds)
+          ? supabase.from("events").select("id, title, image_url").eq("is_active", true).in("id", eventIds)
           : { data: [] },
       ]);
 
@@ -199,7 +199,7 @@ const MyAccount = () => {
       return data.map((f: any) => ({
         ...f,
         details: f.item_type === "listing" ? listingsMap[f.item_id] : eventsMap[f.item_id],
-      }));
+      })).filter((f: any) => f.details);
     },
     enabled: !!user,
   });

@@ -35,6 +35,7 @@ import {
   normalizeAccommodationPriceRange,
 } from "@/lib/accommodationCsv";
 import { parseAdditionalHours } from "@/lib/openHours";
+import { activeCsvPatch } from "@/lib/contentActive";
 
 
 const ALL_CATEGORIES_VALUE = "__all__";
@@ -752,6 +753,12 @@ const AdminImport = () => {
           if (isImageCsvColumn(fieldName)) continue;
           // Titles always show exactly as typed; old title_override columns are ignored.
           if (fieldName === "title_override") continue;
+          // Blank Active cells preserve state; explicit TRUE/FALSE is deliberate
+          // and must not be overridden by the first-image draft automation.
+          if (fieldName === "is_active") {
+            Object.assign(payloadRecord, activeCsvPatch(row[fieldName]));
+            continue;
+          }
           // Combined contact cells: "a|b" plus positional labels, split into primary + extras.
           const contactGroup = contactGroupForValue(fieldName);
           if (contactGroup) {
@@ -1541,7 +1548,7 @@ const AdminImport = () => {
               owns them, and the CSV values for those three columns are ignored, "-" included.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              google_place_id is the last column and is back-office only — it never shows anywhere
+              google_place_id sits just before is_active and is back-office only — it never shows anywhere
               in the app. It's how the nightly sync finds a listing on Google, so filling it in for
               listings the sync couldn't match gets their rating and review count updating too.
               Export first: every ID the sync has already matched comes down pre-filled, so you

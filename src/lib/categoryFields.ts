@@ -62,6 +62,7 @@ export const LISTING_FIELD_SPECS = {
   google_reviews_url: { type: "str" },
   // Back-office only: the handle the ratings sync fetches by. Never rendered.
   google_place_id: { type: "str" },
+  is_active: { type: "bool" },
 
   // ---------- Universal: misc ----------
   is_featured: { type: "bool_default_false" },
@@ -359,13 +360,12 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
 }
 
 // Headers for the "All Categories (Universal)" CSV: universals plus the
-// listing's category set, with the Place ID last so every export ends on the
-// same column.
+// listing's category set, then Place ID and Active in their requested slots.
 //
 // This sheet is the source of truth for every field on it. Nothing here appears
 // on a category CSV, so the two uploads can never disagree about a listing.
 export function getUniversalCSVHeaders(): string[] {
-  return [...UNIVERSAL_FIELDS, CATEGORY_MEMBERSHIP_FIELD, GOOGLE_PLACE_ID_FIELD];
+  return [...UNIVERSAL_FIELDS, CATEGORY_MEMBERSHIP_FIELD, GOOGLE_PLACE_ID_FIELD, "is_active"];
 }
 
 
@@ -390,7 +390,7 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 // google_place_id rides along here because the universal sheet is the one place
 // it can be filled in.
 export function getUniversalDbFields(): string[] {
-  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD];
+  return [...UNIVERSAL_FIELDS, GOOGLE_PLACE_ID_FIELD, "is_active"];
 }
 
 // The universal columns a category upload refuses to write, so that the
@@ -404,6 +404,7 @@ export function getUniversalContentFields(): string[] {
     ...UNIVERSAL_FIELDS.filter((f) => f !== "title"),
     CATEGORY_MEMBERSHIP_FIELD,
     GOOGLE_PLACE_ID_FIELD,
+    "is_active",
   ];
 }
 

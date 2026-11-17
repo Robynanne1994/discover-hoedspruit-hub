@@ -32,6 +32,7 @@ export const useHomepageSection = (
         const { data } = await supabase
           .from("listings")
           .select(COLUMNS)
+          .eq("is_active", true)
           .in("id", curatedIds);
         const map = new Map((data || []).map((l) => [l.id, l]));
         curatedListings = curatedIds.map((id) => map.get(id)).filter(Boolean);
@@ -72,6 +73,7 @@ export const useHomepageSection = (
       const { data: featured } = await supabase
         .from("listings")
         .select(COLUMNS)
+        .eq("is_active", true)
         .or(inCategory)
         .eq("is_featured", true)
         .limit(TARGET);
@@ -83,6 +85,7 @@ export const useHomepageSection = (
       const { data: autoPicks } = await supabase
         .from("listings")
         .select(COLUMNS)
+        .eq("is_active", true)
         .or(inCategory)
         .order("is_featured", { ascending: false })
         .limit(TARGET + curatedIds.length);

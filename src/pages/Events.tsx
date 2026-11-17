@@ -671,7 +671,7 @@ const Events = () => {
   const { data: events, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["events-page"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("events").select("*").order("created_at");
+      const { data, error } = await supabase.from("events").select("*").eq("is_active", true).order("created_at");
       if (error) throw error;
       return data;
     },

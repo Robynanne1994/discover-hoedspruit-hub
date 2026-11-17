@@ -380,7 +380,7 @@ const CategoryPage = () => {
     queryFn: async () => {
       const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
         supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
-        supabase.from("listings").select("id").eq("category_id", id!),
+        supabase.from("listings").select("id").eq("is_active", true).eq("category_id", id!),
       ]);
       if (jErr) throw jErr;
       if (lErr) throw lErr;
@@ -416,6 +416,7 @@ const CategoryPage = () => {
         supabase
           .from("listings")
           .select("*")
+          .eq("is_active", true)
           .in("id", listingIds)
           .order("is_featured", { ascending: false }),
         supabase
@@ -580,7 +581,7 @@ const CategoryPage = () => {
     queryFn: async () => {
       const [{ data: junctionData }, { data: legacyData }] = await Promise.all([
         supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
-        supabase.from("listings").select("id").eq("category_id", id!),
+        supabase.from("listings").select("id").eq("is_active", true).eq("category_id", id!),
       ]);
       const idSet = new Set<string>();
       (junctionData || []).forEach((r: any) => idSet.add(r.listing_id as string));
@@ -605,6 +606,7 @@ const CategoryPage = () => {
           const { data, error } = await supabase
             .from("listings")
             .select(`id, cuisine, vibe, meal, seating, ${hoursCols}`)
+            .eq("is_active", true)
             .in("id", allIds);
           // Only a missing hours column is worth retrying for; every other
           // error keeps the old behaviour of leaving the facets empty.

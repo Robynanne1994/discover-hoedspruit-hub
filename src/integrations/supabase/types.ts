@@ -180,6 +180,7 @@ export type Database = {
           admin_name: string | null
           admins: Json
           associated_business_id: string | null
+          auto_activate_on_image: boolean
           created_at: string
           cta_label: string | null
           description: string | null
@@ -187,6 +188,7 @@ export type Database = {
           homepage_image_url: string | null
           id: string
           image_url: string | null
+          is_active: boolean
           is_featured: boolean
           meta: string | null
           meta_2: string | null
@@ -211,6 +213,7 @@ export type Database = {
           admin_name?: string | null
           admins?: Json
           associated_business_id?: string | null
+          auto_activate_on_image?: boolean
           created_at?: string
           cta_label?: string | null
           description?: string | null
@@ -218,6 +221,7 @@ export type Database = {
           homepage_image_url?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean
           is_featured?: boolean
           meta?: string | null
           meta_2?: string | null
@@ -242,6 +246,7 @@ export type Database = {
           admin_name?: string | null
           admins?: Json
           associated_business_id?: string | null
+          auto_activate_on_image?: boolean
           created_at?: string
           cta_label?: string | null
           description?: string | null
@@ -249,6 +254,7 @@ export type Database = {
           homepage_image_url?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean
           is_featured?: boolean
           meta?: string | null
           meta_2?: string | null
@@ -680,6 +686,7 @@ export type Database = {
           additional_phones: string[]
           additional_whatsapp_labels: string[]
           additional_whatsapps: string[]
+          auto_activate_on_image: boolean
           booking_link: string | null
           booking_link_label: string | null
           booking_link_type: string | null
@@ -718,6 +725,7 @@ export type Database = {
           id: string
           image_url: string | null
           included: string[]
+          is_active: boolean
           is_featured: boolean
           location: string | null
           notes: string[]
@@ -748,6 +756,7 @@ export type Database = {
           additional_phones?: string[]
           additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
+          auto_activate_on_image?: boolean
           booking_link?: string | null
           booking_link_label?: string | null
           booking_link_type?: string | null
@@ -786,6 +795,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           included?: string[]
+          is_active?: boolean
           is_featured?: boolean
           location?: string | null
           notes?: string[]
@@ -816,6 +826,7 @@ export type Database = {
           additional_phones?: string[]
           additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
+          auto_activate_on_image?: boolean
           booking_link?: string | null
           booking_link_label?: string | null
           booking_link_type?: string | null
@@ -854,6 +865,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           included?: string[]
+          is_active?: boolean
           is_featured?: boolean
           location?: string | null
           notes?: string[]
@@ -1383,6 +1395,7 @@ export type Database = {
           air_conditioned: boolean | null
           airport_shuttle_free: boolean | null
           amenities: string[] | null
+          auto_activate_on_image: boolean
           avg_price_per_couple_per_night: string | null
           avg_price_per_person_per_night: string | null
           breakfast_included: boolean | null
@@ -1460,6 +1473,7 @@ export type Database = {
           image_url: string | null
           impact: string | null
           instagram: string | null
+          is_active: boolean
           is_featured: boolean
           is_franchise: boolean | null
           kids_menu: boolean | null
@@ -1546,6 +1560,7 @@ export type Database = {
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
+          auto_activate_on_image?: boolean
           avg_price_per_couple_per_night?: string | null
           avg_price_per_person_per_night?: string | null
           breakfast_included?: boolean | null
@@ -1623,6 +1638,7 @@ export type Database = {
           image_url?: string | null
           impact?: string | null
           instagram?: string | null
+          is_active?: boolean
           is_featured?: boolean
           is_franchise?: boolean | null
           kids_menu?: boolean | null
@@ -1709,6 +1725,7 @@ export type Database = {
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
+          auto_activate_on_image?: boolean
           avg_price_per_couple_per_night?: string | null
           avg_price_per_person_per_night?: string | null
           breakfast_included?: boolean | null
@@ -1786,6 +1803,7 @@ export type Database = {
           image_url?: string | null
           impact?: string | null
           instagram?: string | null
+          is_active?: boolean
           is_featured?: boolean
           is_franchise?: boolean | null
           kids_menu?: boolean | null
@@ -2244,6 +2262,7 @@ export type Database = {
           additional_phones: string[]
           additional_whatsapp_labels: string[]
           additional_whatsapps: string[]
+          auto_activate_on_image: boolean
           badge_override: string | null
           booking_link: string | null
           booking_link_label: string | null
@@ -2304,6 +2323,7 @@ export type Database = {
           additional_phones?: string[]
           additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
+          auto_activate_on_image?: boolean
           badge_override?: string | null
           booking_link?: string | null
           booking_link_label?: string | null
@@ -2364,6 +2384,7 @@ export type Database = {
           additional_phones?: string[]
           additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
+          auto_activate_on_image?: boolean
           badge_override?: string | null
           booking_link?: string | null
           booking_link_label?: string | null

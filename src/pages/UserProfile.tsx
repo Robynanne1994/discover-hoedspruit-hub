@@ -269,6 +269,7 @@ const UserProfile = () => {
         const { data, error } = await supabase
           .from("listings")
           .select(`id, title, title_override, location, google_rating, google_reviews_count, ${hoursCols}, categories(title), ${LISTING_IMAGE_COLUMNS}`)
+          .eq("is_active", true)
           .in("id", ids);
         // Only a missing hours column is worth retrying for.
         if (error && isMissingHoursColumn(error)) throw error;
@@ -297,6 +298,7 @@ const UserProfile = () => {
       const { data: events } = await supabase
         .from("events")
         .select(`id, title, title_override, location, start_date, end_date, start_time, date, ${EVENT_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e: any) => e.id);
@@ -317,6 +319,7 @@ const UserProfile = () => {
       const { data: specials } = await supabase
         .from("specials")
         .select(`id, title, title_override, business_name, valid_until, badge_override, day_of_week, discount_type, discount_value, freebie_text, card_deal_text, redemption_note, card_footer_text, price, price_label, original_price, savings, ${SPECIAL_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s: any) => s.id);
@@ -337,6 +340,7 @@ const UserProfile = () => {
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
         .select(`id, title, title_override, platform, meta, meta_2, slug, is_featured, sort_order, ${CHANNEL_IMAGE_COLUMNS}`)
+        .eq("is_active", true)
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
       return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r: any) => r.id).sort(compareChannels);

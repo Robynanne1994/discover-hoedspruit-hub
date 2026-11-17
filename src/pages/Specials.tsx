@@ -124,6 +124,7 @@ const Specials = () => {
       const { data } = await supabase
         .from("specials")
         .select("*")
+        .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("created_at", { ascending: false });
       return (data || []).filter((s) => isVisibleSpecial(s, today));
