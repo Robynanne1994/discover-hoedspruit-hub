@@ -27,6 +27,7 @@ type ReportFn = (setProgress: (p: { done: number; total: number; label?: string 
 
 type ReportDef = {
   id: string;
+  group: string;
   title: string;
   description: string;
   run: ReportFn;
@@ -63,7 +64,8 @@ const editUrl = (kind: "listing" | "event" | "special", id: string) => {
 const REPORTS: ReportDef[] = [
   {
     id: "listings-broken-images",
-    title: "Listings — no images",
+    group: "Listings",
+    title: "No images",
     description: "Listings with no image at all (cover, detail, card or saved all empty or unreachable).",
     run: async (setProgress) => {
       const rows = await fetchAll<any>(
@@ -94,7 +96,8 @@ const REPORTS: ReportDef[] = [
 
   {
     id: "events-broken-images",
-    title: "Events — broken or missing images",
+    group: "Events",
+    title: "Broken or missing images",
     description: "Events where any image (card, detail, homepage) is empty or unreachable.",
     run: async (setProgress) => {
       const rows = await fetchAll<any>("events", "id, title, image_url, detail_image_url, homepage_image_url");
@@ -122,7 +125,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "specials-broken-images",
-    title: "Specials — broken or missing images",
+    group: "Specials",
+    title: "Broken or missing images",
     description: "Specials where the card or detail image is empty or unreachable.",
     run: async (setProgress) => {
       const rows = await fetchAll<any>("specials", "id, title, image_url, detail_image_url");
@@ -150,7 +154,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "listings-missing-descriptions",
-    title: "Listings — missing descriptions",
+    group: "Listings",
+    title: "Missing descriptions",
     description: "Listings missing the long description.",
     run: async () => {
       const rows = await fetchAll<any>("listings", "id, title, long_description");
@@ -166,7 +171,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "events-missing-descriptions",
-    title: "Events — missing descriptions",
+    group: "Events",
+    title: "Missing descriptions",
     description: "Events with no description / notes content.",
     run: async () => {
       const rows = await fetchAll<any>("events", "id, title, description, notes");
@@ -184,7 +190,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "specials-missing-descriptions",
-    title: "Specials — missing descriptions",
+    group: "Specials",
+    title: "Missing descriptions",
     description: "Specials with no description text.",
     run: async () => {
       const rows = await fetchAll<any>("specials", "id, title, description");
@@ -196,7 +203,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "listings-missing-hours",
-    title: "Listings — missing opening hours",
+    group: "Listings",
+    title: "Missing opening hours",
     description: "Listings with no opening hours set, in any of their schedules.",
     run: async () => {
       const rows = await withHoursColumns((hoursCols) => fetchAll<any>("listings", `id, title, ${hoursCols}`));
@@ -210,7 +218,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "listings-missing-contact",
-    title: "Listings — missing all contact details",
+    group: "Listings",
+    title: "Missing all contact details",
     description: "Listings with no phone, WhatsApp, email, or website (including additional fields).",
     run: async () => {
       const rows = await fetchAll<any>(
@@ -233,7 +242,8 @@ const REPORTS: ReportDef[] = [
   },
   {
     id: "external-images",
-    title: "External images (not uploaded to cloud)",
+    group: "External",
+    title: "Images (not uploaded to cloud)",
     description: "Listings, events and specials whose image URLs point to an external host instead of the project storage.",
     run: async () => {
       const out: Record<string, unknown>[] = [];
@@ -295,10 +305,11 @@ const AdminReports = () => {
         <table className="w-full table-fixed text-sm min-w-[820px]">
           <thead className="bg-muted">
             <tr>
-              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[22%]">Report</th>
-              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[40%]">Description</th>
-              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[20%]">Status</th>
-              <th className="p-3 w-[18%]"></th>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[10%]">Type</th>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[24%]">Report</th>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[32%]">Description</th>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[14%]">Status</th>
+              <th className="p-3 w-[20%]"></th>
             </tr>
           </thead>
           <tbody>
@@ -306,12 +317,11 @@ const AdminReports = () => {
               const s = { ...IDLE, ...states[r.id] };
               return (
                 <tr key={r.id} className="border-t border-border">
+                  <td className="p-3 text-sm text-muted-foreground">{r.group}</td>
                   <td className="p-3 font-medium text-foreground max-w-0">
                     <span className="block truncate" title={r.title}>{r.title}</span>
                   </td>
-                  <td className="p-3 text-muted-foreground max-w-0">
-                    <span className="block truncate" title={r.description}>{r.description}</span>
-                  </td>
+                  <td className="p-3 text-muted-foreground">{r.description}</td>
                   <td className="p-3 text-muted-foreground">
                     {s.error ? (
                       <span className="block text-xs text-destructive">{s.error}</span>
