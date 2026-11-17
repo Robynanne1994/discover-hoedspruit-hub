@@ -98,7 +98,7 @@ const AdminNotifications = () => {
         <div className="space-y-4">
           <Section
             icon={Store}
-            title="Listing categories"
+            title="Listing Categories"
             description="Used for New Listings and Listing Updates notifications."
             items={categories}
             emptyLabel="No categories yet."
