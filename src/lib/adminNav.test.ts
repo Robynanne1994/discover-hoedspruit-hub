@@ -83,6 +83,10 @@ describe("admin sidebar navigation", () => {
     expect(topLevel).not.toContain("Specials");
     expect(topLevel).not.toContain("App Store");
     expect(topLevel).not.toContain("FAQs");
+    expect(topLevel).not.toContain("Homepage");
+    expect(topLevel).not.toContain("Search Suggestions");
+    expect(topLevel).not.toContain("Notifications");
+    expect(topLevel).not.toContain("App Updates");
   });
 
   it("resolves nested URLs to their section titles", () => {
@@ -101,5 +105,11 @@ describe("admin sidebar navigation", () => {
     expect(
       allAdminNavItems.find((item) => item.path === "/admin/faqs")?.label,
     ).toBe("FAQs");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/homepage")?.label,
+    ).toBe("Homepage");
+    expect(
+      allAdminNavItems.find((item) => item.path === "/admin/app-updates")?.label,
+    ).toBe("App Updates");
   });
 });
