@@ -1548,7 +1548,8 @@ const AdminImport = () => {
               owns them, and the CSV values for those three columns are ignored, "-" included.
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              google_place_id sits just before is_active and is back-office only — it never shows anywhere
+              google_place_id sits just before is_featured, which sits just before is_active, and is
+              back-office only — it never shows anywhere
               in the app. It's how the nightly sync finds a listing on Google, so filling it in for
               listings the sync couldn't match gets their rating and review count updating too.
               Export first: every ID the sync has already matched comes down pre-filled, so you

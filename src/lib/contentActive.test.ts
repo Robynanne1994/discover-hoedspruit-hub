@@ -20,6 +20,7 @@ describe("content Active CSV cells", () => {
 
   it("places listing is_active immediately after google_place_id", () => {
     const headers = getUniversalCSVHeaders();
-    expect(headers[headers.indexOf("google_place_id") + 1]).toBe("is_active");
+    expect(headers[headers.indexOf("google_place_id") + 1]).toBe("is_featured");
+    expect(headers[headers.indexOf("is_featured") + 1]).toBe("is_active");
   });
 });
