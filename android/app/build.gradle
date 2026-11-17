@@ -20,8 +20,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // Kept in step with the iOS target (MARKETING_VERSION / CURRENT_PROJECT_VERSION)
         // so a given release is the same build on both stores.
-        versionCode 6
-        versionName "1.1"
+        versionCode 7
+        versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
