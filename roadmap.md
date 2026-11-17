@@ -107,3 +107,9 @@
   white body, and the section-title pencil is a solid dark-brown circle with a white icon.
   Verified signed in: all five cards measured band rgb(246,241,234) against a white body,
   spanning the card edges, with the edit button at rgb(66,51,36).
+- (2026-11-17) App Updates admin page: rebuilt for readability. Bold page and section headings,
+  a "Compose Update" card with a tinted header strip, live 0/120 and 0/500 character counts,
+  hairline-separated send row, a proper empty state, and broadcast history as bordered cards with
+  the sent count. Verified signed in: headings at weight 700 (30px page, 18px sections), send
+  button disabled until a title is typed, counter tracked 18/120 then back to 0/120, and no
+  broadcast was sent during the check.
