@@ -259,7 +259,7 @@ const REPORTS: ReportDef[] = [
 
 // ---------- Page ----------
 
-const ReportCard = ({ report }: { report: ReportDef }) => {
+const ReportRow = ({ report }: { report: ReportDef }) => {
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number; label?: string } | null>(null);
   const [lastCount, setLastCount] = useState<number | null>(null);
@@ -283,39 +283,47 @@ const ReportCard = ({ report }: { report: ReportDef }) => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5 flex flex-col gap-3">
-      <div>
-        <h3 className="font-heading text-base font-semibold text-slate-950">{report.title}</h3>
-        <p className="text-sm text-muted-foreground mt-1">{report.description}</p>
-      </div>
-      {progress && (
-        <div className="text-xs text-muted-foreground">
-          {progress.label ?? "Working"}… {progress.done}/{progress.total}
-          <div className="h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
-            <div
-              className="h-full bg-primary transition-all"
-              style={{ width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%` }}
-            />
-          </div>
+    <tr className="border-t border-border">
+      <td className="p-3 font-medium text-foreground max-w-0">
+        <span className="block truncate" title={report.title}>{report.title}</span>
+      </td>
+      <td className="p-3 text-muted-foreground max-w-0">
+        <span className="block truncate" title={report.description}>{report.description}</span>
+      </td>
+      <td className="p-3 text-muted-foreground">
+        {error ? (
+          <span className="block text-xs text-destructive">{error}</span>
+        ) : progress ? (
+          <span className="block text-xs">
+            {progress.label ?? "Working"}… {progress.done}/{progress.total}
+            <span className="block h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
+              <span
+                className="block h-full bg-primary transition-all"
+                style={{ width: `${progress.total ? (progress.done / progress.total) * 100 : 0}%` }}
+              />
+            </span>
+          </span>
+        ) : lastCount !== null ? (
+          <span className="block text-xs">
+            {lastCount} {lastCount === 1 ? "row" : "rows"} exported.
+          </span>
+        ) : (
+          <span className="block text-xs">—</span>
+        )}
+      </td>
+      <td className="p-3">
+        <div className="flex justify-end">
+          <button
+            onClick={handleRun}
+            disabled={running}
+            className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-primary text-primary-foreground text-sm font-medium disabled:opacity-60"
+          >
+            {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            {running ? "Generating…" : "Download CSV"}
+          </button>
         </div>
-      )}
-      {lastCount !== null && !running && (
-        <p className="text-xs text-muted-foreground">
-          {lastCount} {lastCount === 1 ? "row" : "rows"} exported.
-        </p>
-      )}
-      {error && <p className="text-xs text-destructive">{error}</p>}
-      <div className="flex">
-        <button
-          onClick={handleRun}
-          disabled={running}
-          className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-primary text-primary-foreground text-sm font-medium disabled:opacity-60"
-        >
-          {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-          {running ? "Generating…" : "Download CSV"}
-        </button>
-      </div>
-    </div>
+      </td>
+    </tr>
   );
 };
 
@@ -324,10 +332,22 @@ const AdminReports = () => {
     <div>
       <h1 className="font-heading text-2xl lg:text-3xl font-[550] text-slate-950 mb-2">Reports</h1>
       <p className="text-sm text-muted-foreground mb-6 text-slate-950">{"\n"}</p>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
-        {REPORTS.map((r) => (
-          <ReportCard key={r.id} report={r} />
-        ))}
+      <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+        <table className="w-full table-fixed text-sm min-w-[820px]">
+          <thead className="bg-muted">
+            <tr>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[22%]">Report</th>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[40%]">Description</th>
+              <th className="text-left p-3 text-[15px] font-bold text-foreground w-[20%]">Status</th>
+              <th className="p-3 w-[18%]"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {REPORTS.map((r) => (
+              <ReportRow key={r.id} report={r} />
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
