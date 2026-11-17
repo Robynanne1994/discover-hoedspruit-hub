@@ -239,9 +239,6 @@ const AdminSearchSuggested = () => {
         <div className="px-5 py-4 rounded-t-xl bg-primary-tint border-b border-border flex items-center justify-between gap-3">
           <div>
             <h2 className="font-heading text-lg font-bold text-foreground">Add Listings</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Search by business name and tap Add.
-            </p>
           </div>
           {search.trim() && (
             <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
