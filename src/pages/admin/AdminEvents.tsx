@@ -16,7 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ImageSlotField from "@/components/admin/ImageSlotField";
@@ -133,7 +133,14 @@ const AdminEvents = () => {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Event | null>(null);
   const [form, setForm] = useState(emptyForm);
-  const [tab, setTab] = useState<"active" | "passed">("active");
+  // The sidebar's Upcoming / Past links own the tab, so the page follows the URL.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tab: "active" | "passed" = location.pathname.endsWith("/past")
+    ? "passed"
+    : "active";
+  const setTab = (next: "active" | "passed") =>
+    navigate(next === "passed" ? "/admin/events/past" : "/admin/events/upcoming");
 
   // An event whose date has gone belongs in Passed, using the same rule the
   // public cards use for "Event has Passed".
@@ -515,7 +522,7 @@ const AdminEvents = () => {
                       : "bg-card text-foreground border-border hover:border-primary"
                   }`}
                 >
-                  {t === "active" ? "Active" : "Passed"} ({t === "active" ? activeCount : passedCount})
+                  {t === "active" ? "Upcoming Events" : "Past Events"} ({t === "active" ? activeCount : passedCount})
                 </button>
               ))}
             </div>
@@ -549,7 +556,7 @@ const AdminEvents = () => {
                   ))}
                   {filtered.length === 0 && (
                     <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
-                      {tab === "active" ? "No active events." : "No passed events."}
+                      {tab === "active" ? "No upcoming events." : "No past events."}
                     </td></tr>
                   )}
                 </tbody>

@@ -1,85 +1,44 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  LayoutDashboard,
-  List,
-  ArrowLeft,
-  Calendar,
-  ChevronDown,
-  FolderOpen,
-  LogOut,
-  Upload,
-  Home,
-  Tag,
-  Radio,
-  Menu,
-  
-  Users,
-  FileBarChart,
-  Bell,
-  Megaphone,
-  Flag,
-  ShieldAlert,
-  HelpCircle,
-  Search as SearchIcon,
-  Star,
-} from "lucide-react";
+import { ArrowLeft, ChevronDown, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-type NavItem = {
-  label: string;
-  path: string;
-  icon: typeof LayoutDashboard;
-};
-
-type NavGroup = {
-  label: string;
-  icon: typeof LayoutDashboard;
-  children: NavItem[];
-};
-
-const userNavItems: NavItem[] = [
-  { label: "App Users", path: "/admin/users", icon: Users },
-  { label: "Reported Users", path: "/admin/user-reports", icon: Flag },
-  { label: "Moderated Users", path: "/admin/moderated-users", icon: ShieldAlert },
-];
-
-const navItems: (NavItem | NavGroup)[] = [
-  { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
-  { label: "Homepage", path: "/admin/homepage", icon: Home },
-  { label: "Search Suggested", path: "/admin/search-suggested", icon: SearchIcon },
-  { label: "App Store", path: "/admin/app-store", icon: Star },
-  { label: "Users", icon: Users, children: userNavItems },
-  { label: "Categories", path: "/admin/categories", icon: FolderOpen },
-  { label: "Listings", path: "/admin/listings", icon: List },
-  { label: "Events", path: "/admin/events", icon: Calendar },
-  { label: "Event Hosts", path: "/admin/event-hosts", icon: Users },
-  { label: "Specials", path: "/admin/specials", icon: Tag },
-  { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
-  { label: "Notifications", path: "/admin/notifications", icon: Bell },
-  { label: "App Updates & Notifications", path: "/admin/app-updates", icon: Megaphone },
-  { label: "Reports", path: "/admin/reports", icon: FileBarChart },
-  { label: "FAQs", path: "/admin/faqs", icon: HelpCircle },
-  { label: "Import CSV", path: "/admin/import", icon: Upload },
-];
-
-const allNavItems: NavItem[] = navItems.flatMap((item): NavItem[] =>
-  "children" in item ? item.children : [item],
-);
+import {
+  adminNavEntries,
+  adminNavGroups,
+  allAdminNavItems,
+  isNavGroup,
+  navGroupActive,
+  type NavItem,
+} from "@/lib/adminNav";
 
 const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
   const location = useLocation();
-  const usersMenuId = useId();
-  const usersSectionActive = userNavItems.some(
-    (item) => location.pathname === item.path,
+  const navId = useId();
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(
+      adminNavGroups.map((group) => [
+        group.label,
+        navGroupActive(group, location.pathname),
+      ]),
+    ),
   );
-  const [usersOpen, setUsersOpen] = useState(usersSectionActive);
 
+  // Landing on a nested page keeps its section open; collapsing stays manual.
   useEffect(() => {
-    if (usersSectionActive) setUsersOpen(true);
-  }, [usersSectionActive]);
+    setOpenGroups((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      for (const group of adminNavGroups) {
+        if (navGroupActive(group, location.pathname) && !next[group.label]) {
+          next[group.label] = true;
+          changed = true;
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [location.pathname]);
 
   const renderLink = (item: NavItem) => {
     const active = location.pathname === item.path;
@@ -102,36 +61,39 @@ const NavList = ({ onNavigate }: { onNavigate?: () => void }) => {
 
   return (
     <nav className="flex-1 space-y-1">
-      {navItems.map((item) => {
-        if (!("children" in item)) return renderLink(item);
+      {adminNavEntries.map((entry, index) => {
+        if (!isNavGroup(entry)) return renderLink(entry);
+
+        const open = !!openGroups[entry.label];
+        const active = navGroupActive(entry, location.pathname);
+        const menuId = `${navId}-group-${index}`;
 
         return (
-          <div key={item.label} className="space-y-1">
+          <div key={entry.label} className="space-y-1">
             <button
               type="button"
-              aria-expanded={usersOpen}
-              aria-controls={usersMenuId}
-              onClick={() => setUsersOpen((open) => !open)}
+              aria-expanded={open}
+              aria-controls={menuId}
+              onClick={() =>
+                setOpenGroups((prev) => ({ ...prev, [entry.label]: !open }))
+              }
               className={`flex w-full items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                usersSectionActive
+                active
                   ? "text-foreground bg-muted"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
             >
-              <item.icon className="h-4 w-4 shrink-0" />
-              <span>{item.label}</span>
+              <entry.icon className="h-4 w-4 shrink-0" />
+              <span>{entry.label}</span>
               <ChevronDown
                 className={`ml-auto h-4 w-4 transition-transform ${
-                  usersOpen ? "" : "-rotate-90"
+                  open ? "" : "-rotate-90"
                 }`}
               />
             </button>
-            {usersOpen && (
-              <div
-                id={usersMenuId}
-                className="ml-5 space-y-1 border-l border-border pl-3"
-              >
-                {item.children.map(renderLink)}
+            {open && (
+              <div id={menuId} className="ml-5 space-y-1 border-l border-border pl-3">
+                {entry.children.map(renderLink)}
               </div>
             )}
           </div>
@@ -161,10 +123,10 @@ const AdminLayout = () => {
   const goBack = () => navigate(backPath);
   const parentTitle =
     depth > 2
-      ? allNavItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
+      ? allAdminNavItems.find((i) => i.path === "/" + segments.slice(0, 2).join("/"))?.label
       : undefined;
   const currentTitle =
-    allNavItems.find((i) => i.path === location.pathname)?.label ??
+    allAdminNavItems.find((i) => i.path === location.pathname)?.label ??
     parentTitle ??
     "Admin";
 

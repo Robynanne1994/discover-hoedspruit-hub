@@ -313,6 +313,8 @@ const App = () => (
 
                 <Route path="listings" element={<AdminListings />} />
                 <Route path="events" element={<AdminEvents />} />
+                <Route path="events/upcoming" element={<AdminEvents />} />
+                <Route path="events/past" element={<AdminEvents />} />
                 <Route path="events/import" element={<AdminEventsImport />} />
                 <Route path="events/featured-order" element={<AdminFeaturedEventsOrder />} />
                 <Route path="event-hosts" element={<AdminEventHosts />} />
