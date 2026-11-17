@@ -23,6 +23,7 @@ import SpecialEditDialog, { TermsEditor } from "@/components/admin/SpecialEditDi
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ActiveToggle from "@/components/admin/ActiveToggle";
 import { parseDays } from "@/lib/specialDays";
+import { isActiveSpecial, specialToday } from "@/lib/specialVisibility";
 import SpecialAudienceField from "@/components/admin/SpecialAudienceField";
 
 

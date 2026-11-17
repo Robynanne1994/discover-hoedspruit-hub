@@ -26,3 +26,10 @@ export function isVisibleSpecial(special: SpecialVisibilityFields, today = speci
     special.valid_until >= today
   );
 }
+
+// The administrative "Active" rule: switched on and not yet expired. This is
+// what the Active Specials tab and the dashboard's specials count both use, so
+// the two never disagree about how many deals are live.
+export function isActiveSpecial(special: SpecialVisibilityFields, today = specialToday()): boolean {
+  return special.is_active && (!special.valid_until || special.valid_until >= today);
+}
