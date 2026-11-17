@@ -119,7 +119,7 @@ const AdminAppUpdates = () => {
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="app-update-link">Link (optional)</Label>
+          <Label htmlFor="app-update-link">Link (Optional)</Label>
           <Input
             id="app-update-link"
             value={link}
