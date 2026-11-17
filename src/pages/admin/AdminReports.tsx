@@ -316,7 +316,7 @@ const ReportRow = ({ report }: { report: ReportDef }) => {
           <button
             onClick={handleRun}
             disabled={running}
-            className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-primary text-primary-foreground text-sm font-medium disabled:opacity-60"
+            className="inline-flex items-center gap-2 px-4 h-9 rounded-full bg-primary text-primary-foreground text-sm font-medium whitespace-nowrap disabled:opacity-60"
           >
             {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
             {running ? "Generating…" : "Download CSV"}
