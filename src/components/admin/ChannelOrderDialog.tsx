@@ -44,9 +44,11 @@ export default function ChannelOrderDialog({ open, onOpenChange, channels }: { o
         qc.invalidateQueries({ queryKey: ["bush-telegraph"] }),
         qc.invalidateQueries({ queryKey: ["home-local-channels"] }),
         qc.invalidateQueries({ queryKey: ["search-channels"] }),
-        qc.invalidateQueries({ queryKey: ["my-saved-resources"] }),
-        qc.invalidateQueries({ queryKey: ["user-saved-resources"] }),
-        qc.invalidateQueries({ queryKey: ["user-saved-resources-full"] }),
+        // Off-screen saved lists: refetch now, since refetchOnMount: false
+        // would otherwise reopen them in the old order.
+        qc.invalidateQueries({ queryKey: ["my-saved-resources"], refetchType: "all" }),
+        qc.invalidateQueries({ queryKey: ["user-saved-resources"], refetchType: "all" }),
+        qc.invalidateQueries({ queryKey: ["user-saved-resources-full"], refetchType: "all" }),
       ]);
       toast.success("Order saved");
       onOpenChange(false);

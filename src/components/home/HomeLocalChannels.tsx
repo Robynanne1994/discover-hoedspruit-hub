@@ -95,9 +95,12 @@ const HomeLocalChannels = () => {
       return { idsKey, setKey, prevIds, prevSet };
     },
     onSuccess: (_d, vars) => {
-      // Profile's saved-resources list isn't mounted here, so this only marks
-      // it stale (no refetch, no flicker).
-      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
+      // Profile's saved-resources list isn't mounted here. Marking it stale
+      // alone isn't enough: the app's QueryClient has refetchOnMount: false,
+      // so the profile would reopen on the pre-save cache (see
+      // useToggleFavourite). Refetch it now, off screen, so it's current.
+      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"], refetchType: "all" });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-count"], refetchType: "all" });
       toast.success(vars.isSaved ? "Removed from saved" : "Saved to your resources");
     },
     onError: (err: any, _v, ctx) => {

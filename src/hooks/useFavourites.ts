@@ -81,8 +81,16 @@ export const useToggleFavourite = () => {
     onSuccess: () => {
       // Refresh the saved lists and counts (not the heart set, which is
       // already updated optimistically) so Saved pages show the change.
+      //
+      // refetchType "all", not the default "active": you save from a detail
+      // page, so the profile's Saved lists are cached but not on screen. The
+      // default only marks those stale, and the app's QueryClient sets
+      // refetchOnMount: false, so reopening the profile served the pre-save
+      // cache and the new special or event never appeared. The web hid this
+      // behind page reloads; the native app keeps its cache for as long as it
+      // runs. Only lists already cached are refetched, so this stays cheap.
       const keys = ["my-saved-listings","my-saved-events","my-saved-specials","my-saved-resources","my-saved-count","user-saved-listings","user-saved-events","user-saved-specials","user-saved-resources","user-saved-listings-full","user-saved-events-full","user-saved-specials-full","user-saved-resources-full","favourites","saved-resource-ids"];
-      keys.forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
+      keys.forEach((k) => qc.invalidateQueries({ queryKey: [k], refetchType: "all" }));
     },
     // No global invalidate-everything — the optimistic cache update is
     // sufficient and avoids cascading refetches that cause UI flicker.
