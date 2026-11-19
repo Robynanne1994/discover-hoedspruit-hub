@@ -1,13 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Tag, X } from "lucide-react";
+import { Plus, Tag, Trash2, X } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
   label: string;
   primary: string;
   onPrimaryChange: (v: string) => void;
+  /** Removes the primary value and its label in one parent update. */
+  onPrimaryRemove?: () => void;
   extras: string[];
   onExtrasChange: (next: string[], nextLabels?: string[]) => void;
   /** Optional custom label for the primary contact (e.g. "Emergency Contact"). */
@@ -19,12 +21,15 @@ type Props = {
   placeholder?: string;
   type?: "text" | "email" | "tel";
   addLabel?: string;
+  /** Listings use bins for contact removal; other editors retain their X controls. */
+  trashRemove?: boolean;
 };
 
 export default function MultiContactField({
   label,
   primary,
   onPrimaryChange,
+  onPrimaryRemove,
   extras,
   onExtrasChange,
   primaryLabel,
@@ -34,6 +39,7 @@ export default function MultiContactField({
   placeholder,
   type = "text",
   addLabel,
+  trashRemove = false,
 }: Props) {
   const list = Array.isArray(extras) ? extras : [];
   const labels = Array.isArray(extraLabels) ? extraLabels : [];
@@ -78,12 +84,29 @@ export default function MultiContactField({
     <div className="space-y-2">
       <Label>{label}</Label>
       <div className="space-y-1.5">
-        <Input
-          type={type}
-          value={primary || ""}
-          placeholder={placeholder}
-          onChange={(e) => onPrimaryChange(e.target.value)}
-        />
+        <div className="flex gap-2">
+          <Input
+            type={type}
+            value={primary || ""}
+            placeholder={placeholder}
+            onChange={(e) => onPrimaryChange(e.target.value)}
+          />
+          {onPrimaryRemove && (primary || primaryLabel) && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 shrink-0 self-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
+              onClick={() => {
+                onPrimaryRemove();
+                setPrimaryLabelOpen(false);
+              }}
+              aria-label={`Remove ${label.toLowerCase()}`}
+            >
+              <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
+            </Button>
+          )}
+        </div>
         {supportsLabels && onPrimaryLabelChange && (
           primaryLabelOpen ? (
             <div className="flex gap-2 items-center">
@@ -133,9 +156,13 @@ export default function MultiContactField({
               size="icon"
               className="h-7 w-7 shrink-0 self-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
               onClick={() => removeAt(i)}
-              aria-label="Remove"
+              aria-label={`Remove ${label.toLowerCase()} ${i + 2}`}
             >
-              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+              {trashRemove ? (
+                <Trash2 className="h-3.5 w-3.5" strokeWidth={2} />
+              ) : (
+                <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+              )}
             </Button>
           </div>
           {onExtraLabelsChange && (

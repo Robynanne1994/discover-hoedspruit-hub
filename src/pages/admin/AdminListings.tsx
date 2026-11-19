@@ -1399,6 +1399,7 @@ const AdminListings = () => {
                       type="tel"
                       primary={form.phone}
                       onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                      onPrimaryRemove={() => setForm({ ...form, phone: "", phone_label: "" })}
                       primaryLabel={form.phone_label}
                       onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
                       extras={form.additional_phones}
@@ -1406,6 +1407,7 @@ const AdminListings = () => {
                       extraLabels={form.additional_phone_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                       addLabel="Add"
+                      trashRemove
                     />
                   </div>
                   <div className="space-y-2">
@@ -1414,6 +1416,7 @@ const AdminListings = () => {
                       type="email"
                       primary={form.email}
                       onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                      onPrimaryRemove={() => setForm({ ...form, email: "", email_label: "" })}
                       primaryLabel={form.email_label}
                       onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
                       extras={form.additional_emails}
@@ -1421,6 +1424,7 @@ const AdminListings = () => {
                       extraLabels={form.additional_email_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                       addLabel="Add"
+                      trashRemove
                     />
                   </div>
                 </div>
@@ -1431,6 +1435,7 @@ const AdminListings = () => {
                     type="tel"
                     primary={form.whatsapp}
                     onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                    onPrimaryRemove={() => setForm({ ...form, whatsapp: "", whatsapp_label: "" })}
                     primaryLabel={form.whatsapp_label}
                     onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
                     extras={form.additional_whatsapps}
@@ -1439,6 +1444,7 @@ const AdminListings = () => {
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                     placeholder="e.g. +27791234567"
                     addLabel="Add"
+                    trashRemove
                   />
                 </div>
                 <div className="space-y-2">

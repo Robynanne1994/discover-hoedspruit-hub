@@ -30,10 +30,41 @@ describe("MultiContactField removal", () => {
     }
 
     render(<Contacts />);
-    fireEvent.click(screen.getAllByRole("button", { name: "Remove" })[1]);
+    fireEvent.click(screen.getByRole("button", { name: "Remove whatsapp 3" }));
 
     expect(saved.values).toEqual(["27833079258"]);
     expect(saved.labels).toEqual([""]);
     expect(screen.queryByDisplayValue("27735895924")).toBeNull();
+  });
+
+  it.each(["Email", "Phone", "WhatsApp"])("removes the only %s and its label", (label) => {
+    let saved = { value: "only-contact", label: "Office" };
+
+    function Contacts() {
+      const [state, setState] = useState(saved);
+      saved = state;
+      return (
+        <MultiContactField
+          label={label}
+          primary={state.value}
+          onPrimaryChange={(value) => setState({ ...state, value })}
+          onPrimaryRemove={() => setState({ value: "", label: "" })}
+          primaryLabel={state.label}
+          onPrimaryLabelChange={(label) => setState({ ...state, label })}
+          extras={[]}
+          onExtrasChange={() => undefined}
+          extraLabels={[]}
+          onExtraLabelsChange={() => undefined}
+        />
+      );
+    }
+
+    render(<Contacts />);
+    fireEvent.click(screen.getByRole("button", { name: `Remove ${label.toLowerCase()}` }));
+
+    expect(saved).toEqual({ value: "", label: "" });
+    expect(screen.getByDisplayValue("")).toBeInTheDocument();
+    expect(screen.queryByDisplayValue("Office")).toBeNull();
+    expect(screen.queryByRole("button", { name: `Remove ${label.toLowerCase()}` })).toBeNull();
   });
 });
