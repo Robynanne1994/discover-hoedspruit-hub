@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Tag, Trash2, X } from "lucide-react";
+import { Plus, Tag, X } from "lucide-react";
 import { useState } from "react";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   primary: string;
   onPrimaryChange: (v: string) => void;
   extras: string[];
-  onExtrasChange: (next: string[]) => void;
+  onExtrasChange: (next: string[], nextLabels?: string[]) => void;
   /** Optional custom label for the primary contact (e.g. "Emergency Contact"). */
   primaryLabel?: string;
   onPrimaryLabelChange?: (v: string) => void;
@@ -56,8 +56,12 @@ export default function MultiContactField({
     onExtraLabelsChange(next);
   };
   const removeAt = (i: number) => {
-    onExtrasChange(list.filter((_, idx) => idx !== i));
-    if (onExtraLabelsChange) onExtraLabelsChange(labels.filter((_, idx) => idx !== i));
+    // Values and labels must change in one parent update. Two separate callbacks
+    // can both read the old form and the label update then restores the value.
+    onExtrasChange(
+      list.filter((_, idx) => idx !== i),
+      labels.filter((_, idx) => idx !== i),
+    );
     setExtraLabelOpen((s) => {
       const n: Record<number, boolean> = {};
       Object.keys(s).forEach((k) => {
@@ -131,7 +135,7 @@ export default function MultiContactField({
               onClick={() => removeAt(i)}
               aria-label="Remove"
             >
-              <Trash2 className="h-4 w-4" strokeWidth={2.5} />
+              <X className="h-3.5 w-3.5" strokeWidth={2.5} />
             </Button>
           </div>
           {onExtraLabelsChange && (

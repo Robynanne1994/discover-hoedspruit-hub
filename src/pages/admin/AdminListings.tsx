@@ -1402,7 +1402,7 @@ const AdminListings = () => {
                       primaryLabel={form.phone_label}
                       onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
                       extras={form.additional_phones}
-                      onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                      onExtrasChange={(v, labels) => setForm({ ...form, additional_phones: v, ...(labels ? { additional_phone_labels: labels } : {}) })}
                       extraLabels={form.additional_phone_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                       addLabel="Add"
@@ -1417,7 +1417,7 @@ const AdminListings = () => {
                       primaryLabel={form.email_label}
                       onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
                       extras={form.additional_emails}
-                      onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                      onExtrasChange={(v, labels) => setForm({ ...form, additional_emails: v, ...(labels ? { additional_email_labels: labels } : {}) })}
                       extraLabels={form.additional_email_labels}
                       onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                       addLabel="Add"
@@ -1434,7 +1434,7 @@ const AdminListings = () => {
                     primaryLabel={form.whatsapp_label}
                     onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
                     extras={form.additional_whatsapps}
-                    onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                    onExtrasChange={(v, labels) => setForm({ ...form, additional_whatsapps: v, ...(labels ? { additional_whatsapp_labels: labels } : {}) })}
                     extraLabels={form.additional_whatsapp_labels}
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                     placeholder="e.g. +27791234567"
@@ -1450,7 +1450,7 @@ const AdminListings = () => {
                     primaryLabel={form.website_label}
                     onPrimaryLabelChange={(v) => setForm({ ...form, website_label: v })}
                     extras={form.additional_websites}
-                    onExtrasChange={(v) => setForm({ ...form, additional_websites: v })}
+                    onExtrasChange={(v, labels) => setForm({ ...form, additional_websites: v, ...(labels ? { additional_website_labels: labels } : {}) })}
                     extraLabels={form.additional_website_labels}
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
                     placeholder="https://..."
@@ -1472,7 +1472,11 @@ const AdminListings = () => {
                     primaryLabel={form.other_socials_labels[0] || ""}
                     onPrimaryLabelChange={(v) => { const n = [...form.other_socials_labels]; while (n.length < 1) n.push(""); n[0] = v; setForm({ ...form, other_socials_labels: n }); }}
                     extras={form.other_socials.slice(1)}
-                    onExtrasChange={(next) => setForm({ ...form, other_socials: [form.other_socials[0] || "", ...next] })}
+                    onExtrasChange={(next, labels) => setForm({
+                      ...form,
+                      other_socials: [form.other_socials[0] || "", ...next],
+                      ...(labels ? { other_socials_labels: [form.other_socials_labels[0] || "", ...labels] } : {}),
+                    })}
                     extraLabels={form.other_socials_labels.slice(1)}
                     onExtraLabelsChange={(next) => setForm({ ...form, other_socials_labels: [form.other_socials_labels[0] || "", ...next] })}
                     placeholder="https://..."

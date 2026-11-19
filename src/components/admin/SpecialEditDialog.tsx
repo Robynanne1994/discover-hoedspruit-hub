@@ -463,7 +463,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               primary={form.contact_whatsapp || ""}
               onPrimaryChange={(v) => set("contact_whatsapp", v)}
               extras={form.additional_whatsapps || []}
-              onExtrasChange={(v) => set("additional_whatsapps", v)}
+              onExtrasChange={(v, labels) => {
+                set("additional_whatsapps", v);
+                if (labels) set("additional_whatsapp_labels", labels);
+              }}
               primaryLabel={form.whatsapp_label || ""}
               onPrimaryLabelChange={(v) => set("whatsapp_label", v)}
               extraLabels={form.additional_whatsapp_labels || []}
@@ -476,7 +479,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               primary={form.contact_email || ""}
               onPrimaryChange={(v) => set("contact_email", v)}
               extras={form.additional_emails || []}
-              onExtrasChange={(v) => set("additional_emails", v)}
+              onExtrasChange={(v, labels) => {
+                set("additional_emails", v);
+                if (labels) set("additional_email_labels", labels);
+              }}
               primaryLabel={form.email_label || ""}
               onPrimaryLabelChange={(v) => set("email_label", v)}
               extraLabels={form.additional_email_labels || []}
@@ -489,7 +495,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               primary={form.contact_phone || ""}
               onPrimaryChange={(v) => set("contact_phone", v)}
               extras={form.additional_phones || []}
-              onExtrasChange={(v) => set("additional_phones", v)}
+              onExtrasChange={(v, labels) => {
+                set("additional_phones", v);
+                if (labels) set("additional_phone_labels", labels);
+              }}
               primaryLabel={form.phone_label || ""}
               onPrimaryLabelChange={(v) => set("phone_label", v)}
               extraLabels={form.additional_phone_labels || []}
