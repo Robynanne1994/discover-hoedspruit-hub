@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isUpcomingSpecial, isVisibleSpecial, specialToday } from './specialVisibility';
+import { isActiveSpecial, isUpcomingSpecial, isVisibleSpecial, specialToday } from './specialVisibility';
 
 const today = '2026-10-27';
 describe('specials visibility', () => {
@@ -19,6 +19,16 @@ describe('specials visibility', () => {
     expect(isVisibleSpecial({ is_active: true, valid_until: today }, today)).toBe(true);
     expect(isVisibleSpecial({ is_active: true }, today)).toBe(true);
     expect(isVisibleSpecial({ is_active: true, valid_until: '2026-10-26' }, today)).toBe(false);
+  });
+  it('keeps a current draft in the Active admin tab while hiding it publicly', () => {
+    const draft = { is_active: false, valid_from: '2026-10-01', valid_until: '2026-11-30' };
+    expect(isActiveSpecial(draft, today)).toBe(true);
+    expect(isVisibleSpecial(draft, today)).toBe(false);
+  });
+  it('puts only expired specials in the Past admin tab', () => {
+    expect(isActiveSpecial({ is_active: true, valid_until: '2026-10-26' }, today)).toBe(false);
+    expect(isActiveSpecial({ is_active: false, valid_until: today }, today)).toBe(true);
+    expect(isActiveSpecial({ is_active: false, valid_until: null }, today)).toBe(true);
   });
   it('accepts an upcoming start without an end but rejects reversed dates', () => {
     expect(isUpcomingSpecial({ valid_from: '2026-11-01' }, today)).toBe(true);

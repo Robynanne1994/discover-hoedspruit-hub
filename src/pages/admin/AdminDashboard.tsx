@@ -43,7 +43,7 @@ const AdminDashboard = () => {
       return upcomingEventCount((data ?? []) as EventScheduleLike[]);
     },
   });
-  // Only deals that are switched on and not yet expired — the Active Specials
+  // Every deal that has not expired, including drafts — the Active Specials
   // tab's own set.
   const specials = useQuery({
     queryKey: ["admin-count-specials-active"],

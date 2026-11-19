@@ -27,9 +27,9 @@ export function isVisibleSpecial(special: SpecialVisibilityFields, today = speci
   );
 }
 
-// The administrative "Active" rule: switched on and not yet expired. This is
-// what the Active Specials tab and the dashboard's specials count both use, so
-// the two never disagree about how many deals are live.
+// The administrative Active / Past tabs are date-based only. A current special
+// with no image is a draft, not a past special: is_active controls public
+// visibility above, while valid_until alone decides its admin tab.
 export function isActiveSpecial(special: SpecialVisibilityFields, today = specialToday()): boolean {
-  return special.is_active && (!special.valid_until || special.valid_until >= today);
+  return !special.valid_until || special.valid_until >= today;
 }

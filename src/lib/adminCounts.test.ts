@@ -35,7 +35,7 @@ describe("upcomingEventCount", () => {
 });
 
 describe("activeSpecialCount", () => {
-  it("counts switched-on, unexpired deals only", () => {
+  it("counts unexpired drafts as Active and excludes only passed specials", () => {
     expect(
       activeSpecialCount(
         [
@@ -46,6 +46,6 @@ describe("activeSpecialCount", () => {
         ],
         "2026-11-17",
       ),
-    ).toBe(2);
+    ).toBe(3);
   });
 });
