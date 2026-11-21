@@ -134,7 +134,9 @@ const AdminEventHosts = () => {
                 <Label>Link</Label>
                 <Input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} placeholder="https://" />
               </div>
-              <ImageSlotField slot={hostSlot} label="Photo" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
+              <div className="grid grid-cols-2 gap-3">
+                <ImageSlotField slot={hostSlot} label="Photo" asField value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} />
+              </div>
             </div>
           )}
           <DialogFooter>

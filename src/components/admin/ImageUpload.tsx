@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Upload, X, Image as ImageIcon, Crop } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import ImageCropDialog from "./ImageCropDialog";
 import CropGuides from "./CropGuides";
 import { DEFAULT_PREVIEW_WIDTH } from "@/lib/appLayout";
@@ -40,6 +41,12 @@ interface ImageUploadProps {
    * floating buttons land under the status bar, depend on how wide the card is.
    */
   guideBox?: (viewport: number) => { width: number; height: number };
+  /**
+   * Drop the tinted panel behind the preview so the picture sits on the same
+   * surface as the rest of the form. Used by fields that are laid out like
+   * ordinary text inputs rather than as a picture slot.
+   */
+  plainPreview?: boolean;
 }
 
 const ImageUpload = ({
@@ -53,6 +60,7 @@ const ImageUpload = ({
   previewRender,
   guides,
   guideBox,
+  plainPreview,
 }: ImageUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
@@ -128,7 +136,7 @@ const ImageUpload = ({
         // they land on top of the very chrome the preview is there to show.
         (previewRender ? (
           <div className="space-y-2">
-            <div className="rounded-lg border border-border bg-muted/40 p-3 flex justify-center">
+            <div className={cn("rounded-lg border border-border p-3 flex justify-center", !plainPreview && "bg-muted/40")}>
               {previewRender(renderStoredImage)}
             </div>
             <div className="flex gap-2">
@@ -146,7 +154,7 @@ const ImageUpload = ({
           // only sit in the right place if the box they are measured against is
           // the one on screen.
           <div className="space-y-2">
-            <div className="flex flex-col items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-3">
+            <div className={cn("flex flex-col items-center gap-1.5 rounded-lg border border-border p-3", !plainPreview && "bg-muted/40")}>
               <div
                 className="relative overflow-hidden"
                 style={{

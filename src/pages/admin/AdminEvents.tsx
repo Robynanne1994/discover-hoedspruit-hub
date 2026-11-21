@@ -482,12 +482,15 @@ const AdminEvents = () => {
                             listings={(listings || []) as { id: string; title: string }[]}
                             onChange={(v) => setForm((f) => ({ ...f, [linkKey]: v.link, [listingKey]: v.listingId }))}
                           />
-                          <ImageSlotField
-                            slot={hostSlot}
-                            label="Photo"
-                            value={(form[imgKey] as string) || ""}
-                            onChange={(url) => setForm({ ...form, [imgKey]: url })}
-                          />
+                          <div className="grid grid-cols-2 gap-3">
+                            <ImageSlotField
+                              slot={hostSlot}
+                              label="Photo"
+                              asField
+                              value={(form[imgKey] as string) || ""}
+                              onChange={(url) => setForm({ ...form, [imgKey]: url })}
+                            />
+                          </div>
                         </div>
                       );
                     })}

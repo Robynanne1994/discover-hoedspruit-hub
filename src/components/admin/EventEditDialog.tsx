@@ -557,12 +557,15 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                     />
                     {/* Linked app listings already have their own image — the host photo is only for non-linked hosts. */}
                     {!form[h.listingKey] && (
-                      <ImageSlotField
-                        slot={hostSlot}
-                        label="Photo"
-                        value={form[h.imgKey] || ""}
-                        onChange={(url) => set(h.imgKey, url)}
-                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <ImageSlotField
+                          slot={hostSlot}
+                          label="Photo"
+                          asField
+                          value={form[h.imgKey] || ""}
+                          onChange={(url) => set(h.imgKey, url)}
+                        />
+                      </div>
                     )}
                   </div>
                 ))}

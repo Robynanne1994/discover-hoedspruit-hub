@@ -1,4 +1,5 @@
 import ImageUpload from "./ImageUpload";
+import { Label } from "@/components/ui/label";
 import type { ImageSlot } from "@/lib/imageSlots";
 
 interface ImageSlotFieldProps {
@@ -8,6 +9,12 @@ interface ImageSlotFieldProps {
   /** Override the slot label, e.g. "Photo" for a host row. */
   label?: string;
   bucket?: string;
+  /**
+   * Lay the picture out like the form's other fields: the shared Label heading
+   * used by "Name" and "Link Type", and a preview that sits on the page
+   * background instead of a tinted panel.
+   */
+  asField?: boolean;
 }
 
 /**
@@ -22,10 +29,16 @@ interface ImageSlotFieldProps {
  * `box` and `guides` are passed as the slot's own functions of device width —
  * the upload control picks the width being previewed and calls them.
  */
-const ImageSlotField = ({ slot, value, onChange, label, bucket = "listing-images" }: ImageSlotFieldProps) => (
-  <div className="space-y-1">
-    <p className="text-sm font-medium text-foreground">{label ?? slot.label}</p>
-    <p className="text-[11px] text-muted-foreground">{"\n"}</p>
+const ImageSlotField = ({ slot, value, onChange, label, bucket = "listing-images", asField = false }: ImageSlotFieldProps) => (
+  <div className={asField ? "space-y-1.5" : "space-y-1"}>
+    {asField ? (
+      <Label className="block">{label ?? slot.label}</Label>
+    ) : (
+      <>
+        <p className="text-sm font-medium text-foreground">{label ?? slot.label}</p>
+        <p className="text-[11px] text-muted-foreground">{"\n"}</p>
+      </>
+    )}
     <ImageUpload
       bucket={bucket}
       value={value}
@@ -36,6 +49,7 @@ const ImageSlotField = ({ slot, value, onChange, label, bucket = "listing-images
       cropTitle={`Crop — ${label ?? slot.label}`}
       guides={slot.guides}
       guideBox={slot.box}
+      plainPreview={asField}
     />
   </div>
 );
