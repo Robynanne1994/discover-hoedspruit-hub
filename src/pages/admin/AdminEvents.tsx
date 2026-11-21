@@ -325,7 +325,7 @@ const AdminEvents = () => {
                 <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
               </div>
               <div className="space-y-2">
-                <Label>Linked Business Listings</Label>
+                <Label className="block">Linked Business Listings</Label>
                 {((form as any).business_ids || []).map((bid: string, idx: number) => (
                   <div key={idx} className="flex gap-2">
                     <select

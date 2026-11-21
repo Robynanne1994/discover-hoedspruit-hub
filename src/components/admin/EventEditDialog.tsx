@@ -230,7 +230,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                   <Button type="button" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setTagRows((rows) => [...rows, ""])}><Plus className="h-3 w-3" /> Add</Button>
           </div>
           <div className="space-y-2">
-            <Label>Linked Business Listings</Label>
+            <Label className="block">Linked Business Listings</Label>
             {(Array.isArray(form.business_ids) ? form.business_ids : []).slice(0, 1).map((bid: string, idx: number) => (
               <div key={idx} className="flex items-center gap-2">
                 <Select
