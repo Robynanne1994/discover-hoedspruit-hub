@@ -25,9 +25,7 @@ interface ImageSlotFieldProps {
 const ImageSlotField = ({ slot, value, onChange, label, bucket = "listing-images" }: ImageSlotFieldProps) => (
   <div className="space-y-1">
     <p className="text-sm font-medium text-foreground">{label ?? slot.label}</p>
-    <p className="text-[11px] text-muted-foreground">
-      Best at {slot.aspectLabel}. {slot.where} {!value && slot.fallback}
-    </p>
+    <p className="text-[11px] text-muted-foreground">{"\n"}</p>
     <ImageUpload
       bucket={bucket}
       value={value}
