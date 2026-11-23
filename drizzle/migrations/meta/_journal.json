@@ -204,6 +204,13 @@
       "when": 1795443315569,
       "tag": "0028_merge_event_notification_interests",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1795443386510,
+      "tag": "0029_merge_business_party_event_notifications",
+      "breakpoints": true
     }
   ]
 }

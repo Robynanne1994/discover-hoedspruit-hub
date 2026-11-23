@@ -28,4 +28,14 @@ describe("splitEventNotificationTags", () => {
     expect(splitEventNotificationTags(["Health", "Wellness", "Wellness Retreat", "Health & Wellness", "Art"]))
       .toEqual(["Art", "Health & Wellness"]);
   });
+
+  it("merges business and networking tags into Business & Networking", () => {
+    expect(splitEventNotificationTags(["Business", "Networking", "Business Networking", "Art"]))
+      .toEqual(["Art", "Business & Networking"]);
+  });
+
+  it("merges party and festival tags into Parties & Festivals", () => {
+    expect(splitEventNotificationTags(["Party", "Festival", "Parties", "Festivals", "Art"]))
+      .toEqual(["Art", "Parties & Festivals"]);
+  });
 });

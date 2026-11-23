@@ -32,6 +32,8 @@ const EVENT_NOTIFICATION_EXCLUSIONS = new Set(
 const mergedEventNotificationTag = (tag: string): string => {
   if (/\b(dance|music)\b/i.test(tag)) return "Dance & Music";
   if (/\b(health|wellness)\b/i.test(tag)) return "Health & Wellness";
+  if (/\b(business|networking)\b/i.test(tag)) return "Business & Networking";
+  if (/\b(party|parties|festival|festivals)\b/i.test(tag)) return "Parties & Festivals";
   return tag;
 };
 
