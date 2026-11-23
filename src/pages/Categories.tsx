@@ -10,6 +10,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { pinFeatured } from "@/lib/featuredFirst";
 import { listingImage, LISTING_IMAGE_COLUMNS } from "@/lib/imageFallback";
 import { isAnyOpenNow, withHoursColumns } from "@/lib/openHours";
+import { countUniqueBusinesses } from "@/lib/listingTotals";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import Seo from "@/components/Seo";
@@ -272,7 +273,7 @@ const Categories = () => {
     },
   });
 
-  const { data: listingCounts } = useQuery({
+  const { data: listingCountData } = useQuery({
     queryKey: ["listing-counts-by-category"],
     queryFn: async () => {
       const fetchAllRange = async <T,>(
@@ -313,9 +314,14 @@ const Categories = () => {
         const cat = key.split("::")[1];
         counts[cat] = (counts[cat] || 0) + 1;
       });
-      return counts;
+      return {
+        counts,
+        totalListings: countUniqueBusinesses(listingRows.map((listing) => listing.id)),
+      };
     },
   });
+  const listingCounts = listingCountData?.counts;
+  const totalListings = listingCountData?.totalListings ?? 0;
 
   const { data: savedIds } = useQuery({
     queryKey: ["user-saved-listings", user?.id],
@@ -573,11 +579,6 @@ const Categories = () => {
     }
     return arr;
   }, [gridCategories, sortMode, listingCounts]);
-
-  const totalListings = useMemo(
-    () => sortedGrid.reduce((sum, c) => sum + (listingCounts?.[c.id] || 0), 0),
-    [sortedGrid, listingCounts]
-  );
 
   return (
     <div
