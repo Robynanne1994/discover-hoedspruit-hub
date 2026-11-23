@@ -38,4 +38,18 @@ describe("splitEventNotificationTags", () => {
     expect(splitEventNotificationTags(["Party", "Festival", "Parties", "Festivals", "Art"]))
       .toEqual(["Art", "Parties & Festivals"]);
   });
+
+  it("merges conservation and tourism tags into Conservation & Tourism", () => {
+    expect(splitEventNotificationTags(["Conservation", "Tourism", "Conservation Tourism", "Art"]))
+      .toEqual(["Art", "Conservation & Tourism"]);
+  });
+
+  it("merges wildlife and nature tags into Wildlife & Nature", () => {
+    expect(splitEventNotificationTags(["Wildlife", "Nature", "Wildlife Nature", "Art"]))
+      .toEqual(["Art", "Wildlife & Nature"]);
+  });
+
+  it("removes Theatre without removing other event interests", () => {
+    expect(splitEventNotificationTags(["Theatre", "Art"])).toEqual(["Art"]);
+  });
 });

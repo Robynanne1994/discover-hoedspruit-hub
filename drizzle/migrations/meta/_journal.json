@@ -211,6 +211,13 @@
       "when": 1795443386510,
       "tag": "0029_merge_business_party_event_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1795443466665,
+      "tag": "0030_merge_conservation_wildlife_event_notifications",
+      "breakpoints": true
     }
   ]
 }

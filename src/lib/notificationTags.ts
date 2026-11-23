@@ -26,6 +26,7 @@ const EVENT_NOTIFICATION_EXCLUSIONS = new Set(
     "Books",
     "Outdoor",
     "Safety",
+    "Theatre",
   ].map((tag) => tag.toLowerCase()),
 );
 
@@ -34,6 +35,8 @@ const mergedEventNotificationTag = (tag: string): string => {
   if (/\b(health|wellness)\b/i.test(tag)) return "Health & Wellness";
   if (/\b(business|networking)\b/i.test(tag)) return "Business & Networking";
   if (/\b(party|parties|festival|festivals)\b/i.test(tag)) return "Parties & Festivals";
+  if (/\b(conservation|tourism)\b/i.test(tag)) return "Conservation & Tourism";
+  if (/\b(wildlife|nature)\b/i.test(tag)) return "Wildlife & Nature";
   return tag;
 };
 
