@@ -21,6 +21,11 @@ const EVENT_NOTIFICATION_EXCLUSIONS = new Set(
     "Trail Running",
     "Wine",
     "Live Music",
+    "Fashion",
+    "Competition",
+    "Books",
+    "Outdoor",
+    "Safety",
   ].map((tag) => tag.toLowerCase()),
 );
 

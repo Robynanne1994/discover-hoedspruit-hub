@@ -9,9 +9,10 @@ describe("splitNotificationTags", () => {
 });
 
 describe("splitEventNotificationTags", () => {
-  it("removes the eight activity-specific options but keeps their broader interests", () => {
+  it("removes the thirteen activity-specific options but keeps their broader interests", () => {
     expect(splitEventNotificationTags([
       "Yoga|Running|Cycling|Golf|Hiking|Trail Running|Wine|Live Music",
+      "Fashion|Competition|Books|Outdoor|Safety",
       "Sports & Fitness",
       "Food & Drink",
       "Wine Tasting",
