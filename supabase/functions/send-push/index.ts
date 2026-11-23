@@ -17,6 +17,7 @@
 //   APNS_HOST             — optional; api.push.apple.com (default) or
 //                           api.sandbox.push.apple.com for development builds
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { pushNotificationContent } from "./notificationContent.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -77,8 +78,7 @@ Deno.serve(async (req) => {
       .filter((d) => d.platform !== "android" && d.platform !== "ios")
       .map((d) => d.token);
 
-    const title = notif.title || "Hello Hoedspruit";
-    const body = notif.body || "";
+    const { title, subtitle, body } = pushNotificationContent(notif);
     const data = {
       link: notif.link ?? "",
       notification_id: String(notif.id),
@@ -91,13 +91,13 @@ Deno.serve(async (req) => {
 
     const fcmTokens = [...androidTokens, ...otherTokens];
     if (fcmTokens.length) {
-      const r = await sendFcm(fcmTokens, title, body, data);
+      const r = await sendFcm(fcmTokens, title, body, data, subtitle);
       sent += r.sent;
       stale.push(...r.stale);
       errors.push(...r.errors);
     }
     if (iosTokens.length) {
-      const r = await sendApns(supabase, iosTokens, title, body, data);
+      const r = await sendApns(supabase, iosTokens, title, body, data, subtitle);
       sent += r.sent;
       stale.push(...r.stale);
       errors.push(...r.errors);
@@ -122,6 +122,7 @@ async function sendFcm(
   title: string,
   body: string,
   data: Record<string, string>,
+  subtitle?: string,
 ): Promise<{ sent: number; stale: string[]; errors: string[] }> {
   const saJson = Deno.env.get("FCM_SERVICE_ACCOUNT");
   if (!saJson) return { sent: 0, stale: [], errors: ["FCM_SERVICE_ACCOUNT not set"] };
@@ -153,7 +154,9 @@ async function sendFcm(
       body: JSON.stringify({
         message: {
           token,
-          notification: { title, body },
+          // Android has no standard notification subtitle field. Keep the
+          // business name as the first body line there; iOS shows it bold.
+          notification: { title, body: subtitle ? `${subtitle}\n${body}` : body },
           data,
           android: { priority: "HIGH", notification: { sound: "default" } },
         },
@@ -249,6 +252,7 @@ async function sendApns(
   title: string,
   body: string,
   data: Record<string, string>,
+  subtitle?: string,
 ): Promise<{ sent: number; stale: string[]; errors: string[] }> {
   const p8 = Deno.env.get("APNS_KEY");
   const keyId = Deno.env.get("APNS_KEY_ID");
@@ -267,7 +271,7 @@ async function sendApns(
   }
 
   const payload = JSON.stringify({
-    aps: { alert: { title, body }, sound: "default" },
+    aps: { alert: { title, ...(subtitle ? { subtitle } : {}), body }, sound: "default" },
     link: data.link,
     notification_id: data.notification_id,
     kind: data.kind,
