@@ -14,11 +14,20 @@ export function parseEventContactCells(contacts?: string | null, labels?: string
   const pairs = (contacts || "").split("|").map((value, i) => ({
     value: contactLabelSlot(value), label: labelParts[i] || "",
   })).filter(({ value }) => Boolean(value));
+  // A contact repeated in one row is one contact: keep its first slot so it is
+  // never stored as two separate additions.
+  const seen = new Set<string>();
+  const unique = pairs.filter(({ value }) => {
+    const key = value.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
   return {
-    primary: pairs[0]?.value || null,
-    label: pairs[0]?.label || null,
-    extras: pairs.slice(1).map(({ value }) => value),
-    extraLabels: pairs.slice(1).map(({ label }) => label),
+    primary: unique[0]?.value || null,
+    label: unique[0]?.label || null,
+    extras: unique.slice(1).map(({ value }) => value),
+    extraLabels: unique.slice(1).map(({ label }) => label),
   };
 }
 
