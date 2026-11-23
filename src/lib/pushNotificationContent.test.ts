@@ -108,3 +108,11 @@ describe("saved special reminder phone content", () => {
       .toBe("This special ends tomorrow! Tap to revisit the details before it's too late.");
   });
 });
+
+describe("new follower push", () => {
+  it("shows New Follower with the follower's name in the body", async () => {
+    const { pushNotificationContent } = await import("../../supabase/functions/send-push/notificationContent.ts");
+    expect(pushNotificationContent({ kind: "new_follower", title: "Bushveld Photography started following you", body: "Tap to view their profile." }))
+      .toEqual({ title: "New Follower", body: "Bushveld Photography started following you." });
+  });
+});

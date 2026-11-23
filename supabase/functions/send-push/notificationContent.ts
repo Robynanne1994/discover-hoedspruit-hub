@@ -61,6 +61,10 @@ export function pushNotificationContent(notification: {
       body: specialReminderBody(Number(specialReminder[1])),
     };
   }
+  if (notification.kind === "new_follower") {
+    const name = originalTitle.replace(/\s*started following you\.?$/i, "").trim();
+    return { title: "New Follower", body: `${name || "Someone"} started following you.` };
+  }
   if (notification.kind === "event_new") {
     const m = originalTitle.match(/^New (event|events):\s*(.+)$/i);
     const plural = m?.[1].toLowerCase() === "events";
