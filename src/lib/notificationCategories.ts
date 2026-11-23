@@ -1,4 +1,4 @@
-import { splitNotificationTags } from "./notificationTags";
+import { splitEventNotificationTags, splitNotificationTags } from "./notificationTags";
 // Notification filter catalogues.
 //
 // These are no longer hand-maintained lists — they are the app's REAL data:
@@ -85,7 +85,7 @@ export const fetchNotificationOptions = async (
 
   if (source === "event_tag") {
     const { data } = await supabase.from("events").select("tag").eq("is_active", true);
-    const tags = splitNotificationTags((data ?? []).map((e: any) => e.tag));
+    const tags = splitEventNotificationTags((data ?? []).map((e: any) => e.tag));
     return tags.map((t) => ({ id: t, label: t }));
   }
 

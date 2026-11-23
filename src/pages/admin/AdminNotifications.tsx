@@ -1,4 +1,4 @@
-import { splitNotificationTags } from "@/lib/notificationTags";
+import { splitEventNotificationTags, splitNotificationTags } from "@/lib/notificationTags";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Bell, Store, CalendarDays, Tag } from "lucide-react";
@@ -30,7 +30,7 @@ const AdminNotifications = () => {
       ]);
       setCategories((cats.data ?? []).map((c: any) => c.title).filter(Boolean));
       setEventTags(
-        splitNotificationTags((events.data ?? []).map((e: any) => e.tag)),
+        splitEventNotificationTags((events.data ?? []).map((e: any) => e.tag)),
       );
       setSpecialTags(
         splitNotificationTags(

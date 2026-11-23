@@ -136,7 +136,13 @@ const NotificationCategories = () => {
     if (storedAll) {
       setSelected(allIds);
       setStoredAll(false);
+      return;
     }
+    // Retired or removed options must not inflate the visible selection count.
+    setSelected((current) => {
+      const visible = current.filter((id) => allIds.includes(id));
+      return visible.length === current.length ? current : visible;
+    });
   }, [prefLoaded, optionsLoading, storedAll, allIds]);
 
   const persist = useCallback(

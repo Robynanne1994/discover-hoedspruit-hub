@@ -8,3 +8,21 @@ export const splitNotificationTags = (values: Array<string | null | undefined>):
         .filter((t) => t && t !== "-"),
     ),
   ).sort((a, b) => a.localeCompare(b));
+
+// Event notifications use broader interests rather than every activity tag.
+// The event tags themselves remain untouched for event filters and CSV files.
+const EVENT_NOTIFICATION_EXCLUSIONS = new Set(
+  [
+    "Yoga",
+    "Running",
+    "Cycling",
+    "Golf",
+    "Hiking",
+    "Trail Running",
+    "Wine",
+    "Live Music",
+  ].map((tag) => tag.toLowerCase()),
+);
+
+export const splitEventNotificationTags = (values: Array<string | null | undefined>): string[] =>
+  splitNotificationTags(values).filter((tag) => !EVENT_NOTIFICATION_EXCLUSIONS.has(tag.toLowerCase()));
