@@ -11,12 +11,21 @@ describe("splitNotificationTags", () => {
 describe("splitEventNotificationTags", () => {
   it("removes the thirteen activity-specific options but keeps their broader interests", () => {
     expect(splitEventNotificationTags([
-      "Yoga|Running|Cycling|Golf|Hiking|Trail Running|Wine|Live Music",
+      "Yoga|Running|Cycling|Golf|Hiking|Trail Running|Wine",
       "Fashion|Competition|Books|Outdoor|Safety",
       "Sports & Fitness",
       "Food & Drink",
       "Wine Tasting",
-      "Live Music Festival",
-    ])).toEqual(["Food & Drink", "Live Music Festival", "Sports & Fitness", "Wine Tasting"]);
+    ])).toEqual(["Food & Drink", "Sports & Fitness", "Wine Tasting"]);
+  });
+
+  it("merges every dance or music tag into Dance & Music", () => {
+    expect(splitEventNotificationTags(["Dance", "Music", "Live Music", "Live Music Festival", "Art"]))
+      .toEqual(["Art", "Dance & Music"]);
+  });
+
+  it("merges every health or wellness tag into Health & Wellness", () => {
+    expect(splitEventNotificationTags(["Health", "Wellness", "Wellness Retreat", "Health & Wellness", "Art"]))
+      .toEqual(["Art", "Health & Wellness"]);
   });
 });

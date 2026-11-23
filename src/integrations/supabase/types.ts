@@ -2743,6 +2743,10 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      event_notification_tags: {
+        Args: { raw_tag: string; sub_tag_1?: string; sub_tag_2?: string }
+        Returns: string[]
+      }
       get_been_here_count: { Args: { _listing_id: string }; Returns: number }
       get_block_cooldown: {
         Args: { _blocked_id: string }
@@ -2843,6 +2847,7 @@ export type Database = {
         Args: { _exclude_id?: string; _username: string }
         Returns: boolean
       }
+      merge_event_notification_tag: { Args: { tag: string }; Returns: string }
       move_to_dlq: {
         Args: {
           dlq_name: string

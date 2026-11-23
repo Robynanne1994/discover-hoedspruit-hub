@@ -29,5 +29,17 @@ const EVENT_NOTIFICATION_EXCLUSIONS = new Set(
   ].map((tag) => tag.toLowerCase()),
 );
 
+const mergedEventNotificationTag = (tag: string): string => {
+  if (/\b(dance|music)\b/i.test(tag)) return "Dance & Music";
+  if (/\b(health|wellness)\b/i.test(tag)) return "Health & Wellness";
+  return tag;
+};
+
 export const splitEventNotificationTags = (values: Array<string | null | undefined>): string[] =>
-  splitNotificationTags(values).filter((tag) => !EVENT_NOTIFICATION_EXCLUSIONS.has(tag.toLowerCase()));
+  Array.from(
+    new Set(
+      splitNotificationTags(values)
+        .map(mergedEventNotificationTag)
+        .filter((tag) => !EVENT_NOTIFICATION_EXCLUSIONS.has(tag.toLowerCase())),
+    ),
+  ).sort((a, b) => a.localeCompare(b));
