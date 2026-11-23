@@ -29,7 +29,6 @@ type Notif = {
   kind: string;
   ref_table: string | null;
   ref_id: string | null;
-  actor_id: string | null;
 };
 
 const timeAgo = (iso: string) => {
@@ -64,7 +63,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     if (!user) { setAllNotifs([]); setLoaded(true); return; }
     const { data } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id,actor_id")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);

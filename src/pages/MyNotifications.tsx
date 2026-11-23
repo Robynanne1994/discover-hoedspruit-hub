@@ -67,7 +67,6 @@ type Notif = {
   kind: string;
   ref_table: string | null;
   ref_id: string | null;
-  actor_id: string | null;
 };
 
 const iconFor = (kind: string) => {
@@ -136,7 +135,7 @@ export default function MyNotifications() {
     }
     const { data, error } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id,actor_id")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(200);
