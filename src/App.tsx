@@ -300,6 +300,7 @@ const App = () => (
              <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
              <Route path="/my-notifications" element={<MyNotifications />} />
              <Route path="/my-notifications/listings/:id" element={<NotificationListings />} />
+             <Route path="/my-notifications/events/:id" element={<NotificationListings />} />
             <Route path="/notification-preferences" element={<Notifications />} />
              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
