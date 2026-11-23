@@ -12,6 +12,11 @@ export const NEW_EVENT_PUSH_BODY =
 export const NEW_EVENTS_PUSH_BODY =
   "Just added to Hello Hoedspruit! Tap to explore more about new upcoming events in the area.";
 
+export const NEW_SPECIAL_PUSH_BODY =
+  "Just added to Hello Hoedspruit! Tap to check out this latest special and see what's on offer.";
+export const NEW_SPECIALS_PUSH_BODY =
+  "Just added to Hello Hoedspruit! Tap to explore the latest specials and offers on at the moment.";
+
 function capitaliseOthers(subject: string): string {
   return subject.replace(
     / & (\d+) others?$/i,
@@ -36,6 +41,15 @@ export function pushNotificationContent(notification: {
       title: plural ? "New Events Added" : "New Event Added",
       ...(m ? { subtitle: capitaliseOthers(m[2]) } : {}),
       body: plural ? NEW_EVENTS_PUSH_BODY : NEW_EVENT_PUSH_BODY,
+    };
+  }
+  if (notification.kind === "special_new") {
+    const m = originalTitle.match(/^New (special|specials):\s*(.+)$/i);
+    const plural = m?.[1].toLowerCase() === "specials";
+    return {
+      title: plural ? "New Specials Added" : "New Special Added",
+      ...(m ? { subtitle: capitaliseOthers(m[2]) } : {}),
+      body: plural ? NEW_SPECIALS_PUSH_BODY : NEW_SPECIAL_PUSH_BODY,
     };
   }
   if (notification.kind !== "listing_new") {

@@ -3,6 +3,8 @@ import {
   NEW_LISTING_PUSH_BODY,
   NEW_EVENT_PUSH_BODY,
   NEW_EVENTS_PUSH_BODY,
+  NEW_SPECIAL_PUSH_BODY,
+  NEW_SPECIALS_PUSH_BODY,
   pushNotificationContent,
 } from "../../supabase/functions/send-push/notificationContent";
 
@@ -40,7 +42,7 @@ describe("new-listing phone notification content", () => {
 
   it("leaves every other notification type unchanged", () => {
     expect(pushNotificationContent({
-      kind: "special_new",
+      kind: "special_update",
       title: "Weekend Special",
       body: "Available this Saturday.",
     })).toEqual({ title: "Weekend Special", body: "Available this Saturday." });
@@ -56,6 +58,19 @@ describe("new-event phone notification content", () => {
   it("grouped events", () => {
     expect(pushNotificationContent({ kind: "event_new", title: "New events: Hoedspruit Farmers Market & 3 others" })).toEqual({
       title: "New Events Added", subtitle: "Hoedspruit Farmers Market & 3 Others", body: NEW_EVENTS_PUSH_BODY,
+    });
+  });
+});
+
+describe("new-special phone notification content", () => {
+  it("one special", () => {
+    expect(pushNotificationContent({ kind: "special_new", title: "New special: Friday Pizza Special" })).toEqual({
+      title: "New Special Added", subtitle: "Friday Pizza Special", body: NEW_SPECIAL_PUSH_BODY,
+    });
+  });
+  it("grouped specials", () => {
+    expect(pushNotificationContent({ kind: "special_new", title: "New specials: Friday Pizza Special & 3 others" })).toEqual({
+      title: "New Specials Added", subtitle: "Friday Pizza Special & 3 Others", body: NEW_SPECIALS_PUSH_BODY,
     });
   });
 });

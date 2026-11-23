@@ -162,6 +162,13 @@
       "when": 1795439337050,
       "tag": "0022_group_new_event_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795439722191,
+      "tag": "0023_group_new_special_notifications",
+      "breakpoints": true
     }
   ]
 }
