@@ -1,6 +1,6 @@
 import { hoursCellsForExport, hoursPayloadFromCells } from "@/lib/listingHoursCsv";
 import { contactGroupForValue, contactPayloadFromCells, contactCellsForExport, isContactLabelColumn } from "@/lib/listingContactCsv";
-import { parseEventContactCells, splitContactLabels } from "@/lib/eventContacts";
+import { splitContactLabels } from "@/lib/eventContacts";
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -853,19 +853,8 @@ const AdminImport = () => {
         Object.assign(payloadRecord, placeIdImportUpdate(incomingPlaceId, existing));
 
         // Remove undefined keys (defensive)
-        // A combined cell like "082 463 2818|063 241 0291" with labels "-|Tracey":
-        // the first stays primary and the rest lead the additional contacts.
-        for (const k of ["phone", "email", "whatsapp"] as const) {
-          const cell = row[k];
-          if (typeof cell !== "string" || !cell.includes("|")) continue;
-          const p = parseEventContactCells(cell, row[`${k}_label`]);
-          payloadRecord[k] = p.primary;
-          payloadRecord[`${k}_label`] = p.label;
-          const extras = (payloadRecord[`additional_${k}s`] as string[] | undefined) ?? [];
-          const extraLabels = (payloadRecord[`additional_${k}_labels`] as string[] | undefined) ?? [];
-          payloadRecord[`additional_${k}s`] = [...p.extras, ...extras];
-          payloadRecord[`additional_${k}_labels`] = [...p.extraLabels, ...extras.map((_, i) => extraLabels[i] || "")];
-        }
+        // Combined contact cells are split once, above, by contactPayloadFromCells;
+        // splitting them again here appended every extra contact a second time.
         Object.keys(payloadRecord).forEach((k) => { if (payloadRecord[k] === undefined) delete payloadRecord[k]; });
 
 
