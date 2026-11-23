@@ -1431,6 +1431,7 @@ export type Database = {
           emergency_24hr: boolean | null
           event_types: string[]
           facebook: string | null
+          first_live_at: string | null
           foods: string[]
           gallery_images: string[] | null
           good_for_kids: boolean | null
@@ -1596,6 +1597,7 @@ export type Database = {
           emergency_24hr?: boolean | null
           event_types?: string[]
           facebook?: string | null
+          first_live_at?: string | null
           foods?: string[]
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
@@ -1761,6 +1763,7 @@ export type Database = {
           emergency_24hr?: boolean | null
           event_types?: string[]
           facebook?: string | null
+          first_live_at?: string | null
           foods?: string[]
           gallery_images?: string[] | null
           good_for_kids?: boolean | null

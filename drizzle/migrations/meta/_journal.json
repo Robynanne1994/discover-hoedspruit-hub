@@ -148,6 +148,13 @@
       "when": 1795436411652,
       "tag": "0020_group_new_listing_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1795437027906,
+      "tag": "0021_notify_listings_only_first_activation",
+      "breakpoints": true
     }
   ]
 }
