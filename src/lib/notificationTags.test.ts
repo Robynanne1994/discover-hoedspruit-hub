@@ -49,6 +49,11 @@ describe("splitEventNotificationTags", () => {
       .toEqual(["Art", "Wildlife & Nature"]);
   });
 
+  it("renames the Retreat tag to Retreats", () => {
+    expect(splitEventNotificationTags(["Wellness|Retreat|Health", "Retreat", "Art"]))
+      .toEqual(["Art", "Health & Wellness", "Retreats"]);
+  });
+
   it("removes Theatre without removing other event interests", () => {
     expect(splitEventNotificationTags(["Theatre", "Art"])).toEqual(["Art"]);
   });

@@ -218,6 +218,13 @@
       "when": 1795443466665,
       "tag": "0030_merge_conservation_wildlife_event_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1795443536966,
+      "tag": "0031_rename_retreat_event_notification_tag",
+      "breakpoints": true
     }
   ]
 }

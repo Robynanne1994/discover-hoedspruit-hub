@@ -37,6 +37,7 @@ const mergedEventNotificationTag = (tag: string): string => {
   if (/\b(party|parties|festival|festivals)\b/i.test(tag)) return "Parties & Festivals";
   if (/\b(conservation|tourism)\b/i.test(tag)) return "Conservation & Tourism";
   if (/\b(wildlife|nature)\b/i.test(tag)) return "Wildlife & Nature";
+  if (tag.toLowerCase() === "retreat") return "Retreats";
   return tag;
 };
 
