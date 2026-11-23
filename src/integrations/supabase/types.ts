@@ -330,6 +330,7 @@ export type Database = {
           kind: string
           link: string | null
           push: boolean
+          push_sent_at: string | null
           ref_id: string | null
           ref_ids: string[]
           ref_table: string | null
@@ -345,6 +346,7 @@ export type Database = {
           kind: string
           link?: string | null
           push?: boolean
+          push_sent_at?: string | null
           ref_id?: string | null
           ref_ids?: string[]
           ref_table?: string | null
@@ -360,6 +362,7 @@ export type Database = {
           kind?: string
           link?: string | null
           push?: boolean
+          push_sent_at?: string | null
           ref_id?: string | null
           ref_ids?: string[]
           ref_table?: string | null
@@ -2734,6 +2737,7 @@ export type Database = {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
       }
+      dispatch_pending_pushes: { Args: never; Returns: number }
       email_queue_dispatch: { Args: never; Returns: undefined }
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
@@ -2826,6 +2830,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_batched_push_kind: { Args: { _kind: string }; Returns: boolean }
       is_email_available: {
         Args: { _email: string; _exclude_id?: string }
         Returns: boolean

@@ -169,6 +169,13 @@
       "when": 1795439722191,
       "tag": "0023_group_new_special_notifications",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795440299854,
+      "tag": "0024_batch_push_every_two_hours",
+      "breakpoints": true
     }
   ]
 }
