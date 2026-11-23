@@ -74,3 +74,20 @@ describe("new-special phone notification content", () => {
     });
   });
 });
+
+describe("saved event reminder phone content", () => {
+  it("3 days", () => {
+    expect(pushNotificationContent({ kind: "event_reminder_3d", title: "x", itemTitle: "Hoedspruit Farmers Market" })).toEqual({
+      title: "Saved Event Reminder", subtitle: "Hoedspruit Farmers Market",
+      body: "This event is coming up in 3 days! Tap to revisit the details and plan ahead.",
+    });
+  });
+  it("7 days", () => {
+    expect(pushNotificationContent({ kind: "event_reminder_7d", itemTitle: "A" }).body)
+      .toBe("This event is coming up in 7 days! Tap to revisit the details and plan ahead.");
+  });
+  it("1 day says tomorrow", () => {
+    expect(pushNotificationContent({ kind: "event_reminder_1d", itemTitle: "A" }).body)
+      .toBe("This event is coming up tomorrow! Tap to revisit the details and plan ahead.");
+  });
+});

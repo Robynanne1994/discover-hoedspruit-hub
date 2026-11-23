@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
 
     const { data: notif } = await supabase
       .from("business_notifications")
-      .select("id,user_id,title,body,link,kind,push")
+      .select("id,user_id,title,body,link,kind,push,ref_id")
       .eq("id", notifId)
       .maybeSingle();
 
@@ -78,7 +78,12 @@ Deno.serve(async (req) => {
       .filter((d) => d.platform !== "android" && d.platform !== "ios")
       .map((d) => d.token);
 
-    const { title, subtitle, body } = pushNotificationContent(notif);
+    let itemTitle: string | undefined;
+    if (notif.kind?.startsWith("event_reminder_") && notif.ref_id) {
+      const { data: ev } = await supabase.from("events").select("title").eq("id", notif.ref_id).maybeSingle();
+      itemTitle = ev?.title ?? undefined;
+    }
+    const { title, subtitle, body } = pushNotificationContent({ ...notif, itemTitle });
     const data = {
       link: notif.link ?? "",
       notification_id: String(notif.id),

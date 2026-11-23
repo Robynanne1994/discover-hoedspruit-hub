@@ -17,6 +17,11 @@ export const NEW_SPECIAL_PUSH_BODY =
 export const NEW_SPECIALS_PUSH_BODY =
   "Just added to Hello Hoedspruit! Tap to explore the latest specials and offers on at the moment.";
 
+export function eventReminderBody(days: number): string {
+  const when = days === 1 ? "tomorrow" : `in ${days} days`;
+  return `This event is coming up ${when}! Tap to revisit the details and plan ahead.`;
+}
+
 function capitaliseOthers(subject: string): string {
   return subject.replace(
     / & (\d+) others?$/i,
@@ -32,8 +37,17 @@ export function pushNotificationContent(notification: {
   kind?: string | null;
   title?: string | null;
   body?: string | null;
+  itemTitle?: string | null;
 }): PushNotificationContent {
   const originalTitle = notification.title || "Hello Hoedspruit";
+  const reminder = notification.kind?.match(/^event_reminder_(\d+)d$/);
+  if (reminder) {
+    return {
+      title: "Saved Event Reminder",
+      ...(notification.itemTitle ? { subtitle: notification.itemTitle } : {}),
+      body: eventReminderBody(Number(reminder[1])),
+    };
+  }
   if (notification.kind === "event_new") {
     const m = originalTitle.match(/^New (event|events):\s*(.+)$/i);
     const plural = m?.[1].toLowerCase() === "events";
