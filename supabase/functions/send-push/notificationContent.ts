@@ -69,6 +69,13 @@ export function pushNotificationContent(notification: {
     const name = originalTitle.replace(/\s*wants to follow you\.?$/i, "").trim();
     return { title: "Follow Request", body: `${name || "Someone"} requested to follow you.` };
   }
+  if (notification.kind === "follow_accepted") {
+    const name = originalTitle.replace(/\s*accepted your follow request\.?$/i, "").trim();
+    return {
+      title: "Follow Request Accepted",
+      body: `${name || "Someone"} accepted your follow request.`,
+    };
+  }
   if (notification.kind === "event_new") {
     const m = originalTitle.match(/^New (event|events):\s*(.+)$/i);
     const plural = m?.[1].toLowerCase() === "events";

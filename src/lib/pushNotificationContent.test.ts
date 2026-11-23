@@ -129,3 +129,27 @@ describe("new follower push", () => {
       .toEqual({ title: "New Follower", body: "Bushveld Photography started following you." });
   });
 });
+
+describe("follow request accepted push", () => {
+  it("shows Follow Request Accepted with the acceptor's name in the body", () => {
+    expect(pushNotificationContent({
+      kind: "follow_accepted",
+      title: "Bushveld Photography accepted your follow request",
+      body: "You are now following them.",
+    })).toEqual({
+      title: "Follow Request Accepted",
+      body: "Bushveld Photography accepted your follow request.",
+    });
+  });
+
+  it("falls back to Someone when the title has no name", () => {
+    expect(pushNotificationContent({
+      kind: "follow_accepted",
+      title: "Someone accepted your follow request",
+      body: "You are now following them.",
+    })).toEqual({
+      title: "Follow Request Accepted",
+      body: "Someone accepted your follow request.",
+    });
+  });
+});
