@@ -22,6 +22,11 @@ export function eventReminderBody(days: number): string {
   return `This event is coming up ${when}! Tap to revisit the details and plan ahead.`;
 }
 
+export function specialReminderBody(days: number): string {
+  const when = days === 1 ? "tomorrow" : `in ${days} days`;
+  return `This special ends ${when}! Tap to revisit the details before it's too late.`;
+}
+
 function capitaliseOthers(subject: string): string {
   return subject.replace(
     / & (\d+) others?$/i,
@@ -46,6 +51,14 @@ export function pushNotificationContent(notification: {
       title: "Saved Event Reminder",
       ...(notification.itemTitle ? { subtitle: notification.itemTitle } : {}),
       body: eventReminderBody(Number(reminder[1])),
+    };
+  }
+  const specialReminder = notification.kind?.match(/^special_reminder_(\d+)d$/);
+  if (specialReminder) {
+    return {
+      title: "Your Saved Special Ends Soon!",
+      ...(notification.itemTitle ? { subtitle: notification.itemTitle } : {}),
+      body: specialReminderBody(Number(specialReminder[1])),
     };
   }
   if (notification.kind === "event_new") {

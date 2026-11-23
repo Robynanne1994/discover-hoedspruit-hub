@@ -91,3 +91,20 @@ describe("saved event reminder phone content", () => {
       .toBe("This event is coming up tomorrow! Tap to revisit the details and plan ahead.");
   });
 });
+
+describe("saved special reminder phone content", () => {
+  it("3 days", () => {
+    expect(pushNotificationContent({ kind: "special_reminder_3d", title: "x", itemTitle: "Wild Blue Lodge – Escape the Everyday" })).toEqual({
+      title: "Your Saved Special Ends Soon!", subtitle: "Wild Blue Lodge – Escape the Everyday",
+      body: "This special ends in 3 days! Tap to revisit the details before it's too late.",
+    });
+  });
+  it("7 days", () => {
+    expect(pushNotificationContent({ kind: "special_reminder_7d", itemTitle: "A" }).body)
+      .toBe("This special ends in 7 days! Tap to revisit the details before it's too late.");
+  });
+  it("1 day says tomorrow", () => {
+    expect(pushNotificationContent({ kind: "special_reminder_1d", itemTitle: "A" }).body)
+      .toBe("This special ends tomorrow! Tap to revisit the details before it's too late.");
+  });
+});

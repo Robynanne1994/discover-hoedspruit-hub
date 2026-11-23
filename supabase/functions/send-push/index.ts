@@ -83,6 +83,10 @@ Deno.serve(async (req) => {
       const { data: ev } = await supabase.from("events").select("title").eq("id", notif.ref_id).maybeSingle();
       itemTitle = ev?.title ?? undefined;
     }
+    if (notif.kind?.startsWith("special_reminder_") && notif.ref_id) {
+      const { data: sp } = await supabase.from("specials").select("title").eq("id", notif.ref_id).maybeSingle();
+      itemTitle = sp?.title ?? undefined;
+    }
     const { title, subtitle, body } = pushNotificationContent({ ...notif, itemTitle });
     const data = {
       link: notif.link ?? "",
