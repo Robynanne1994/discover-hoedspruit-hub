@@ -109,6 +109,19 @@ describe("saved special reminder phone content", () => {
   });
 });
 
+describe("follow request push", () => {
+  it("shows Follow Request with the requester's name in the body", async () => {
+    const { pushNotificationContent } = await import("../../supabase/functions/send-push/notificationContent.ts");
+    expect(pushNotificationContent({ kind: "follow_request", title: "Bushveld Photography wants to follow you", body: "Tap to review their follow request." }))
+      .toEqual({ title: "Follow Request", body: "Bushveld Photography requested to follow you." });
+  });
+  it("falls back to Someone when the title has no name", async () => {
+    const { pushNotificationContent } = await import("../../supabase/functions/send-push/notificationContent.ts");
+    expect(pushNotificationContent({ kind: "follow_request", title: "Someone wants to follow you", body: "Tap to review their follow request." }))
+      .toEqual({ title: "Follow Request", body: "Someone requested to follow you." });
+  });
+});
+
 describe("new follower push", () => {
   it("shows New Follower with the follower's name in the body", async () => {
     const { pushNotificationContent } = await import("../../supabase/functions/send-push/notificationContent.ts");
