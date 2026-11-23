@@ -1,3 +1,4 @@
+import AdminSearchBar, { matchesSearch } from "@/components/admin/AdminSearchBar";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ const AdminEventHosts = () => {
   const qc = useQueryClient();
   const [form, setForm] = useState<typeof empty | null>(null);
   const [saving, setSaving] = useState(false);
+  const [search, setSearch] = useState("");
 
   const { data: hosts = [], isLoading } = useQuery({
     queryKey: ["admin-event-hosts"],
@@ -65,6 +67,8 @@ const AdminEventHosts = () => {
         <Button className="gap-2" onClick={() => setForm({ ...empty })}><Plus className="h-4 w-4" /> Add Host</Button>
       </div>
 
+      <AdminSearchBar value={search} onChange={setSearch} placeholder="Search event hosts..." />
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
@@ -80,7 +84,7 @@ const AdminEventHosts = () => {
               </tr>
             </thead>
             <tbody>
-              {hosts.map((h) => (
+              {hosts.filter((h) => matchesSearch(search, h.name, h.subtitle, h.link)).map((h) => (
                 <tr key={h.id} className="border-t border-border">
                   <td className="p-3">
                     {h.image_url ? (

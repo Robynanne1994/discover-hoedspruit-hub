@@ -1,3 +1,4 @@
+import AdminSearchBar, { matchesSearch } from "@/components/admin/AdminSearchBar";
 import EventEditDialog from "@/components/admin/EventEditDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ActiveToggle from "@/components/admin/ActiveToggle";
@@ -136,6 +137,7 @@ const AdminEvents = () => {
   // The sidebar's Upcoming / Past links own the tab, so the page follows the URL.
   const location = useLocation();
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
   const tab: "active" | "passed" = location.pathname.endsWith("/past")
     ? "passed"
     : "active";
@@ -509,7 +511,7 @@ const AdminEvents = () => {
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (() => {
         const all = events ?? [];
-        const filtered = all.filter((ev: any) => (tab === "active" ? isEventActive(ev) : !isEventActive(ev)));
+        const filtered = all.filter((ev: any) => (tab === "active" ? isEventActive(ev) : !isEventActive(ev)) && matchesSearch(search, ev.title, ev.location, ev.tag, ev.date, ev.hosted_by_name));
         const activeCount = all.filter(isEventActive).length;
         const passedCount = all.length - activeCount;
         return (
@@ -529,6 +531,7 @@ const AdminEvents = () => {
                 </button>
               ))}
             </div>
+            <AdminSearchBar value={search} onChange={setSearch} placeholder={tab === "active" ? "Search upcoming events..." : "Search past events..."} />
             <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
               <table className="w-full table-fixed text-sm min-w-[820px]">
                 <thead className="bg-muted">

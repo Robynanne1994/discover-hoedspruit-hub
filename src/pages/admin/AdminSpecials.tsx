@@ -1,3 +1,4 @@
+import AdminSearchBar, { matchesSearch } from "@/components/admin/AdminSearchBar";
 import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -153,6 +154,7 @@ const AdminSpecials = () => {
   // The sidebar's Active / Past links own the tab, so the page follows the URL.
   const location = useLocation();
   const navigate = useNavigate();
+  const [search, setSearch] = useState("");
   const tab: "active" | "passed" = location.pathname.endsWith("/past")
     ? "passed"
     : "active";
@@ -578,7 +580,7 @@ const AdminSpecials = () => {
 
       {(() => {
         const filtered = (specials ?? []).filter((s) =>
-          tab === "active" ? isSpecialActive(s) : !isSpecialActive(s),
+          (tab === "active" ? isSpecialActive(s) : !isSpecialActive(s)) && matchesSearch(search, s.title, s.business_name, s.tag, (s as any).tags, (s as any).special_type),
         );
         const activeCount = (specials ?? []).filter(isSpecialActive).length;
         const passedCount = (specials ?? []).length - activeCount;
@@ -599,6 +601,7 @@ const AdminSpecials = () => {
                 </button>
               ))}
             </div>
+            <div className="max-w-3xl"><AdminSearchBar value={search} onChange={setSearch} placeholder={tab === "active" ? "Search active specials..." : "Search past specials..."} /></div>
 
             {isLoading ? (
               <p className="text-muted-foreground">Loading…</p>
