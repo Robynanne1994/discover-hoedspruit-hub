@@ -108,21 +108,18 @@ const SECTIONS: SectionDef[] = [
     rows: [
       { key: "events_new", title: "New Events", filterCol: "events_new_categories", filterType: "events_new" },
       { key: "events_reminders", title: "Event Reminders" },
-      { key: "events_updates", title: "Event Updates" },
     ],
   },
   {
     label: "Listings",
     rows: [
       { key: "listings_new", title: "New Listings", filterCol: "listings_new_categories", filterType: "listings_new" },
-      { key: "listings_updates", title: "Listing Updates", filterCol: "listings_updates_categories", filterType: "listings_updates" },
     ],
   },
   {
     label: "Specials",
     rows: [
       { key: "specials_new", title: "New Specials", filterCol: "specials_new_categories", filterType: "specials_new" },
-      { key: "specials_updates", title: "Special Updates" },
       { key: "specials_ending", title: "Specials Ending Soon" },
     ],
   },

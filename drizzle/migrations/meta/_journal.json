@@ -183,6 +183,13 @@
       "when": 1795440739981,
       "tag": "0025_fix_notification_temp_table_clears",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1795441775007,
+      "tag": "0026_stop_update_notifications",
+      "breakpoints": true
     }
   ]
 }
