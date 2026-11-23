@@ -176,6 +176,13 @@
       "when": 1795440299854,
       "tag": "0024_batch_push_every_two_hours",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1795440739981,
+      "tag": "0025_fix_notification_temp_table_clears",
+      "breakpoints": true
     }
   ]
 }
