@@ -141,6 +141,13 @@
       "when": 1795264164396,
       "tag": "0019_harden_profile_search_and_moderation_summary",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795436411652,
+      "tag": "0020_group_new_listing_notifications",
+      "breakpoints": true
     }
   ]
 }

@@ -331,6 +331,7 @@ export type Database = {
           link: string | null
           push: boolean
           ref_id: string | null
+          ref_ids: string[]
           ref_table: string | null
           status: string
           title: string
@@ -345,6 +346,7 @@ export type Database = {
           link?: string | null
           push?: boolean
           ref_id?: string | null
+          ref_ids?: string[]
           ref_table?: string | null
           status: string
           title: string
@@ -359,6 +361,7 @@ export type Database = {
           link?: string | null
           push?: boolean
           ref_id?: string | null
+          ref_ids?: string[]
           ref_table?: string | null
           status?: string
           title?: string

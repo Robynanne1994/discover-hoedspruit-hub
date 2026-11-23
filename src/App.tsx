@@ -71,6 +71,7 @@ import HelpCentre from "./pages/HelpCentre.tsx";
 
 import Notifications from "./pages/Notifications.tsx";
 import MyNotifications from "./pages/MyNotifications.tsx";
+import NotificationListings from "./pages/NotificationListings.tsx";
 import NotificationCategories from "./pages/NotificationCategories.tsx";
 
 import Specials from "./pages/Specials.tsx";
@@ -298,6 +299,7 @@ const App = () => (
               
              <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
              <Route path="/my-notifications" element={<MyNotifications />} />
+             <Route path="/my-notifications/listings/:id" element={<NotificationListings />} />
             <Route path="/notification-preferences" element={<Notifications />} />
              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
