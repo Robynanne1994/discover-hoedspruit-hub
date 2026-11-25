@@ -1,0 +1,1 @@
+ALTER TABLE public.specials ADD COLUMN IF NOT EXISTS gallery_images text[] NOT NULL DEFAULT '{}';

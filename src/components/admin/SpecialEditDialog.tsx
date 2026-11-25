@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, X, Tag, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import ImageSlotField from "@/components/admin/ImageSlotField";
+import GalleryUpload from "@/components/admin/GalleryUpload";
 import { specialTagList, tagColumns } from "@/lib/specialTags";
 import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
@@ -93,7 +94,7 @@ export const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: 
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
-  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "search_image_url", "badge_override",
+  "image_url", "detail_image_url", "homepage_image_url", "saved_image_url", "featured_image_url", "search_image_url", "gallery_images", "badge_override",
   "deal_type", "day_of_week", "discount_type", "discount_value", "special_type", "freebie_text", "card_deal_text", "redemption_note",
   "valid_from", "valid_until", "card_footer_text", "is_active", "auto_activate_on_image", "is_featured",
   "price", "price_label", "original_price", "savings",
@@ -129,6 +130,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      payload.gallery_images = form.gallery_images ?? [];
       for (const k of ["phone", "email", "whatsapp"] as const) {
         const pr = sanitizeContactPairs(form[`additional_${k}s`], form[`additional_${k}_labels`]);
         payload[`additional_${k}s`] = pr.values;
@@ -399,6 +401,11 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 />
               ))}
             </div>
+            <GalleryUpload
+              folder="specials"
+              value={(form.gallery_images ?? []).join("\n")}
+              onChange={(value) => set("gallery_images", value.split("\n").map((url) => url.trim()).filter(Boolean))}
+            />
           </div>
 
           {/* Validity + always active */}

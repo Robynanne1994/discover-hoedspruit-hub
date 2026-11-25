@@ -2294,6 +2294,7 @@ export type Database = {
           email_label: string | null
           featured_image_url: string | null
           freebie_text: string | null
+          gallery_images: string[]
           homepage_image_url: string | null
           id: string
           image_url: string | null
@@ -2355,6 +2356,7 @@ export type Database = {
           email_label?: string | null
           featured_image_url?: string | null
           freebie_text?: string | null
+          gallery_images?: string[]
           homepage_image_url?: string | null
           id?: string
           image_url?: string | null
@@ -2416,6 +2418,7 @@ export type Database = {
           email_label?: string | null
           featured_image_url?: string | null
           freebie_text?: string | null
+          gallery_images?: string[]
           homepage_image_url?: string | null
           id?: string
           image_url?: string | null

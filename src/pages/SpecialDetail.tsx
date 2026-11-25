@@ -20,6 +20,7 @@ import { useShare } from "@/hooks/useShare";
 import { copyToClipboard, sharePlainText } from "@/lib/share";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useState, useEffect } from "react";
+import ImageLightbox from "@/components/ImageLightbox";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
@@ -112,7 +113,7 @@ const formatPrice = (raw?: string | null) => {
   return trimmed;
 };
 
-type TabKey = "about" | "details" | "contact" | "terms" | "location";
+type TabKey = "about" | "details" | "contact" | "terms" | "location" | "gallery";
 
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -121,6 +122,8 @@ const SpecialDetail = () => {
   const [editOpen, setEditOpen] = useState(false);
   
   const [tab, setTab] = useState<TabKey>("about");
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -677,6 +680,26 @@ const SpecialDetail = () => {
   };
 
 
+  const renderGallery = () => {
+    const imgs: string[] = (special as any).gallery_images ?? [];
+    return (
+      <div style={{ padding: "16px 20px 20px" }}>
+        <h2 style={headStyle}>Gallery</h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+          {imgs.map((url, i) => (
+            <button key={i} type="button"
+              onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+              style={{ aspectRatio: "1 / 1", borderRadius: 12, overflow: "hidden", background: C.ivory, border: "none", padding: 0, cursor: "pointer" }}
+              aria-label={`Open image ${i + 1}`}
+            >
+              <img src={url} alt={`${special.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const renderTerms = () => {
     const termsList: string[] = (special.terms || "")
       .split("\n")
@@ -825,6 +848,7 @@ const SpecialDetail = () => {
           !!special.promo_code;
         const hasContact = phonePairs.length > 0 || whatsappPairs.length > 0 || !!special.booking_link || !!contactEmail || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
+        const hasGallery = ((special as any).gallery_images ?? []).length > 0;
         const hasLocation = !!(business && ((business as any).location || mapPlace));
 
         const availableTabs: TabKey[] = [
@@ -832,6 +856,7 @@ const SpecialDetail = () => {
           ...(hasContact ? ["contact" as TabKey] : []),
           ...(hasLocation ? ["location" as TabKey] : []),
           ...(hasTerms ? ["terms" as TabKey] : []),
+          ...(hasGallery ? ["gallery" as TabKey] : []),
         ];
         const activeTab: TabKey | null = availableTabs.includes(tab) ? tab : (availableTabs[0] ?? null);
         if (activeTab && activeTab !== tab && availableTabs.length > 0 && !availableTabs.includes(tab)) {
@@ -852,6 +877,7 @@ const SpecialDetail = () => {
               {hasContact && <TabBtn k="contact" label="Contact" />}
               {hasLocation && <TabBtn k="location" label="Location" />}
               {hasTerms && <TabBtn k="terms" label="Terms" />}
+              {hasGallery && <TabBtn k="gallery" label="Gallery" />}
             </nav>
 
             <section style={{ background: C.bg }}>
@@ -859,7 +885,15 @@ const SpecialDetail = () => {
               {activeTab === "contact" && renderContact()}
               {activeTab === "location" && renderLocation()}
               {activeTab === "terms" && renderTerms()}
+              {activeTab === "gallery" && renderGallery()}
             </section>
+            <ImageLightbox
+              images={(special as any).gallery_images ?? []}
+              initialIndex={lightboxIndex}
+              open={lightboxOpen}
+              onOpenChange={setLightboxOpen}
+              alt={special.title}
+            />
           </>
         );
       })()}
