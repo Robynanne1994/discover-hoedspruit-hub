@@ -22,6 +22,7 @@ import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
+import { buildHostDirectory, hostNameKey, resolveHost } from "@/lib/eventHosts";
 import ImageSlotField from "./ImageSlotField";
 import GalleryUpload from "./GalleryUpload";
 import {
@@ -77,6 +78,17 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       return data ?? [];
     },
   });
+
+  const { data: eventHostRows } = useQuery({
+    queryKey: ["event-hosts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("event_hosts").select("name, subtitle, image_url, link");
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: open,
+  });
+  const hostDirectory = buildHostDirectory(eventHostRows);
 
   const save = useMutation({
     mutationFn: async () => {
@@ -522,7 +534,23 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             ];
             return (
               <>
-                {hosts.slice(0, shown).map((h) => (
+                {hosts.slice(0, shown).map((h) => {
+                  const resolved = resolveHost({
+                    name: form[h.nameKey] || "",
+                    subtitle: form[h.subKey],
+                    image: form[h.imgKey],
+                    link: form[h.linkKey],
+                    listingId: form[h.listingKey],
+                  }, hostDirectory);
+                  // Directory defaults are displayed, not copied into the event on save.
+                  // Explicit edits (including clears) take precedence for this editor session.
+                  const displayed = (key: string, fallback?: string) =>
+                    form.__hostEdits?.[key] ? form[key] || "" : fallback || "";
+                  const editHost = (values: Record<string, string>) => setForm((f) => ({
+                    ...f, ...values,
+                    __hostEdits: { ...f.__hostEdits, ...Object.fromEntries(Object.keys(values).map((key) => [key, true])) },
+                  }));
+                  return (
                   <div key={h.n} className="space-y-3 p-3 border rounded">
                     <div className="flex items-center gap-3">
                       <span className="inline-block rounded-md bg-[var(--filter-ink)] px-3 py-1 text-lg font-bold text-primary-foreground">Host {h.n}</span>
@@ -537,6 +565,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                             setForm((f) => ({
                               ...f,
                               [h.nameKey]: "", [h.subKey]: "", [h.imgKey]: "", [h.linkKey]: "", [h.listingKey]: "",
+                              __hostEdits: { ...f.__hostEdits, [h.subKey]: false, [h.imgKey]: false, [h.linkKey]: false },
                               __hostsShown: shown - 1,
                             }));
                           }}
@@ -546,14 +575,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                       )}
                     </div>
                     <div className="grid grid-cols-2 gap-3">
-                    <div><Label>Name</Label><Input value={form[h.nameKey] || ""} onChange={(e) => set(h.nameKey, e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
-                    <div><Label>Subtitle</Label><Input value={form[h.subKey] || ""} onChange={(e) => set(h.subKey, e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
+                    <div><Label htmlFor={`event-host-name-${h.n}`}>Name</Label><Input id={`event-host-name-${h.n}`} value={form[h.nameKey] || ""} onChange={(e) => set(h.nameKey, e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
+                    <div><Label htmlFor={`event-host-subtitle-${h.n}`}>Subtitle</Label><Input id={`event-host-subtitle-${h.n}`} value={displayed(h.subKey, resolved.subtitle)} onChange={(e) => editHost({ [h.subKey]: e.target.value })} placeholder="e.g. Yoga Teachers" /></div>
                     </div>
                     <HostLinkField
-                      key={`${event?.id ?? "new"}-${h.n}`}
-                      value={{ link: form[h.linkKey] || "", listingId: form[h.listingKey] || "" }}
+                      key={`${event?.id ?? "new"}-${h.n}-${hostNameKey(form[h.nameKey])}-${eventHostRows !== undefined}`}
+                      value={{ link: displayed(h.linkKey, resolved.link), listingId: form[h.listingKey] || "" }}
                       listings={listings || []}
-                      onChange={(v) => setForm((f) => ({ ...f, [h.linkKey]: v.link, [h.listingKey]: v.listingId }))}
+                      onChange={(v) => editHost({ [h.linkKey]: v.link, [h.listingKey]: v.listingId })}
                     />
                     {/* Linked app listings already have their own image — the host photo is only for non-linked hosts. */}
                     {!form[h.listingKey] && (
@@ -562,13 +591,13 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                           slot={hostSlot}
                           label="Photo"
                           asField
-                          value={form[h.imgKey] || ""}
-                          onChange={(url) => set(h.imgKey, url)}
+                          value={displayed(h.imgKey, resolved.image)}
+                          onChange={(url) => editHost({ [h.imgKey]: url })}
                         />
                       </div>
                     )}
                   </div>
-                ))}
+                ); })}
                 {shown < 3 && (
                   <Button type="button" variant="outline" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setShownLocal(shown + 1)}>+ Add Another Host</Button>
                 )}

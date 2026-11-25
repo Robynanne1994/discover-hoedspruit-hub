@@ -31,4 +31,10 @@ describe("resolveHost subtitle", () => {
   it("keeps the event's own subtitle", () => {
     expect(resolveHost({ name: "Hoedspruit Running Club", subtitle: "Trail series" }, dirWithSub).subtitle).toBe("Trail series");
   });
+  it("previews all loaded host details without changing the event's stored fields", () => {
+    const stored = { name: "Hoedspruit Running Club", subtitle: "", image: "", link: "" };
+    const directory = buildHostDirectory([{ name: stored.name, subtitle: "Weekly social runs", image_url: "club.jpg", link: "https://run.co" }]);
+    expect(resolveHost(stored, directory)).toEqual({ name: stored.name, subtitle: "Weekly social runs", image: "club.jpg", link: "https://run.co" });
+    expect(stored).toEqual({ name: "Hoedspruit Running Club", subtitle: "", image: "", link: "" });
+  });
 });
