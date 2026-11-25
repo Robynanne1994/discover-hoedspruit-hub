@@ -13,7 +13,7 @@ interface GalleryUploadProps {
   banner?: boolean;
   /** Listings keep the gallery under the shared "Images" heading, so they pass this. */
   hideLabel?: boolean;
-  folder?: "gallery" | "events";
+  folder?: "gallery" | "events" | "specials";
 }
 
 const GalleryUpload = ({ value, onChange, folder = "gallery", banner = false, hideLabel = false }: GalleryUploadProps) => {
