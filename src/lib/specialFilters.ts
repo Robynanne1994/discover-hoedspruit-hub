@@ -14,10 +14,10 @@ export const SPECIAL_BOOKING_OPTIONS = [
 
 export type SpecialTypeFilter = typeof SPECIAL_TYPE_OPTIONS[number]["key"];
 export type SpecialBookingFilter = typeof SPECIAL_BOOKING_OPTIONS[number]["key"];
-type FilterableSpecial = { booking_link?: string | null; discount_type?: string | null };
+type FilterableSpecial = { booking_link?: string | null; booking_required?: boolean | null; discount_type?: string | null };
 
 export function specialRequiresBooking(special: FilterableSpecial): boolean {
-  return Boolean(special.booking_link?.trim());
+  return special.booking_required !== false && Boolean(special.booking_link?.trim());
 }
 
 export function specialMatchesBooking(special: FilterableSpecial, filter: SpecialBookingFilter): boolean {

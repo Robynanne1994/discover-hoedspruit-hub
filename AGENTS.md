@@ -67,3 +67,4 @@
 - Keep event social pipe parsing in eventSocials.
 
 - Titles render as typed; a DB trigger syncs title_override to title, so no toggle or CSV column.
+- Keep specials' multi-link columns (special link, social, booking type/link/label: pipe-separated, aligned by position) and the ongoing-deal Done rule in specialLinks; a DB trigger forces done specials inactive.

@@ -5,7 +5,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { specialImage } from "@/lib/specialCard";
-import { specialSocialLink } from "@/lib/specialSocialLink";
+import { labelledWebLinks, parseBookings } from "@/lib/specialLinks";
 import InstagramIcon from "@/components/ui/InstagramIcon";
 import FacebookIcon from "@/components/ui/FacebookIcon";
 import { format } from "date-fns";
@@ -283,7 +283,10 @@ const SpecialDetail = () => {
   // brown (the primary action) and it is Booking when a booking link exists,
   // falling back to WhatsApp / Call when it doesn't.
   const emailClean = contactEmail;
-  const bookingHref = buildBookingHref(special.booking_link, (special as any).booking_link_type);
+  // Booking shows only when required; several bookings are pipe-separated.
+  const bookings = (special as any).booking_required === false ? [] : parseBookings((special as any).booking_link_type, special.booking_link, sp.booking_link_label)
+    .flatMap((b) => { const h = buildBookingHref(b.link, b.type || null); return h ? [{ ...b, h }] : []; });
+  const bookingHref = bookings[0]?.h ?? null;
   const hasBooking = !!bookingHref;
   const primaryKey = hasBooking ? "booking" : waClean ? "whatsapp" : phoneClean ? "call" : null;
   const actions = [
@@ -419,14 +422,16 @@ const SpecialDetail = () => {
 
   // The social link is always the final row in the details box, after every
   // other detail including validity.
-  const socialLink = specialSocialLink(special);
-  if (socialLink) detailRows.push({
-    icon: socialLink.platform === "facebook" ? FacebookIcon
-      : socialLink.platform === "instagram" ? InstagramIcon
+  // Special links sit just above the social links, both labelled only.
+  labelledWebLinks(sp.special_link, sp.special_link_label).forEach((l) => detailRows.push({
+    icon: ExternalLink, label: "Special Link", value: l.label, href: l.href,
+  }));
+  labelledWebLinks(special.social_media_link, special.social_media_label).forEach((l) => detailRows.push({
+    icon: l.platform === "facebook" ? FacebookIcon
+      : l.platform === "instagram" ? InstagramIcon
       : ExternalLink,
-    label: "Social Media Link", value: socialLink.label, href: socialLink.href,
-  });
-
+    label: "Social Media Link", value: l.label, href: l.href,
+  }));
 
   // ----- Tab content -----
   const renderAbout = () => {
@@ -519,12 +524,12 @@ const SpecialDetail = () => {
       Icon: Store, label: "Business", value: special.business_name,
       href: `/listing/${special.business_id}`, internal: true,
     });
-    if (special.booking_link) rows.push({
+    bookings.forEach((b) => rows.push({
       Icon: ExternalLink, label: "Booking",
-      value: sp.booking_link_label?.trim() || special.booking_link,
-      href: buildBookingHref(special.booking_link, (special as any).booking_link_type)?.href || special.booking_link,
-      external: buildBookingHref(special.booking_link, (special as any).booking_link_type)?.external ?? true,
-    });
+      value: b.label || b.link,
+      href: b.h.href,
+      external: b.h.external,
+    }));
 
     return (
       <div style={{ padding: "16px 20px 20px" }}>
@@ -846,7 +851,7 @@ const SpecialDetail = () => {
         const hasAbout = !!(special.description?.trim()) ||
           detailRows.length > 0 ||
           !!special.promo_code;
-        const hasContact = phonePairs.length > 0 || whatsappPairs.length > 0 || !!special.booking_link || !!contactEmail || !!special.business_id;
+        const hasContact = phonePairs.length > 0 || whatsappPairs.length > 0 || bookings.length > 0 || !!contactEmail || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
         const hasGallery = ((special as any).gallery_images ?? []).length > 0;
         const hasLocation = !!(business && ((business as any).location || mapPlace));

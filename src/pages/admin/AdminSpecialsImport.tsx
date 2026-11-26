@@ -1,3 +1,4 @@
+import { parseLinkPairs, serializeLinkPairs, parseBookings, serializeBookings, parseDoneCell } from "@/lib/specialLinks";
 import { resolveBookingLinkType } from "@/lib/bookingLink";
 import { specialAudienceCsvPatch, specialAudienceToCsv } from "@/lib/specialAudience";
 import { parseTagCell, specialTagList, tagColumns } from "@/lib/specialTags";
@@ -34,10 +35,10 @@ const EXPECTED_HEADERS = [
   "id", "title", "badge_override", "deal_type", "day_of_week",
   "discount_type", "discount_value", "special_type", "freebie_text", "card_deal_text", "redemption_note", "business_name", "description",
   // image_url & detail_image_url deliberately excluded: images are backend-only
-  "valid_from", "valid_until",
+  "valid_from", "valid_until", "is_done",
   "price", "price_label", "original_price",
   "booking_required", "booking_link_type", "booking_link", "booking_link_label", "promo_code",
-  "whos_it_for", "social_media_link", "social_media_label",
+  "whos_it_for", "special_link", "special_link_label", "social_media_link", "social_media_label",
   "contact_phone", "phone_label", "contact_whatsapp", "whatsapp_label", "contact_email", "email_label",
   "terms", "tag",
   "is_active", "is_featured",
@@ -119,7 +120,7 @@ const AdminSpecialsImport = () => {
       const results = { created: 0, updated: 0, deleted: 0, skipped: 0, errors: [] as string[] };
 
       const now = new Date();
-      const { data: existing, error: existingError } = await supabase.from("specials").select("id, title, is_active, valid_from, valid_until");
+      const { data: existing, error: existingError } = await supabase.from("specials").select("id, title, is_active, is_done, valid_from, valid_until");
       if (existingError) throw existingError;
       const existingMap = new Map((existing ?? []).map((e) => [e.title.trim().toLowerCase(), e]));
       const existingById = new Map((existing ?? []).map((e) => [e.id, e]));
@@ -171,9 +172,13 @@ const AdminSpecialsImport = () => {
           price_label: row.price_label || null,
           original_price: formatSpecialPriceCell(row.original_price),
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
-          booking_link_type: (() => { const t = (row.booking_link_type || "").trim(); return t ? resolveBookingLinkType(row.booking_link, t) : null; })(),
-          booking_link: row.booking_link || null,
-          booking_link_label: row.booking_link_label || null,
+          // "link 1|link 2" with types and labels in the same order.
+          ...(() => {
+            const b = serializeBookings(parseBookings(row.booking_link_type, row.booking_link, row.booking_link_label));
+            return { booking_link: b.link || null, booking_link_type: b.type || null, booking_link_label: b.label || null };
+          })(),
+          // Done only applies to ongoing deals; it moves the special to Past.
+          is_done: normalizeDealType(row.deal_type) === "ongoing" && parseDoneCell(row.is_done),
           promo_code: row.promo_code || null,
           // Combined cells: "a|b" with labels "x|y"; older files' additional_* columns are appended.
           ...(() => {
@@ -200,15 +205,24 @@ const AdminSpecialsImport = () => {
 
         // Legacy columns are no longer part of the template, but an older file
         // may still carry them — honour them when present, ignore when absent.
-        for (const legacy of ["card_footer_text", "savings", "social_media_link", "social_media_label"]) {
+        for (const legacy of ["card_footer_text", "savings"]) {
           if (parsed.headers.includes(legacy)) payload[legacy] = row[legacy] || null;
         }
+        for (const [col, lab] of [["social_media_link", "social_media_label"], ["special_link", "special_link_label"]] as const) {
+          if (!parsed.headers.includes(col)) continue;
+          const so = serializeLinkPairs(parseLinkPairs(row[col], row[lab]));
+          payload[col] = so.link || null;
+          payload[lab] = so.label || null;
+        }
+        if (!parsed.headers.includes("is_done")) delete payload.is_done;
+        if (payload.is_done) payload.is_active = false;
         if (!parsed.headers.includes("special_type")) delete payload.special_type;
         const matchedListingId = listingByTitle.get((row.business_name ?? "").trim().toLowerCase());
         if (matchedListingId) payload.business_id = matchedListingId;
 
         const action = specialCsvAction(importMode, {
           is_active: payload.is_active ?? match?.is_active ?? true,
+          is_done: payload.is_done ?? (match as any)?.is_done ?? false,
           valid_from: payload.valid_from,
           valid_until: payload.valid_until,
         }, match, now);
@@ -222,7 +236,7 @@ const AdminSpecialsImport = () => {
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else results.updated++;
         } else {
-          const { data: inserted, error } = await supabase.from("specials").insert(payload as any).select("id, title, is_active, valid_from, valid_until").single();
+          const { data: inserted, error } = await supabase.from("specials").insert(payload as any).select("id, title, is_active, is_done, valid_from, valid_until").single();
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
           else {
             results.created++;
@@ -261,12 +275,12 @@ const AdminSpecialsImport = () => {
     // One value per header, in header order — a short row silently shifts every
     // column after it, so the two lists are kept side by side.
     const example = [
-      "", "Sunset Dinner Deal", "false", "50% OFF", "weekly", "Wednesday|Thursday",
+      "", "Sunset Dinner Deal", "50% OFF", "weekly", "Wednesday|Thursday",
       "percent_off", "50", "Dinner Deal", "", "Half-price dinner", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
-      "2026-01-01", "2026-06-30",
+      "2026-01-01", "2026-06-30", "false",
       "R450pp", "per person", "R900pp",
-      "true", "link", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
-      "Couples|Seniors", "https://www.facebook.com/example/posts/123", "Facebook Post",
+      "true", "link|email", "https://bookme.com/example|bookings@example.com", "Book on Quicket|Email Bookings", "WINTER2026",
+      "Couples|Seniors", "https://example.com/winter-sale", "Shop the Sale", "https://www.facebook.com/example/posts/123|https://www.instagram.com/p/abc", "Facebook Post|Instagram Post",
       "+27 123 456 789|+27 987 654 321", "Reception|After Hours", "+27 123 456 789", "Bookings", "info@example.com", "",
       "T's & C's apply. Sit down only.", "Restaurant|Dinner|Wine pairing",
       "true", "false",
@@ -286,10 +300,10 @@ const AdminSpecialsImport = () => {
     const rows = specials.map((s: any) => [
       s.id, s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.special_type ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
-      s.valid_from ?? "", s.valid_until ?? "",
+      s.valid_from ?? "", s.valid_until ?? "", s.is_done ? "true" : "false",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link_type ?? "", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
-      specialAudienceToCsv(s.whos_it_for), s.social_media_link ?? "", s.social_media_label ?? "",
+      specialAudienceToCsv(s.whos_it_for), s.special_link ?? "", s.special_link_label ?? "", s.social_media_link ?? "", s.social_media_label ?? "",
       ...(["phone", "whatsapp", "email"] as const).flatMap((k) => {
         const c = serializeEventContactCells(s[`contact_${k}`], s[`${k}_label`], s[`additional_${k}s`], s[`additional_${k}_labels`]);
         return [c.contacts, c.labels];

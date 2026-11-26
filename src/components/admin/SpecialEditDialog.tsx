@@ -17,6 +17,7 @@ import { SPECIAL_IMAGE_SLOTS } from "@/lib/specialImageSlots";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
+import { parseLinkPairs, serializeLinkPairs, parseBookings, serializeBookings, type LinkPair, type BookingEntry } from "@/lib/specialLinks";
 import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import DayOfWeekPicker from "@/components/admin/DayOfWeekPicker";
@@ -101,7 +102,7 @@ const FIELDS: (keyof any)[] = [
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps", "additional_emails",
   "phone_label", "email_label", "whatsapp_label",
   "booking_link", "booking_link_label", "booking_link_type", "terms", "tag", "sub_tag_1", "sub_tag_2",
-  "social_media_link", "social_media_label", "whos_it_for",
+  "social_media_link", "social_media_label", "special_link", "special_link_label", "booking_required", "is_done", "whos_it_for",
 ];
 
 const SELECT_CLS = "flex h-10 w-full appearance-none rounded-md border border-gray-950 bg-slate-50 px-3 py-2 pr-9 text-sm text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
@@ -112,8 +113,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
   const descRef = useRef<HTMLTextAreaElement>(null);
-  const [socialLabelOpen, setSocialLabelOpen] = useState(false);
-  const [bookingLabelOpen, setBookingLabelOpen] = useState(false);
 
   // Always-active toggle: on means no dates (ongoing). Turning it off unlocks
   // the date fields so dates can be added.
@@ -138,6 +137,19 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
         payload[`${k}_label`] = (form[`${k}_label`] || "").trim() || null;
       }
       payload.title_override = (form.title_override || "").trim() || null;
+      for (const k of ["social_media", "special_link"] as const) {
+        const col = k === "social_media" ? "social_media_link" : "special_link";
+        const lab = k === "social_media" ? "social_media_label" : "special_link_label";
+        const so = serializeLinkPairs(parseLinkPairs(form[col], form[lab]));
+        payload[col] = so.link || null;
+        payload[lab] = so.label || null;
+      }
+      const bk = serializeBookings(parseBookings(form.booking_link_type, form.booking_link, form.booking_link_label));
+      payload.booking_required = !!form.booking_required;
+      payload.booking_link = bk.link || null;
+      payload.booking_link_type = bk.type || null;
+      payload.booking_link_label = bk.label || null;
+      payload.is_done = form.deal_type === "ongoing" && !!form.is_done;
       Object.assign(payload, tagColumns(specialTagList(form)));
       // Legacy rows may still hold a bare day name; the column takes a list.
       const days = parseDays(form.day_of_week);
@@ -145,7 +157,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       // Expiry still retires a deal, but saving can never reactivate a deliberate FALSE.
-      payload.is_active = form.is_active !== false && !(form.valid_until && new Date(form.valid_until) < today);
+      payload.is_active = !payload.is_done && form.is_active !== false && !(form.valid_until && new Date(form.valid_until) < today);
       const { error } = await supabase.from("specials").update(payload).eq("id", special.id);
       if (error) throw error;
     },
@@ -448,6 +460,18 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 Always active — ongoing until further notice
               </Label>
             </div>
+            {form.deal_type === "ongoing" && (
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="special-done"
+                  checked={!!form.is_done}
+                  onCheckedChange={(v) => setForm((f: any) => ({ ...f, is_done: v === true, is_active: v === true ? false : true }))}
+                />
+                <Label htmlFor="special-done" className="text-sm cursor-pointer font-normal">
+                  Done. This ongoing special has ended, move it to Past Specials
+                </Label>
+              </div>
+            )}
           </div>
 
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Pricing</p>
@@ -512,93 +536,41 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
               onExtraLabelsChange={(v) => set("additional_phone_labels", v)}
               addLabel="Add"
             />
-            <div className="space-y-1.5">
-              <Label>Social Media</Label>
-              <Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} placeholder="https://…" />
-              {socialLabelOpen || (form.social_media_label || "").trim() ? (
-                <div className="flex gap-2 items-center">
-                  <Input
-                    value={form.social_media_label || ""}
-                    placeholder='Custom label (e.g. "Facebook Post")'
-                    onChange={(e) => set("social_media_label", e.target.value)}
-                    className="h-8 text-xs"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
-                    aria-label="Remove label"
-                    onClick={() => {
-                      set("social_media_label", "");
-                      setSocialLabelOpen(false);
-                    }}
-                  >
-                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="link"
-                  type="button"
-                  onClick={() => setSocialLabelOpen(true)}
-                  className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1"
-                >
-                  <Tag className="h-3 w-3" /> Add Custom Label
-                </Button>
-              )}
-            </div>
+            <LinkPairsField
+              label="Special Link"
+              requireLabel
+              pairs={parseLinkPairs(form.special_link, form.special_link_label)}
+              onChange={(pairs) => setForm((f: any) => ({ ...f, ...pairFields("special_link", pairs) }))}
+            />
+            <LinkPairsField
+              label="Social Media"
+              pairs={parseLinkPairs(form.social_media_link, form.social_media_label)}
+              onChange={(pairs) => setForm((f: any) => ({ ...f, ...pairFields("social_media", pairs) }))}
+            />
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
-          <div className="grid gap-3 sm:grid-cols-2 items-start">
-            <div>
-              <Label className="block">Booking Type</Label>
-              <div className="relative mt-1"><select
-                className={SELECT_CLS}
-                value={editorBookingLinkType(form.booking_link, form.booking_link_type)}
-                onChange={(e) => set("booking_link_type", e.target.value)}
-              >
-                <option value=""></option>
-                {BOOKING_LINK_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
-            </div>
-            <div className="space-y-1.5">
-              <Label>Booking Link / Email / Number</Label>
-              <Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} />
-              {bookingLabelOpen || (form.booking_link_label || "").trim() ? (
-                <div className="flex gap-2 items-center">
-                  <Input
-                    value={form.booking_link_label || ""}
-                    placeholder='Custom label (e.g. "Book on Quicket")'
-                    onChange={(e) => set("booking_link_label", e.target.value)}
-                    className="h-8 text-xs"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground"
-                    aria-label="Remove label"
-                    onClick={() => {
-                      set("booking_link_label", "");
-                      setBookingLabelOpen(false);
-                    }}
-                  >
-                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="link"
-                  type="button"
-                  onClick={() => setBookingLabelOpen(true)}
-                  className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1"
-                >
-                  <Tag className="h-3 w-3" /> Add Custom Label
-                </Button>
-              )}
-            </div>
+          <div className="flex items-center gap-2 mb-3">
+            <Switch
+              id="special-dlg-booking-required"
+              className="h-7 w-12 origin-left scale-110"
+              checked={!!form.booking_required}
+              onCheckedChange={(v) => set("booking_required", v)}
+            />
+            <Label htmlFor="special-dlg-booking-required" className="cursor-pointer font-normal">Booking Required</Label>
           </div>
+          {form.booking_required && (
+            <BookingRows
+              entries={parseBookings(form.booking_link_type, form.booking_link, form.booking_link_label)}
+              onChange={(entries) => setForm((f: any) => {
+                const raw = {
+                  booking_link: entries.map((e) => e.link).join("|"),
+                  booking_link_type: entries.map((e) => e.type || "-").join("|"),
+                  booking_link_label: entries.map((e) => e.label || "-").join("|"),
+                };
+                return { ...f, ...raw };
+              })}
+            />
+          )}
 
           <div>
             <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Terms &amp; Conditions</p>
@@ -648,6 +620,106 @@ function TagRowsEditor({ value, onChange }: { value: string[]; onChange: (t: str
       <Button type="button" variant="outline" size="sm" className="h-7 px-2.5 text-xs" onClick={() => setRows([...rows, ""])}>
         <Plus className="h-3 w-3 mr-1" />
         Add
+      </Button>
+    </div>
+  );
+}
+
+
+const pairFields = (k: "social_media" | "special_link", pairs: LinkPair[]) => {
+  const col = k === "social_media" ? "social_media_link" : "special_link";
+  const lab = k === "social_media" ? "social_media_label" : "special_link_label";
+  // Kept raw while editing so a blank new row survives; tidied on save.
+  return { [col]: pairs.map((p) => p.link).join("|"), [lab]: pairs.map((p) => p.label || "-").join("|") };
+};
+
+const ROUND_X = "h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground";
+const LABEL_BTN = "h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1";
+
+function CustomLabel({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
+  const [open, setOpen] = useState(false);
+  if (!open && !value.trim()) {
+    return (
+      <Button variant="link" type="button" onClick={() => setOpen(true)} className={LABEL_BTN}>
+        <Tag className="h-3 w-3" /> Add Custom Label
+      </Button>
+    );
+  }
+  return (
+    <div className="flex gap-2 items-center">
+      <Input value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} className="h-8 text-xs" />
+      <Button type="button" variant="ghost" size="icon" className={ROUND_X} aria-label="Remove label" onClick={() => { onChange(""); setOpen(false); }}>
+        <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+      </Button>
+    </div>
+  );
+}
+
+function LinkPairsField({ label, pairs, onChange, requireLabel }: { label: string; pairs: LinkPair[]; onChange: (p: LinkPair[]) => void; requireLabel?: boolean }) {
+  const rows = pairs.length ? pairs : [{ link: "", label: "" }];
+  const edit = (i: number, patch: Partial<LinkPair>) => onChange(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+  return (
+    <div className="space-y-3">
+      {rows.map((r, i) => (
+        <div key={i} className="space-y-1.5">
+          <Label>{rows.length > 1 ? `${label} ${i + 1}` : label}</Label>
+          <div className="flex gap-2 items-center">
+            <Input value={r.link} onChange={(e) => edit(i, { link: e.target.value })} placeholder="https://…" />
+            {rows.length > 1 && (
+              <Button type="button" variant="ghost" size="icon" className={ROUND_X} aria-label={`Remove ${label}`} onClick={() => onChange(rows.filter((_, j) => j !== i))}>
+                <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+              </Button>
+            )}
+          </div>
+          <CustomLabel value={r.label} onChange={(v) => edit(i, { label: v })} placeholder={requireLabel ? 'Custom label (e.g. "Shop the Sale")' : 'Custom label (e.g. "Facebook Post")'} />
+          {requireLabel && r.link.trim() && !r.label.trim() && (
+            <p className="text-xs text-destructive">Add a label, the link only shows with one.</p>
+          )}
+        </div>
+      ))}
+      <Button type="button" variant="default" size="sm" className="h-7 px-2.5 text-xs" onClick={() => onChange([...rows, { link: "", label: "" }])}>
+        <Plus className="h-3 w-3 mr-1" /> Add
+      </Button>
+    </div>
+  );
+}
+
+function BookingRows({ entries, onChange }: { entries: BookingEntry[]; onChange: (e: BookingEntry[]) => void }) {
+  const rows = entries.length ? entries : [{ type: "", link: "", label: "" }];
+  const edit = (i: number, patch: Partial<BookingEntry>) => onChange(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
+  return (
+    <div className="space-y-4">
+      {rows.map((r, i) => (
+        <div key={i} className="grid gap-3 sm:grid-cols-2 items-start">
+          <div>
+            <Label className="block">{rows.length > 1 ? `Booking Type ${i + 1}` : "Booking Type"}</Label>
+            <div className="relative mt-1"><select
+              className={SELECT_CLS}
+              value={editorBookingLinkType(r.link, r.type)}
+              onChange={(e) => edit(i, { type: e.target.value })}
+            >
+              <option value=""></option>
+              {BOOKING_LINK_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select><ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden /></div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Booking Link / Email / Number</Label>
+            <div className="flex gap-2 items-center">
+              <Input value={r.link} onChange={(e) => edit(i, { link: e.target.value })} />
+              {rows.length > 1 && (
+                <Button type="button" variant="ghost" size="icon" className={ROUND_X} aria-label="Remove booking" onClick={() => onChange(rows.filter((_, j) => j !== i))}>
+                  <X className="h-3.5 w-3.5" strokeWidth={2.5} />
+                </Button>
+              )}
+            </div>
+            <CustomLabel value={r.label} onChange={(v) => edit(i, { label: v })} placeholder='Custom label (e.g. "Book on Quicket")' />
+          </div>
+        </div>
+      ))}
+      <Button type="button" variant="default" size="sm" className="h-7 px-2.5 text-xs" onClick={() => onChange([...rows, { type: "", link: "", label: "" }])}>
+        <Plus className="h-3 w-3 mr-1" /> Add
       </Button>
     </div>
   );

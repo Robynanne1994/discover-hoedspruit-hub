@@ -2,6 +2,8 @@ export interface SpecialVisibilityFields {
   is_active: boolean;
   valid_from?: string | null;
   valid_until?: string | null;
+  /** An ongoing deal marked done: always past, never shown. */
+  is_done?: boolean | null;
 }
 
 export function specialToday(now = new Date()): string {
@@ -20,7 +22,7 @@ export function isUpcomingSpecial(special: SpecialDates, today = specialToday())
 export function isVisibleSpecial(special: SpecialVisibilityFields, today = specialToday()): boolean {
   // Active is an administrative visibility switch, not merely a date flag.
   // Future-dated specials stay hidden too while deliberately inactive.
-  return special.is_active && (
+  return special.is_active && !special.is_done && (
     isUpcomingSpecial(special, today) ||
     !special.valid_until ||
     special.valid_until >= today
@@ -31,5 +33,5 @@ export function isVisibleSpecial(special: SpecialVisibilityFields, today = speci
 // with no image is a draft, not a past special: is_active controls public
 // visibility above, while valid_until alone decides its admin tab.
 export function isActiveSpecial(special: SpecialVisibilityFields, today = specialToday()): boolean {
-  return !special.valid_until || special.valid_until >= today;
+  return !special.is_done && (!special.valid_until || special.valid_until >= today);
 }

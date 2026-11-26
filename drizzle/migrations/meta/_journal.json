@@ -232,6 +232,13 @@
       "when": 1795606712340,
       "tag": "0032_add_specials_gallery_images",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1795694381301,
+      "tag": "0033_specials_links_done",
+      "breakpoints": true
     }
   ]
 }

@@ -2299,6 +2299,7 @@ export type Database = {
           id: string
           image_url: string | null
           is_active: boolean
+          is_done: boolean
           is_featured: boolean
           original_price: string | null
           phone_label: string | null
@@ -2312,6 +2313,8 @@ export type Database = {
           social_media_label: string | null
           social_media_link: string | null
           sort_position: number | null
+          special_link: string | null
+          special_link_label: string | null
           special_type: string | null
           sub_tag_1: string | null
           sub_tag_2: string | null
@@ -2361,6 +2364,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_done?: boolean
           is_featured?: boolean
           original_price?: string | null
           phone_label?: string | null
@@ -2374,6 +2378,8 @@ export type Database = {
           social_media_label?: string | null
           social_media_link?: string | null
           sort_position?: number | null
+          special_link?: string | null
+          special_link_label?: string | null
           special_type?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
@@ -2423,6 +2429,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_done?: boolean
           is_featured?: boolean
           original_price?: string | null
           phone_label?: string | null
@@ -2436,6 +2443,8 @@ export type Database = {
           social_media_label?: string | null
           social_media_link?: string | null
           sort_position?: number | null
+          special_link?: string | null
+          special_link_label?: string | null
           special_type?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
