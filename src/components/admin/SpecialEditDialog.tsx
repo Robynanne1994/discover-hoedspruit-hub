@@ -149,7 +149,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       payload.booking_link = bk.link || null;
       payload.booking_link_type = bk.type || null;
       payload.booking_link_label = bk.label || null;
-      payload.is_done = form.deal_type === "ongoing" && !!form.is_done;
+      payload.is_done = form.deal_type === "ongoing" && !form.valid_until && !!form.is_done;
       Object.assign(payload, tagColumns(specialTagList(form)));
       // Legacy rows may still hold a bare day name; the column takes a list.
       const days = parseDays(form.day_of_week);
@@ -460,15 +460,16 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 Always active — ongoing until further notice
               </Label>
             </div>
-            {form.deal_type === "ongoing" && (
+            {form.deal_type === "ongoing" && !form.valid_until && (
               <div className="flex items-center gap-2">
-                <Checkbox
+                <Switch
                   id="special-done"
+                  className="h-7 w-12 origin-left scale-110"
                   checked={!!form.is_done}
-                  onCheckedChange={(v) => setForm((f: any) => ({ ...f, is_done: v === true, is_active: v === true ? false : true }))}
+                  onCheckedChange={(v) => setForm((f: any) => ({ ...f, is_done: v, is_active: !v }))}
                 />
                 <Label htmlFor="special-done" className="text-sm cursor-pointer font-normal">
-                  Done. This ongoing special has ended, move it to Past Specials
+                  Done: {form.is_done ? "Yes, moved to Past Specials" : "No"}
                 </Label>
               </div>
             )}

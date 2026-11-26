@@ -178,7 +178,8 @@ const AdminSpecialsImport = () => {
             return { booking_link: b.link || null, booking_link_type: b.type || null, booking_link_label: b.label || null };
           })(),
           // Done only applies to ongoing deals; it moves the special to Past.
-          is_done: normalizeDealType(row.deal_type) === "ongoing" && parseDoneCell(row.is_done),
+          // Done applies only to ongoing deals with no end date; elsewhere it is "-" and ignored.
+          is_done: normalizeDealType(row.deal_type) === "ongoing" && !row.valid_until?.trim() ? parseDoneCell(row.is_done) : false,
           promo_code: row.promo_code || null,
           // Combined cells: "a|b" with labels "x|y"; older files' additional_* columns are appended.
           ...(() => {
@@ -214,7 +215,9 @@ const AdminSpecialsImport = () => {
           payload[col] = so.link || null;
           payload[lab] = so.label || null;
         }
-        if (!parsed.headers.includes("is_done")) delete payload.is_done;
+        const doneApplies = payload.deal_type === "ongoing" && !payload.valid_until;
+        const doneCell = (row.is_done ?? "").trim();
+        if (!parsed.headers.includes("is_done") || (doneApplies && (doneCell === "" || doneCell === "-"))) delete payload.is_done;
         if (payload.is_done) payload.is_active = false;
         if (!parsed.headers.includes("special_type")) delete payload.special_type;
         const matchedListingId = listingByTitle.get((row.business_name ?? "").trim().toLowerCase());
@@ -277,7 +280,7 @@ const AdminSpecialsImport = () => {
     const example = [
       "", "Sunset Dinner Deal", "50% OFF", "weekly", "Wednesday|Thursday",
       "percent_off", "50", "Dinner Deal", "", "Half-price dinner", "Book direct", "Bush Lodge", "Half-price dinner with wine pairing",
-      "2026-01-01", "2026-06-30", "false",
+      "2026-01-01", "2026-06-30", "-",
       "R450pp", "per person", "R900pp",
       "true", "link|email", "https://bookme.com/example|bookings@example.com", "Book on Quicket|Email Bookings", "WINTER2026",
       "Couples|Seniors", "https://example.com/winter-sale", "Shop the Sale", "https://www.facebook.com/example/posts/123|https://www.instagram.com/p/abc", "Facebook Post|Instagram Post",
@@ -300,7 +303,7 @@ const AdminSpecialsImport = () => {
     const rows = specials.map((s: any) => [
       s.id, s.title ?? "", s.badge_override ?? "", s.deal_type ?? "", daysToCsv(s.day_of_week),
       s.discount_type ?? "", s.discount_value ?? "", s.special_type ?? "", s.freebie_text ?? "", s.card_deal_text ?? "", s.redemption_note ?? "", s.business_name ?? "", s.description ?? "",
-      s.valid_from ?? "", s.valid_until ?? "", s.is_done ? "true" : "false",
+      s.valid_from ?? "", s.valid_until ?? "", s.deal_type === "ongoing" && !s.valid_until ? (s.is_done ? "true" : "false") : "-",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link_type ?? "", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       specialAudienceToCsv(s.whos_it_for), s.special_link ?? "", s.special_link_label ?? "", s.social_media_link ?? "", s.social_media_label ?? "",
