@@ -3,6 +3,7 @@ import EventEditDialog from "@/components/admin/EventEditDialog";
 import FeaturedToggle from "@/components/admin/FeaturedToggle";
 import ActiveToggle from "@/components/admin/ActiveToggle";
 import { collectEventTags } from "@/lib/eventTags";
+import { sortAdminUpcomingEvents } from "@/lib/adminEventOrder";
 import { isLateEndTime, LATE_END_TIME } from "@/lib/eventEndTime";
 import { isEventPassedForAdmin } from "@/lib/eventLive";
 import { useState, useRef } from "react";
@@ -511,7 +512,10 @@ const AdminEvents = () => {
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (() => {
         const all = events ?? [];
-        const filtered = all.filter((ev: any) => (tab === "active" ? isEventActive(ev) : !isEventActive(ev)) && matchesSearch(search, ev.title, ev.location, ev.tag, ev.date, ev.hosted_by_name));
+        const visible = all.filter((ev: any) => (tab === "active" ? isEventActive(ev) : !isEventActive(ev)) && matchesSearch(search, ev.title, ev.location, ev.tag, ev.date, ev.hosted_by_name));
+        // Upcoming: drafts on top, then soonest date first. Past keeps the
+        // newest-added order the query already returns.
+        const filtered = tab === "active" ? sortAdminUpcomingEvents(visible) : visible;
         const activeCount = all.filter(isEventActive).length;
         const passedCount = all.length - activeCount;
         return (

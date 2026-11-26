@@ -4,6 +4,7 @@
 (none)
 
 ## Done
+- Admin Upcoming Events table: drafts (not yet active) sit on top newest-added first, then live events soonest date first with undated recurring events last. Six ordering tests and a signed-in check passed with a temporary draft added and removed.
 - Event Hosts: CSV download, template and confirmed upload added with ID-first/name matching and no deletion of omitted hosts. Eighteen tests passed; signed-in create/update/reload/export and desktop/mobile checks passed, temporary host removed and all 25 original hosts unchanged.
 - Listing contacts: primary and added email, phone and WhatsApp rows have bin controls; value and label removals save together, including the final remaining contact. Four component tests and a signed-in create/save/remove/reopen check passed; the temporary listing was deleted.
 - Reported Users and Moderated Users: branded headings, searchable status views, refresh controls, clearer report details and desktop moderation rows. Signed-in real pages are empty; search/filter and desktop/mobile checks passed, with populated layouts and action dialogs checked using preview-only samples. No moderation actions were submitted.
