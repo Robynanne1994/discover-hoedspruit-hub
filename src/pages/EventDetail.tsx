@@ -25,6 +25,7 @@ import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { getPerformances, hasPerformances, getNextOccurrence, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { eventContactPairs } from "@/lib/eventContacts";
+import { parseBookings } from "@/lib/specialLinks";
 import { buildBookingHref, bookingActionLabel, bookingRowLabel } from "@/lib/bookingLink";
 import { renderListingRichText } from "@/lib/listingRichText";
 import { copyToClipboard } from "@/lib/share";
@@ -451,12 +452,12 @@ const EventDetail = () => {
   const contactWhatsApp = whatsappPairs[0]?.value || null;
   const waClean = contactWhatsApp ? contactWhatsApp.replace(/[^0-9]/g, "") : null;
   const galleryImages: string[] = e.gallery_images ?? [];
-  const bookingLink = e.booking_link || null;
-  const bookingLinkLabel = e.booking_link_label?.trim() || null;
-  const booking = buildBookingHref(bookingLink, (e as any).booking_link_type);
-  const BookingIcon = booking
-    ? booking.type === "email" ? Mail : booking.type === "phone" ? Phone : booking.type === "whatsapp" ? WhatsAppIcon : ExternalLink
-    : ExternalLink;
+  // Several bookings are pipe-separated in the same columns; the first drives the action bar.
+  const bookingEntries = parseBookings((e as any).booking_link_type, e.booking_link, e.booking_link_label)
+    .flatMap((b) => { const h = buildBookingHref(b.link, b.type || null); return h ? [{ ...b, h }] : []; });
+  const booking = bookingEntries[0]?.h ?? null;
+  const iconFor = (t: string) => t === "email" ? Mail : t === "phone" ? Phone : t === "whatsapp" ? WhatsAppIcon : ExternalLink;
+  const BookingIcon = booking ? iconFor(booking.type) : ExternalLink;
   const price = e.price || null;
   const priceNotes: string[] = Array.isArray((e as any).price_notes)
     ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
@@ -742,9 +743,11 @@ const EventDetail = () => {
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
   });
   // Booking lives on its own tab, never inside the contact list.
-  const bookingRow = booking
-    ? { Icon: BookingIcon, label: bookingLinkLabel || bookingRowLabel(booking.type), value: bookingLinkLabel || (booking.type === "phone" ? formatSAPhone(bookingLink || "") : booking.type === "whatsapp" ? "Chat on WhatsApp" : bookingLink), href: booking.href, external: booking.external, disabled: isPast }
-    : null;
+  const bookingRows = bookingEntries.map((b) => {
+    const lbl = b.label || null;
+    return { Icon: iconFor(b.h.type), label: lbl || bookingRowLabel(b.h.type), value: lbl || (b.h.type === "phone" ? formatSAPhone(b.link) : b.h.type === "whatsapp" ? "Chat on WhatsApp" : b.link), href: b.h.href, external: b.h.external, disabled: isPast };
+  });
+  const bookingRow = bookingRows[0] ?? null;
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
@@ -972,8 +975,7 @@ const EventDetail = () => {
         <>
           {sectionHeading("Booking Details")}
           <div style={{ ...cardStyle, padding: "4px 20px" }}>
-            {(() => {
-              const r = bookingRow;
+            {bookingRows.map((r, idx) => {
               const inner = (
                 <>
                   <r.Icon size={18} strokeWidth={1.5} color={r.disabled ? C.muted : C.primary} />
@@ -990,16 +992,17 @@ const EventDetail = () => {
                 display: "flex", alignItems: "center", gap: 14,
                 padding: "14px 0", textDecoration: "none",
                 opacity: r.disabled ? 0.5 : 1,
+                borderTop: idx > 0 ? "1px solid rgba(26,26,26,0.08)" : undefined,
               };
               if (r.href && !r.disabled) {
                 return (
-                  <a href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                  <a key={idx} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
                     {inner}
                   </a>
                 );
               }
-              return <div style={{ ...style, cursor: r.disabled ? "not-allowed" : "default" }} aria-disabled={r.disabled || undefined}>{inner}</div>;
-            })()}
+              return <div key={idx} style={{ ...style, cursor: r.disabled ? "not-allowed" : "default" }} aria-disabled={r.disabled || undefined}>{inner}</div>;
+            })}
           </div>
         </>
       )}

@@ -19,6 +19,8 @@ import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray, sanitizeContactPairs } from "@/lib/contacts";
 import { BOOKING_LINK_TYPES, editorBookingLinkType } from "@/lib/bookingLink";
+import { parseBookings, serializeBookings } from "@/lib/specialLinks";
+import { BookingRows } from "./SpecialEditDialog";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 import HostLinkField from "@/components/admin/HostLinkField";
 import { eventImageSlot } from "@/lib/eventImageSlots";
@@ -106,6 +108,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       HOST_LISTING_KEYS.forEach((k) => { if (payload[k]) payload[HOST_IMG_BY_LISTING[k]] = null; });
       // Normalize business_ids -> ensure array, sync legacy single business_id to first entry
       const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
+      { const bk = serializeBookings(parseBookings(form.booking_link_type, form.booking_link, form.booking_link_label)); payload.booking_link = bk.link || null; payload.booking_link_type = bk.type || null; payload.booking_link_label = bk.label || null; }
       { const so = serializeSocials(parseSocials(form.social_media_link, form.social_media_label)); payload.social_media_link = so.link || null; payload.social_media_label = so.label || null; }
       payload.business_ids = ids;
       payload.business_id = ids[0] ?? null;
@@ -381,40 +384,15 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             </div>
           </div>
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Booking</p>
-          <div className="grid gap-3 lg:grid-cols-2 items-start">
-            <div className="space-y-2">
-              <Label className="block">Booking Type</Label>
-              <div className="relative">
-              <select
-                className="flex h-10 w-full appearance-none rounded-md border border-gray-950 bg-slate-50 px-3 py-2 pr-9 text-sm text-zinc-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={editorBookingLinkType(form.booking_link, form.booking_link_type)}
-                onChange={(e) => set("booking_link_type", e.target.value)}
-              >
-                <option value=""></option>
-                {BOOKING_LINK_TYPES.map((t) => (
-                  <option key={t.value} value={t.value}>{t.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground" strokeWidth={2.75} aria-hidden />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="block">Booking Link / Email / Number</Label>
-              <Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} placeholder="https://… or name@email.com or +27 82 000 0000" />
-              {bookingLabelOpen || (form.booking_link_label || "").trim() ? (
-                <div className="flex gap-2 items-center">
-                  <Input value={form.booking_link_label || ""} placeholder='Custom label (e.g. "Book on Quicket")' onChange={(e) => set("booking_link_label", e.target.value)} className="h-8 text-xs" />
-                  <Button type="button" variant="ghost" size="icon" className="h-7 w-7 shrink-0 rounded-full bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground" aria-label="Remove label" onClick={() => { set("booking_link_label", ""); setBookingLabelOpen(false); }}>
-                    <X className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </Button>
-                </div>
-              ) : (
-                <Button variant="link" type="button" onClick={() => setBookingLabelOpen(true)} className="h-auto p-0 text-xs font-semibold text-foreground hover:text-primary no-underline hover:no-underline inline-flex items-center gap-1">
-                  <Tag className="h-3 w-3" /> Add Custom Label
-                </Button>
-              )}
-            </div>
-          </div>
+          <BookingRows
+            entries={parseBookings(form.booking_link_type, form.booking_link, form.booking_link_label)}
+            onChange={(entries) => setForm((f: any) => ({
+              ...f,
+              booking_link: entries.map((e) => e.link).join("|"),
+              booking_link_type: entries.map((e) => e.type || "-").join("|"),
+              booking_link_label: entries.map((e) => e.label || "-").join("|"),
+            }))}
+          />
           <p className="mt-6 mb-3 text-xl font-bold border-2 border-primary-hover text-center bg-primary text-primary-foreground">Location</p>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>

@@ -685,7 +685,7 @@ function LinkPairsField({ label, pairs, onChange, requireLabel }: { label: strin
   );
 }
 
-function BookingRows({ entries, onChange }: { entries: BookingEntry[]; onChange: (e: BookingEntry[]) => void }) {
+export function BookingRows({ entries, onChange }: { entries: BookingEntry[]; onChange: (e: BookingEntry[]) => void }) {
   const rows = entries.length ? entries : [{ type: "", link: "", label: "" }];
   const edit = (i: number, patch: Partial<BookingEntry>) => onChange(rows.map((r, j) => (j === i ? { ...r, ...patch } : r)));
   return (
