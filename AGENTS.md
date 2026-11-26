@@ -50,8 +50,7 @@
 - Keep Featured Events carousel order in featuredEventOrder; the list below stays date-ordered.
 - Keep the past-events window and default order in eventPastWindow.
 - Keep the event weekday tag in eventDayLabel's shortWeekday so listed cards and carousel cards share one bracketed form ("4 Nov (Wed)"); listed cards tag only one-day runs, carousel cards every card.
-- Keep carousel poster card date/location rows on one shared style, with no time.
-- Keep the events carousel gaps on one shared value.
+- Keep carousel poster card date/location rows on one shared style (no time) and carousel gaps on one value.
 - Keep the specials page's section headings on the events page's group-heading treatment; neither specials heading carries an icon or a hairline rule, and the featured rail's gap equals the carousels'.
 - Keep every specials section heading's bracketed count in dealCountLabel so the featured rail and the list below word the same number alike.
 - Keep the featured deal card's photo column in FEATURED_PHOTO_FRACTION, FEATURED_PHOTO_RATIO and the specials slide width (appLayout) so the card and its editor crop box agree.
@@ -67,4 +66,4 @@
 - Keep event social pipe parsing in eventSocials.
 
 - Titles render as typed; a DB trigger syncs title_override to title, so no toggle or CSV column.
-- Keep specials' multi-link columns (special link, social, booking type/link/label: pipe-separated, aligned by position) and the ongoing-deal Done rule in specialLinks; a DB trigger forces done specials inactive.
+- Keep specials' pipe-separated link/booking pairs and the Done rule in specialLinks.
